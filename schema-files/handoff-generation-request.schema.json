@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/handoff-generation-request.schema.json",
+  "title": "Local Handoff Draft Generation Request",
+  "description": "Selection by an already authorized source reader. Validation is not source access, generation, current-state verification or release permission.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "order_file", "events_file", "created_by", "classification"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "HandoffGenerationRequest" },
+    "order_file": { "type": "string", "minLength": 1 },
+    "events_file": { "type": "string", "minLength": 1 },
+    "created_by": { "$ref": "common.schema.json#/$defs/role_id" },
+    "classification": { "$ref": "common.schema.json#/$defs/classification" }
+  }
+}

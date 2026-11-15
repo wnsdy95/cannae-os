@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1",
+  "type": "ProjectTerminology",
+  "repository": {
+    "root": "/synthetic/project",
+    "git_directory": "/synthetic/project/.git",
+    "device": "1",
+    "inode": "2",
+    "git_device": "1",
+    "git_inode": "3"
+  },
+  "entries": [
+    {
+      "id": "TERM-ICP-1",
+      "concept_id": "CONCEPT-ICP",
+      "version": 1,
+      "supersedes": null,
+      "scope": {
+        "domain": "sales",
+        "task": null
+      },
+      "term": "ICP",
+      "aliases": [
+        "ideal customer profile"
+      ],
+      "definition": "Company-level customer fit criteria.",
+      "not_meaning": "Not a contact's job title.",
+      "status": "confirmed",
+      "basis": {
+        "kind": "user_statement",
+        "reference": "Synthetic user turn 1",
+        "excerpt": "For this project, ICP means company fit; use persona for a contact's role."
+      },
+      "allowed_roles": [
+        "S2",
+        "S3",
+        "S6"
+      ],
+      "allowed_departments": [
+        "sales",
+        "knowledge"
+      ]
+    }
+  ]
+}

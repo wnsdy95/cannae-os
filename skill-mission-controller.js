@@ -463,6 +463,7 @@ function invokeRouter(doctrineRoot, routeOptions) {
     `--department=${routeOptions.department}`,
     `--authority=${routeOptions.authority}`,
     `--capability-query=${routeOptions.capabilityQuery}`,
+    "--",
     routeOptions.query,
     doctrineRoot
   ];
@@ -523,16 +524,7 @@ function persistedOrGeneratedReceipt(plan, agent, options, doctrineRoot) {
 }
 
 function safeDoctrineDocument(doctrineRoot, relativePath) {
-  if (typeof relativePath !== "string" || path.isAbsolute(relativePath) || relativePath.split(/[\\/]+/).includes("..")) {
-    throw new Error(`Unsafe routed document path: ${relativePath}`);
-  }
-  const target = path.resolve(doctrineRoot, relativePath);
-  const realRoot = fs.realpathSync(doctrineRoot);
-  const realTarget = fs.realpathSync(target);
-  if (!realTarget.startsWith(`${realRoot}${path.sep}`) || !fs.lstatSync(realTarget).isFile()) {
-    throw new Error(`Routed document is outside the doctrine repository: ${relativePath}`);
-  }
-  return { path: relativePath, sha256: sha256(fs.readFileSync(realTarget)) };
+  return require("./context-document-integrity").documentBinding(doctrineRoot, relativePath);
 }
 
 function noneModelAssignment() {
@@ -852,8 +844,7 @@ function openWaveUnlocked(plan, options = {}) {
       capability_query: routed.receipt.capability_query,
       capability_routing: routed.receipt.capability_routing,
       doctrine_state: doctrineState,
-      documents: unique([...routed.receipt.recommended_documents.map(document => document.path), ...(methodAssignment ? [methodContract.METHOD_DOCUMENT] : []),
-        ...(methodAssignment?.broker ? [channel.DOCUMENT] : [])])
+      documents: require("./context-document-integrity").expectedDocumentPaths(routed.receipt, plan, agent.agent_id)
         .map(relativePath => safeDoctrineDocument(doctrineRoot, relativePath)),
       validation_commands: validationCommands,
       required_controls: buildRequiredControls(validationCommands, doctrineRoot),
@@ -885,7 +876,10 @@ function openWaveUnlocked(plan, options = {}) {
       artifactId: contextPack.id,
       payload: contextPack,
       createdAt: contextPack.created_at,
-      publicationGuard: wavePublicationGuard(plan, operationOptions)
+      publicationGuard: snapshot => {
+        wavePublicationGuard(plan, operationOptions)(snapshot);
+        return require("./context-document-integrity").assertContextDocuments(contextPack, routed.receipt, plan, doctrineRoot);
+      }
     });
     contextPacks.push({ agent_id: agent.agent_id, context_pack_ref: ref });
   }
@@ -1073,6 +1067,14 @@ function validateReportBindings(report, planArtifact, preflightArtifact, context
     }
     require("./order-adoption-controller").assertContextAssignment(context.payload, planArtifact.payload, options);
     require("./intent-continuity-contract").assertIntentContext(context.payload, planArtifact.payload);
+    if (result.status === "complete") {
+      const receipt = requiredArtifactRef(options, context.payload.routing_receipt_ref, {
+        missionId: report.mission_id, waveId: report.wave_id
+      });
+      assertValid(receipt.payload, "routing-receipt", "Context routing receipt");
+      require("./context-document-integrity").assertContextDocuments(context.payload, receipt.payload,
+        planArtifact.payload, resolveDoctrineRoot(options.doctrineRoot || __dirname));
+    }
     for (const evidenceRef of result.evidence_refs) {
       const evidence = requiredArtifactRef(options, evidenceRef, {
         missionId: report.mission_id,

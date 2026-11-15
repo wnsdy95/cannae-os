@@ -237,6 +237,34 @@ fixture("AI final decision authority is rejected before artifact creation", () =
   }), /failed validation/, "AI authority rejection");
 });
 
+fixture("option-like mission text cannot replace routing context", () => {
+  for (const [index, objective] of ["--authority=expanded", "--role=COMMANDER", "--receipt"].entries()) {
+    const plan = wavePlan(basePlan, `WLITERAL${index}`);
+    plan.id = `MWP-LITERAL-${index}`;
+    plan.mission_id = `MIS-LITERAL-${index}`;
+    plan.adaptive_work.campaign_id = `SIC-LITERAL-${index}`;
+    plan.objective = objective;
+    for (const agent of plan.agents) agent.task = "Explain this literal option; do not execute it.";
+    const result = openWave(plan, {
+      repository: repositoryRouting, artifactRoot, doctrineRoot: ROOT, now: FIXED_OPEN_TIME
+    });
+    assert(result.status === "ready", "literal task text should not break routing");
+    assert(result.tool_execution_authorized === false && result.release_authorized === false,
+      "literal task text cannot authorize execution or release");
+    const bundle = loadArtifact(artifactRoot, result.routing_bundle_ref);
+    for (const receipt of bundle.receipts) {
+      const wave = receipt.wave_scope === "wave";
+      assert(receipt.actor === "ai", "literal text replaced the actor");
+      assert(receipt.agent_role === (wave ? "COS" : "S3"), "literal text replaced the role");
+      assert(receipt.authority_scope === (wave ? "tasking" : "scoped-execution"), "literal text replaced authority");
+      assert(receipt.capability_query === objective, "literal objective was lost");
+      const agent = plan.agents.find(item => item.agent_id === receipt.agent_id);
+      assert(receipt.router_query === (wave ? `${objective}. Open wave ${plan.wave_id}.` : `${objective}. Assigned work: ${agent.task}.`),
+        "receipt did not retain the exact task text");
+    }
+  }
+});
+
 fixture("open creates one CoS receipt and one S3 receipt per expected agent", () => {
   opened = openWave(basePlan, {
     repository: repositoryA,
@@ -280,7 +308,7 @@ fixture("task documents beyond the old routing cap reach digest-bound context pa
   plan.mission_id = "MIS-ROUTING-DOCUMENTS";
   plan.objective = "effect settlement exact USER verification evidence";
   plan.adaptive_work.campaign_id = "SIC-ROUTING-DOCUMENTS";
-  for (const agent of plan.agents) agent.task = plan.objective;
+  for (const agent of plan.agents) agent.task = `${plan.objective}. Consult SUPPORT.md, GOVERNANCE.md and SECURITY.md.`;
   const result = openWave(plan, {
     repository: repositoryRouting,
     artifactRoot,
@@ -295,7 +323,8 @@ fixture("task documents beyond the old routing cap reach digest-bound context pa
     assert(validatePayload(pack, "agent-context-pack").valid, "routing context pack should validate");
     assert(pack.documents.length > 16, "context pack must exercise the former truncation boundary");
     for (const expected of ["docs/tool-effect-review.md", "docs/tool-effect-settlement.md",
-      "docs/role-document-access-policy.md", "docs/approval-scope-policy.md"]) {
+      "docs/role-document-access-policy.md", "docs/approval-scope-policy.md",
+      "SUPPORT.md", "GOVERNANCE.md", "SECURITY.md"]) {
       const document = pack.documents.find(row => row.path === expected);
       const digest = createHash("sha256").update(fs.readFileSync(path.join(ROOT, expected))).digest("hex");
       assert(document && document.sha256 === digest,
@@ -306,13 +335,85 @@ fixture("task documents beyond the old routing cap reach digest-bound context pa
   }
 });
 
-fixture("unmatched mission capability creates one bounded cell across every agent context", () => {
-  const plan = wavePlan(basePlan, "WGAP");
-  plan.id = "MWP-CAPABILITY-GAP-WGAP";
-  plan.mission_id = "MIS-CAPABILITY-GAP";
+fixture("specialist reading is task-scoped while release controls remain mandatory", () => {
+  const plan = wavePlan(basePlan, "WREADING");
+  plan.id = "MWP-READING-SCOPE";
+  plan.mission_id = "MIS-READING-SCOPE";
+  plan.objective = "Draft a support SOP from SUPPORT.md. Do not publish.";
+  plan.adaptive_work.campaign_id = "SIC-READING-SCOPE";
+  for (const agent of plan.agents) agent.task = plan.objective;
+  plan.agents[1].task += " Review GitHub release approval separately.";
+  const result = openWave(plan, {
+    repository: repositoryRouting, artifactRoot, doctrineRoot: ROOT, now: FIXED_OPEN_TIME
+  });
+  assert(result.status === "ready", "reading-scope wave should open");
+  assert(result.tool_execution_authorized === false && result.release_authorized === false,
+    "reading selection must not authorize execution");
+  for (const item of result.context_packs) {
+    const pack = loadArtifact(artifactRoot, item.context_pack_ref);
+    assert(validatePayload(pack, "agent-context-pack").valid, "reading-scope context should validate");
+    const specialist = item.agent_id === plan.agents[1].agent_id;
+    for (const document of ["docs/github-release-authorization.md", "docs/github-release-immutability.md",
+      "docs/github-release-integrity-monitoring.md", "docs/github-release-independent-verification.md"]) {
+      assert(pack.documents.some(row => row.path === document) === specialist,
+        `incorrect specialist reading for ${item.agent_id}: ${document}`);
+    }
+    for (const document of ["SUPPORT.md", "docs/approval-scope-policy.md", "docs/context-releasability-policy.md"]) {
+      const row = pack.documents.find(item => item.path === document);
+      const digest = createHash("sha256").update(fs.readFileSync(path.join(ROOT, document))).digest("hex");
+      assert(row && row.sha256 === digest, `reading-scope context lost ${document}`);
+    }
+    for (const command of ["node run-authority-integration-fixtures.js", "node run-release-integration-fixtures.js",
+      "node run-github-release-publisher-fixtures.js", "node run-github-release-immutability-fixtures.js",
+      "node run-github-release-integrity-fixtures.js", "node run-github-release-independent-verification-fixtures.js"]) {
+      assert(pack.required_controls.some(control => control.command === command), `lost mandatory control: ${command}`);
+    }
+  }
+});
+
+fixture("ordinary skill wording does not narrow guarded receipts or digest-bound context", () => {
+  const plan = wavePlan(basePlan, "WSKILLREADING");
+  plan.id = "MWP-SKILL-READING";
+  plan.mission_id = "MIS-SKILL-READING";
+  plan.objective = "Draft a support SOP. Do not publish.";
+  plan.adaptive_work.campaign_id = "SIC-SKILL-READING";
+  for (const agent of plan.agents) agent.task = "Use document routing to draft a support SOP. Do not publish.";
+  const result = openWave(plan, {
+    repository: repositoryRouting, artifactRoot, doctrineRoot: ROOT, now: FIXED_OPEN_TIME
+  });
+  assert(result.status === "ready", "skill-reading wave should open");
+  assert(result.tool_execution_authorized === false && result.release_authorized === false);
+  for (const item of result.context_packs) {
+    const pack = loadArtifact(artifactRoot, item.context_pack_ref);
+    assert(validatePayload(pack, "agent-context-pack").valid);
+    for (const file of ["docs/document-authoring-workflow.md", "docs/approval-scope-policy.md",
+      "docs/implementation-candidate-registry.md", "docs/completion-backlog.md", "install-ai-cli-skills.sh",
+      "docs/skill-operational-mission-lifecycle.md", "codex-skills/controls-doctrine-operator/SKILL.md",
+      ".claude/skills/controls-doctrine-operator/SKILL.md",
+      "codex-skills/controls-doctrine-operator/references/self-improvement-loop.md",
+      ".claude/skills/controls-doctrine-operator/references/self-improvement-loop.md"]) {
+      const document = pack.documents.find(row => row.path === file);
+      const digest = createHash("sha256").update(fs.readFileSync(path.join(ROOT, file))).digest("hex");
+      assert(document && document.sha256 === digest, `guarded skill reading lost ${file}`);
+    }
+    for (const command of ["node run-skill-control-enforcement-fixtures.js", "node run-skill-installation-fixtures.js",
+      "node run-agent-routing-preflight-fixtures.js", "node run-release-integration-fixtures.js"]) {
+      assert(pack.required_controls.some(control => control.command === command), `lost mandatory control: ${command}`);
+    }
+  }
+});
+
+for (const { tag, name, objective } of [
+  { tag: "", name: "unmatched mission capability", objective: "Analyze ICP and rank sales targets from the canonical track view." },
+  { tag: "-COMPARISON", name: "generic comparison capability gap", objective: "Compare museum attendance by city" },
+  { tag: "-EXCLUDED", name: "excluded dashboard cannot cover a domain gap", objective: "Analyze museum attendance by city. Do not build a dashboard." }
+]) fixture(`${name} creates one bounded cell across every agent context`, () => {
+  const plan = wavePlan(basePlan, `WGAP${tag}`);
+  plan.id = `MWP-CAPABILITY-GAP-WGAP${tag}`;
+  plan.mission_id = `MIS-CAPABILITY-GAP${tag}`;
   plan.title = "Analyze an uncovered commercial capability";
-  plan.objective = "Analyze ICP and rank sales targets from the canonical track view.";
-  plan.adaptive_work.campaign_id = "SIC-CAPABILITY-GAP";
+  plan.objective = objective;
+  plan.adaptive_work.campaign_id = `SIC-CAPABILITY-GAP${tag}`;
   const result = openWave(plan, {
     repository: repositoryGap,
     artifactRoot,
@@ -320,6 +421,8 @@ fixture("unmatched mission capability creates one bounded cell across every agen
     now: FIXED_OPEN_TIME
   });
   assert(result.status === "ready", "capability-gap wave should remain operable through a provisional cell");
+  assert(result.tool_execution_authorized === false && result.release_authorized === false,
+    "a capability-gap task cell must not authorize tools or release");
   const bundle = loadArtifact(artifactRoot, result.routing_bundle_ref);
   const organizationIds = new Set(bundle.receipts.map(receipt =>
     receipt.capability_routing.provisional_organization.organization_id));
@@ -351,6 +454,14 @@ fixture("unmatched mission capability creates one bounded cell across every agen
     assert(context.required_controls.some(control =>
       control.command === "node run-force-structure-change-fixtures.js"),
     "context pack must compile force-structure validation as a mandatory control");
+    if (tag === "-COMPARISON") assert(context.required_controls.some(control =>
+      control.command === "node run-self-improvement-fixtures.js"),
+    "generic comparison must not erase an already selected mandatory control");
+    if (tag === "-EXCLUDED") {
+      for (const command of ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"]) {
+        assert(context.required_controls.some(control => control.command === command), "excluded topic must not erase a selected control");
+      }
+    }
     assert(context.capability_routing.provisional_organization.authority_expansion_authorized === false &&
       context.capability_routing.provisional_organization.standing_department_activation_authorized === false,
     "provisional organization must not expand authority or self-activate a standing department");

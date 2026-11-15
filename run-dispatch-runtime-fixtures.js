@@ -15,8 +15,11 @@ const {
   issueLease,
   resumeLease,
   revokeLease,
-  sessionStart
+  sessionStart,
+  withDispatchIssuanceLock
 } = require("./dispatch-runtime-controller");
+const { writeRepositoryArtifact } = require("./repository-artifact-store");
+const { readLeaseOwner, releaseRepositoryLease } = require("./repository-lease");
 const {
   denyPayload,
   postFailurePayload,
@@ -229,6 +232,74 @@ const fixtures = [];
 function fixture(name, fn) {
   fixtures.push({ name, fn });
 }
+
+function lockFailureOptions(name) {
+  const repository = initRepository(`lock-failure-${name}`);
+  writeRepositoryArtifact({ repositoryPath: repository, artifactRoot, missionId: "MIS-LockFailure", waveId: "W1",
+    kind: "diagnostics", artifactId: "OBS-Initial", payload: { synthetic: true } });
+  return { repository, artifactRoot };
+}
+
+function replaceFixtureOwner(lock) {
+  const original = readLeaseOwner(lock.leasePath), file = path.join(lock.leasePath, "owner.json");
+  assert(original && original.lease_id === lock.lease_id, "fixture must retain its original owner before replacement");
+  const replacement = { ...original, lease_id: "synthetic-replacement-owner" };
+  fs.writeFileSync(file, JSON.stringify(replacement));
+  return { replacement, restore() { fs.writeFileSync(file, JSON.stringify(original)); releaseRepositoryLease(lock); } };
+}
+
+fixture("issuance lock returns a successful result only after ordinary cleanup", () => {
+  let held;
+  const expected = { result: "synthetic-success" };
+  assert.strictEqual(withDispatchIssuanceLock(lockFailureOptions("success"), lock => {
+    held = lock; assert.strictEqual(lock.ttlMs, 30000); return expected;
+  }), expected);
+  assert.strictEqual(fs.existsSync(held.leasePath), false);
+});
+
+fixture("issuance lock preserves the original operation failure when cleanup succeeds", () => {
+  const primary = new Error("SYNTHETIC_PRIMARY_OPERATION_FAILURE"); let held;
+  assert.throws(() => withDispatchIssuanceLock(lockFailureOptions("primary"), lock => {
+    held = lock; throw primary;
+  }), error => error === primary);
+  assert.strictEqual(fs.existsSync(held.leasePath), false);
+});
+
+fixture("issuance lock retains both operation and cleanup failures without deleting a different owner", () => {
+  const primary = new Error("SYNTHETIC_PRIMARY_OPERATION_FAILURE"); let held, changed;
+  try {
+    assert.throws(() => withDispatchIssuanceLock(lockFailureOptions("combined"), lock => {
+      held = lock; changed = replaceFixtureOwner(lock); throw primary;
+    }), error => error instanceof AggregateError && error.cause === primary && error.errors.length === 2 &&
+      error.errors[0] === primary && /ownership changed before release/.test(error.errors[1].message) &&
+      error.message.includes(primary.message) && error.message.includes("cleanup also failed"));
+    assert.deepStrictEqual(readLeaseOwner(held.leasePath), changed.replacement);
+  } finally { if (changed) changed.restore(); }
+});
+
+fixture("issuance lock cannot return success after fencing and cleanup both fail", () => {
+  let held, changed;
+  try {
+    assert.throws(() => withDispatchIssuanceLock(lockFailureOptions("fenced"), lock => {
+      held = lock; changed = replaceFixtureOwner(lock); return "must-not-return";
+    }), error => error instanceof AggregateError && error.errors.length === 2 &&
+      /fenced by a newer lease/.test(error.errors[0].message) && error.cause === error.errors[0] &&
+      /ownership changed before release/.test(error.errors[1].message));
+    assert.deepStrictEqual(readLeaseOwner(held.leasePath), changed.replacement);
+  } finally { if (changed) changed.restore(); }
+});
+
+fixture("issuance lock cleanup failure alone cannot become a successful result", () => {
+  const cleanup = new Error("SYNTHETIC_CLEANUP_FAILURE"), remove = fs.rmSync; let held;
+  try {
+    assert.throws(() => withDispatchIssuanceLock(lockFailureOptions("cleanup"), lock => {
+      held = lock;
+      fs.rmSync = function(target, ...args) { if (target === lock.leasePath) throw cleanup; return remove.call(fs, target, ...args); };
+      return "must-not-return";
+    }), error => error === cleanup);
+    assert.strictEqual(readLeaseOwner(held.leasePath).lease_id, held.lease_id);
+  } finally { fs.rmSync = remove; if (held) releaseRepositoryLease(held); }
+});
 
 let issued;
 let resumed;

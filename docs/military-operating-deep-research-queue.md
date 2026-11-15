@@ -1,8 +1,194 @@
 # Military Operating Deep Research Queue
 
+Current priority follows [Skill-First Product Scope](skill-first-product-scope.md).
+Dashboard and platform integration gaps below are retained research history,
+not the active implementation queue. Select current work from the active
+[Completion Backlog](completion-backlog.md#active-core-work).
+
+<!-- current-document:support-sop:start -->
+Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
+State: proposed; review: native-reviewed; adoption: not-adopted.
+<!-- current-document:support-sop:end -->
+
+The maintained pointer uses `docs/source-map-navigation.json`; see
+[navigation maintenance](knowledge-management-sop.md#current-document-navigation).
+It does not replace the active backlog or turn a candidate into adopted policy.
+The [V5 review](document-authoring-case-study.md#support-sop-v5-source-review)
+accepts the exact operative body as a draft, not its historical preface or a
+complete receiving packet. The later [five-goal audit](completion-backlog.md#five-goal-acceptance)
+records bounded core acceptance without adopting this SOP or reopening platform work.
+
+The [optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
+and [OR72 operator correction](document-authoring-case-study.md#or72-snapshot-and-locator-correction)
+add bounded reading and source-appraisal evidence, not global minimality or
+fresh acceptance of the corrected draft. Their [reusable lessons](research-compendium.md#optional-reading-and-temporal-source-claims-2026-11-13)
+are indexed separately from current work. Exact receiving decisions remain with
+USER; an index entry or standing test consent does not approve preparation.
+The subsequent [approved OR72 receiving case](document-authoring-case-study.md#approved-or72-representation-receiving)
+records that exact decision and one native continuation. Operative repairs survive;
+finding quality remains work, with separate operator appraisal corrections. The four earlier
+proposals stay unapproved, and no new model call is inferred from the local fix.
+
+The [exact-quote location follow-up](document-authoring-case-study.md#exact-quote-location-checks)
+adds opt-in local citation lookup after required full reading, with unchanged
+freshness and delivery limits. Its [operating lesson](research-compendium.md#quote-location-is-not-semantic-support-2026-11-14)
+separates literal location from interpretation. Actual model use and repaired
+review quality were unverified at that implementation checkpoint.
+The subsequent [native quote-review case](document-authoring-case-study.md#native-quote-review-and-decision-ownership)
+now observes both clients using it and correctly appraising six inherited findings.
+Residual report errors are preserved and corrected separately. Its
+[decision-ownership lesson](research-compendium.md#report-actions-retain-decision-ownership-2026-11-14)
+checks operative actor/verb pairs, precise numeric citations and review phases;
+the new guidance is locally checked, not newly native-accepted or adopted.
+
+The [review-workflow routing follow-up](document-authoring-case-study.md#review-workflow-routing-correction)
+now recognizes the observed core review/report/successor formulations. Its
+[method-versus-domain lesson](research-compendium.md#recognized-review-work-is-not-domain-coverage-2026-11-14)
+preserves independent objective assessment and existing authority. Retained-query
+replay is local routing evidence, not a new receiving run or semantic acceptance.
+
+The [current requirement audit](completion-backlog.md#audit-basis-and-disposition-changes)
+reconciles retained native evidence without rerunning accepted cases. Its
+[requirements-versus-decisions lesson](research-compendium.md#requirements-and-artifact-decisions-2026-11-15)
+keeps individual proposal holds separate from demonstrated product behavior.
+Prior queue/table bytes remain historical. Current goal dispositions follow the
+active backlog, including the later bounded G4 family-state acceptance below.
+
+The subsequent [RH94 two-way receiving case](document-authoring-case-study.md#cross-client-recovery-handoff)
+adds actual source-complete receiving in both clients without an old chat or
+recursive third handoff. Its [evidence-versus-exclusivity lesson](research-compendium.md#available-evidence-is-not-exclusive-proof-2026-11-15)
+retains unsupported identity/proof claims and a false method-notice report beside
+useful repairs. A14 is bounded-verified; replanning/report fidelity and complete
+source-appraisal quality remain open. This is synthetic engineering evidence,
+not a new military claim, production recovery or adoption decision.
+
+The [role/format reading follow-up](document-authoring-case-study.md#role-and-format-reading-correction)
+compares human and six delegated roles across four formats in both providers.
+Its [task-versus-role lesson](research-compendium.md#role-defaults-and-format-prerequisites-2026-11-15)
+corrects missing order-authoring guidance and unrelated read-only S3 specialist
+defaults without changing authority or controls. Wider relevance remains partial;
+no new military research, model call or platform expansion follows.
+
+The [declared-reference check](document-authoring-case-study.md#declared-routing-reference-integrity)
+adds reverse inventory validation and rejects unavailable selected prerequisites.
+Its [maintenance lesson](research-compendium.md#declared-references-and-surviving-files-2026-11-15)
+is local engineering evidence, not a new military claim, source-reading proof or
+reason to restore deferred UI.
+
+The [RP95 continuation](document-authoring-case-study.md#parent-delivered-replanning-and-residual-scope)
+observes parent-delivered notices and correctly attributed partial work in both
+clients, with seven required sources each. Its [residual-scope lesson](research-compendium.md#notice-delivery-and-residual-scope-2026-11-15)
+retains a Claude aggregate/item mapping error and a pre-transfer preparation
+mistake rather than treating successful reporting as whole-output acceptance.
+Both skills gain the corresponding rules; wider quality remains partial.
+
+The [family-state audit](document-authoring-case-study.md#artifact-family-state-audit)
+reconciles ten maintained outputs in a [current map](document-authoring-case-study.md#current-authoring-families).
+Its [maintenance lesson](research-compendium.md#artifact-state-is-phase-specific-2026-11-15)
+separates exact versions, representations, review/receiving phases and decisions.
+A16 and G4 gained bounded maintenance acceptance; G1/G2/G3/G5 remained partial
+at that checkpoint.
+Historical bodies and four pending proposals remain unchanged; no new review,
+adoption, model run or military-source claim follows.
+
+The [MP96 case](document-authoring-case-study.md#mapped-replanning-and-compressed-reports)
+adds two actual compound-plan/self-review runs with correct detailed mappings but
+a remaining Claude summary contradiction and unsupported approval gates. Its
+[review-coverage lesson](research-compendium.md#compressed-outputs-need-their-own-review-2026-11-15)
+keeps useful partial evidence, exact source bodies and separate operator correction.
+
+The [source-bound review/S4 follow-up](document-authoring-case-study.md#source-bound-review-and-logistics-reading)
+compares further task/role combinations against the authoring and storage manual
+scopes. Its [relevance lesson](research-compendium.md#review-method-and-storage-relevance-2026-11-15)
+repairs two bounded selection defects with retained technical/guarded cases;
+broader profile appraisal remains open and no native run or military claim follows.
+The [bound-session follow-up](document-authoring-case-study.md#bound-session-reading-context)
+checks the real adapter descriptor and assigned profiles; its
+[integration lesson](research-compendium.md#routing-descriptor-and-assigned-profile-2026-11-15)
+keeps recommendations distinct from read authority and actual model consumption.
+That local checkpoint did not close the behavioral goals; no new military claim
+or approval follows from it.
+
+The later [PR97 whole-output case](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading)
+adds actual complete source-appraised work and useful optional reading in both
+clients. Its [bounded acceptance synthesis](research-compendium.md#whole-output-acceptance-is-bounded-2026-11-15)
+closes the four remaining required audit rows in combination with earlier evidence.
+All five core goals now have bounded acceptance. Historical failures, six pending
+artifact decisions, ordinary maintenance and deferred platform scope remain.
+
+The [source-topic reading correction](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
+conditions national specialist recommendations without weakening explicit sources,
+parent objectives or selected controls. Its local cases do not establish general
+semantic completeness or resolve the separate internal-draft receiving boundary.
+
 ## 0. Purpose
 
+The [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair)
+adds two native source comparisons detecting six seeded defect families. Its
+remaining defects concern repaired-plan quality and usable receiving assembly,
+not a need to replay successful detection. Both skills now check pre-work plan
+coverage and keep proposed precautions separate from binding holds. Verify the
+repaired outcome without bypassing the separate internal-draft delivery refusal.
+The follow-up produces source-complete units and an operator-accepted Codex
+repair; Claude's absence/status claims remain recorded. That review alone did
+not observe actual receiving or close the repaired-deliverable requirements.
+The [cold-start continuation](document-authoring-case-study.md#cold-start-document-continuation)
+now observes that receiving and useful worksheet drafting in both clients. The
+[outgoing revision](document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
+preserves current restrictions and recovery ownership in both; Codex's exact
+unit is accepted for advisory drafting, while Claude retains proposal/requirement
+and completion-criterion ambiguity. The [document-readiness correction](document-authoring-case-study.md#document-readiness-and-format-routing)
+now addresses that query's over-selection and restores missing format references,
+without dropping prior controls, genuine runtime duties or explicit/parent inputs.
+Broader task relevance, actual repaired-document parity and the separate internal-
+draft delivery refusal remain open. Preserve the differing receiving units.
+
+The [operative-condition follow-up](document-authoring-case-study.md#operative-condition-review-and-bounded-repair)
+repairs the native baseline summary and historical-input attribution, but retains
+completion ambiguity and an unsupported trigger change. Its exact operator
+correction has source appraisal, not new native acceptance. Review/continue that
+bounded unit without replaying accepted Codex work or bypassing delivery controls.
+
+The subsequent [exact repaired-unit receiving case](document-authoring-case-study.md#exact-repaired-unit-receiving)
+now observes fresh receipt and decision-brief drafting. Preserve the native
+changes-required verdict and source-appraised finding distinctions. OP2 clarifies
+local provenance/locator wording while retaining the entire worksheet and sources;
+it has no fresh native review. Do not replay the same receiving case solely to
+increase pass counts. Wider task relevance and the separate delivery-policy
+boundary remain active requirements.
+
+The [coordinated-exclusion correction](document-authoring-case-study.md#coordinated-platform-exclusions)
+now covers that maintenance query's complete no-development list and related
+coordinated forms. Local comparisons remove five unrelated manuals while
+retaining all prior controls and actual technical requirements. An excluded
+topic no longer conceals the museum-analysis gap. Broader semantic relevance
+and the separate disclosure boundary remain open; no new military claim follows.
+
+The [skill-use reading correction](document-authoring-case-study.md#skill-use-and-maintenance-reading)
+reduces ordinary direct maintenance-manual over-selection while retaining parent
+and explicit requirements, guarded context and selected controls. Its local replay
+does not establish native semantic acceptance or resolve the receiving policy.
+
+For the active product, the [native direct-task case](document-authoring-case-study.md#native-direct-task-continuity)
+adds actual Codex identity/objective retention through two phases and seven
+required sources per phase. Keep changed-query/role behavior, Claude parity and
+actual recipient assembly distinct from this same-process evidence. Adapter
+interface and launch-context checks now belong to both skills; the internal-draft
+receiving decision remains open and the existing refusal is unchanged.
+
 This document is the research backlog that manages the areas requiring deeper investigation going forward, in order to translate how the military operates into an LLM operating framework.
+
+The later [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)
+now supplies actual Claude S6-to-S2 continuity and complete-draft receipt with
+fresh required reading. The shared task identity does not authenticate roles.
+Retain the review's source-quality defects and separately corrected derivative;
+broader relevance and the independent delivery-policy refusal remain open.
+The [recipient-catalog regression](document-authoring-case-study.md#recipient-catalog-screening)
+closes metadata screening gaps without clearing those independent refusals.
+The USER-approved [exact review procedure](role-document-access-policy.md#reviewed-document-preparation)
+now implements a bounded preparation path for eligible policy words and internal
+draft representations. Validate exact-source use separately; synthetic decisions
+are not USER approval, native receiving or authentication evidence.
 
 The OPORD, mission command, CCIR, authority, battle rhythm, risk, assessment, training, sustainment, targeting, and ROE material already organized form the framework's primary skeleton. The next step is to extract, in finer detail, the detailed operating mechanisms that actually let the military move a massive organization without distortion.
 
@@ -515,7 +701,7 @@ Completed:
 - `schema-files/context-item.schema.json`: Context unit carrying classification, EEFI, and releasability metadata.
 - `context-filter-prototype/`: Takes a role and context item and produces a raw/summary/redacted/reference/denied packet.
 - `schema-files/release-review.schema.json`: Final output release decision schema.
-- `handoff-generator.js`: Automatically generates a handoff packet from event projections and current queues.
+- `handoff-generator.js`: Creates an unreviewed local draft from explicitly selected order/event files under `schema-files/handoff-generation-request.schema.json`; `run-handoff-generation-fixtures.js` checks preservation and rejection boundaries, not receiver acceptance.
 - `decision-packet-linter.js`: Automates verification of board packet option/risk/evidence/deadline.
 - `event-fixtures/working-group-event-fixtures.json`: WG opened/prepared/closed event replay fixtures.
 - `maintenance-readiness-model.md`: Tool/resource availability and readiness.
@@ -579,7 +765,11 @@ Completed:
 - `schema-files/force-structure-change-order.schema.json`: Contract for capability gap, DOTMLPF-P, authority, readiness, transition, and documentation update.
 - `force-structure-change-runner.js`: Projects a force structure change order into preflight block, commander queue, transition task, documentation queue, and readiness requirement.
 - `run-force-structure-change-fixtures.js`: Justified organization activation and blocked-unjustified-expansion fixtures.
-- `role-document-access-policy.md`: Need-to-know document access policy that lets each role read only the documents matching its duty and authority.
+- `role-document-access-policy.md`: Need-to-know document access policy that lets each role read only the documents matching its duty and authority; local content-refusal diagnostics retain exact input bindings without granting clearance.
+- `project-document-review.js`: Exact local review proposals, bounded USER decision records and source-preserving internal-draft representations; never automatic transfer or authenticated authority.
+- `schema-files/project-document-review-proposal.schema.json`: Private exact-source review proposal, not a cleared packet.
+- `schema-files/project-document-review-decision.schema.json`: Recorded USER decision bound to proposal, scope and bounded validity; the caller must verify the actual decision.
+- `run-project-document-review-fixtures.js`: Synthetic exact-review, revocation, mutation, representation and dual-provider installed-wrapper checks.
 - `schema-files/document-access-manifest.schema.json`: Document access manifest contract per mission.
 - `document-access-runner.js`: Cross-checks the manifest against role/duty/authority to generate an allowed/denied document projection.
 - `run-document-access-fixtures.js`: S2/Executor/S6 document access and blocked-overbroad-access fixtures.
@@ -597,6 +787,10 @@ Completed:
 - `doctrine-consistency-runner.js`: Projects the doctrine consistency review into source coverage, unresolved conflict, and policy update queue.
 - `run-doctrine-consistency-fixtures.js`: Valid multinational review and US-only invalid review fixtures.
 <!-- doctrine-index:start -->
+- `docs/document-authoring-case-study.md`: Source-grounded SOP/revision, routing-maintenance and native handoff cases. The current authoring-family map distinguishes operative review, actual receiving, local successors and pending decisions; original failures remain historical. METHOD61's original path refusal and later unapproved proposal do not negate OR72's separately approved receiving. Neither native use nor local correction establishes adoption or universal quality.
+- `docs/project-terminology-workflow.md`: Project-local user definitions, tentative meanings, revision history, recipient selection and freshness; no automatic promotion or authority expansion.
+- `skill-first-product-scope.md`: USER-directed core scope, deferred platform work and separate acceptance criteria.
+- `document-authoring-workflow.md`: Format selection, source discipline, revision and handoff through client skills without a dashboard.
 - `implementation-candidate-registry.md`: Source-bound requirements, mapped implementations, executable checks, and explicit remaining work.
 - `completion-backlog.md`: Cross-cutting roadmap and operational closure criteria, including external dependencies.
 - `mission-command-runtime-policy.md`: Commander's intent as a five-field machine-checkable constraint object surviving delegation across agent echelons.
@@ -629,7 +823,7 @@ Completed:
 Next:
 
 1. The named research outputs in sections 3.1 through 3.11 exist, but that does not close their runtime implementation candidates. Use `implementation-candidate-registry.json` and its live audit for exact mappings and residual work.
-2. Use `completion-backlog.md` for the full remaining program, including request compilation, intent continuity, COP/reporting, force reconciliation, actual UI/API integration, and external trust operations.
+2. Use the active core queue in `completion-backlog.md` for current work. Its retained platform baseline preserves request compilation, intent continuity, COP/reporting, force reconciliation, UI/API and external trust requirements without scheduling their development by default.
 3. Once access to the official Australian ADF doctrine site is secured, review adding a multinational source family.
 4. Reconcile existing candidates and roadmap gaps before opening unrelated expansion. New policy or external deployment scope still needs an explicit USER decision.
 

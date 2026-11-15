@@ -1,5 +1,14 @@
 # Runtime Automation Roadmap
 
+## Current Development Status
+
+Platform development is deferred by USER decision on 2026-11-10. The active
+product is [document authoring and skill routing](skill-first-product-scope.md),
+with its queue in [Completion Backlog](completion-backlog.md#active-core-work).
+The phases below preserve prior designs, results and remaining limitations;
+they are not instructions to resume dashboard, console, service or production
+infrastructure work. Existing approvals, holds and execution guards still apply.
+
 ## 0. Purpose
 
 Campaign [known-obligation terminal reconciliation](campaign-terminal-reconciliation.md)

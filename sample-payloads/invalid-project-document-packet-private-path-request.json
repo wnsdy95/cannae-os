@@ -1,0 +1,9 @@
+{
+  "schema_version": "0.1", "type": "ProjectDocumentPacketRequest", "id": "PDR-PATH-LEAK",
+  "task": "Draft a handoff from SRC-POLICY. Keep private/history.md unopened. Do not publish it.",
+  "recipient": { "agent_id": "writer", "provider": "codex", "role": "S3", "department": "operations", "duty": "operations_planning", "authority_level": "L1" },
+  "documents": [
+    { "id": "SRC-POLICY", "path": "docs/policy.md", "required": true, "classification": "internal", "allowed_roles": ["S3"], "allowed_departments": ["operations"], "duties": ["operations_planning"], "minimum_authority_level": "L1", "delivery_mode": "raw", "source_sha256": "59c0e8479c9dd739a6fd254f5c02e80e7168704c3701379c9583df5de4a73757" },
+    { "id": "SRC-HISTORY", "path": "private/history.md", "required": false, "classification": "restricted", "allowed_roles": ["S3"], "allowed_departments": ["operations"], "duties": ["operations_planning"], "minimum_authority_level": "L1", "delivery_mode": "reference_only" }
+  ]
+}

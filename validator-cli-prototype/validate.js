@@ -148,6 +148,11 @@ function controlExecutionDescriptor(command) {
 }
 
 const TYPE_TO_SCHEMA = {
+  "project-terminology": "project-terminology.schema.json",
+  "project-document-packet-request": "project-document-packet-request.schema.json",
+  "project-document-packet": "project-document-packet.schema.json",
+  "project-document-review-proposal": "project-document-review-proposal.schema.json",
+  "project-document-review-decision": "project-document-review-decision.schema.json",
   "codex-model-selection": "codex-model-selection.schema.json",
   "operational-cop": "operational-cop.schema.json",
   "operator-consent-record": "operator-consent-record.schema.json",
@@ -249,6 +254,7 @@ const TYPE_TO_SCHEMA = {
   "doctrine-consistency-review": "doctrine-consistency-review.schema.json",
   "ccir-alert": "ccir-alert.schema.json",
   "handoff-packet": "handoff-packet.schema.json",
+  "handoff-generation-request": "handoff-generation-request.schema.json",
   "continuity-plan": "continuity-plan.schema.json",
   "context-item": "context-item.schema.json",
   "release-review": "release-review.schema.json",
@@ -2890,6 +2896,8 @@ function semanticRules(payload, type, options = {}) {
   }
 
   if (type === "document-access-manifest") {
+    // Do not traverse malformed policy structures after schema rejection.
+    if (!validateSchemaPayload(payload, type).valid) return issues;
     if (payload.default_decision !== "deny") {
       issues.push(issue("critical", "DOCUMENT_ACCESS_DEFAULT_NOT_DENY", "$.default_decision", "Document access manifest must default to deny."));
     }
@@ -2915,16 +2923,29 @@ function semanticRules(payload, type, options = {}) {
     const documentByPath = new Map();
     for (const [index, document] of documents.entries()) {
       const pointer = `$.documents[${index}]`;
+      if (documentByPath.has(document.path)) {
+        issues.push(issue("error", "DOCUMENT_ACCESS_DUPLICATE_PATH", `${pointer}.path`, "Each document path must have exactly one policy record."));
+      }
       documentByPath.set(document.path, document);
       if (document.path === "*" || /\/\*$/.test(document.path || "")) {
         issues.push(issue("critical", "DOCUMENT_ACCESS_WILDCARD_PATH", `${pointer}.path`, "Document access must name explicit files, not wildcard paths."));
       }
-      if (/^https?:\/\//.test(document.path || "") || path.isAbsolute(document.path || "") || (document.path || "").includes("..")) {
+      const parts = document.path.split("/");
+      const canonical = !path.isAbsolute(document.path) && !/[:\\\x00*?\[\]]/.test(document.path) &&
+        !document.path.startsWith("~") && parts.every(part => part && part !== "." && part !== "..");
+      if (!canonical) {
         issues.push(issue("error", "DOCUMENT_ACCESS_NONLOCAL_PATH", `${pointer}.path`, "Document access manifest should point to controlled local repository paths."));
       }
-      if (document.path && document.path !== "*" && !/^https?:\/\//.test(document.path) && !path.isAbsolute(document.path) && !document.path.includes("..")) {
-        if (!fs.existsSync(path.join(ROOT, document.path))) {
-          issues.push(issue("error", "DOCUMENT_ACCESS_DOC_PATH_MISSING", `${pointer}.path`, "Declared document path does not exist."));
+      if (canonical) {
+        try {
+          let current = ROOT;
+          for (const part of parts) {
+            current = path.join(current, part);
+            if (fs.lstatSync(current).isSymbolicLink()) throw new Error("Symlinked document path.");
+          }
+          if (!fs.statSync(current).isFile()) throw new Error("Document path is not a file.");
+        } catch {
+          issues.push(issue("error", "DOCUMENT_ACCESS_DOC_PATH_MISSING", `${pointer}.path`, "Declared document must be an existing regular repository file without symlink components."));
         }
       }
       if (!hasSubstantiveItems(document.allowed_roles)) {
@@ -2944,8 +2965,14 @@ function semanticRules(payload, type, options = {}) {
       }
     }
 
+    const profileKeys = new Set();
     for (const [index, profile] of (payload.role_profiles || []).entries()) {
       const pointer = `$.role_profiles[${index}]`;
+      const key = JSON.stringify([profile.role, profile.duty, profile.authority_level]);
+      if (profileKeys.has(key)) {
+        issues.push(issue("error", "DOCUMENT_ACCESS_DUPLICATE_PROFILE", pointer, "A role/duty/authority tier must have exactly one profile."));
+      }
+      profileKeys.add(key);
       if (!hasSubstantiveItems(profile.required_documents)) {
         issues.push(issue("critical", "DOCUMENT_ACCESS_PROFILE_WITHOUT_REQUIRED_DOCS", `${pointer}.required_documents`, "Each role profile must define required reading."));
       }
@@ -2970,9 +2997,15 @@ function semanticRules(payload, type, options = {}) {
         if (!roleAllowed || !dutyAllowed || !authorityAllowed || restrictedRaw) {
           issues.push(issue("critical", "DOCUMENT_ACCESS_REQUIRED_DOC_NOT_READABLE", `${pointer}.required_documents`, "Required document is not readable by the profile role, duty, authority, or delivery rule."));
         }
+        if (document.delivery_mode === "reference_only") {
+          issues.push(issue("error", "DOCUMENT_ACCESS_REQUIRED_REFERENCE_ONLY", `${pointer}.required_documents`, "Reference-only delivery cannot satisfy required reading."));
+        }
       }
 
       for (const docPath of profile.optional_documents || []) {
+        if (denied.has(docPath)) {
+          issues.push(issue("error", "DOCUMENT_ACCESS_DENIED_DOC_OPTIONAL", `${pointer}.optional_documents`, "Optional reading cannot include an explicitly denied document."));
+        }
         if (!documentByPath.has(docPath)) {
           issues.push(issue("error", "DOCUMENT_ACCESS_OPTIONAL_DOC_NOT_DECLARED", `${pointer}.optional_documents`, "Optional document must be declared in documents list."));
         }
@@ -3531,6 +3564,9 @@ function semanticRules(payload, type, options = {}) {
       issues.push(issue("critical", "AGENT_CONTEXT_AI_COMMAND_AUTHORITY", "$.operational_role", "An AI context pack cannot assign USER or COMMANDER final-decision authority."));
     }
     const documentPaths = (payload.documents || []).map(document => document.path);
+    if (documentPaths.some(relative => !require("../context-document-integrity").canonicalDocumentPath(relative))) {
+      issues.push(issue("critical", "AGENT_CONTEXT_UNSAFE_DOCUMENT_PATH", "$.documents", "Bound doctrine documents require canonical relative file paths, without private-state roots or aliases."));
+    }
     if (new Set(documentPaths).size !== documentPaths.length) {
       issues.push(issue("error", "AGENT_CONTEXT_DUPLICATE_DOCUMENT", "$.documents", "Agent context documents must be unique."));
     }
@@ -6142,7 +6178,7 @@ function validationResult(issues, type, payload) {
   return {
     valid: !issues.some(item => item.severity === "error" || item.severity === "critical"),
     can_execute: !DRAFT_TYPES.has(type) && !ADOPTION_TYPES.has(type) && !REVISION_TYPES.has(type) && !INTENT_TYPES.has(type) && !METHOD_TYPES.has(type) && !METHOD_CONTROL_TYPES.has(type) && !ISSUANCE_TYPES.has(type) &&
-      !COP_TYPES.has(type) && !require("../force-registry-contract").TYPES.has(type) && !["frago", "frago-scope-change", "workload-control-input", "workload-policy-assessment", "workload-control-receipt", "github-release-independent-verification", "codex-model-selection"].includes(type) &&
+      !COP_TYPES.has(type) && !require("../force-registry-contract").TYPES.has(type) && !["frago", "frago-scope-change", "handoff-packet", "handoff-generation-request", "project-terminology", "project-document-packet-request", "project-document-packet", "project-document-review-proposal", "project-document-review-decision", "document-access-manifest", "workload-control-input", "workload-policy-assessment", "workload-control-receipt", "github-release-independent-verification", "codex-model-selection"].includes(type) &&
       !(type === "mission-wave-plan" && payload?.schema_version === "0.2") &&
       type !== "readiness-event" && type !== "readiness-drop-reconciliation" && type !== "agent-context-pack" && type !== "agent-dispatch-lease" && type !== "operator-consent-record" && !RECONCILIATION_TYPES.has(type) && !MODEL_RECONCILIATION_TYPES.has(type) && !ANALYSIS_RECONCILIATION_TYPES.has(type) && !MODEL_EVALUATION_TYPES.has(type) && !ANALYSIS_EVALUATION_TYPES.has(type) && type !== "order-analysis-response" && !REQUIREMENT_INVENTORY_TYPES.has(type) && !PLANNING_TYPES.has(type) &&
       !issues.some(item => item.severity === "error" || item.severity === "critical"),
@@ -6187,6 +6223,8 @@ function validatePayloadInSnapshot(payload, type, options) {
       .map(item => ({ ...item, layer: "semantic" })) : [])
   ];
   const nested = {
+    "project-document-packet": ["request", "project-document-packet-request"],
+    "project-document-review-proposal": ["request", "project-document-packet-request"],
     "operator-consent-record": ["request", "order-adoption-decision-request"],
     "order-revision-request": ["successor_plan", "mission-wave-plan"],
     "order-revision-proposal": ["request", "order-revision-request"],
@@ -6200,6 +6238,18 @@ function validatePayloadInSnapshot(payload, type, options) {
     const [field, nestedType] = nested;
     issues.push(...validatePayload(payload[field], nestedType, options).issues
       .map(item => ({ ...item, path: `$.${field}${item.path.slice(1)}` })));
+  }
+  if (schemaResult.valid && type === "project-document-packet-request") {
+    issues.push(...require("../project-document-packet").requestIssues(payload).map(item => ({ ...item, layer: "semantic" })));
+  }
+  if (schemaResult.valid && ["project-document-review-proposal", "project-document-review-decision"].includes(type)) {
+    issues.push(...require("../project-document-review").reviewIssues(payload, type).map(item => ({ ...item, layer: "semantic" })));
+  }
+  if (schemaResult.valid && type === "project-terminology") {
+    issues.push(...require("../project-terminology").terminologyIssues(payload).map(item => ({ ...item, layer: "semantic" })));
+  }
+  if (schemaResult.valid && type === "project-document-packet") {
+    issues.push(...require("../project-document-packet").packetIssues(payload).map(item => ({ ...item, layer: "semantic" })));
   }
   if (schemaResult.valid && type === "workload-control-input") {
     issues.push(...validatePayload(payload.report, "mission-wave-report", options).issues.map(item => ({ ...item, path: `$.report${item.path.slice(1)}` })));

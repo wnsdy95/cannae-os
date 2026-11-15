@@ -49,7 +49,7 @@
     },
     {
       "document": "docs/knowledge-management-sop.md",
-      "section_sha256": "c86dd34e831eca05f7655286690e8dabd1b382001840f539ece03db1a2d75070"
+      "section_sha256": "5b7efe11b0c364df4939e13cf1e6040985006d90dfe5368518a560eca6d3c6c3"
     },
     {
       "document": "docs/liaison-agent-model.md",
@@ -1514,14 +1514,14 @@
       "acceptance_criteria": [
         {
           "id": "AC-1",
-          "requirement": "`handoff-generator.js`: combines event projection with the README queue to generate a packet.",
-          "validation_commands": []
+          "requirement": "Generate an explicitly unreviewed draft from selected order/event files without inventing mission state or execution authority; reconcile it before acceptance.",
+          "validation_commands": ["node run-handoff-generation-fixtures.js", "node run-km-review-fixtures.js"]
         }
       ],
       "remaining_work": [
-        "Replace demo IDs, timestamp, source paths, and static next actions with exact mission inputs and the canonical queue; verify generated packet admission and missing-input failures."
+        "Reconcile current orders/amendments, decision and effect state and demonstrate actual receiver acceptance. Canonical-queue integration is not implemented; source digests and synthetic checks do not establish live-state completeness."
       ],
-      "rationale": "Related code exists, but it does not yet demonstrate this complete source requirement."
+      "rationale": "Exact source selection and non-authorizing draft preservation replace demo defaults. The original README-queue claim was unsupported; the wider handoff outcome remains partial."
     },
     {
       "id": "IC-507ff4843bf190b9",

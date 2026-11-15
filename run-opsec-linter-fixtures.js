@@ -8,6 +8,14 @@ function assert(condition, message) {
 
 const cases = [
   {
+    name: "quoted JSON credential keys remain a non-waivable value finding",
+    args: ["opsec-linter-fixtures/quoted-key-payload.json"], exitCode: 1,
+    verify(output, stdout) {
+      assert(output.findings.some(item => item.code === "CREDENTIAL_ASSIGNMENT"), "expected quoted-key assignment finding");
+      assert(!stdout.includes("synthetic-quoted-key-value"), "finding must withhold values");
+    }
+  },
+  {
     name: "clean payload passes opsec linter",
     args: ["opsec-linter-fixtures/clean-payload.json"],
     exitCode: 0,

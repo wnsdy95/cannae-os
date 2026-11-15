@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/project-terminology.schema.json",
+  "title": "Project Terminology",
+  "description": "Project-local language records, not authenticated user decisions or execution permission. Preserve append-only revisions; distribute only reviewed recipient selections.",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "repository", "entries"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "ProjectTerminology" },
+    "repository": {
+      "type": "object", "additionalProperties": false,
+      "required": ["root", "git_directory", "device", "inode", "git_device", "git_inode"],
+      "properties": {
+        "root": { "type": "string", "minLength": 1 },
+        "git_directory": { "type": "string", "minLength": 1 },
+        "device": { "type": "string", "pattern": "^[0-9]+$" },
+        "inode": { "type": "string", "pattern": "^[0-9]+$" },
+        "git_device": { "type": "string", "pattern": "^[0-9]+$" },
+        "git_inode": { "type": "string", "pattern": "^[0-9]+$" }
+      }
+    },
+    "entries": {
+      "type": "array", "maxItems": 2000,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "concept_id", "version", "supersedes", "scope", "term", "aliases", "definition", "not_meaning", "status", "basis", "allowed_roles", "allowed_departments"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "concept_id": { "$ref": "common.schema.json#/$defs/id" },
+          "version": { "type": "integer", "minimum": 1 },
+          "supersedes": { "type": ["string", "null"] },
+          "scope": {
+            "type": "object", "additionalProperties": false,
+            "required": ["domain", "task"],
+            "properties": {
+              "domain": { "type": "string", "minLength": 1, "maxLength": 100 },
+              "task": { "type": ["string", "null"], "minLength": 1, "maxLength": 100 }
+            }
+          },
+          "term": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "aliases": { "type": "array", "maxItems": 20, "items": { "type": "string", "minLength": 1, "maxLength": 200 } },
+          "definition": { "type": "string", "minLength": 1, "maxLength": 2000 },
+          "not_meaning": { "type": "string", "maxLength": 2000 },
+          "status": { "enum": ["candidate", "confirmed", "retired"] },
+          "basis": {
+            "type": "object", "additionalProperties": false,
+            "required": ["kind", "reference", "excerpt"],
+            "properties": {
+              "kind": { "enum": ["user_statement", "user_confirmation", "ai_inference"] },
+              "reference": { "type": "string", "minLength": 1, "maxLength": 500 },
+              "excerpt": { "type": "string", "minLength": 1, "maxLength": 2000 }
+            }
+          },
+          "allowed_roles": { "type": "array", "maxItems": 40, "items": { "$ref": "common.schema.json#/$defs/role_id" } },
+          "allowed_departments": { "type": "array", "maxItems": 40, "items": { "type": "string", "minLength": 1, "maxLength": 100 } }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/project-document-packet-request.schema.json",
+  "title": "Project Document Packet Request",
+  "description": "Explicit source-owner preparation input, not authenticated access, a mission order or consent to send content to a model. Semantic checks reject literal withheld-source paths in recipient-facing request strings; use reviewed source-ID references without dropping the original task's requirements.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "task", "recipient", "documents"],
+  "properties": {
+    "schema_version": { "enum": ["0.1", "0.2"] },
+    "type": { "const": "ProjectDocumentPacketRequest" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "task": { "type": "string", "minLength": 1, "maxLength": 12000 },
+    "terminology_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_id", "ledger_sha256", "domain", "task", "terms"],
+      "properties": {
+        "source_id": { "$ref": "common.schema.json#/$defs/id" },
+        "ledger_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+        "domain": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "task": { "type": ["string", "null"], "minLength": 1, "maxLength": 100 },
+        "terms": { "type": "array", "minItems": 1, "maxItems": 32, "items": { "type": "string", "minLength": 1, "maxLength": 200 } },
+        "required_terms": {
+          "description": "Explicit task prerequisites, normalized unique subset of terms. Omission retains legacy freshness-only behavior, not proof of completeness; an empty list declares no terminology prerequisites.",
+          "type": "array", "maxItems": 32, "items": { "type": "string", "minLength": 1, "maxLength": 200 }
+        }
+      }
+    },
+    "recipient": {
+      "type": "object", "additionalProperties": false,
+      "required": ["agent_id", "provider", "role", "department", "duty", "authority_level"],
+      "properties": {
+        "agent_id": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "provider": { "enum": ["codex", "claude_code"] },
+        "role": { "$ref": "common.schema.json#/$defs/role_id" },
+        "department": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "duty": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "authority_level": { "$ref": "document-access-manifest.schema.json#/properties/role_profiles/items/properties/authority_level" }
+      }
+    },
+    "documents": {
+      "type": "array", "minItems": 1, "maxItems": 16,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "path", "required", "classification", "allowed_roles", "allowed_departments", "duties", "minimum_authority_level", "delivery_mode"],
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "path": { "type": "string", "minLength": 1, "maxLength": 500 },
+          "required": { "type": "boolean" },
+          "classification": { "$ref": "common.schema.json#/$defs/classification" },
+          "allowed_roles": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/role_id" } },
+          "allowed_departments": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "duties": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "minimum_authority_level": { "$ref": "document-access-manifest.schema.json#/properties/role_profiles/items/properties/authority_level" },
+          "delivery_mode": { "enum": ["raw", "summary", "reference_only", "representation"] },
+          "representation": {
+            "type": "object", "additionalProperties": false, "required": ["method", "project_handle"],
+            "properties": {
+              "method": { "const": "source_id_locations" },
+              "project_handle": { "type": "string", "pattern": "^PROJECT-[A-Za-z0-9_-]+$", "maxLength": 100 }
+            }
+          },
+          "source_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+          "summary_path": { "type": "string", "minLength": 1, "maxLength": 500 },
+          "summary_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+          "summary_review_reference": { "type": "string", "minLength": 1, "maxLength": 500 }
+        },
+        "oneOf": [
+          { "properties": { "delivery_mode": { "const": "raw" } }, "required": ["source_sha256"], "not": { "anyOf": [ { "required": ["summary_path"] }, { "required": ["summary_sha256"] }, { "required": ["summary_review_reference"] }, { "required": ["representation"] } ] } },
+          { "properties": { "delivery_mode": { "const": "summary" } }, "required": ["source_sha256", "summary_path", "summary_sha256", "summary_review_reference"], "not": { "required": ["representation"] } },
+          { "properties": { "delivery_mode": { "const": "representation" } }, "required": ["source_sha256", "representation"], "not": { "anyOf": [ { "required": ["summary_path"] }, { "required": ["summary_sha256"] }, { "required": ["summary_review_reference"] } ] } },
+          { "properties": { "delivery_mode": { "const": "reference_only" }, "required": { "const": false } }, "not": { "anyOf": [ { "required": ["source_sha256"] }, { "required": ["summary_path"] }, { "required": ["summary_sha256"] }, { "required": ["summary_review_reference"] }, { "required": ["representation"] } ] } }
+        ]
+      }
+    }
+  }
+}

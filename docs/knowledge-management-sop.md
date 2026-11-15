@@ -2,6 +2,14 @@
 
 ## 0. Purpose
 
+For ordinary writing and revision, start with
+[Document Authoring Workflow](document-authoring-workflow.md). Under the current
+[skill-first scope](skill-first-product-scope.md), document work does not require
+a dashboard, login or server. Runtime-specific proof and campaign rules below
+apply when using those workflows; they are not prerequisites for a prose edit.
+Existing guarded operations and retained holds cannot be bypassed by relabeling
+them as document work.
+
 Military-style mission command does not work on the basis of "a good commander gives clear verbal instructions" alone. Shared understanding, records, terminology, knowledge repositories, battle rhythm, liaison, and AAR must all operate together.
 
 In an LLM runtime, conversational memory is the most fragile repository. Therefore, the source of truth for long-running work must reside in the following.
@@ -44,11 +52,85 @@ This SOP defines how the S6 Knowledge role and the CoS operate knowledge managem
 | Adaptive validation proof | verification receipt + signed verifier quorum + manifest history | checkpoint metric projection |
 | Privileged adaptive approval | approval scope + consumption event | checkpoint approval binding |
 | Multi-repository deliverables | repository artifact manifest | repository-scoped artifact files |
-| Next task queue | implementation-candidate registry, completion backlog, runtime roadmap | research queue, compendium |
+| Next task queue | skill-first product scope, active completion backlog | implementation registry, deferred runtime roadmap, research queue, compendium |
 
 Conversation history is not a source of truth. Conversation is task instruction and transient context.
 
 Durable AI outputs for different Git repositories must not share a flat directory. Apply `repository-artifact-isolation-policy.md` so each receipt, projection, report, and deliverable remains under its target repository identity.
+
+### Current Document Navigation
+
+For a versioned document advertised as current in several corpus entry points,
+maintain one reviewed identity and disposition in
+[`source-map-navigation.json`](source-map-navigation.json). The registered
+`current-document` blocks are projections of that record, not separate decisions.
+The initial registered family is the support SOP across README, its case opening,
+the active backlog, source map, compendium and research queue. Other artifacts
+and private project records are not automatically covered.
+
+For a case collection with several maintained outputs, use a family-specific map
+such as [Current Authoring Families](document-authoring-case-study.md#current-authoring-families).
+Identify the exact artifact/version and representation, who reviewed or received
+which phase, the decision scope and any successor still unreviewed. Do not inherit
+review or receipt from a predecessor or compress every state into "unaccepted".
+Check the original record and artifact bytes before updating a current summary;
+keep private target paths out of public indexes. An expired preparation decision
+can support a historical in-window event but cannot authorize a fresh action.
+Pending artifact decisions do not imply an unimplemented delivery mechanism.
+This map summarizes evidence; do not register its digest as the private artifact's
+digest or treat it as a new source of approval. Preserve historical case sections.
+
+1. Read the actual candidate and its appraisal. Distinguish a predecessor's
+   review from acceptance of its successor. Preserve separate exercise identities;
+   a larger version number does not select the current document.
+2. For a real successor, retain old bodies and verdicts, then update the record's
+   exact candidate, reviewed disposition and evidence locators. Hash the UTF-8
+   span including its start heading and excluding its end heading, with original
+   whitespace and newlines. Do not hash a trimmed or rendered representation.
+3. Update every registered visible block together. `renderNavigation` in
+   `source-map-navigation.js` derives its relative link and separate proposal,
+   review and adoption labels. Keep blocks inside their declared current sections,
+   not in a code fence or evidence history. This helper does not write files.
+4. Run `node source-map-linter.js` and `node run-source-map-linter-fixtures.js`.
+   A missing registry, changed candidate/appraisal, inconsistent state or target,
+   missing/duplicate block, or dropped index registration is an error. Diagnose
+   a changed source before updating its binding; never refresh a hash or remove
+   a reference solely to clear the failure.
+5. Keep earlier next-action statements explicitly historical. Select new work
+   from the active backlog, not a prior review's next step or a completed platform
+   checkpoint. Check narrative claims as well as registered blocks.
+
+For a scope change or durable lesson, also review unregistered orientation such
+as README maturity and roadmap sections. Separate active acceptance gaps from
+retained implementation and deferred work; a correct opening notice does not
+repair contradictory status further down the page. Link a new reusable lesson
+to its exact case and limitations in the source map and compendium even when it
+changes no doctrine filename. File-index coverage alone will not catch that gap.
+Keep historical candidate/appraisal bytes intact; do not copy a growing case log
+into every entry point or add private project details to public indexes.
+
+Check routing declarations in the reverse direction as well: a file-to-category
+inventory cannot detect an absent file still named by a route or role. Both
+routers' `--coverage` checks include unavailable declared references. A selected
+unavailable document stops direct routing and receipt persistence; an unselected
+one remains a corpus maintenance finding, not an automatic hold on every task.
+Review a real retirement/replacement before editing the mapping, preserve
+historical evidence and reroute affected work. Do not restore a deferred UI or
+weaken an assigned reading profile simply to make coverage green.
+
+If a review selects only operative text, record that selection and its digest
+separately from the whole registered section. Preserve historical prefaces and
+explain their date/scope in the current appraisal. A new review label does not
+extend acceptance to excluded history, attachments or a complete receiving unit.
+
+This is a read-only consistency check of declared state, not a semantic evaluator,
+signature, permission gate or proof of human adoption. A coherent forged record
+and rewritten sources cannot establish authority. Recording adoption still needs
+the actual authorized decision; editing these labels grants no permission.
+The checker uses the corpus's exact whole-line heading/marker convention, not a
+general Markdown renderer. New candidate start headings use plain ASCII letters,
+numbers, spaces and hyphens so the generated fragment is unambiguous. Evidence
+must remain within regular, non-symlinked repository files.
 
 ## 3. S6 Knowledge responsibilities
 
@@ -82,6 +164,13 @@ When new information arrives:
 5. Store it in the source-map or compendium.
 6. If it affects execution, raise it as a CCIR alert.
 7. If the knowledge will be reused, reflect it in an SOP or schema.
+
+User/project terminology follows [Project Terminology Workflow](project-terminology-workflow.md).
+Its private target-repository ledger is the canonical language record; source
+excerpts distinguish actual user statements from AI inference. Do not store
+project vocabulary in the shared source-map or compendium under step 5 above.
+Retain corrections and task-bound snapshots, distribute only authorized relevant
+definitions, and keep meaning confirmation separate from operational approval.
 
 ## 5. Decision log SOP
 
@@ -166,6 +255,15 @@ Rules:
 - In the compendium, record why the doctrine was created, its LLM application, and its current limit.
 - Keep the machine-audited doctrine output list between the `doctrine-index` markers in `docs/military-operating-deep-research-queue.md`; `node source-map-linter.js` must pass before the changelog may claim closure.
 
+For a document retaining multiple revisions, maintain a current-candidate
+pointer separately from the append-only evidence history. Update its opening
+notice, README entry and current queue together after checking the candidate's
+identity, predecessor and actual disposition. A newer number does not establish
+acceptance or supersede policy. Label earlier next-action statements as history
+so a new operator does not restart consumed work. Preserve the original draft,
+review, failed attempt and source bindings rather than rewriting old claims to
+match the present. Check pointer semantics as well as link existence.
+
 Leave a source anchor at the end of a document whenever possible.
 
 ## 9. Quality gate
@@ -221,7 +319,7 @@ Implemented schemas:
 
 Implemented prototypes:
 
-- `handoff-generator.js`: combines event projection with the README queue to generate a packet.
+- `handoff-generator.js`: reads explicitly selected order/event files and produces an unreviewed local draft with source digests. It does not read the README queue or certify current state; follow `docs/handoff-packet-template.md` for reconciliation and acceptance.
 - `source-map-linter.js`: fails when an official source host is absent from the source map or a doctrine output in the queue's audited index is missing from the README, source map, compendium, or filesystem (verified by `run-source-map-linter-fixtures.js`).
 - `km-review-runner.js`: validates decision-log, source-record, optional handoff, and authority artifacts against their schemas; resolves authority and document references; and reviews stale unresolved decisions. Supply authority evidence with `--authority-artifacts` and constrain local document references with `--repository-root` (verified by `run-km-review-fixtures.js`).
 

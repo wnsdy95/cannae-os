@@ -1,0 +1,419 @@
+# Conditional Runtime Operations
+
+These are retained operational procedures, not the default product roadmap.
+Read only the section needed for an already guarded operation or explicitly
+requested runtime maintenance. Dashboard, console, separate execution service
+and production-infrastructure development remain deferred under
+`docs/skill-first-product-scope.md` until the USER changes that scope.
+
+Ordinary document drafting, corpus maintenance and a directly requested skill
+edit follow the main skill and authoring workflow. Do not create an autonomous
+campaign or start an operator server just to perform those tasks. If a task is
+already bound to a runtime mission or campaign, preserve its original approval,
+proof, stop, settlement and release requirements; this scope change cannot
+convert it into unguarded work or clear retained state.
+
+## Contents
+
+- Mission lifecycle and current-wave context
+- Delegated tool dispatch and gateway boundaries
+- Release immutability, monitoring and exact release authorization
+- Repository-isolated evidence and bounded campaign operation
+- Runtime validation and escalation rules
+
+## Runtime Contract Maintenance
+
+### Editing Doctrine Or Policy
+
+1. Read `docs/source-map.md`, the target policy, and any referenced schemas/runners.
+2. If changing a runtime contract, update all four: schema, valid sample, invalid sample, runner/fixture. Protected-gateway or executor changes must also update both CLI skill wrappers, both routing tables, and the transaction/execution/recovery guidance.
+   When the custom validator is affected, add a regression for each used
+   combinator or keyword whose enforcement changed; nested
+   `additionalProperties`, `allOf`/`oneOf`, conditional requirements,
+   positional items, and contained items must fail closed. Include parsed-JSON prototype-name and inherited-required API regressions.
+3. If adding official sources, update `docs/source-map.md`, `docs/research-compendium.md`, and `source-map-url-coverage-report.json`.
+4. Run targeted validation first, then the relevant `run-*.js` fixture.
+5. Commit coherent changes when the repo is clean except ignored files.
+
+## Routing References
+
+Read these only when needed:
+
+- For local owner login, evidence or decisions, read `docs/local-operator-console.md`, `docs/operator-consent-and-adoption.md` and, for exact hold discharge, `docs/operator-terminal-reconciliation.md`; use `scripts/serve_controls_operator.js`. Leave real setup/password decisions to the human. Inspect first, then require fresh terminal consent; never replay an old nonce, delete a hold or regenerate missing decisions. Preserve failure/expiry; terminal records are not tool/release authority or campaign/gateway settlement.
+
+- `references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
+- `docs/intent-continuity-runtime.md`: require context v0.4 and exact root/task/delegation commitments. Deliver only the receiver's `method_assignment`. Method v0.1 uses the trusted operator CLI; newly reviewed v0.2 uses the exact enrolled MCP channel in `docs/method-control-channel.md`. Only query, propose a reviewed choice and report actual results. Never add Bash, metadata writes, USER approval or resume tools. Read `docs/method-deviation-runtime.md`; preserve stopped/legacy results and delivery holds.
+- `docs/request-order-intake.md` and `docs/order-adoption-and-plan-binding.md`: capture exact input and use `scripts/adopt_controls_order.js` for full-plan review, backbriefs and rehearsal. For an opened scope change, read `docs/order-revision-and-supersession.md` and use `scripts/revise_controls_order.js`: prepare the reviewed successor, settle old results, then supersede before tool dispatch. New adoption holds old calls; never strip bindings, reuse approval or backdate cleanup.
+- `references/self-improvement-loop.md`: completion audits, publication denial and unknown-effect holds, and verifier dependency migrations that preserve retained proof.
+
+
+### Operating A Delegated Mission
+
+1. Prepare a complete `MissionWavePlan` preserving `USER` final authority, non-command AI roles, explicit action boundaries and finite validity/budgets. For captured intake, use v0.2 and the exact adoption procedure before opening; legacy v0.1 is only for waves without intake. A schema-valid plan is not proof of USER consent.
+2. For a dispatch-controlled wave, create one deny-by-default policy draft per agent, hash each exact draft with `scripts/operate_dispatch_runtime.js hash-input`, and put each digest plus its exact agent, provider, and policy ID in the USER-authorized `MissionWavePlan.dispatch_control.policy_authorizations`.
+3. Run `scripts/operate_controls_mission.js open`. Do not dispatch from manually assembled chat claims. Require `status: ready`, `context_dispatch_authorized: true`, `tool_execution_authorized: false`, `dispatch_authorized: false`, one context pack per expected agent, and a valid artifact store.
+4. Give each agent only its exact `AgentContextPack`. The S3 receipt is its mandatory control-plane route; rendered role, department, task, authority and model fields must match retained adoption and preflight. A correct adoption reference alone cannot excuse contradictory permissions or a substituted model.
+5. If `model_assignment.required` is true, first persist a ready integrated mission preflight and cite its exact manifest reference and per-agent billet. A missing or mismatched model binding blocks `open`.
+6. Before covered tools, authorize the exact preapproved policy and enable dispatch hooks. For a reviewed method broker, read `docs/method-control-channel.md`: the trusted operator runs `scripts/operate_controls_channel.js prepare`, configures the exact descriptor and `CANNAE_METHOD_CONTROL_ENROLLMENT`, then launches the native top-level session. Inspect its startup observation, issue its exact short-lived lease, then `enroll`. Keep the owner-only file outside the repository; never send its credential to the agent. Discovery grants nothing; local enrollment is not native startup attestation.
+7. Retain actual task outputs separately from control metadata. Plans, receipts, contexts, policies, leases, admissions, checkpoints, SITREPs and MCP control responses are not deliverables, including whole-record copies with changed MIME or JSON key order. A checkpoint binds a call/result, not its task output. After lost control delivery, keep the hold and ask the trusted operator to inspect the exact receipt before `reconcile-delivery`; never rerun the task or restart to clear it. Rejected report publication needs a fresh ID and newly executed controls.
+8. Run `complete --lease <lease-id>` for each successful dispatch-controlled agent before reporting. Blocked or failed agents must have no active lease or unresolved tool request.
+9. Finalize and freeze a `MissionWaveReport` with the exact plan, preflight, context, and work-evidence references before running `scripts/operate_controls_mission.js report`. The controller must compile and execute every routed `required_control` with `shell: false`, bind each digest-only `ControlExecutionReceipt` to the canonical report input, and reject failed controls, report substitution, unadmitted receipts, or repository/doctrine drift. After a failed or interrupted admission leaves receipts without a persisted report, assign a fresh report ID, keep old receipt references out, and invoke `report` again so every required control reruns. A successfully persisted report is immutable, so later changes require a new wave. Agent-supplied validation claims or receipt references never satisfy this gate.
+10. Create an AAR and run `scripts/operate_controls_mission.js close --mission <id> --wave <id>`. Follow its next-wave trigger. Ordinary findings enter the bounded campaign; retained decisions return to the user.
+11. Run `status` for handoff and `verify` before consuming evidence or declaring wave completion. For an expired or abandoned wave, settle leases and unresolved tool effects, then use `terminate` with its exact plan reference. Never backdate a report, fabricate an AAR, or reopen a terminated wave. Abort/supersession needs a fresh manifest-backed USER scope decision bound to the exact plan and successor digests; expiry does not claim completion. Read the lifecycle document's termination procedure before acting. Conversation history is not mission state.
+12. Never infer commit, push, merge, risk acceptance, policy, authority, or release permission from `open`, `report`, `close`, a context pack, a dispatch lease, or a queued improvement.
+
+Read `docs/skill-operational-mission-lifecycle.md` for commands, exact contracts, model binding, failure behavior, and operational limits.
+
+### Enforcing Delegated Tool Dispatch
+
+For every independently acting AI agent:
+
+1. Use a separate top-level provider session and policy draft per agent. In one repository-bound wave, stage agents against the same target worktree and artifact namespace; complete or settle one lease before issuing the next. Do not infer a parallel exception from a caller-declared read-only class. Treat parallel worktrees as separate sub-missions that require a later integration wave.
+2. Hash each exact draft before `open`, place its digest in the matching `MissionWavePlan.dispatch_control.policy_authorizations` row, and require retained USER authorization over that protected plan.
+3. After `open` returns context ready, compile the preauthorized draft and issue the one initial lease lineage:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js \
+  authorize-policy --repository <repo> --artifact-root <artifact-root> \
+  --policy <dispatch-tool-policy-draft.json>
+
+node codex-skills/controls-doctrine-operator/scripts/operate_dispatch_runtime.js \
+  issue --repository <repo> --artifact-root <artifact-root> \
+  --policy-id <policy-id> --session <provider-session-id> \
+  --provider-agent <provider-agent-id>
+```
+
+4. Install or externally manage the provider hooks with `node codex-skills/controls-doctrine-operator/scripts/install_dispatch_hooks.js --provider codex --repository <repo>`, then launch the agent with `CANNAE_REPOSITORY`, `CANNAE_ARTIFACT_ROOT`, `CANNAE_MISSION_ID`, `CANNAE_WAVE_ID`, `CANNAE_AGENT_ID`, and `CANNAE_PROVIDER_AGENT_ID`.
+5. Require a manifest-backed allow event before each covered call and an exact tool-name, input-digest, provider-result, and repository-state checkpoint before another call. Unknown tools, ambiguous rules, replay, drift, expired authority, and retained actions deny by default.
+6. On interrupt, `resume`, `clear`, or `fork`, assume the old authority is interrupted. Review the exact checkpoint and run explicit `resume` to issue a lineage-continuation lease. Session history never renews authority.
+7. Revoke on scope change, operator stop, unexpected drift, unresolved post-tool failure, or handoff. Inspect pending callbacks, `unresolved_tool_effects`, and `unresolved_gateway_transactions` separately; terminal lease history cannot clear either hold. Use gateway operations, never direct hooks or caller flags, for gateway-owned completion/cancellation. Run `complete --lease <lease-id>` before a successful agent result enters the wave report.
+
+Project hooks are a deterministic guardrail for covered local calls, not a non-bypassable security boundary. Codex does not expose a unique subagent identity in the documented `PreToolUse` payload, so strict mission-agent isolation requires separate top-level sessions or an external gateway.
+
+Read `docs/enforced-dispatch-and-resume.md` for dispatch policy and limits. For unknown outcomes, freeze scope before verification and read `docs/tool-effect-review.md` plus `docs/tool-effect-settlement.md`. Never treat `evidence_bound` as consent or clearance: obtain the exact USER decision after execution-bound proof, run `scripts/settle_tool_effects.js`, then explicitly revoke the blocked lease. Scope changes require fresh proof and consent; gateway outcomes remain excluded.
+
+### Operating The Protected Tool Gateway
+
+Use this path when a tool call must have a durable gateway transaction in addition to the Phase 16 dispatch admission:
+
+1. Finish routing, policy authorization, and lease issuance first. Build a `ToolGatewayRequest` v0.2 for contract/authenticated reference, or v0.3 for managed production, from the exact active lease, policy, checkpoint, repository state, authenticated-principal projection, trusted gateway projection, three identity references, optional exact production admission, policy-fixed execution mode, and canonical tool-input digest.
+2. Select one identity path explicitly. `contract_reference` uses three exact none references and independently appraised principal/gateway digests. `authenticated_reference` uses a manifest-backed `GatewayIdentityPolicy`, one adapter-generated signed transaction challenge, and one gateway-side TLS 1.3 SPIFFE/exporter observation derived directly from a live server `TLSSocket` and signed as `GatewayPrincipalEvidence`; never pass a caller-built transport observation or caller-supplied principal digest.
+3. Never let the acting agent self-calculate identity or gateway trust material. Keep the adapter private key outside request/artifact payloads. Authenticated-reference verification must cover policy, challenge, certificate, exporter, revocation, freshness, one-use, and request projection. `--gateway-binding-sha256` still comes from a separate trusted deployment/configuration appraiser.
+4. For managed production, first run `scripts/operate_production_sandbox.js` to persist the USER policy, persist fresh independently signed appraiser evidence, issue the separate admission-authority signature, and verify the exact request/OCI policy scope. Require at least two computed failure domains over one agreed deployment. Build request v0.3 with that exact admission and `oci_linux_sandbox_reference`. Operate the gateway as a service with a real external linearizable `productionCoordinator` whose adapter/configuration digests match the evidence and whose returned handle binds the exact repository key/fingerprint, transaction, idempotency key, admission digest, revision, fencing token, and expiry. The standalone gateway CLI has no such adapter and must deny; never replace it with the fixture coordinator.
+5. Run `scripts/operate_protected_gateway.js admit` with the request and separately held raw input. Reference paths continue only from `state: authorized` with both production fields false. A managed service continues only when state is authorized and `production_execution_authorized: true`; `production_deployment_verified` remains false until terminal settlement and release always remains false.
+6. Select the execution path from the exact raw input. For ordinary integration inputs, run `begin` immediately before the external adapter acts and `commit` with exact none sentinels for retained-execution references. For `ProtectedProcessToolInput`, never run manual `begin` or accept a caller-declared result: run `scripts/operate_protected_executor.js execute`, which reloads the policy, owns begin, persists a signed envelope before spawn, executes only the policy-fixed ELF or Mach-O executable and argv, reappraises that executable after close, persists a signed observation, and submits all three exact evidence references. For `OciSandboxToolInput`, use `scripts/operate_oci_sandbox.js execute` instead: it appraises the Docker daemon, static probe, immutable image, and digest-pinned seccomp profile before begin; extracts the image probe from an unstarted appraisal container and matches its bytes to the measured host probe; retains a signed envelope before create; verifies Docker configuration, tmpfs and bind propagation, plus direct kernel privilege, mount, cgroup, and external-IP-egress-denial evidence; removes and verifies removal of the container; signs the observation; and submits the exact OCI chain.
+7. Require `ToolExecutionReceipt` v0.4 for reference execution and v0.5 for managed production. `bounded_process_reference` and `oci_linux_sandbox_reference` require concrete policy, envelope, and observation references that the gateway independently reloads and verifies; OCI mode also requires the exact probe digest and a concrete probe reference inside the signed observation. Managed v0.5 additionally preserves the exact production admission, current external coordinator projection, and deployment verification. `fixture` and `external_adapter` require three exact none references. A stale identity/admission/coordinator/execution reference, changed executable/image/probe/profile, substituted configuration/result, forbidden repository effect, missing cleanup, or post-tool binding failure cannot become a commit.
+8. If execution never began, run `recover` with the exact raw input to cancel the admission and record `aborted`. If a crash left an allow admission before its decision, retry `admit` to finish normally or run `recover`; recovery cancels it exactly when possible and otherwise blocks the lease before denial. If execution began and the result is unknown, run `recover` without asserting success; the lease becomes blocked pending human reconciliation. For OCI recovery, require positive exact-target absence evidence on the original trusted daemon; an inspect error is not removal. Retry containment only, never the target; unverifiable cleanup remains `provider_failure`, and verified cleanup still leaves `recovery_required` with nonzero CLI exit. Before inspection run `scripts/review_gateway_effects.js subject` and read `docs/gateway-effect-review.md`; freeze the exact subject and rebuild proof after history changes. Review never clears admission/effect holds. Read `references/self-improvement-loop.md` before changing adapter pins or reconciling effects. Managed recovery must reacquire and reverify production admission and external coordination.
+9. Reuse an idempotency key only for byte-equivalent canonical requests, never reuse an identity challenge or evidence across transactions, and never reuse a transaction ID for a different request or key. Never interpret identity evidence, production admission, production execution, deployment verification, or a receipt as commit, push, merge, release, policy, risk, or authority approval.
+
+Phase 17B1 proves authenticated-reference identity. Phase 17B2A executes one policy-pinned local process without isolation. Phase 17B2B executes one static target in a measured OCI/Linux reference sandbox. Phase 17B2C1 permits managed production only from independently appraised host/runtime/image/key/MAC/seccomp/filesystem/network/coordination/exclusive-path evidence, computed failure-domain quorum, exact OCI scope, and live external fencing. This repository validates those provider claims but does not operate the TPM/TEE, KMS/HSM, registry, hardened host, coordinator, storage fencing, or installation-level side-path controls. Read `docs/gateway-identity-admission.md`, `docs/protected-tool-gateway-contract.md`, `docs/protected-process-execution.md`, `docs/oci-linux-sandbox-provider.md`, and `docs/production-sandbox-admission.md` before integrating an adapter. Release remains separately USER-controlled.
+
+### Activating Repository Release Immutability
+
+Use this persistent repository-policy path only after the human USER explicitly
+directs activation for one exact repository:
+
+1. Merge the intended policy runtime, use a clean origin-synchronized default
+   branch, and require the successful exact default-branch `Validate` push run.
+2. Confirm the authenticated `gh` principal has repository `ADMIN`, the
+   immutable-releases endpoint reports disabled, and the current latest release
+   snapshot is understood. Activation is prospective and does not make an
+   existing release immutable.
+3. Run `scripts/operate_github_release_immutability.js authorize` with the
+   exact owner/repository, successful main run ID, USER grant ID, repository
+   contained output path, and a validity of at most 60 minutes. Require policy
+   true and release false.
+4. Run `enable` before expiry. Require an observed HTTP 204 for a performed
+   PUT, a terminal GET with `enabled: true`, an unchanged historical-release
+   immutable state, and a schema-valid receipt.
+5. An exact retry may verify the already-enabled state without another PUT.
+   Any other repository, CI, latest-release, policy, expiry, or authority drift
+   is a hard stop.
+6. Do not infer rollback authority. The runtime intentionally has no disable
+   command. A future rollback requires a separate exact USER decision and
+   contract.
+
+Read `docs/github-release-immutability.md` before operating this path.
+
+### Monitoring GitHub Release Integrity
+
+Use this read-only path after Phase 19A activation and before accepting any
+future release evidence:
+
+1. Load `.github/release-integrity-policy.json` only when its bytes exactly
+   equal the tracked current-HEAD blob and its activation commit is in HEAD
+   ancestry; never infer or rewrite its baseline from the current release
+   list.
+   For an initial deployment with no eligible artifact lineage, refresh and
+   validate the committed bootstrap root and genesis against one explicit UTC
+   clock immediately before merge, bind the genesis to the current pre-merge
+   default-branch HEAD and an exact USER grant, and finish the first `main`
+   monitor run within both the four-hour bootstrap window and twelve-hour
+   predecessor-age limit. An open bootstrap window does not make stale
+   bootstrap evidence valid. Never rewrite bootstrap files after provider
+   lineage exists; a later reset needs a separate exact USER decision and
+   contract.
+   If initial policy-matching runs already retain exact blocked
+   observation/root pairs but no checkpoint, do not delete artifacts, rerun
+   old runs, change policy identity, or fall back. Phase 19E is available only
+   before any complete provider checkpoint: refresh the same-grant genesis and
+   root, then run `scripts/operate_github_release_integrity.js
+   authorize-bootstrap-recovery` with an explicit USER grant and at most
+   60-minute validity inside the original bootstrap window. Require the
+   generated contract to enumerate every matching failure and keep reset and
+   release false.
+   After merge, accept recovery only after two distinct new attempt-one
+   workflow runs. The first must retain a complete sequence-one triplet with
+   `repository_bootstrap_recovery` provenance. A second stable run, not a
+   rerun, must consume that exact provider artifact and retain sequence two
+   with `github_actions_artifact` provenance. Record both run, artifact,
+   observation, checkpoint, and digest identities; require semantic replay
+   and keep reset/release false even when a separate credential issue blocks
+   readiness.
+2. Run `scripts/operate_github_release_integrity.js monitor` with a
+   repository-contained observation path, `--trusted-root-output` path, and
+   `--trust-checkpoint-output` path.
+   Use `--scope full` for scheduled/manual policy and all-release inspection,
+   or `--scope release_attestation
+   --expected-tag <tag> --trigger release` for one exact release event.
+   In a clean checkout, install the pinned validator dependencies first with
+   `npm ci --ignore-scripts`.
+3. Require the current origin default-branch commit, a repository-contained
+   output path that does not traverse a parent symlink, and a schema-valid
+   observation whose `summary.status` is `ready`.
+   In CI, require the exact default-branch `workflow_ref`, immutable
+   `workflow_sha`, full-commit action pins, and no narrow main-push path
+   allowlist.
+   `credential_unavailable`, policy drift, changed/missing grandfather state,
+   mutable future releases, missing attestation, failed TUF acquisition or
+   replay, missing/stale/forked predecessor, historical rerun after a newer
+   stable run, mismatched prior attempt, rollback, same-version conflict,
+   failed independent bundle verification, or any
+   repository/tag/commit/asset mismatch is a hard stop.
+4. The release-event scope may use the short-lived repository token but must
+   keep policy assessment false. Full scope needs repository Administration
+   read. Use a dedicated least-privilege monitor credential; never copy the
+   owner's broad local OAuth token into repository secrets.
+   Secret-list presence is not permission evidence. After installation,
+   permission change, or rotation, dispatch one new first-attempt full
+   workflow on the exact default-branch HEAD and verify its retained
+   observation/root/checkpoint triplet. Require policy verified and enabled,
+   summary ready, zero issues, ordinary provider-checkpoint continuity, and
+   reset/release false. Treat sanitized HTTP 401 as an invalid, expired, or
+   malformed secret value and HTTP 403 as missing Administration read or
+   repository selection. Never substitute a broader local credential's
+   successful request for this provider-secret proof.
+5. Require `trusted_root_observation.status: verified`,
+   `trust_checkpoint_observation.status: verified`, and one
+   `independent_verification` for every verified non-grandfathered release.
+   Store the uniquely named full observation, retained root, and checkpoint together under the
+   target repository or its repository-named CI artifact. The latest eligible
+   artifact missing any member, carrying an off-default/incomplete run, or
+   failing observation replay is normally a hard stop without older/bootstrap
+   fallback. The sole partial initial exception is a committed, unexpired
+   `GitHubReleaseBootstrapRecovery` over every exact two-file failed artifact,
+   only the supported checkpoint failures, and the newest in-progress
+   attempt-one run at current `HEAD`. Missing/deleted evidence, a successful
+   run, any complete checkpoint, unknown issue, rerun, incomplete history, or
+   expired authority blocks. A recovered run may continue checkpoint lineage
+   but remains blocked for release until a later successful `ready` provider
+   triplet exists. For a rerun, consume only the exact completed
+   immediately prior attempt of the same stable run; if a newer eligible run
+   exists, stop as a lineage fork. Monitoring may alert and escalate to USER but must never reset
+   checkpoint state, enable/disable policy, repair/delete a release, or set
+   release true.
+
+Read `docs/github-release-integrity-monitoring.md` and
+`docs/github-release-independent-verification.md`, then
+`docs/github-release-trust-checkpoint-continuity.md` before operating this
+path.
+
+### Authorizing An Exact GitHub Release
+
+Use this terminal path only after the human USER explicitly directs one exact
+GitHub release:
+
+1. Merge the intended release state, switch to the clean default branch, sync
+   it to `origin`, and wait for the exact default-branch `Validate` push run to
+   complete successfully. A pull-request check, feature-branch run, or stale
+   main run is insufficient.
+2. Require the repository immutable-releases policy to be enabled and the
+   version `0.5` GitHub attestation, independent-verification, and monotonic
+   trust-checkpoint profile to be
+   available. Finalize and track the repository-relative release-notes file.
+   Confirm the stable target tag and release are absent and that the tag
+   advances the current latest release.
+3. Download the latest eligible full-monitor artifact into the release's
+   repository-contained artifact directory. Validate and replay its full
+   observation, trusted root, and trust checkpoint against one explicit
+   current UTC clock. Require `summary.status: ready`, successful run
+   provenance, exact observation/root/checkpoint equality, sequence greater
+   than zero, a GitHub Actions producer, a maximum checkpoint age of 12 hours,
+   and release and checkpoint-reset false. A local pair, two-file archive, or
+   committed genesis is not lineage proof by itself.
+4. Run `scripts/operate_github_release.js authorize` with the exact
+   owner/repository, tag, release name, notes path, successful main run ID,
+   USER grant ID, exact `--trusted-root` and `--trust-checkpoint` paths, output
+   path, and a validity of at most 60 minutes. Require
+   `release_authorized: true` and inspect its repository, commit, CI, notes,
+   checkpoint/root digests, exact workflow/run/attempt/head/artifact lineage,
+   expiry, and USER scope before proceeding. Authorization must independently
+   resolve the committed policy's latest full-monitor artifact and require
+   byte equality with the supplied pair.
+5. Run `scripts/operate_github_release.js publish` before expiry, passing both
+   `--trusted-root <path>` and `--trust-checkpoint <path>`. Active publication
+   accepts only authorization v0.5 and must reject a missing, stale, expired,
+   schema-invalid, genesis, local, forked, substituted, superseded, or
+   short-lived root/checkpoint pair before creating a release. It must resolve
+   the latest artifact again, reload schema-valid trust inputs, and then
+   reappraise authorization time, repository/CI/notes/target state, and
+   immutable-policy state before any `gh release create`.
+   The publisher must create the release
+   from the full commit SHA with no-commit failure enabled, resolve the remote
+   tag, compare the GitHub release body, observe
+   `isImmutable: true`, retain the exact GitHub-signed
+   repository/tag/commit/asset statement, independently verify its DSSE bundle
+   under the retained root, cross-check the CLI statement, and persist a
+   verified consumed receipt.
+   If publication succeeded inside the authorization window but verification
+   failed, an exact retry may verify that existing immutable release under
+   current trust evidence; it must never create another release or adopt one
+   published outside the original window.
+6. A matching existing release is an idempotent verification result. A partial
+   tag/release state or any mismatch is a hard stop. Never repair, delete,
+   retarget, or overwrite a release implicitly.
+7. Only `GitHubReleaseAuthorization` and its terminal
+   `GitHubReleaseReceipt` may carry release true. Never copy that value into
+   mission, campaign, verifier, dispatch, gateway, executor, sandbox, or
+   production artifacts.
+
+The authorization digest is an integrity binding, not a USER digital
+signature. The authenticated `gh` principal, local operator environment,
+GitHub credential protection, branch policy, independent infrastructure
+failure domains, and external transparency witnessing remain trust
+boundaries. Read `docs/github-release-authorization.md` and
+`docs/github-release-independent-verification.md`, then
+`docs/github-release-trust-checkpoint-continuity.md` before operating this
+path. GitHub Actions artifacts are same-provider continuity evidence, not an
+independent durable archive or witness.
+
+
+### Persisting Multi-Repository Artifacts
+
+1. Identify the target Git repository before creating any durable control evidence or deliverable.
+2. Store every JSON or file artifact through `repository-artifact-store.js` under `repository -> mission -> wave -> kind`; never use a shared flat output directory.
+3. For routing receipts, use `--write-artifact --target-repository <repo>`. For model compilation and integrated preflight, use `--write-artifact --repository <repo>`.
+4. Use one shared `--artifact-root` for a campaign when useful; repository fingerprint namespaces still keep outputs separate.
+5. Treat persistence failure as a blocked wave. Do not dispatch from an integrated preflight whose artifact write failed.
+6. Run `repository-artifact-verify.js` before consuming proof and before wave completion. A pending journal, broken history, non-monotonic fencing token, sidecar mismatch, or artifact hash mismatch blocks the wave. Use `--recover` only for a valid pending transaction under a current lease.
+7. Treat the built-in coordinator as a coherent shared-filesystem backend, not a partition-tolerant distributed lock. Stop writes on split-brain, delayed visibility, fencing-token rollback, or unsupported atomic operations; require an external linearizable coordinator and storage-side fencing for those deployments.
+8. Size lease acquisition timeout for worst-case serialized writer contention independently from lease TTL. A longer contention budget must not weaken the bounded rejection test for an unexpired foreign lease.
+
+### Operating Bounded Self-Improvement
+
+For a multi-wave mission, control-plane change, explicit autonomous-improvement request, or work that must keep improving after its first usable draft:
+
+1. Create a `SelfImprovementCampaign` before the first improvement cycle, preferably with `self-improvement-campaign-init.js`. Bind it to one target repository and preserve `USER` final decision authority.
+2. Define observable acceptance criteria, normalized evidence-backed quality dimensions, protected invariants, finite budgets, and stop conditions. Do not use model confidence as a metric.
+3. For every candidate and completion state, create a repository-state-bound `VerificationPlan`; run `verification-runner.js --repository <repo> --write-artifact`. Never substitute model-authored test status, prose output, or an unpersisted receipt.
+   Capture optional CLI stdout outside the target repository until verification succeeds; a shell creates redirected files before the check starts.
+4. For every v0.3+ candidate and completion state, obtain fresh Ed25519 DSSE attestations over the exact persisted receipt from distinct trusted verifier IDs and keys in the policy-required independence groups. Under trust-policy v0.6, group diversity means computed `VID-*` failure domains, not declared labels. Under trust-policy v0.4+, first produce manifest-backed `VerifierExecutionEvidence` for each verifier using its exact assigned runtime profile, repository state, target digest and workload-identity evidence; v0.6 additionally requires adapter-observed independence claims matching runtime-policy v0.2+. Runtime-policy v0.3 GitHub Actions and GitLab CI profiles require exact manifest-backed native OIDC evidence and JWKS trust material, and must derive provider/failure-domain fields from the verified token. The trusted builder and registered verifier must sign the same payload. Persist evidence and attestations unchanged and cite their manifest paths and hashes. A signed `remote` origin without valid execution evidence is only a claim.
+5. Before promoting a `runtime_control` or `skill` candidate, persist a sealed `ComparativeEvaluationSet` and `ComparativeEvaluationPlan`, then run `comparative-evaluation-runner.js` against the accepted baseline worktree and candidate repository. Require one identical harness/hash/argv, campaign-owned absolute and non-regression thresholds, and a persisted `promotable` report. `rollback` means rollback; `inconclusive` means stop and escalate.
+6. For every v0.4 skill/runtime-control comparison, obtain a fresh Ed25519 DSSE quorum over the exact persisted comparative report with `comparative-evaluation-attestation-runner.js`. Under trust-policy v0.4+, create separate execution evidence for the comparative-report purpose before signing each report attestation. Persist the evidence and attestations unchanged and cite their manifest paths/hashes. Receipt signatures and report signatures are separate evidence classes.
+7. At every wave end, validation failure, scope change, and before completion, create a `SelfImprovementCheckpoint` whose metrics and independent evaluation cite persisted receipt IDs and, for v0.3+, the receipt quorum. Skill/runtime-control checkpoints cite the comparative report and, for v0.4, its signed quorum. Run `autonomous-improvement-controller.js --repository <repo>` against the proof store.
+8. For cycle 2+, cite the manifest path/hash of the immediately prior `accept_working_state` decision and use its `accepted_revision` as the baseline. Do not carry forward a rejected, rollback, or merely named parent.
+9. For policy, authority, scope, release, trust-key, verifier, quorum, or validity-window changes, persist an exact USER-granted `ApprovalScope` and matching `ApprovalConsumptionEvent`. Bind its execution ID to the checkpoint; prose approval and reused events are invalid.
+10. Before the first cycle and after every persisted decision, run `campaign-supervisor.js --repository <repo> --campaign <id> --write-artifact`. For trust-policy v0.2 through v0.4, first persist fresh evidence from every verifier needed for quorum using its selected `spiffe_x509` or `sigstore_bundle` adapter; Sigstore verifiers also require the exact manifest-bound `SigstoreTrustedRoot`. Trust-policy v0.4+ additionally requires the exact human-approved `VerifierRuntimePolicy` with one complete purpose-authorized profile assignment per verifier. Under v0.5+, the first supervisor call issues a manifest-backed challenge and intentionally holds; each verifier must then persist dual-signed identity evidence containing its exact assigned nonce, and supervision must run again. Under v0.6+, require runtime-policy v0.2+ and enough computed failure domains. Under v0.7, advance the exact manifest-backed `TransparencyState` stream with fresh consistency, witness, monitor, root and incident evidence before supervision. Execute only a current `SelfImprovementCycleOrder` whose status is `ready`, whose required identity, challenge, independence, and transparency admissions are satisfied, and whose `valid_until` has not been reached; use its exact cycle, attempt, baseline, parent, task, trigger, and proof requirements. Runtime-policy readiness, challenge response, and transparency readiness do not claim that a future invocation has already executed. Never self-declare verifier readiness or infer order state from chat history.
+11. Carry forward only an accepted working state; revision, rollback, and continue orders remain retries in the same cycle. A supervisor `hold`, nonzero exit, missing order, or conflicting order means no work.
+12. Permit automatic edits only for targets/actions/change classes inside the campaign envelope. Require receipt-backed independent evaluation for runtime, skill, and policy candidates.
+13. Treat `escalate` and `terminate` as hard stops. For `rollback`, revert only this campaign's own uncommitted candidate changes.
+14. Never infer merge, push, release, policy, trust-root, or authority approval from `accept_working_state`, `complete`, a comparison report, a report attestation, or a cycle order; these artifacts leave release unauthorized.
+15. Do not report completion without a passing `before_completion` checkpoint, a fresh receipt, a fresh signed receipt quorum for v0.3+, valid execution evidence for every quorum member under trust-policy v0.4+, a fresh comparative report and signed report quorum for v0.4 skill/runtime-control targets, a verified parent when applicable, repository-scoped decision evidence, and a supervisor projection whose status is `completed`.
+
+Read `docs/bounded-self-improvement-operations.md` for the full state machine and authority matrix.
+
+
+## Required Validation
+
+Use the smallest relevant set, then broaden:
+
+```bash
+node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
+node .github/scripts/check-english-only.js
+node run-skill-control-enforcement-fixtures.js
+node run-skill-mission-controller-fixtures.js
+node validator-cli-prototype/run-fixtures.js
+node run-all-fixtures.js
+node source-map-linter.js
+git diff --check
+```
+
+Use routed targeted runners before the aggregate. `run-all-fixtures.js` is the shell-free repository-wide gate; the controller executes only the routed set and records exact receipts.
+
+## Guardrails
+
+- Treat `COMMANDER`, `COS`, `S2`, `S3`, `S4`, `S6` as internal function IDs, not universal ranks or staff labels.
+- The human user remains final decision authority unless they explicitly delegate a bounded AI role.
+- AI agents must route by role, department, authority, task, and need-to-know.
+- Delegated AI waves require routing receipts and preflight `ready`; no receipt means no work.
+- Operational delegated work requires a controller-issued context pack from the current wave; a manually claimed route or stale context pack does not authorize work.
+- Covered delegated tool use requires one current manifest-backed dispatch
+  lease lineage per mission agent. The exact policy-draft digest must be
+  USER-authorized in the mission plan before compilation; no lease means no
+  covered work. A resumed, cleared, or forked session requires explicit lineage
+  continuation after checkpoint review.
+- Project-local hooks guard covered calls but are not a complete security boundary. For concurrency, use separate repository-scoped sub-missions/worktrees and top-level sessions followed by an integration wave; add managed controls, an OS sandbox, or an independently protected tool gateway according to the deployment risk.
+- The protected process reference adapter fixes one executable and argv, persists signed before/after evidence, and prevents automatic rerun after a claim. It does not isolate filesystems, syscalls, privileges, descendant processes, or network access; never describe it as a sandbox, production executor, or exclusive tool path.
+- Mixed-model missions require registry compilation and integrated routing/assignment preflight; an unready router, unbound agent, model monoculture, correlated assurance, expired evaluation, or authority inherited from model capability blocks dispatch.
+- Multi-repository missions require explicit target-repository artifact storage; do not mix receipts, projections, reports, or deliverables in a flat campaign directory.
+- Adaptive missions require a finite campaign, runtime-issued receipt proof, fresh trusted signed receipt quorum for v0.3+, exact accepted-parent lineage, a verified artifact store, a current ready cycle order, and a mandatory completion checkpoint. Trust-policy v0.2+ additionally requires fresh manifest-backed evidence for each verifier's selected SPIFFE or Sigstore workload-identity adapter; Sigstore also requires an exact fresh TrustedRoot. Trust-policy v0.4+ requires an exact runtime policy before dispatch and dual-signed execution evidence for each receipt/report attestation before it can count toward quorum. Trust-policy v0.5+ requires the supervisor's exact unexpired single-use challenge and dual-signed nonce responses before dispatch. Trust-policy v0.6+ requires runtime-policy v0.2+, complete failure-domain identities, and enough computed `VID-*` domains before dispatch and after execution. Runtime-policy v0.3 GitHub Actions and GitLab CI evidence additionally requires the exact native OIDC/JWKS artifact chain and a clean token-bound commit. Trust-policy v0.7 additionally requires a contiguous, current, manifest-backed transparency state with valid checkpoint consistency, observer quorum, root, incident and revocation status. Self-improvement never creates self-approval, self-release, trust-root/runtime-policy/builder-root/incident authority, or unbounded recursion.
+- Skill and runtime-control promotion additionally require one pre-persisted sealed evaluation contract executed against isolated baseline/candidate worktrees with an identical harness. Schema v0.4 also requires a fresh trusted signed report quorum. Promotion revisions must differ; completion revalidation runs the same accepted revision twice. Comparison evidence never grants release authority.
+- Only an explicit USER-granted, exact, unexpired `GitHubReleaseAuthorization`
+  v0.5 may set release true in active publication, and only its verified
+  terminal receipt may retain that result. Legacy versions are historical
+  read contracts, not executable downgrade paths. Every lower control-plane
+  artifact remains release false.
+- Never validate a GitHub release trusted root or checkpoint without an
+  explicit caller clock. Before external release creation, require their exact
+  equality, monotonic continuity, and freshness, and require every signed TUF
+  role to remain valid through the authorization expiry.
+- Release-integrity policy and observation artifacts are read-only and remain
+  release false. A full observation without a successful Administration-read
+  policy check, verified TUF root, verified checkpoint continuity, and
+  independent bundle replay is blocked; never treat credential or trust
+  uncertainty as no drift.
+- Never authorize from a manually supplied checkpoint alone. Active release
+  authorization requires the latest eligible non-genesis successful `ready`
+  full-observation/root/checkpoint artifact, exact
+  producer/run/attempt/head/artifact metadata, and pre-create trust,
+  lineage, time, repository, target, and immutability revalidation.
+  Historical reruns after a newer stable run are forks, not recovery.
+- Do not make US doctrine the default for multinational use; apply `docs/multinational-doctrine-consistency-review.md`.
+- Do not add external-source claims without source-map coverage.
+- Do not leave a new policy without a validation or review path.
+- Do not update this skill from one-off taste preferences; update it only for repeated routing, validation, or corpus-maintenance value.
+
+## Retained Integration Controls
+
+For report admission and force enrollment, follow their separate procedures in
+`references/document-routing.md`. Fixture passes are not workload clearance;
+require controller-issued workload receipts and a fresh report ID after rejection.
+Registry enrollment never qualifies a performer or activates a standing unit;
+leave its one-use decision to the authenticated owner.
+
+For new captured-request adoption, read `docs/requirement-inventory-admission.md`.
+Use `scripts/review_controls_requirements.js` against the explicit target repository,
+classify every source fragment and review each requirement against the actual order
+and task/agent targets. Bind the returned review to request v0.2 before proposing
+adoption; any plan edit requires new coverage and fresh USER review. Never use an
+advisory model `complete` as admission or relabel missing restrictions as context.
+This human review class does not prove semantics or model calibration. Preserve
+old records/results for inspection and settlement; do not downgrade a captured-
+request wave to obtain another call.
+
+For live Operations reads, use `docs/operational-cop.md` and the COP procedure in
+`references/document-routing.md`; display filters never remove critical reporting
+or create execution authority. Deferred development does not waive these controls.
+Manual receipt commands are diagnostic/lower-level integration only; use the
+manual receipt procedure in `references/document-routing.md`. The lifecycle
+controller remains the default guarded dispatch path.

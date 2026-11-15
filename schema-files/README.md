@@ -266,10 +266,17 @@ Recommended validation order:
 16. `integrated-mission-preflight.schema.json`
 17. `model-usage-event.schema.json`
 18. `ccir-alert.schema.json`
-19. `handoff-packet.schema.json`
+19. `handoff-packet.schema.json` (continuity record, never execution permission)
+    - `handoff-generation-request.schema.json`: explicit local order/event selection for a review-only draft; does not authenticate read access or authorize generation/disclosure.
 20. `continuity-plan.schema.json`
 21. `context-item.schema.json`
 22. `document-access-manifest.schema.json`
+    Project-specific preparation uses `project-document-packet-request.schema.json`
+    and `project-document-packet.schema.json`, both non-authorizing contracts.
+    Semantic checks reject known private locations in recipient-facing strings;
+    valid/invalid path examples preserve original task constraints without redaction.
+    See `docs/role-document-access-policy.md` for source-owner read permission,
+    recipient scope, raw/summary/reference-only forms and separate transfer consent.
 23. `doctrine-consistency-review.schema.json`
 24. `release-review.schema.json`
 25. `release-gate-decision-event.schema.json`

@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://controls.local/schema-files/handoff-packet.schema.json",
   "title": "Handoff Packet",
+  "description": "Continuity record or unreviewed draft, never an execution grant. Schema validity does not establish evidence truth, current authority, disclosure permission or receiver acceptance.",
   "type": "object",
   "required": ["schema_version", "type", "id", "mission_id", "created_by", "classification", "current_order", "commander_intent", "completed", "in_progress", "blocked", "pending_decisions", "active_risks", "source_of_truth_files", "verification_status", "next_actions", "do_not_do", "created_at"],
   "additionalProperties": false,

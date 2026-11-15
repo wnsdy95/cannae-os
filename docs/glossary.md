@@ -1,5 +1,11 @@
 # Glossary
 
+This file owns shared Controls terminology. User/project-specific vocabulary
+belongs to the target repository under
+[Project Terminology Workflow](project-terminology-workflow.md), with source,
+scope, confirmation status and revision history. Do not silently redefine
+shared authority terms or import private project vocabulary here.
+
 ## 0. Purpose
 
 This document standardizes the core terminology used in the military-style LLM framework.

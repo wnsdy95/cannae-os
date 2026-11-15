@@ -55,18 +55,30 @@ The goal is not to make agents more autonomous by default. The goal is to make d
 
 ## Project Direction
 
-Cannae OS is moving toward a practical runtime discipline for AI teams:
+The active product is a **document-driven skill/plugin for existing AI clients**:
 
-1. Doctrine: shared concepts, vocabulary, and operating principles.
-2. Structured documents: OPORD, WARNO, FRAGO, SITREP, AAR, backbrief, rehearsal, approval, risk, release, and handoff contracts.
-3. Runtime schemas: JSON contracts that make orders, authority, release, evidence, and readiness machine-checkable.
-4. Policy gates: local runners that block known unsafe or under-specified states.
-5. Skill routing: Codex and Claude Code skills that route huge documentation sets by user mode, role, department, authority, and need-to-know.
-6. Operational skill lifecycle: one fail-closed entry point that opens every wave, generates mandatory routing evidence, issues digest-bound context packs, records manifest-backed results, and converts AAR findings into bounded follow-on work.
-7. Bounded adaptation: campaign/checkpoint/decision contracts that let agents improve active work without self-authorizing scope, policy, or release.
-8. Future runtime: a tool-gated orchestrator with approval UI, evidence store, event replay, dashboards, and cryptographically verifiable learning evidence.
+1. Write and revise orders, SOPs, reports and handoffs without losing intent.
+2. Route the minimum relevant documents by task, role, department and authority.
+3. Preserve human final decisions and bounded single-agent or multi-agent work.
+4. Maintain canonical documents, sources, indexes and repository-specific outputs.
+5. Improve prompts and procedures from observed failures and AARs, with focused checks.
+6. Distribute equivalent operating rules through Codex and Claude skills.
 
-The current repository is strongest as a doctrine, schema, fixture, and prototype suite. It is not yet a complete production agent runtime.
+As decided on 2026-11-10, dashboards, approval applications, separate execution
+services and production infrastructure are **deferred**. Existing code and proof
+remain available, but they are not prerequisites for ordinary document work.
+Existing guarded operations still retain their controls and unresolved holds.
+See [Skill-First Product Scope](docs/skill-first-product-scope.md) for the active
+acceptance criteria. A separate plugin package is not yet claimed implemented.
+
+The [five active objectives](docs/skill-first-product-scope.md#active-objectives)
+are authoring quality, role-bounded routing/delegation, a complete working flow,
+bounded improvement/corpus maintenance, and client distribution. Preparatory
+cleanup is recorded separately; none is declared complete from a routing pass.
+The [2026-11-15 acceptance audit](docs/completion-backlog.md#five-goal-acceptance)
+now records bounded completion of all five through source-appraised actual use
+and local checks. This is not a guarantee of hallucination-free work or production
+security; the limitations and deferred scope remain.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">
@@ -76,6 +88,10 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 
 ### Doctrine And Operating Model
 
+- [Skill-First Product Scope](docs/skill-first-product-scope.md): active core, deferred platform work and honest completion criteria.
+- [Document Authoring Workflow](docs/document-authoring-workflow.md): choose a format, preserve evidence and intent, revise the canonical document and hand off unresolved work without a dashboard.
+- [Project Terminology Workflow](docs/project-terminology-workflow.md): capture user definitions separately from tentative meanings, bind current excerpts and required meanings, with a [native compound-intake case](docs/project-terminology-workflow.md#native-compound-intake) that preserves dependent holds without stopping unrelated drafting.
+- [Source-Grounded Authoring Case](docs/document-authoring-case-study.md): support SOP revisions, native collaboration, agent-invoked routing, [implicit Codex selection](docs/document-authoring-case-study.md#native-implicit-codex-selection) and [Claude receiving](docs/document-authoring-case-study.md#native-implicit-claude-receiving), with retained failures and bounded acceptance claims.
 - [Readiness And Authority Intersection](docs/readiness-authority-intersection.md): reference policy consumers preserve minimum readiness, prohibitions, exact scope, overlapping restrictions and expiry through approval/release composition. Declared ratings are not authenticated qualification or actual tool authority.
 - [Codex Default Model Binding](docs/codex-default-model-binding.md): bounded metadata-only host preparation freezes a concrete CLI model before exact owner transfer review. Selection is not account-access proof, inference consent or an automatic default upgrade.
 - [Native Request Analysis](docs/native-order-analysis.md): purpose-bound existing-Codex proposals consumed by the actual OPORD compiler, with separate owner transfer review and [failed-analysis/publication acknowledgment](docs/order-analysis-reconciliation.md). Proposed drafts remain uncalibrated and require human coverage/adoption; no self-granted task authority.
@@ -87,7 +103,6 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Requirement Inventory And Human Coverage Admission](docs/requirement-inventory-admission.md): source-accounted human review bound to the whole plan and actual adoption/context/next-call consumers. The owner preview compares source, requirements and real receivers without changing the exact approval subject through display filters. This separate review class is not calibrated model admission or proof of semantic completeness; legacy records remain readable without renewed execution permission.
 
 - [Operational COP](docs/operational-cop.md): authenticated, read-only Operations views replay actual wave/control history with freshness, exact evidence links and mission-bounded accounts. Display filters cannot hide authorized critical alerts. This is not worker liveness, tool authority or the complete reporting/CoS workflow.
-
 - [Completion Backlog](docs/completion-backlog.md): the remaining program scope, dependencies, and evidence required for closure.
 - [Implementation Candidate Registry](docs/implementation-candidate-registry.md): source-bound requirements, actual implementation mappings, and executable completion checks.
 - [Request Intake And Order Drafts](docs/request-order-intake.md): retain exact requests, separate quotes from assumptions and proposals, and compile non-executable OPORD/task drafts with inherited constraints.
@@ -96,7 +111,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Exact Order Adoption And Plan Binding](docs/order-adoption-and-plan-binding.md): bind the complete plan, each agent's backbrief and rehearsal to one finite USER scope decision; recheck it at lifecycle and dispatch admission without granting release or bypassing other gates.
 - [Order Revision And Supersession](docs/order-revision-and-supersession.md): review a full changed plan against its exact predecessor, prepare successor contexts, settle old execution and supersede before new tool authority.
 - [Mandatory Intent Continuity](docs/intent-continuity-runtime.md): bind every new context to the plan's complete task commitments and USER-rooted delegation chain; deny missing tasks, widened child authority and legacy-context tool reuse while preserving admitted-result settlement.
-- [Local Operator Console](docs/local-operator-console.md): real loopback login, mission-bounded evidence, [exact order decisions and outcome replay](docs/operator-consent-and-adoption.md), plus [fresh authenticated terminal reconciliation](docs/operator-terminal-reconciliation.md). Confirm worker exit, retain exact cancellation/acknowledgment evidence and preserve original failures/expiry. [Session browser checks](operator-console-fixtures/session-browser-check.js) reject delayed owner data after viewer login and inverted selections without bypassing auth limits. Broader tool approvals, operational COP and production protection remain open; adoption or reconciliation is not execution authority.
+- [Local Operator Console](docs/local-operator-console.md) (deferred development): retained loopback login, mission-bounded evidence, [exact order decisions and outcome replay](docs/operator-consent-and-adoption.md), plus [fresh authenticated terminal reconciliation](docs/operator-terminal-reconciliation.md). Confirm worker exit, retain exact cancellation/acknowledgment evidence and preserve original failures/expiry. [Session browser checks](operator-console-fixtures/session-browser-check.js) reject delayed owner data after viewer login and inverted selections without bypassing auth limits. Broader tool approvals, operational COP and production protection remain open; adoption or reconciliation is not execution authority.
 
 - [Military LLM Framework](docs/military-llm-framework-v0.1.md): the core command, authority, reporting, and AAR model.
 - [Military Operating System](docs/military-operating-system.md): the layered operating system view of doctrine, SOP, intent, planning, orders, risk, liaison, assessment, and learning.
@@ -152,7 +167,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 - [Independent GitHub Release Verification](docs/github-release-independent-verification.md): pinned TUF-chain replay, exact historical producer compatibility, and bounded brace/IPv6-zone dependency regressions without rewriting evidence or hiding unresolved advisories.
 - [GitHub Release Trust Checkpoint Continuity](docs/github-release-trust-checkpoint-continuity.md): monotonic prior-state comparison, stable run/attempt artifact lineage, rerun-fork rejection, and fail-closed rollback/equivocation detection.
 - [OPSEC Classification Model](docs/opsec-classification-model.md): EEFI, classification, releasability, and sensitive-output handling.
-- [Role Document Access Policy](docs/role-document-access-policy.md): document access by role, duty, authority, classification, and need-to-know.
+- [Role Document Access Policy](docs/role-document-access-policy.md): validated, profile-bounded reading lists with distinct raw/summary/reference modes. Blocked projections expose no allowed rows; metadata is not actual access authorization.
 - [Sensitive Output Filter](docs/sensitive-output-filter.md): digest-only detection, redaction, blocking, and escalation at output and tool boundaries.
 - [Interop Release Packet](docs/interop-release-packet.md): the only approved boundary-crossing package for partner-facing information.
 
@@ -175,7 +190,7 @@ The current repository is strongest as a doctrine, schema, fixture, and prototyp
 
 - [Schema Files](schema-files/README.md): JSON Schema contracts for missions, orders, authority, approvals, risk, release, readiness, handoffs, routing receipts, and more.
 - [Sample Payloads](sample-payloads/README.md): valid and invalid payloads for validator fixtures.
-- [Validator CLI Prototype](validator-cli-prototype/README.md): dependency-free local schema and semantic validation.
+- [Validator CLI Prototype](validator-cli-prototype/README.md): local schema and semantic validation using the repository's pinned dependencies.
 - [Policy Engine Prototype](policy-engine-prototype/README.md): local policy decisions for tool requests.
 - [Reference Architecture](docs/reference-architecture.md): orchestrator, policy engine, tool gateway, evidence store, event log, and dashboard architecture.
 - [Runtime Automation Roadmap](docs/runtime-automation-roadmap.md): path from manual doctrine docs to a tool-gated runtime.
@@ -249,8 +264,24 @@ node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
   --department=operations \
   --authority=scoped-execution \
   --capability-query="Define and validate the target mission capability" \
-  "plans-agent W2 execution planning" .
+  -- "plans-agent W2 execution planning" .
 ```
+
+The producer validates receipts before printing or persisting them. Invalid
+role/authority/objective declarations or unavailable validation fail without
+emitting receipt JSON or changing the artifact store. Receipt mode needs the
+bound checkout's validator and lockfile dependencies; direct routing does not.
+Successful emission is not preflight, source delivery or execution approval.
+See [the producer correction](docs/document-authoring-case-study.md#receipt-producer-validation)
+for the reproduced failure, denial checks and limits.
+
+A [native source-failure handoff](docs/document-authoring-case-study.md#source-failure-and-changed-policy-handoff)
+also exercises changed instructions across Codex and Claude. Required holds
+survived, but generated activity summaries and source labels still needed human
+appraisal. Passing tool traces are not proof that a handoff is semantically correct.
+The [current-guidance follow-up](docs/document-authoring-case-study.md#current-guidance-handoff-repair-review)
+shows both clients repairing those two errors, with a remaining locator caveat
+recorded separately. Proposed document quality does not imply USER adoption.
 
 Routing receipts distinguish document relevance from mission capability
 coverage. If the mission objective has no specific corpus capability route,
@@ -580,32 +611,10 @@ for monotonic prior-state and artifact-lineage controls.
 
 ## Quick Start
 
-Requirements:
-
-- Node.js for local runners and validators.
-- OpenSSL 3.x for verifier workload-identity fixtures.
-- Bash-compatible shell for the installer and validation loops.
-- Python 3 only for optional Codex skill validation.
-
-Install the exact lockfile dependencies in a clean checkout:
-
-```bash
-npm ci --ignore-scripts
-```
-
-Run the main validation suite:
-
-```bash
-node validator-cli-prototype/run-fixtures.js
-for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
-node source-map-linter.js
-```
-
-Check corpus routing coverage:
-
-```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
-```
+For core document routing, use Node.js and a local checkout. The skill installer
+uses Bash. No dashboard, owner account or server startup is needed. Read
+[Document Authoring Workflow](docs/document-authoring-workflow.md) for writing,
+revision and handoff rules.
 
 Install local AI CLI skills:
 
@@ -613,33 +622,349 @@ Install local AI CLI skills:
 ./install-ai-cli-skills.sh
 ```
 
-Route a user-facing framework question:
+Use `--dry-run` to inspect the plan, or `--copy` for a snapshot instead of a
+live link. Node.js is required; existing non-matching destinations need an
+explicit `--force`. Both destinations are checked before installation and
+source-tree overlaps are rejected. Tests use isolated homes; they do not claim
+native client discovery or model execution from folder presence alone.
+
+An installed document router can run from another project without changing
+directory. It uses `--doctrine-root=<path>`, then `CANNAE_OS_HOME`, its copy
+marker, the installed source location, and finally the current directory.
+A stale explicit binding fails rather than silently choosing another corpus.
+Copies need a deliberate refresh after source changes and still depend on the
+doctrine checkout. Keep task outputs in the target repository.
+
+Use the directory of the `SKILL.md` actually loaded by your client. The installed
+examples below honor the installer's home/skill-directory overrides; for a
+project/plugin/custom location set `CONTROLS_SKILL_DIR` to that loaded directory
+for the invocation. Do not assume the target project contains the source bundle
+or pass its current directory as the doctrine root. Resolve returned corpus
+document paths and corpus-check commands against `repo_root`, while task inputs
+and outputs retain their separate project origin.
+
+Native metadata discovery has a separate, opt-in macOS probe:
+`skill-client-discovery-probe.js --codex /absolute/codex --claude /absolute/claude`
+(run with Node.js). It checks isolated absent/link/copy installations without
+network access or a model prompt. Claude bare mode intentionally omits normal
+user-skill discovery. Metadata discovery is not proof that an agent consumed
+the skill or performed a task; see the [recorded metadata check](docs/completion-backlog.md#native-client-metadata-discovery-2026-11-11)
+and the [current requirement audit](docs/completion-backlog.md#requirement-level-audit).
+
+To deliberately select this workflow in Codex, include
+`$controls-doctrine-operator` with your task. Preserve the literal `$` with
+single quotes when passing the prompt through a shell. An ordinary client turn
+can invoke a model and tools; it is not the offline router shown below.
+A [local request capture](docs/document-authoring-case-study.md#offline-native-body-delivery)
+verified that Codex 0.162.1 inserts the complete entrypoint for explicit selection
+in linked and copied installations. In Claude Code, start the task with
+`/controls-doctrine-operator`; a [separate local capture](docs/document-authoring-case-study.md#claude-native-body-delivery)
+verified its complete Markdown body for normal-mode linked/copied installations,
+but not the tested bare-mode installation. No model ran in either check.
+Implicit selection and semantic compliance need separate evidence; a metadata-only
+first request does not prove that later reading will fail. One CLI invocation
+also does not establish a single provider request or a successful model result.
+
+For offline document-review preparation, run `node authoring-review-packet.js prepare`.
+It separates evaluator input from the author's seeded-defect reference under
+this repository's local maintenance directory; it never calls a model or grants
+consent. The [authoring case](docs/document-authoring-case-study.md#approved-review-retry-and-appraisal)
+records the original advisory review and a [separately approved V3 review](docs/document-authoring-case-study.md#approved-v3-review-and-appraisal).
+The V3 review found seven source/predecessor omissions or ambiguities; V4 restored
+them and subsequently received a [source review](docs/document-authoring-case-study.md#support-sop-v4-source-review).
+<!-- current-document:support-sop:start -->
+Current document: [Support SOP V5](docs/document-authoring-case-study.md#corrective-sop-draft-v5).
+State: proposed; review: native-reviewed; adoption: not-adopted.
+<!-- current-document:support-sop:end -->
+
+This candidate clarifies continuing holds and existing recovery paths. Its
+[operative-body source review](docs/document-authoring-case-study.md#support-sop-v5-source-review)
+found no required correction; it remains unadopted and is not an accepted receiving
+packet. The original pre-review preface stays historical. The helper
+retains historical V1/V2 stress cases; it does not evaluate V3/V4/V5 or establish
+independent acceptance. Ordinary prose
+handoffs do not require invented runtime IDs; existing missions keep their guards.
+
+The [navigation registry](docs/source-map-navigation.json) binds this current pointer
+and its disposition to exact candidate/review sections across six maintained entry
+points. `node source-map-linter.js` checks those bindings, not just file existence.
+See [navigation maintenance](docs/knowledge-management-sop.md#current-document-navigation);
+a consistent record is not approval or semantic acceptance.
+
+The [native research/report case](docs/document-authoring-case-study.md#native-research-report-and-required-reading)
+observes both clients reading all six justified prerequisites and reporting before
+analysis. It also retains a Claude interpretation/timing failure, a separately
+proposed correction and a locally fixed report-wording routing miss. Successful
+document delivery is not complete report quality or policy adoption.
+The [subsequent repair review](docs/document-authoring-case-study.md#native-research-repair-and-public-reporting)
+checks ten required inputs, permitted versus forbidden proposals and actual public
+message order. Both preserve authority; only Codex demonstrates both required
+advance notices in that case. Claude reporting and review-quality gaps remain.
+The separate research V3 is locally corrected, not newly model-accepted or adopted.
+The [required-source failure exercise](docs/document-authoring-case-study.md#required-source-failure-and-partial-work)
+confirms that both clients hold policy-dependent drafting without retrying the
+unavailable source, while preserving useful partial outputs. It also retains
+Claude's missing reports and conflated approval scopes; process success is not
+complete workflow acceptance. The operator's intake correction remains unadopted.
+The [changed-source receiving chain](docs/document-authoring-case-study.md#changed-source-revision-and-cold-start-receiving)
+now observes Codex revision and Claude review of its exact complete output without
+parent chat. Both preserve policy and separate decision scopes; Claude still
+falsely claims advance reports and miscounts required reading. Original results
+and a separate local correction remain distinct from acceptance. Tool adapters
+can reuse the shared [recipient projection](docs/role-document-access-policy.md)
+without rebuilding private source paths; projection is not transfer authority.
+The [report-stream diagnostic](docs/document-authoring-case-study.md#claude-public-report-stream-diagnosis)
+now compares incremental and completed Claude text: both lack the claimed advance
+notice. Known status alerts no longer cause the observed false observer stop;
+that correction does not repair reporting behavior or complete client parity.
+The [parent-delivered brief case](docs/document-authoring-case-study.md#parent-delivered-brief-before-native-work)
+then observes a bounded fallback: a route-only phase, actual parent delivery and
+a separately rerouted reading/work phase with correct actor accounting. This
+requires parent action; it is not automatic native progress delivery or proof
+that a message tool named in CLI help is available in the current session.
+
+The [method-failure follow-up](docs/document-authoring-case-study.md#method-failure-reporting-and-handoff)
+uses current full guidance across three native phases. Actual parent notices
+precede source reading and permitted aggregate-only work after a failed required
+read; the full item-level objective stays blocked. Correct read counts and actor
+attribution do not repair its handoff's conflicting retry decision owners or
+missing original-request reference. Those remain recorded beside a separate
+operator correction, not a fully accepted handoff.
+
+The original [METHOD61 preparation](docs/document-authoring-case-study.md#corrected-receiving-preparation-boundary)
+stopped at the internal-path boundary before a model call. Its later exact
+reviewed-preparation proposal remains unapproved; a locally assembled source map
+is not automatically transferable. The [family map](docs/document-authoring-case-study.md#current-authoring-families)
+distinguishes this artifact hold from observed receiving in other cases. Separately, ordinary
+phase routes can now carry an explicit project-root/task-ID pair to keep one
+[provisional cell](docs/document-authoring-case-study.md#direct-task-organization-identity)
+despite changed wording. This grants no access, standing organization or execution
+authority and cannot replace guarded mission metadata.
+
+The [native direct-task case](docs/document-authoring-case-study.md#native-direct-task-continuity)
+now observes Codex carrying that task ID through intake and review while retaining
+the original request, all four objectives and one bounded capability cell. Both
+phases read all seven assigned sources. The private root is checked by the adapter,
+not the model; the handoff explicitly depends on authorized recipient bindings.
+This is same-process evidence with identical query text, not Claude parity,
+changed-role continuity, automatic minimal context or completed receiving.
+
+[Skill-use reading](docs/document-authoring-case-study.md#skill-use-and-maintenance-reading)
+now separates ordinary client use from installation and corpus maintenance.
+A local replay of the earlier task removes eight unrelated manuals while retaining
+its objectives, capability decisions and every selected control. Explicit/parent
+requirements and guarded contexts remain intact; this is not fresh native model
+acceptance or a globally minimal reading list.
+
+The [request-first plan review](docs/document-authoring-case-study.md#request-first-plan-review-and-repair)
+shows both clients detecting six seeded omission/authority defects while their
+repaired handoffs still need work. Plan coverage now precedes multi-step work;
+proposed precautions stay distinct from actual holds, and feasible authorized
+receiving assembly belongs to the current writer. Detection is not acceptance
+of the repair, permission to disclose sources or completion of the whole workflow.
+The same-case follow-up produces both source-complete receiving units; Codex's
+repair is source-appraised as a usable draft, while Claude retains factual/status
+defects. That review did not yet observe actual cold-start continuation.
+
+The subsequent [cold-start continuation](docs/document-authoring-case-study.md#cold-start-document-continuation)
+now observes both fresh clients drafting verification worksheets from the exact
+received unit without old chat. Their next units differ: whole JSON versus a
+detached handoff field. Selection must preserve actual sibling dependencies and
+current restrictions. Receiving success does not erase retained report/scope drift
+or establish full outgoing acceptance.
+
+The [outgoing revision](docs/document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
+now preserves current limits and USER recovery ownership in both clients.
+Codex's exact revised unit is source-appraised for advisory work. The later
+[operative-condition review](docs/document-authoring-case-study.md#operative-condition-review-and-bounded-repair)
+repairs Claude's proposed-ordering summary but retains completion ambiguity and
+adds an unsupported trigger qualification. A separate, source-appraised operator
+correction preserves the stable predecessor; it has no fresh native acceptance.
+Keep usable drafting, completed reporting and completed underlying work distinct.
+
+The [exact repaired-unit receiving case](docs/document-authoring-case-study.md#exact-repaired-unit-receiving)
+now observes actual receipt and useful decision-brief drafting, with a retained
+changes-required verdict rather than blanket acceptance. Source appraisal separates
+actionable provenance corrections from unsupported mandatory edits. A clarified
+operator successor preserves the full worksheet and sources; it is not newly
+native-reviewed. A diagnosed transport-retry event also improves bounded review
+observation without changing permissions or extending the deadline.
+
+The [native cross-role case](docs/document-authoring-case-study.md#native-cross-role-continuation)
+observes fresh S6 drafting and S2 review with the same task identity, separate
+reading profiles and 16 actual source reads. The receiver uses its own route
+and the complete draft. Useful corrections coexist with retained source-quality
+defects; a separate operator revision is not fresh native acceptance. Both
+bundles now recognize source-bound draft review and preserve unknown coverage,
+known term context and the distinction between evidence checks and approvals.
+
+The [coordinated-exclusion correction](docs/document-authoring-case-study.md#coordinated-platform-exclusions)
+removes five unrelated technical manuals from that maintenance request while
+retaining all 19 checks. Complete platform exclusions cannot disguise an unsupported
+domain as covered; positive reviews, explicit sources and parent duties remain.
+Both bundles retain the original request. This is bounded local routing evidence,
+not universal semantic selection or a new native-review result.
+
+The [document-readiness routing correction](docs/document-authoring-case-study.md#document-readiness-and-format-routing)
+replays the actual maintenance request: five unrelated runtime references are
+replaced with missing authoring/handoff material, preserving every prior control.
+Both routers distinguish bounded document-readiness phrases and complete exclusion
+lists from actual technical duties. The human-mode total stays at 18 documents;
+better composition, not a smaller count, is the evidence. Broader relevance and
+fresh native acceptance remain open.
+
+For a project-content refusal, both installed wrappers now offer read-only
+[`review-content` diagnostics](docs/role-document-access-policy.md#content-review-diagnostics).
+The [exact-source check](docs/document-authoring-case-study.md#public-policy-content-review-diagnostics)
+identifies the rule behind the public-policy refusal without exposing bodies or
+clearing it. A diagnostic is not a disclosure exception or a prepared packet.
+The [catalog-screening correction](docs/document-authoring-case-study.md#recipient-catalog-screening)
+also checks source IDs and required-term labels before source reads; reference-only
+metadata is still delivered content. Existing disclosure refusals remain in force.
+The USER-approved [reviewed-preparation procedure](docs/role-document-access-policy.md#reviewed-document-preparation)
+adds private exact-source proposals and bounded USER decision records. It supports
+reviewed policy-word exceptions and distinct source-ID representations of internal
+drafts without changing originals. Source/recipient changes, expiry or revocation
+invalidate reuse. This is local preparation, not authenticated identity, automatic
+transmission or publication. See `project-document-review.js` and its fixtures;
+approval of the design is not approval of a particular proposal.
+The [bound recipient reader](docs/role-document-access-policy.md#bound-recipient-reader)
+lets an authorized adapter list and read packet source IDs without reconstructing
+private paths. Every call reinspects current bindings and preserves raw, summary
+or representation mode. This local utility is not a native receiving result.
+The [routed receiving tools](docs/role-document-access-policy.md#routed-receiving-tools)
+connect that reader to the installed router with phase-local read IDs and fixed
+source holds. An opt-in stdio adapter exposes only routing and selected reads;
+local protocol tests do not establish model receipt or grant transfer authority.
+The [compound-source case](docs/document-authoring-case-study.md#native-compound-source-planning)
+now exercises that adapter in both native clients with a current/proposed policy,
+row-level review and actual drafts. Both read every assigned source in two phases;
+Claude's source-fidelity defects remain open. This is not automatic minimum-context
+selection or clearance of the separately pending document-review proposals.
+Its [operator correction](docs/document-authoring-case-study.md#compound-draft-correction-and-receiving-proposal)
+preserves the original response and enumerates changed versus unchanged text.
+The corrected candidate still needs receiving review; exact edit accounting is
+not semantic acceptance or permission to send an internal draft.
+The [reading-selection explanation](docs/document-authoring-case-study.md#reading-selection-provenance)
+shows why each candidate was retained or conditionally omitted, without changing
+recommendations or granting access. Use it to review context selection, not to
+discard assigned sources or infer that the reading list is semantically complete.
+
+[Task-relevant runtime reading](docs/document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
+now separates ordinary prose handoffs and supported platform exclusions from
+actual technical work. Explicit inputs, assigned technical duties and selected
+controls remain; an excluded dashboard cannot conceal an unsupported domain.
+This bounded correction is not globally minimal context or native acceptance.
+
+[Source-topic reading](docs/document-authoring-case-study.md#source-topic-and-delivery-language-reading)
+also separates ordinary source evaluation from national specialist references.
+The requested output language does not establish a national subject. Explicit
+inputs, parent objectives, AI department duties and all selected controls remain;
+positive subject hints in ambiguous prohibitions stay conservative. This improves
+bounded CLI selection, not semantic completeness or read authorization.
+
+For an existing runtime mission, [local handoff generation](docs/handoff-packet-template.md#local-draft-generation)
+requires an explicit [source request](schema-files/handoff-generation-request.schema.json).
+It reads the selected OPORD/events, preserves quoted requirements and source
+digests, and leaves completion, current decisions and receiver acceptance
+unverified. Both generation-request and handoff-packet validation return
+`can_execute: false`. The old event-array-only call is no longer supported.
+Raw drafts stay private; generation is not recipient delivery or release review.
+
+One [separately approved native recipient exercise](docs/document-authoring-case-study.md#approved-synthetic-project-recipient-exercise)
+now demonstrates use of a synthetic raw/summary/reference-only packet and
+rejection of its untrusted approval claim. This is one appraised response, not
+authenticated recipient identity, installed-skill consumption or operational
+handoff acceptance. Its one-use model-call consent has been consumed.
+
+The later [agent-invoked phase exercise](docs/document-authoring-case-study.md#agent-invoked-phase-routing)
+observes three native Claude agents routing and reading selected sources, including
+a role change and amended policy. It exposes and corrects unsupported status
+claims; it does not establish minimal routing, Codex tool parity or operational
+acceptance. Its temporary read-only adapter is test apparatus, not a shipped plugin.
+The [subsequent Codex receiving case](docs/document-authoring-case-study.md#native-codex-routing-and-receiving)
+adds an actual route and thirteen source reads after a diagnosed client-bridge
+failure. It preserves the changed policy and user decisions in that case, not
+general client equivalence. Sixty recommendations and a fixed reading profile
+leave minimal-context routing unresolved.
+The [generic-comparison correction](docs/document-authoring-case-study.md#generic-comparison-routing-correction)
+now preserves unsupported-domain gaps and conditionally omits unrelated specialist
+manuals. Local rerouting of that recorded query recommends 49 documents, still
+not minimal context; required sources and selected controls remain unchanged.
+The subsequent [S6 bundle alignment](docs/document-authoring-case-study.md#s6-default-reading-alignment)
+restores knowledge/disclosure/classification policy and makes technical reading
+depend on department, task or input context rather than the S6 label alone.
+Negative-topic matching and broader semantic acceptance remain unresolved.
+
+For references to files in a separate project, use the explicit input origin:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
+node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
+  --actor=user --input-repository=/path/to/project --input-source=SUPPORT.md \
+  -- "Draft an SOP from SUPPORT.md."
+```
+
+`task_inputs` contains project-qualified references, not file contents or access
+approval. `--source` remains doctrine-relative. Missing or excluded required
+inputs fail; receipt mode is rejected until its external-input contract exists.
+Keep routing options before `--` and task text after it. Shell quoting alone
+does not stop option-like task text from replacing a routing setting.
+
+Issued doctrine references are also rechecked against their exact routed set and
+current file digests before new delegated authority and completed reports. Source
+drift stops new work without blocking settlement of already admitted results;
+see [current document integrity](docs/skill-operational-mission-lifecycle.md#current-document-integrity).
+This does not authorize source reads or prove client consumption.
+
+To assemble actual project text for a named recipient, use the offline
+`scripts/prepare_controls_documents.js` helper in either skill. It preserves
+raw, separately prepared summary and reference-only modes, binds the project
+origin and current bytes, and writes a private review candidate in that project.
+See [project content preparation](docs/role-document-access-policy.md#project-content-preparation).
+Preparation is not permission to read or send, and inspection does not prove
+native client use. Only the exact `prompt.md` is proposed for separate transfer
+approval; `packet.json` contains local source metadata and is not recipient input.
+Known withheld-source and repository paths in the task or supplied text also
+stop preparation. Review source-ID wording without dropping original requirements;
+this bounded check is not general sensitive-data detection or disclosure approval.
+
+For a doctrine-only framework question:
+
+```bash
+node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
   --actor=user \
-  "How should I operate a multi-agent implementation campaign?" .
+  "Draft an SOP and handoff document from the supplied policy."
 ```
 
 Route a delegated AI operator:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js \
+node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/route_controls_docs.js" \
   --actor=ai \
   --role=S3 \
   --department=operations \
   --authority=scoped-execution \
-  "Prepare an execution plan for a bounded documentation update." .
+  "Prepare an execution plan for a bounded documentation update."
 ```
 
-Open a delegated mission wave through the enforced lifecycle:
+Actual delegated execution, unlike a document draft, requires a current wave,
+routing receipts and applicable tool approvals. Read the
+[mission lifecycle](docs/skill-operational-mission-lifecycle.md) before opening
+a wave; sample payloads are examples, not your approval. From the target project,
+using the loaded skill directory, its command shape is:
 
 ```bash
-node codex-skills/controls-doctrine-operator/scripts/operate_controls_mission.js \
-  open sample-payloads/valid-mission-wave-plan.json \
+node "${CONTROLS_SKILL_DIR:-${CODEX_SKILLS_DIR:-${CODEX_HOME:-$HOME/.codex}/skills}/controls-doctrine-operator}/scripts/operate_controls_mission.js" \
+  open <reviewed-mission-wave-plan.json> \
   --repository . \
   --artifact-root .cannae/artifacts
 ```
+
+For contributor validation, install the exact lockfile dependencies in a clean
+checkout with `npm ci --ignore-scripts`. Workload-identity fixtures additionally
+need OpenSSL 3.x; optional Codex skill validation needs Python 3. Run relevant
+checks first, then the required repository gates. See the surfaces below;
+ordinary routing does not require running every platform fixture.
 
 ## Validation Surfaces
 
@@ -647,6 +972,7 @@ The repository intentionally includes many small runners instead of one large ru
 
 Important examples:
 
+- `run-handoff-generation-fixtures.js`: selected-source fidelity, unknown-state handling, non-authorizing validation and invalid mission/order/time/path/classification rejection; synthetic regressions, not receiver acceptance.
 - `validator-cli-prototype/run-fixtures.js`: schema and semantic validator regression suite.
 - `run-authority-integration-fixtures.js`: scoped approval and risk acceptance composition.
 - `run-release-integration-fixtures.js`: separation between execution approval and release review.
@@ -664,7 +990,7 @@ Important examples:
 - `run-model-force-v0.2-fixtures.js`: registry eligibility, deterministic compilation, agent/billet/receipt binding, dispatch manifest, and usage telemetry gates.
 - `run-agent-routing-preflight-fixtures.js`: routing receipt preflight for delegated agent waves.
 - `run-skill-mission-controller-fixtures.js`: full open/report/close lifecycle, mandatory per-wave routing, context-versus-tool authority separation, exact one-policy-per-agent planning, settled dispatch-lineage reporting, model binding, bounded AAR improvement, and multi-repository isolation.
-- `run-dispatch-runtime-fixtures.js`: plan-digest policy authorization, concurrent one-lineage issuance, ordered cross-agent repository handoff, exact tool admission and post-tool correlation, serial result checkpoints, replay, drift, interruption, same-session resume, revocation, expiry, retained-action, malformed-hook, cross-session, cross-agent, and cross-repository gates.
+- `run-dispatch-runtime-fixtures.js`: plan-digest policy authorization, concurrent one-lineage issuance, ordered cross-agent repository handoff, exact tool admission and post-tool correlation, serial result checkpoints, replay, drift, interruption, same-session resume, revocation, expiry, retained-action, malformed-hook, cross-session, cross-agent, and cross-repository gates; preserves original and cleanup failures without returning false success or deleting a different lock owner.
 - `run-protected-tool-gateway-fixtures.js`: trusted principal/gateway binding, exact transaction/idempotency admission, execution-token commit, raw-input non-retention, operation-class substitution, cancellation, orphan-admission revocation, and unknown-outcome recovery.
 - `run-protected-process-executor-fixtures.js`: real exact executable/argv execution, signed policy/envelope/observation binding, caller-result, shebang, and executable-drift rejection, timeout recording, forbidden repository-effect rejection, and no automatic rerun after an execution claim.
 - `run-oci-linux-sandbox-provider-fixtures.js`: required-in-CI live probe compilation and scratch-image execution, signed pre-create/post-cleanup evidence, Docker and kernel control measurement, caller-result, profile/image/probe substitution rejection, timeout, unavailable-daemon and malformed-listing cleanup rejection, exact-name containment, both CLI recovery exits, and no-rerun recovery.
@@ -706,9 +1032,119 @@ codex-skills/                 Codex Controls Doctrine Operator skill
 
 ## Current Maturity
 
-Cannae OS is currently a doctrine and prototype repository.
+Cannae OS is a skill-first doctrine and prototype repository. The current
+[requirement-level audit](docs/completion-backlog.md#requirement-level-audit)
+owns acceptance status; the implementation inventory below is not a completion
+score or evidence of current production operation.
 
-Working today:
+### Active Skill Status
+
+Of the five [active objectives](docs/skill-first-product-scope.md#active-objectives),
+all five now have bounded acceptance. The fixed inventory has twenty verified
+required rows and no remaining partial row. This combines representative document
+work, role-based routing, actual reads, source-bound handoffs, maintenance and
+installation/discovery in both clients, not a general reliability percentage.
+The [PR97 whole-output case](docs/document-authoring-case-study.md#whole-output-fidelity-and-useful-reading)
+supplies the final complete-report, replanning, useful-reading and client-equivalence
+evidence. Historical failures remain visible below. New work still needs source
+review; lexical overrecommendation and manually reviewed profiles remain limitations.
+Separate plugin packaging remains optional and deferred.
+
+The [optional-reading case](docs/document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
+observes both clients choosing useful guides while retaining assigned sources.
+It does not prove globally minimal context. The subsequent
+[OR72 correction](docs/document-authoring-case-study.md#or72-snapshot-and-locator-correction)
+preserves original evidence and fixes bounded source claims in an operator draft;
+it is not fresh native acceptance or an approved receiving packet.
+Its subsequent [exactly approved receiving case](docs/document-authoring-case-study.md#approved-or72-representation-receiving)
+now observes actual Claude receipt and preservation of those operative repairs.
+The full review retains finding errors; phase-specific wording must be appraised
+in context. Receipt is not blanket acceptance, successor delivery or adoption.
+The optional [exact quote lookup](docs/role-document-access-policy.md#exact-quote-lookup)
+now checks literal source locations inside an already-read, current document
+session. Its [local regression case](docs/document-authoring-case-study.md#exact-quote-location-checks)
+preserves read/access boundaries; it does not establish semantic review quality
+or new native acceptance.
+The subsequent [native quote-review case](docs/document-authoring-case-study.md#native-quote-review-and-decision-ownership)
+observes both clients using the tool and correctly appraising six mixed-quality
+findings. Claude's report still misstates one line number and a next-action
+decision owner; a separate operator correction preserves its accepted draft body.
+Actual tool use is not automatic semantic enforcement or overall completion.
+The [review-workflow routing correction](docs/document-authoring-case-study.md#review-workflow-routing-correction)
+now recognizes those bounded review/report/successor objectives while retaining
+separately declared domain gaps and authority limits. Its evidence is local, not
+a fresh native review or globally minimal context selection.
+Use the [active queue](docs/completion-backlog.md#active-core-work) for next work.
+
+The [cross-client recovery handoff](docs/document-authoring-case-study.md#cross-client-recovery-handoff)
+now observes fresh receiving in both directions, with complete source units and
+all assigned guides read at each phase. USER recovery authority survives; useful
+review repairs coexist with a false method-notice claim and unsupported source
+inferences. Both skills address those lessons without claiming a demonstrated cure.
+
+The [2026-11-15 requirement audit](docs/completion-backlog.md#audit-basis-and-disposition-changes)
+combines bounded drafting flow, exactly approved representation delivery, actual
+cross-client handoff, maintained artifact states and PR97's source-appraised work.
+Twenty required rows are verified at their stated scope; no partial rows remain
+in this fixed inventory. Six individual unapproved proposals stay held, but do
+not mean the delivery mechanism is untested. No draft adoption follows.
+The [ten-family audit](docs/document-authoring-case-study.md#artifact-family-state-audit)
+binds current summaries to original artifacts, reviews and decisions. Together
+with observed mirrored improvements and target-output isolation, it supports G4
+at that bounded scope, not permanent correctness or a complete corpus prose audit.
+Ongoing maintenance remains required. PR97 supplies the later bounded evidence
+for the other four objectives without rewriting that earlier audit.
+
+The [role/format reading correction](docs/document-authoring-case-study.md#role-and-format-reading-correction)
+adds missing authoring guidance for formal order drafts and narrows unrelated S3
+execution manuals only for direct, explicitly read-only document tasks. Technical
+duties, explicit/parent sources, guarded work and controls remain. Its 56-case
+local comparison is not new model behavior or a globally minimal reading profile.
+
+The [declared-reference check](docs/document-authoring-case-study.md#declared-routing-reference-integrity)
+also detects missing or ineligible files still named by routes and roles.
+Selected missing references stop routing before receipt/artifact output; a green
+inventory of surviving files alone is insufficient. This is availability, not
+source consumption, authority or semantic validation.
+
+The [RP95 replanning case](docs/document-authoring-case-study.md#parent-delivered-replanning-and-residual-scope)
+observes route-only notices, actual parent delivery and fresh seven-source work
+in both clients. Both retain truthful attribution and USER-owned holds while
+performing permitted drafts. Claude still assumes a relationship between inventory
+records and observed items when planning the remainder. The original, separate
+operator correction and mirrored guidance remain distinct; successful notice
+timing is not whole-report acceptance or overall completion.
+
+The [mapped-replanning follow-up](docs/document-authoring-case-study.md#mapped-replanning-and-compressed-reports)
+observes both clients using known record/event links while preserving unresolved
+work and USER decisions. Claude's detailed table is correct, but its FRAGO summary
+misstates the mapping and its report invents broader approval gates. The separate
+operator correction and output-specific review guidance do not constitute a native
+cure. G1/G3/G5 remained partial at that checkpoint; PR97 subsequently checks
+source fidelity across compressed reports as well as detailed tables.
+R1's [receiving preparation](docs/document-authoring-case-study.md#r1-receiving-preparation-boundary)
+stopped on internal-path raw delivery before a model call. Two exact review
+proposals remain pending; unchanged text is not permission to bypass that boundary.
+
+The [source-bound review/S4 follow-up](docs/document-authoring-case-study.md#source-bound-review-and-logistics-reading)
+corrects missed report-review guidance and an irrelevant SQL role default in
+58 local comparisons. Technical, explicit-source and guarded counterexamples
+remain; this is not fresh native reading or completion of semantic routing.
+
+The [bound-session follow-up](docs/document-authoring-case-study.md#bound-session-reading-context)
+connects that selection to the adapter's unchanged document-only descriptor.
+Thirty-two local session comparisons preserve assigned profiles and authority;
+recommendation changes do not prove fewer native source reads.
+PR97 then observes seven mandatory inputs at both phases and one relevant optional
+guide in each client. It does not prove automatic profile generation, globally
+minimal context, every client configuration or protected-host enforcement.
+
+### Retained Guarded Prototypes
+
+These implemented contracts and validation surfaces remain available. They do
+not make a service or dashboard mandatory for ordinary skill use, establish
+production isolation, or clear an existing hold. Their individual documentation
+and retained evidence define the tested scope:
 
 - mandatory plan-bound intent commitments and multi-echelon boundary checks in context generation, report admission, policy compilation, leases and covered-tool admission; legacy contexts remain historical rather than silently upgraded;
 
@@ -734,16 +1170,22 @@ Working today:
 - short-lived exact GitHub release authorization and independently attestation-bound terminal receipts, with all lower runtime artifacts retaining release false;
 - regression fixtures for authority, approval, release, handoff, readiness, force structure, SOF TF, and document access controls.
 
-Not complete yet:
+### Deferred Platform Work
+
+The following unfinished platform capabilities are retained, not the active
+skill completion queue. Resuming their development requires a new USER scope
+decision under the [product scope](docs/skill-first-product-scope.md#deferred-platform-work):
 
 - production-grade orchestrator;
 - persistent event store;
 - production approval UI;
 - provider-operated managed-exclusive tool gateway adapters and side-path isolation for real external systems;
 - authenticated multi-user permissions;
-- operation of a production SPIFFE Workload API, Fulcio, Rekor, CT log, TUF root service, monitor, witness, or gossip network;
-- formal compliance certification;
-- automatic hallucination elimination.
+- operation of a production SPIFFE Workload API, Fulcio, Rekor, CT log, TUF root service, monitor, witness, or gossip network.
+
+Formal compliance certification and automatic hallucination elimination are not
+claimed outcomes. See the limitations below; neither is a missing skill feature
+that a passing fixture can establish.
 
 ## Limitations And Safety Notes
 
@@ -833,33 +1275,15 @@ git diff --check
 
 ## Roadmap
 
-Near-term:
+Active priorities are authoring quality, task-level routing, receiver-ready
+handoffs, corpus maintenance, bounded improvement and equivalent client skill
+distribution. See the [active backlog](docs/completion-backlog.md#active-core-work).
+Do not infer completion from the number of files or a passing inventory audit.
 
-- exercise enforced dispatch in additional real Codex/Claude multi-session campaign trials and harden managed-hook installation;
-- tighten public documentation and contribution structure;
-- continue removing generated artifacts from source control;
-- improve source-map coverage and source interpretation notes;
-- expand fixture coverage around routing, release, and authority mismatches;
-- extend native provider adapters beyond the implemented GitHub Actions and GitLab.com OIDC paths to enterprise/self-managed providers, self-hosted runners, cloud, local-host, and TEE evidence;
-- implement provider adapters that collect Rekor checkpoints, consistency proofs, shard metadata, witness signatures, and monitor reports for v0.7;
-
-Mid-term:
-
-- define a persistent event model for missions, approvals, releases, handoffs, and AARs;
-- deploy the protected policy gateway behind independently operated identity, admission, coordination, and storage-fencing providers as the only side-effect path;
-- connect approval scope and release gates to that gateway;
-- implement authenticated self-hosted runner, local sandbox, and TEE execution-evidence adapters;
-- operate production transparency polling, witnesses, monitors, gossip, TUF distribution, and incident response around the implemented Phase 13 verifier;
-- operate independently durable release-trust checkpoint storage and cross-provider liveness monitoring around Phase 19D;
-- build a useful command-post dashboard from event projections;
-- formalize an evidence store for claims, sources, reliability, and interpretation.
-
-Long-term:
-
-- make Cannae OS a reusable control plane for human-led AI teams;
-- support different organizational cultures and doctrine families without hard-coding US assumptions;
-- support measurable agent readiness and authority delegation;
-- close the loop from AAR findings to SOP, policy, and readiness updates.
+The [runtime roadmap](docs/runtime-automation-roadmap.md) retains prior platform
+designs and unfinished work as a deferred reference. It is not the default
+continuation queue. Resuming dashboard, application or production-infrastructure
+development requires a new USER scope decision, not an old open backlog item.
 
 ## License
 

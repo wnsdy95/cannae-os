@@ -377,7 +377,7 @@ Current document set:
 72. `schema-files/context-item.schema.json`: Schema for classification, EEFI, allowed roles, and final release metadata.
 73. `schema-files/release-review.schema.json`: Schema for final output/external release review.
 74. `context-filter-prototype/`: Generator for role-based raw/summary/redacted/reference/denied context packets.
-75. `handoff-generator.js`: Generates a handoff packet from event replay and alert projections.
+75. `handoff-generator.js`: Generates an unreviewed local handoff draft from explicitly selected order/event files; preserves original requirements and unknown state without granting execution.
 76. `decision-packet-linter.js`: Validator for board packet option/risk/evidence/deadline.
 77. `event-fixtures/working-group-event-fixtures.json`: Event log for WG opened/prepared/decided/closed.
 78. `maintenance-readiness-model.md`: Model of tool/resource availability and sustainment readiness.

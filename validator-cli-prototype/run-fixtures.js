@@ -11,6 +11,47 @@ const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 
 const fixtures = [
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} exact-review packet binding`,
+    file: `sample-payloads/${prefix}-project-document-packet-reviewed.json`, type: "project-document-packet",
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : ["PROJECT_PACKET_REVIEW_BINDING_REQUIRED"] })),
+  { name: "exact document preparation decision is not execution authority", file: "sample-payloads/valid-project-document-review-decision.json",
+    type: "project-document-review-decision", exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
+  { name: "document review validity cannot be reversed", file: "sample-payloads/invalid-project-document-review-decision.json",
+    type: "project-document-review-decision", exitCode: 1, expectedCanExecute: false, requiredCodes: ["PROJECT_REVIEW_VALIDITY_INVALID"] },
+  { name: "private document review proposal is not an approved packet", file: "sample-payloads/valid-project-document-review-proposal.json",
+    type: "project-document-review-proposal", exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
+  { name: "proposal check must match its exact source", file: "sample-payloads/invalid-project-document-review-proposal.json",
+    type: "project-document-review-proposal", exitCode: 1, expectedCanExecute: false,
+    requiredCodes: ["PROJECT_REVIEW_CHECK_BINDING_INVALID"] },
+  { name: "internal draft representation is a request, not approval", file: "sample-payloads/valid-project-document-packet-representation-request.json",
+    type: "project-document-packet-request", exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
+  { name: "reviewed representation cannot read arbitrary internal files", file: "sample-payloads/invalid-project-document-packet-representation-request.json",
+    type: "project-document-packet-request", exitCode: 1, expectedCanExecute: false,
+    requiredCodes: ["PROJECT_PACKET_PATH_INVALID"] },
+  { name: "required terminology must be part of the requested selection",
+    file: "sample-payloads/invalid-project-document-packet-required-terms.json",
+    type: "project-document-packet-request", exitCode: 1, expectedCanExecute: false,
+    requiredCodes: ["PROJECT_PACKET_REQUIRED_TERMINOLOGY_INVALID"] },
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} explicit terminology packet binding`,
+    file: `sample-payloads/${prefix}-project-document-packet-terminology-request.json`,
+    type: "project-document-packet-request", exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : ["PROJECT_PACKET_TERMINOLOGY_BINDING_INVALID"] })),
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing project terminology`,
+    file: `sample-payloads/${prefix}-project-terminology.json`, type: "project-terminology",
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : ["TERMINOLOGY_INFERRED_DECISION"] })),
+  ...["request", "packet"].map(kind => ({ name: `${kind} cannot disclose known private locations`,
+    file: `sample-payloads/invalid-project-document-packet-private-path${kind === "request" ? "-request" : ""}.json`,
+    type: kind === "request" ? "project-document-packet-request" : "project-document-packet",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["PROJECT_PACKET_PRIVATE_PATH_DISCLOSURE"] })),
+  { name: "a copied original cannot be delivered as a summary", file: "sample-payloads/invalid-project-document-packet-summary-copy.json",
+    type: "project-document-packet-request", exitCode: 1, expectedCanExecute: false, requiredCodes: ["PROJECT_PACKET_SUMMARY_IS_SOURCE"] },
+  ...["project-document-packet-request", "project-document-packet"].flatMap(type => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type,
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : [type.endsWith("request") ? "PROJECT_PACKET_DELIVERY_DENIED" : "PROJECT_PACKET_BINDING_MISMATCH"]
+  }))),
   { name: "valid non-authorizing CLI model selection", file: "sample-payloads/valid-codex-model-selection.json", type: "codex-model-selection",
     exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
   { name: "changed CLI model selection digest", file: "sample-payloads/invalid-codex-model-selection.json", type: "codex-model-selection",
@@ -1731,6 +1772,12 @@ const fixtures = [
     requiredCodes: ["CONST_MISMATCH"]
   },
   {
+    name: "agent context pack rejects an escaping document path",
+    file: "sample-payloads/invalid-agent-context-pack-document-path.json",
+    type: "agent-context-pack", exitCode: 1, expectedCanExecute: false,
+    requiredCodes: ["AGENT_CONTEXT_UNSAFE_DOCUMENT_PATH"]
+  },
+  {
     name: "valid mandatory control execution receipt",
     file: "sample-payloads/valid-control-execution-receipt.json",
     type: "control-execution-receipt",
@@ -1996,8 +2043,32 @@ const fixtures = [
     file: "sample-payloads/valid-document-access-manifest.json",
     type: "document-access-manifest",
     exitCode: 0,
+    expectedCanExecute: false,
     requiredCodes: []
   },
+  {
+    name: "bounded delivery modes are non-authorizing metadata",
+    file: "sample-payloads/valid-document-access-manifest-bounded.json",
+    type: "document-access-manifest", exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  },
+  {
+    name: "ambiguous document policies cannot select an allowing record",
+    file: "sample-payloads/invalid-document-access-manifest-ambiguous.json",
+    type: "document-access-manifest", exitCode: 1, expectedCanExecute: false,
+    requiredCodes: ["DOCUMENT_ACCESS_DUPLICATE_PATH", "DOCUMENT_ACCESS_DUPLICATE_PROFILE",
+      "DOCUMENT_ACCESS_REQUIRED_REFERENCE_ONLY", "DOCUMENT_ACCESS_DENIED_DOC_OPTIONAL"]
+  },
+  ...[
+    ["null documents", value => { value.documents = null; }, "TYPE_MISMATCH"],
+    ["unknown authority", value => { value.role_profiles[0].authority_level = "L9"; }, "ENUM_MISMATCH"],
+    ["undeclared policy field", value => { value.allow_all = true; }, "ADDITIONAL_PROPERTY"],
+    ["empty profiles", value => { value.role_profiles = []; }, "MIN_ITEMS"],
+    ["path alias", value => { value.documents[0].path = "./docs/source-map.md"; }, "DOCUMENT_ACCESS_NONLOCAL_PATH"],
+    ["directory instead of document", value => { value.documents[0].path = "docs"; }, "DOCUMENT_ACCESS_DOC_PATH_MISSING"]
+  ].map(([label, mutate, code]) => ({
+    name: `document access rejects ${label}`, file: "sample-payloads/valid-document-access-manifest-bounded.json",
+    type: "document-access-manifest", exitCode: 1, expectedCanExecute: false, mutate, requiredCodes: [code]
+  })),
   {
     name: "overbroad document access manifest",
     file: "sample-payloads/invalid-document-access-manifest-overbroad.json",
@@ -2068,7 +2139,24 @@ const fixtures = [
     file: "sample-payloads/valid-handoff-packet.json",
     type: "handoff-packet",
     exitCode: 0,
+    expectedCanExecute: false,
     requiredCodes: []
+  },
+  {
+    name: "valid non-authorizing handoff generation request",
+    file: "sample-payloads/valid-handoff-generation-request.json",
+    type: "handoff-generation-request",
+    exitCode: 0,
+    expectedCanExecute: false,
+    requiredCodes: []
+  },
+  {
+    name: "handoff generation request cannot omit the order or assert execution",
+    file: "sample-payloads/invalid-handoff-generation-request.json",
+    type: "handoff-generation-request",
+    exitCode: 1,
+    expectedCanExecute: false,
+    requiredCodes: ["MISSING_REQUIRED", "ADDITIONAL_PROPERTY"]
   },
   {
     name: "valid continuity plan",

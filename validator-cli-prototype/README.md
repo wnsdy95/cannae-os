@@ -127,6 +127,7 @@ never treats an artifact's own retrieval or record time as the current clock.
 - `document-access-manifest`
 - `ccir-alert`
 - `handoff-packet`
+- `handoff-generation-request`
 - `continuity-plan`
 - `context-item`
 - `release-review`
@@ -151,6 +152,11 @@ never treats an artifact's own retrieval or record time as the current clock.
 - `approval-delegation-revocation-event`
 - `risk-acceptance`
 - `routing-receipt`
+
+Both handoff types report `can_execute: false` even when valid. Packet validity
+does not establish completion, current authority or receiver acceptance. The
+generation consumer additionally checks selected source files and mission/order
+bindings; request validation alone does not read those files.
 
 ## Current Limits
 

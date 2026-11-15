@@ -1,0 +1,72 @@
+{
+  "schema_version": "0.1",
+  "type": "DocumentAccessManifest",
+  "id": "DAM-AMBIGUOUS-001",
+  "mission_id": "M-DEMO-001",
+  "default_decision": "deny",
+  "role_profiles": [
+    {
+      "role": "S2",
+      "duty": "source_verification",
+      "authority_level": "L0",
+      "required_documents": ["docs/source-map.md"],
+      "optional_documents": ["docs/research-compendium.md"],
+      "denied_documents": ["docs/research-compendium.md"],
+      "escalation_role": "COS"
+    },
+    {
+      "role": "S2",
+      "duty": "source_verification",
+      "authority_level": "L0",
+      "required_documents": ["docs/source-map.md"],
+      "optional_documents": [],
+      "denied_documents": [],
+      "escalation_role": "COS"
+    }
+  ],
+  "documents": [
+    {
+      "path": "docs/source-map.md",
+      "title": "Source Map",
+      "classification": "internal",
+      "owner_role": "S6",
+      "allowed_roles": ["S2"],
+      "duties": ["source_verification"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "raw",
+      "rationale": "First conflicting record."
+    },
+    {
+      "path": "docs/source-map.md",
+      "title": "Source Map Conflict",
+      "classification": "restricted",
+      "owner_role": "S6",
+      "allowed_roles": ["S2"],
+      "duties": ["source_verification"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "reference_only",
+      "rationale": "Duplicate path cannot replace a required raw policy."
+    },
+    {
+      "path": "docs/research-compendium.md",
+      "title": "Research Compendium",
+      "classification": "internal",
+      "owner_role": "RECORDER",
+      "allowed_roles": ["S2"],
+      "duties": ["source_verification"],
+      "minimum_authority_level": "L0",
+      "delivery_mode": "summary",
+      "rationale": "Optional entry conflicts with the explicit deny list."
+    }
+  ],
+  "controls": {
+    "need_to_know": true,
+    "no_bulk_read": true,
+    "audit_required": true,
+    "exception_requires_approval": true,
+    "source_of_truth": "docs/role-document-access-policy.md"
+  },
+  "classification": "internal",
+  "status": "pending",
+  "created_at": "2026-11-10T00:00:00Z"
+}

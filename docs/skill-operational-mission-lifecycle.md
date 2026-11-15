@@ -107,6 +107,52 @@ An agent executes only from its exact `AgentContextPack`.
 - `release_authorized` is always false.
 - `capability_query` is the mission-wide capability scope. On `gap_detected`, every agent keeps the same provisional cell and force-structure controls even when its narrower task matches an existing support route.
 
+### Current Document Integrity
+
+`context-document-integrity.js` checks the exact set from this agent's routing
+receipt plus any plan-required method documents. Missing, additional or duplicate
+rows and wrong-agent/wave/mission receipts fail. Each canonical relative path
+must still resolve to a regular file with no symlink components or private-state
+directory aliases. Its current bytes must match the issued SHA-256; changes
+observed during a read also fail. Errors expose fixed codes, not source contents.
+
+The controller checks this boundary at context publication and for completed
+agent results before controls and again before report publication. Dispatch
+checks it before policy authorization, initial/resumed lease issuance and every
+new covered-tool admission, including their publication guards. A source changed
+after issuance cannot silently become the instruction used for new authority.
+Missing files and even same-root symlink aliases fail, not just digest changes.
+
+On `CONTEXT_DOCUMENT_*`, stop new work. Preserve the issued packet and investigate
+the changed source; prepare a newly reviewed wave for changed instructions rather
+than editing hashes or removing references. Already admitted result callbacks,
+cancellation and revocation retain their existing settlement rules. A successful
+old callback is historical evidence, not permission to continue against changed
+sources. Failed/blocked reports do not acquire a new document-freshness success
+requirement, though all other report and control gates remain mandatory.
+Intentional in-place edits to issued instructions also cause mismatch. Draft a
+candidate separately and bind the reviewed revision in a new wave; do not refresh
+retained hashes. Ordinary prose work outside a guarded wave does not require this
+execution ceremony.
+
+This is a local integrity recheck, not an authenticated source owner, read grant,
+summary generator, receiver acknowledgement or protected filesystem boundary.
+It returns no document bodies and does not add target-project source delivery.
+The caller selects the doctrine root; the existing context contract does not bind
+its physical origin. An identical copy can match. Project-origin identity and
+authorized content/recipient binding therefore remain separate unfinished work.
+It detects mismatch at checks, not every intervening filesystem event or arbitrary
+concurrent host activity. Returning exactly to the bound bytes is not a permanent
+revocation event; old scope/time/lease/stop gates still apply. Do not claim that
+these checks provide fresh semantics or proof a client consumed the instructions.
+Historical v0.2/v0.3 context handling and already admitted settlements are retained.
+
+`run-context-document-integrity-fixtures.js` uses isolated doctrine/target Git
+repositories and real controller/dispatch calls for both provider IDs. It covers
+current bytes, set/recipient substitutions, drift before lease/tool authority,
+missing/symlinked sources, completion-report rejection and settlement/revocation
+after drift. These calls are local fixture evidence, not native model dispatch.
+
 The context pack proves current routing and task context; it is not tool
 authority. Before opening a dispatch-controlled wave, hash one deny-by-default
 policy draft per agent and put the exact digest, policy ID, provider, and agent
@@ -268,6 +314,11 @@ issuance/resume, and covered pre-tool admission reject the terminated wave,
 including attempts to backdate a command. Cleanup checkpoints remain available.
 Lifecycle writes are serialized per wave, and termination shares the dispatch
 issuance lock so it cannot race a new lease into an apparently settled wave.
+If operation/renewal and issuance-lock cleanup both fail, retain both errors
+and inspect durable status before retrying. The original failure is preserved
+as the combined error's cause; see the
+[issuance failure procedure](enforced-dispatch-and-resume.md#53-issuance-failure-and-cleanup-evidence).
+Do not infer successful termination or an unstarted operation from a cleanup error.
 
 `status` distinguishes `expired_pending_termination` from a persisted
 `expired`, `aborted`, or `superseded` record. This operation ends only one wave,
@@ -329,6 +380,14 @@ The default installer uses symlinks, so both skill wrappers resolve the live rep
 ```
 
 `--copy` installations receive a local `.cannae-os-root` runtime marker. `CANNAE_OS_HOME` is the explicit override when the doctrine repository moves.
+
+The document router also accepts `--doctrine-root` and refuses stale explicit
+bindings instead of silently falling back. Corpus selection is separate from
+`--repository` output isolation. The installer stages replacements and checks
+both destinations/source overlap first; interrupted installation still needs
+inspection of both destinations and any retained recovery directory.
+`run-skill-installation-fixtures.js` checks isolated link/copy installations and
+router parity, not native-client execution or a multi-client crash transaction.
 
 ## 9. Campaign Continuation Gate
 

@@ -2,9 +2,171 @@
 
 ## 0. Purpose
 
+### Ordinary Document Work
+
+Choose the handoff form from the work being transferred, not from the template's
+military vocabulary. Under [Skill-First Product Scope](skill-first-product-scope.md),
+an ordinary document draft or local corpus edit can use a plain Markdown handoff.
+It does not need a newly invented mission ID, OPORD, event log, role assignment,
+approval receipt or server. Its canonical documents and observed results are
+the durable record; chat memory is not a substitute.
+
+Include the original purpose and required outputs, current canonical version,
+source paths and freshness limits, completed versus unverified work, unresolved
+decisions and their real decision owner, the next bounded action and what must
+not be done. State a receiver's assignment only when established; otherwise mark
+it unknown in the supplied records. Distinguish unobserved acceptance from a
+verified rejection. Check these distinctions in status and next-action language
+as well as the unknowns list. An explicit unknown is not a negative fact or an
+approval; the chosen next step is not necessarily the only permitted action.
+
+For a plain-document cold start, the receiver must be able to locate the cited
+files, explain the original purpose and boundaries, distinguish observed results
+from plans, and identify a next action allowed without a new decision. Record
+actual receiver acknowledgement separately; writing this packet is not acceptance.
+
+List still-active work holds separately from the next action's own stop. A
+permitted drafting step does not clear an adoption or transmission hold. Carry
+each hold's affected scope, existing resolution path and decision owner; link
+to the established procedure instead of inventing another approval process.
+Resolving one hold does not resolve a separate hold on the transferred work.
+The same USER may own several decisions without making their scopes identical.
+Keep document adoption separate from publication, transmission and operational
+execution unless an actual decision explicitly covers all those actions. A table
+row grouping them under "adoption decision" does not grant the missing scopes.
+Source restoration also does not establish policy review, adoption or release.
+
+Separate decision authority from the person who will perform an operation. An
+unknown operational assignee does not make an established decision owner
+provisional. Preserve the assignment or decision that establishes each boundary;
+an older policy's silence does not erase a later authorized assignment. A proposed
+procedure, baseline or quality threshold remains a proposal without making an
+already retained decision right optional.
+
+Distinguish a usable worksheet, a complete status report and completed underlying
+work. Recording an unresolved item can complete its reporting obligation without
+completing the required reconciliation. Name what remains unresolved and which
+completion claim it prevents; retain independent permitted drafting. Use supplied
+acceptance criteria rather than inventing a universal all-Pass threshold.
+
+When work depends on user-specific vocabulary, include the relevant confirmed
+definitions, scope, concept/revision IDs and ledger digest, plus unresolved
+meanings separately. Follow [Project Terminology Workflow](project-terminology-workflow.md)
+for freshness and recipient selection. Do not attach the private full ledger or
+treat a changed term as permission to change an issued instruction.
+
+Keep the original author, current reviewer and receiving role distinct. Quote
+historical selection metadata as historical, not as the receiver's current
+context. The same ledger digest can yield different role-selected excerpts;
+carry the excerpt's delivered digest and source phase when that distinction
+matters. Preserve stable source IDs, or attach a phase-qualified origin map for
+existing labels without rewriting the original evidence. Before transfer, check
+that every required predecessor, review and policy is actually included or has
+an explicit unavailable/withheld disposition. Missing history limits the related
+comparison, not necessarily current-policy understanding or permitted drafting.
+
+Declare whether the receiving unit is this whole packet or a detached document.
+Keep required bindings with that unit, without unnecessarily repeating every
+origin-map row in every paragraph. State whose checks ran in which phase;
+model-only non-execution claims must not erase the preparer's actual work.
+Check every "above", "below", "attached" and original-request reference against
+that declared unit. A model's prompt is not an attachment to its response.
+Include the authorized text or an actual supplied lookup; do not claim the
+original request is reproduced when only a purpose summary is present.
+
+Source IDs and digests identify material but do not tell a cold-start receiver
+how to read it. Include authorized bodies or resolvable source locations with
+the declared unit. A previous phase's route token is not portable read access.
+If the receiver still needs an authorized preparer to assemble those inputs,
+mark the handoff incomplete for receiving and name that prerequisite. Do not
+invent a location or treat an operator's later assembly as work the model did.
+
+When the necessary text is already supplied and authorized for this output,
+assemble the requested receiving unit now, including the current draft and its
+required sources. Do not delegate avoidable assembly merely to report an honest
+incomplete status. Use source bodies or actual authorized locators; never bypass
+access/disclosure controls, retrieve excluded sources or invent a path. If a
+real prerequisite prevents completion, identify it and retain the incomplete
+status. Text assembly is not transfer, integrity verification or acknowledgement.
+Keep proposed precautions separate from active holds in the receiving summary;
+a recommendation must not become a new restriction while being shortened.
+For mixed gates, compare each condition's source and status with its wording in
+the next-action summary and procedure. Preserve existing approval requirements
+without promoting an adjacent proposed prerequisite. Apply the operative-condition
+check in the authoring workflow; repair contradictory sentences, not just labels.
+
+Recheck the receiving-unit declaration after every continuation; the same output
+field name does not guarantee the same boundary. If a structured response declares
+the whole object, keep required sibling fields such as the worksheet, source
+inventory and limits. Parse the structure instead of copying only a familiar
+handoff field. For a detached document, assemble those dependencies explicitly
+and review the changed unit before any separately authorized transfer. Record the
+exact selection and its binding; a valid extraction is not semantic acceptance.
+Carry the current assignment's stricter limits as well as the inherited project
+rules. A historical no-file-change rule does not replace a current no-tool or
+no-lookup restriction. A past-tense activity report does not carry that prohibition.
+An actual successor assignment may change a phase-specific limit within its
+authority; cite that change and scope instead of silently discarding the limit
+or treating every historical restriction as permanent.
+
+Before compressing an activity report, separate successful reads, successful-source
+rereads, failed delivery and operational execution. State the failed source ID,
+whether any body was delivered, the affected conclusion and the applicable retry
+decision. Do not summarize real document reads as "no tools or reads executed".
+A source-specific no-retry result does not prohibit rereading other authorized
+sources; it also does not authorize retrying that failure. Preserve unaffected
+work and any separate policy hold even if the source later becomes readable.
+A preparer's reading/delivery authority does not include changing the instruction
+owner's retry prohibition. Name that owner and the applicable explicit change
+needed before an otherwise forbidden retry. Restored access, a new route or a
+proposed recovery action does not clear the hold. Avoid granting a different
+owner this power in the summary while naming the correct owner elsewhere.
+
+Keep each source-ID/version/full-digest tuple exact. Reuse the supplied reviewed
+origin map rather than reconstructing hashes in prose. If displaying a shortened
+identifier, label it display-only and retain the full binding in the declared
+delivery unit; never combine fragments from different revisions. A correct full
+hash elsewhere does not repair a misleading label. If the map or authorized
+locator is withheld, mark the dependent comparison unresolved instead of claiming
+that a detached note alone is sufficient to resume. This is a manual review
+criterion, not an automatic semantic or integrity check of generated prose.
+
+Prefer an already supplied display label. When none is supplied, cite the stable
+source ID and its existing full binding map rather than regenerating a shortened
+digest in prose. Display-only status limits what a label proves; it does not
+excuse an incorrect prefix or suffix. A parent preparing a derivative brief may
+check its copied labels deterministically without attributing that check to the
+no-tool reviewer. Keep the raw response and corrected derivative distinct.
+
+No-schema-needed is not no-review-needed: apply these quality checks and the
+request/source comparison in [Document Authoring Workflow](document-authoring-workflow.md).
+
+Required reading is not satisfied merely because a file was eligible for
+delivery. Reconcile assigned required rows with actual current-phase reads;
+mark dependent review incomplete when a prerequisite remains unread. Preserve
+independent partial findings without silently downgrading the reading list.
+Count by source ID, including the candidate when it is a required row. A useful
+breakdown into reference readings and reviewed artifacts must still reconcile to
+the full required total; rereads are separate from unique sources.
+When an advance backbrief was requested, distinguish it from a retrospective
+final section; record the report actually observed, not a reconstructed sequence.
+
+### Existing Runtime Missions
+
+The machine-packet fields and runtime procedures in sections 1-9 apply to an
+actual runtime mission, delegated wave or guarded operation. Keep its real
+order, current context, pending approvals and unresolved effects; do not switch
+it to a plain-document handoff to bypass any control. This scope clarification
+does not change the machine schema, admission rules or existing holds.
+
 Conversation history is not the source of truth. The event log, evidence store, decision log, and doctrine docs are. Every long-running task must leave behind a handoff packet and a current projection so that the next operator can resume without any chat history.
 
-The machine contract for a handoff packet already exists in `schema-files/handoff-packet.schema.json`, and `handoff-generator.js` already produces a draft packet from event projections and alert routing. What has been missing is the authoring standard: what each section must and must not contain, when a packet is mandatory, and the quality gate a packet must pass before it counts as a valid context transition.
+The machine contract is `schema-files/handoff-packet.schema.json`. The local
+`handoff-generator.js` produces an explicitly unreviewed draft from selected
+OPORD and same-mission event files, retaining their digests and quoted contents.
+It does not infer completed work or current approval state from event counts.
+Handoff validation always returns `can_execute: false`, including for legacy
+v0.1 packets. A valid shape is neither execution permission nor an accepted handoff.
 
 This document is that authoring template and quality gate. It extends `knowledge-management-sop.md` section 6 (which states the rule that a packet must exist) and does not restate its knowledge management principles. It documents the human- and agent-facing procedure over the existing schema; it does not redefine the contract.
 
@@ -21,7 +183,8 @@ This document is that authoring template and quality gate. It extends `knowledge
 | Artifact | Role in the handoff pipeline |
 | --- | --- |
 | `schema-files/handoff-packet.schema.json` | Machine contract. Defines the required fields and their types. Structural validity only |
-| `handoff-generator.js` | Draft producer. Projects the event log and alert queue into a first-cut packet |
+| `handoff-generator.js` | Local draft producer. Requires an explicit `HandoffGenerationRequest`, reads selected order/events and preserves their claims without certifying current state |
+| `schema-files/handoff-generation-request.schema.json` | Non-authorizing source selection; valid/invalid samples and `run-handoff-generation-fixtures.js` cover the consumer |
 | `knowledge-management-sop.md` section 6 | Doctrine. States when the packet concept applies and the resumption rules |
 | This document | Authoring template and review standard. Defines content quality per section and the acceptance gate |
 
@@ -41,7 +204,12 @@ If a trigger fires and no packet exists, that is a knowledge management failure 
 
 ## 4. Section-by-Section Template
 
-The field order below mirrors `schema-files/handoff-packet.schema.json`. Every field is required by the schema; "empty" is expressed by an explicit negative statement (for example "No pending commander decisions."), never by omission.
+The field order below mirrors `schema-files/handoff-packet.schema.json`. Every
+field is required. Distinguish confirmed absence from an unknown: "not observed
+in these supplied records; completeness unverified" is not "none." Name the
+record scope and freshness supporting a negative assertion. Empty `completed`
+is appropriate when no completion has been verified; explain that limitation in
+`verification_status`. Do not manufacture decisions, IDs or evidence to fill fields.
 
 | Field | Must contain | Must not contain |
 | --- | --- | --- |
@@ -66,7 +234,9 @@ The field order below mirrors `schema-files/handoff-packet.schema.json`. Every f
 
 ## 5. Worked Minimal Example
 
-The following packet is consistent with `schema-files/handoff-packet.schema.json` and passes the section 6 checklist. It is deliberately minimal: one open task, one blocker, one pending decision.
+The following is a synthetic illustration of the v0.1 shape: one open task, one
+blocker and one pending decision. Its dated claims are not observed verification,
+current approval or an actual passing section 6 review. Do not reuse its IDs.
 
 ```json
 {
@@ -122,9 +292,9 @@ A packet is accepted only when every item below holds. The reviewer records the 
 1. Schema check: the packet validates against `schema-files/handoff-packet.schema.json`.
 2. Cold-start check: the first entry in `next_actions` is executable by an operator who has read only this packet and the `source_of_truth_files`.
 3. Intent fidelity check: `commander_intent` matches the order identified by `current_order`, including the authority boundary.
-4. Pending-approval check: every approval known to the event projection appears in `pending_decisions`; none is silently dropped.
+4. Pending-approval check: reconcile the current decision ledger, including expiry, consumption, revocation and delegation. Do not turn recorded grants or an incomplete projection into current permission; retain unresolved discrepancies and unknowns.
 5. Boundary check: `do_not_do` restates the Red/Black boundary in mission-specific terms.
-6. Evidence check: every `completed` entry points at something checkable; every `verification_status` entry names a re-runnable command and its last result.
+6. Evidence check: every `completed` entry points at checked evidence. Separate actual check/results from planned or unrun verification; a recorded success, evidence count or AAR is not independent completion proof.
 7. Truth-location check: every `source_of_truth_files` entry exists in the repository and none is a conversation artifact.
 8. Classification check: `classification` is at least as high as the most sensitive referenced item, and the packet body leaks nothing above its own label.
 
@@ -133,11 +303,50 @@ Failure of any item returns the packet to the author. Repeated handoff failure i
 ## 7. Authoring and Review Procedure
 
 1. Detect a section 3 trigger and freeze new task starts for the affected scope.
-2. Run `handoff-generator.js` against the current event log to produce the draft.
-3. The author corrects the draft against the section 4 must/must-not rules — the generator knows the projection, but only the author knows the exact resumption points and mission-specific prohibitions.
+2. An authorized source reader selects the actual order and event files using the local procedure below. Ordinary prose work still uses section 0, not invented runtime files.
+3. The author checks the draft against section 4 and the current authoritative records. Keep the original draft and source digests; record revisions separately. Reconcile actual resumption points, effects and decisions without silently replacing unknowns with negative claims.
 4. Validate the edited packet against the schema.
 5. A second role (CoS or S6, per the handoff review row of the knowledge review rhythm) applies the section 6 checklist.
 6. Record the accepted packet and reference it from the continuity or wave closeout record; the packet becomes part of the source of truth, not a chat message.
+
+### Local Draft Generation
+
+Run from the source repository with a JSON request containing `schema_version:
+"0.1"`, `type: "HandoffGenerationRequest"`, `order_file`, `events_file`,
+`created_by` and `classification`. Paths are repository-relative ordinary files;
+symlink components, parent traversal and `.git` paths are rejected. Each source
+is limited to 8 MiB. The caller must already be allowed to read every source.
+Role strings and this request do not establish that authority.
+
+```bash
+# Synthetic example only; select actual files for an existing runtime mission.
+node handoff-generator.js sample-payloads/valid-handoff-generation-request.json
+node run-handoff-generation-fixtures.js
+```
+
+The former event-array-only CLI/API is intentionally rejected. The API is
+`generateHandoff(request, { root })`, defaulting `root` to the current directory.
+Request validation checks shape, not file availability; the consumer also
+validates the OPORD, task mission IDs, event envelopes, unique event IDs,
+timezone-bearing nonfuture timestamps, and matching mission/order creation
+records. Mixed missions, a different recorded OPORD or any FRAGO event stop
+generation for manual order reconciliation. Amendment merging is not implemented.
+
+Output remains a v0.1 packet. Quoted JSON preserves substantive order sections
+and every supplied event, including unfamiliar event types, without interpreting
+embedded instructions as authority. `current_order` identifies the supplied
+order, not proof that it is still in effect. Timestamps are sorted by instant;
+file digests identify the exact bytes read, not their authenticity or later
+freshness. Classification cannot be below a known source label; an unlabelled
+event requires `restricted`. Labels are declarations, not secret detection.
+
+The draft keeps `completed` empty, flags state/decisions as unverified and labels
+assessment commands as unrun. It never executes them. Review must establish
+what is complete and the next permitted action. No receiver is assigned or
+acknowledged automatically. The output contains raw source content on stdout:
+retain it privately in the target repository, do not place it in shared logs or
+transfer it without recipient access and the applicable release review. This
+local helper is not redaction, a protected filesystem or an operating gateway.
 
 ## 8. Source Anchors
 

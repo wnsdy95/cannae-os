@@ -2,7 +2,14 @@
 
 Use this after answering, editing, researching, or validating the Controls corpus.
 
-This reference governs maintenance of the doctrine corpus and router. For autonomous improvement of an active mission or in-progress artifact, use `docs/bounded-self-improvement-operations.md` and the campaign/checkpoint/decision contracts instead of an informal AAR-only loop.
+This reference governs maintenance of the doctrine corpus and router under
+`docs/skill-first-product-scope.md`. A directly requested document or skill edit
+does not automatically start an autonomous runtime campaign. Keep its improvement
+bounded to the request, record the observed gap and validate the changed surface.
+For an explicitly authorized autonomous campaign or already guarded mission,
+use `docs/bounded-self-improvement-operations.md` and the retained
+`references/runtime-operations.md` procedures; an informal AAR cannot replace
+their proof, approval, stop or settlement rules.
 
 ## Mandatory Per-Improvement Skill Adaptation
 
@@ -40,6 +47,14 @@ is a failed gate with an unexecuted suffix, even if individual runtime runners
 passed. Preserve its original source/log and verify the repaired CLI separately.
 
 ## Completion Audits
+
+For "what remains" or continuation, read `docs/skill-first-product-scope.md`
+and the active core queue in `docs/completion-backlog.md` first. Do not select
+dashboard, console, separate execution service or infrastructure work from the
+retained platform backlog without a new USER scope decision. Run
+`node implementation-candidate-registry.js audit` to inspect existing mappings
+and claims, not to redefine the product. Its broad implemented/total ratio is
+not skill/plugin completion. Deferred candidates remain in the inventory.
 
 Before positive qualification work, route `minimum readiness` and read
 `docs/readiness-authority-intersection.md`. Regress valid approval together with
@@ -84,12 +99,144 @@ Keep independent authentication/validation fixture cases below the production
 request limit. A throttled request does not prove a later semantic rule ran;
 isolate those test environments and separately exercise the real throttle without
 disabling it or accepting its rejection in place of the intended exact error.
-
-For "what remains" or an existing-program continuation, run `node implementation-candidate-registry.js audit` before inventing new work. Select
-the next dependency-ready item from `docs/completion-backlog.md`, then inspect
-its registered source requirements and existing implementation mappings.
 Keep out-of-corpus capability routing for genuinely uncovered domains, not
 ordinary corpus maintenance.
+
+Tie each continuation task and its acceptance evidence to one of the five
+active objectives, G1-G5, in `docs/skill-first-product-scope.md`. Keep completed
+entrypoint/scope cleanup separate from behavioral goal acceptance. Do not count
+that preparation as a completed goal or reuse the old eight-outcome list as
+the active queue. A goal remains open until its own evidence is sufficient.
+
+Separate current navigation from retained evidence history. After a proposed
+successor or completed review, reconcile the document's opening current-candidate
+pointer, README and active queue with the actual candidate and disposition.
+Do not select a version just because its number is highest or infer adoption
+from a newer draft. Preserve old next-action statements under an explicitly
+historical section; do not dispatch them as current work or rewrite the old
+review to appear successful. A passing link check cannot detect a stale but
+existing target, so test the current pointer and unchanged historical bodies.
+
+Check the reverse mapping too: every declared routing reference must remain an
+eligible corpus file. A green count over surviving files can hide deleted,
+ignored or symlink-replaced prerequisites. Review the actual intended successor
+or retirement before changing a declaration; do not create an empty replacement
+or resurrect deferred UI merely to satisfy coverage. Test a selected missing
+reference's rejection and an unrelated task's preservation, including installed
+copies. Keep recipe availability separate from source currentness and authority.
+
+Check unregistered maturity/roadmap prose as well as the opening scope notice.
+Separate active acceptance gaps from retained implementation and deferred work.
+After a durable lesson within an existing document, link its exact case and
+limits from the source map and compendium; unchanged filenames do not mean
+unchanged knowledge. Prefer concise pointers over duplicating the case log,
+preserve historical bytes and keep private project evidence out of public indexes.
+
+For multiple maintained outputs, track each family, exact version/representation,
+review or receiving phase, recipient and decision scope. Compare original records
+and artifact bytes before updating the current map; metadata alone is insufficient.
+Never inherit predecessor review or receipt for an unreviewed successor, or collapse
+distinct states into "unaccepted". An expired decision supports historical in-window
+evidence, not a new action. Pending artifact decisions are not missing mechanisms.
+Keep private paths local and do not register a public summary's hash as the private
+artifact's hash. Preserve historical bodies; follow the KM family-map procedure.
+
+For registered versioned corpus documents, read `docs/source-map-navigation.json`
+and its candidate/appraisal before changing any current-state block. Update all
+registered projections together, then run `node source-map-linter.js` and
+`node run-source-map-linter-fixtures.js`. On changed evidence, diagnose the source
+and decision scope; do not merely replace its digest, delete an index registration
+or mark a local correction adopted. Preserve exact section bytes and keep current
+blocks outside historical/code sections. Unregistered prose still needs review;
+consistent labels cannot prove semantic acceptance or USER authority. Follow
+`docs/knowledge-management-sop.md`'s current-document navigation procedure.
+
+When a review covers only operative text, record its exact selection and digest
+separately from the containing registered section. Preserve historical prefaces;
+explain their earlier scope in the new appraisal rather than rewriting them.
+Limit current acceptance to the reviewed selection, not excluded history,
+attachments or the complete receiving unit. A later wording refinement is new
+candidate text, not part of the earlier accepted bytes.
+
+Before carrying a predecessor's "not delivered" claim into a new report, compare
+its original phase with actual current receipt evidence. Preserve the old status
+as history; distinguish authorized representation receipt from raw-source access
+and from delivery to a future recipient. Scope negative delivery claims by
+artifact, representation, recipient and phase; do not erase observed input reads.
+Conversely, preserve explicit historical and next-recipient qualifiers when
+appraising a negative claim. Current receipt alone does not refute those scoped
+statements; distinguish optional clarification from an actual contradiction.
+
+Use the requirement audit in the active backlog to select missing acceptance,
+not another successful-case replay. Keep implementation, source appraisal,
+observed client behavior and final USER adoption distinct. Evidence for one
+format, role or method does not automatically close another requirement.
+
+Audit the requirement separately from individual artifact decisions. An approved
+receiving exercise can verify a bounded delivery procedure while its report still
+needs correction and another proposal remains unapproved. Preserve all three
+states; do not make every old draft's fresh model review a new product prerequisite.
+Name the unresolved behavior and its acceptance evidence before scheduling another
+run. Reuse applicable inspected evidence, but do not combine unrelated phases into
+one observed workflow or attribute an older pass to newer instructions. Keep actual
+holds and exact-source decisions attached to their artifacts. Neither a pending
+proposal nor its age authorizes transfer, expiry extension or abandonment.
+
+When the current queue accumulates superseded next actions, retain its exact body
+and prior requirement table under dated history, then reconcile the live queue and
+entry points. State each disposition change and its evidence. Do not weaken the
+USER criteria, invent universal perfection or automatic mathematical minimality,
+or convert unequal evidence rows into a product percentage. Scope regression and
+native checks to the changed behavior; not every prose update needs a model rerun.
+
+Compare evidence in its recorded representation. A native final message, a
+transcript containing several messages and a saved file with wrapper/newline
+bytes have different bindings. Check the original writer and bind each artifact
+separately; do not trim evidence or replace an expected digest merely to pass.
+
+For a missing native progress report, compare partial text with completed public
+messages before blaming collection or strengthening the prompt. Bind client
+version, launch mode and source bytes; do not infer a report from tool arguments,
+private reasoning or the final self-claim. A status diagnostic is not a user report
+or completed review. Retain unknown-event and permission-change stops; extend a
+classifier only for an inspected event shape, with rejection tests and a separately
+recorded retry. A successful diagnostic process is not a repaired reporting workflow.
+
+Assess the required boundary: a before-reading brief may follow routing; it is
+not necessarily a before-any-tool requirement. A failed method notice is not
+repaired by a final disclaimer that its timing is unverified by a successor.
+When the same launch mode again omits a required notice, use the existing
+report-only/parent-delivery boundary for the next dependent workflow instead of
+treating another instruction-only run as enforced reporting. Preserve the missed
+notice, and do not make that conditional procedure mandatory for unrelated edits.
+
+For a parent-mediated continuation, inspect the recipient projection of any local
+delivery record. Carry the exact notice, required bindings and observed actions,
+not unassigned operator appraisals or reference verdicts embedded beside them.
+Retain the complete local record; test the actual prepared input for both required
+context and excluded evaluation fields before launch. A corrected preparation is
+not a new native result, and a successful notice does not certify the whole report.
+Appraise set relationships in residual-work plans: separate observed items from
+aggregate records until their membership and mapping are established. Repair the
+operative question and next action, not just an adjacent unknowns statement.
+
+For a compound output, list each requested artifact in the review coverage map,
+not just each source requirement. Check compressed FRAGO/SITREP statements,
+decision headings and handoff actions against the same source-ID assessment.
+Use both known many-to-one and unresolved mappings in a regression; blocking
+every join is not a correct repair. Keep valid partial work as a positive control.
+Trace a new approval gate to its actual policy scope: source assignment is not
+automatically an access-policy change. Preserve required authorized preparation
+and selected reads without inventing a USER decision for every evidence question.
+An instruction check proves the rule is supplied, not that a native report obeys it.
+
+Distinguish a client's internal transport retry from relaunching a review. Accept
+only an inspected, validated diagnostic shape; retain unknown-event, permission
+and tool stops. Keep the original wall-clock deadline and output limit across
+internal retries. A retry notice is not a new invocation, user report or successful review.
+Check the actual process handle before calling it terminal. After a terminal stop,
+retain the failed input and result. Diagnose and record a separately authorized retry
+with fresh source bindings; do not reset the old attempt or silently resume it.
 
 After changing a candidate section, compare `scan` with the committed registry,
 review its exact source digest and mappings, and update both in the same change.
@@ -117,6 +264,13 @@ from one fixed tree. After an early-stop failure, distinguish tests actually run
 from the unexecuted remainder; neither the old pass count nor an aggregate's
 remaining-failure count proves the final tree.
 
+When an operation and its lock cleanup both fail, retain the original operation
+error and the cleanup error separately in local evidence. A final cleanup message
+alone can hide the actual denial or ownership loss. Inspect durable controller
+status before retrying; never delete another owner's lock, extend authorization
+or assume the operation did nothing. A passing isolated case or an instrumented
+rerun does not establish the cause of a prior full-sequence failure. Keep raw
+diagnostics local and report only disclosure-appropriate details to recipients.
 In replay fixtures, isolate durable one-use ID consumption from consent expiry.
 Use a separately signed, currently valid synthetic proposal with the consumed ID
 and assert that original journal bytes remain unchanged. Keep expiry tests

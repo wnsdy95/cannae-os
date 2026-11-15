@@ -158,6 +158,38 @@ The Red Team verifies the following.
 5. Were ROK Armed Forces and US military doctrine inaccurately equated?
 6. Can the links be re-verified?
 
+## Quantitative Document Comparisons
+
+These are document-review practices, not additional military-source claims.
+
+- Bind every reported rate to its numerator, denominator, unit and source.
+  Keep tasks, attempts, completions and acceptance separate; absent measurements
+  are unknown rather than zero.
+- Establish matching units, population and source-ID relationships before joining
+  an aggregate to individual observations. Two reviewed items do not imply seven
+  remaining items in a nine-record inventory unless membership and mapping are
+  established. Keep the sets separate when that relationship is unknown; do not
+  assign a status to an invented remainder in the plan or follow-up question.
+- Distinguish confirmed inclusion, confirmed exclusion and unspecified coverage.
+  An unknown tax or shipping amount does not prove it is absent from a quote.
+  State that the total payable amount is not established, not that extra charges
+  necessarily apply. Check the summary and corrected prose as well as the table;
+  an unchanged unknowns column cannot repair a categorical exclusion elsewhere.
+- Separate observed group differences, arithmetic scenarios and identified
+  causes. Reweighting shows how a chosen composition changes an aggregate; it
+  does not establish why the original groups differed or what would happen in
+  a new population. Nonrandom records need an explicit limitation, including
+  in the headline and conclusion, not only a caveat section.
+- Label chosen weights as assumptions. A few scenarios do not establish a
+  ranking for every common weighting. Give the supported domain or check the
+  formula and crossover before making a universal claim.
+- State the assumptions and reproducible calculation behind an added statistical
+  test. A correctly calculated value alone does not establish that the test
+  applies to these records or identifies a causal effect. Keep unverified
+  inferential conclusions out of the operative recommendation.
+- Check the final decision summary against these limits as well as the detailed
+  table. Correct arithmetic cannot repair an unsupported interpretation.
+
 ## 8. Related Documents
 
 - `research-compendium.md`

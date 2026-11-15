@@ -1,5 +1,1213 @@
 # Research Compendium
 
+<!-- current-document:support-sop:start -->
+Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
+State: proposed; review: native-reviewed; adoption: not-adopted.
+<!-- current-document:support-sop:end -->
+
+`docs/source-map-navigation.json` binds maintained pointers and disposition to
+exact candidate/appraisal sections. See [navigation maintenance](knowledge-management-sop.md#current-document-navigation).
+This local integrity check cannot judge the appraisal or authorize adoption.
+The [navigation integrity case](document-authoring-case-study.md#declared-navigation-integrity)
+shows why an existing target and a passing index check are not enough: candidate
+identity, disposition and the exact scope of its appraisal must agree. Keep old
+next actions as history instead of rewriting prior reviews to match the present.
+
+## Recorded Research
+
+The entries below are retained findings, not the current task queue. Their
+completion and next-action statements apply only to each recorded scope.
+Use the [active backlog](completion-backlog.md#active-core-work) for current work;
+historical platform completion does not complete the five skill-first objectives.
+
+## Optional Reading And Temporal Source Claims (2026-11-13)
+
+The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
+observes both clients select two of seven optional guides while completing every
+assigned required read. Selection and exact source appendices are separately
+observable from semantic fidelity: Claude still infers timer history from a
+current failed condition and cites a generated heading as a source-policy section.
+The reported byte difference covers delivered source bodies only, not token use,
+cost, comprehension or globally minimal context. Its native runs precede the
+bounded `project terms` routing fix.
+
+The [operator correction](document-authoring-case-study.md#or72-snapshot-and-locator-correction)
+supports a reusable review rule: distinguish current readiness, historical trigger
+evidence and continuing deadlines. Preserve a deadline established by policy and
+history even if current readiness changes; where history is absent, do not invent
+a start, reset or cancellation. Check every locator against the cited source and
+version, not the generated document's headings. A correct digest cannot repair an
+incorrect inline attribution.
+
+These are local engineering lessons from synthetic inputs, not general model
+reliability estimates or new military claims. Fifteen reversible edits and source
+appraisal establish the bounded operator delta; they do not establish a fresh
+native review, USER adoption or an approved receiving transfer. Keep the exact
+preparation decision separate from standing verification consent.
+
+## Historical Nondelivery And Current Receipt (2026-11-14)
+
+The [approved OR72 receiving exercise](document-authoring-case-study.md#approved-or72-representation-receiving)
+observes an exact USER preparation decision followed by two native routes and all
+required reads. The draft preserves operative corrections but its review still
+confuses some completion predicates. An initial operator appraisal also overstated
+historical nondelivery wording as a current contradiction; its correction retains
+the actual history and successor-context qualifiers. Receiving a representation
+is neither raw access nor future delivery. Check the asserted phase before
+accepting or rejecting any negative receipt claim.
+
+Appraise the actual candidate and table cells before adopting review findings.
+Completed drafts can coexist with incomplete transfer preparation; historical
+guide bindings do not become errors merely because the new assignment requires
+current guides. These are local synthetic observations, not universal model
+reliability claims. Current receipt does not adopt the draft or clear another
+proposal, and the new guidance has local instruction-delivery checks only.
+
+## Quote Location Is Not Semantic Support (2026-11-14)
+
+The [exact-quote location case](document-authoring-case-study.md#exact-quote-location-checks)
+responds to the retained wrong-column finding without assuming every native
+criticism is correct. A unique literal passage can be checked against delivered
+bytes and shown with nearby lines, but its heading, table column and historical
+scope still require appraisal. A missing or repeated passage is not evidence
+that the source is invalid or that a guessed occurrence supports the finding.
+
+The optional session operation requires an already completed current-route read
+and rechecks access bindings and freshness. It does not reduce required reading
+or authorize another transfer. Synthetic local router/stdio tests support those
+boundaries, not a new native outcome or automatic interpretation. These are local
+engineering observations, not external doctrine or general reliability estimates.
+
+## Report Actions Retain Decision Ownership (2026-11-14)
+
+The [native quote-review exercise](document-authoring-case-study.md#native-quote-review-and-decision-ownership)
+observes successful source-appraisal and operative SOP repair in both clients,
+while one report still names an incorrect table-header line and assigns adoption
+to a reviewer through a shared sentence subject. Inspect the final action's
+actor and verb, not just its authority header or corrected draft. Review and
+recommendation do not inherit a decision retained by USER; do not add a new gate
+for choices already delegated. Scope self-review to the actual artifact/phase.
+
+Exact cell positions do not verify a nearby header's numeric citation. Check
+that passage and its blank lines, or use a verified heading/unique quote without
+an invented line number. Unchanged delivered bytes can retain a prior location,
+but not route authority or evidence of a new call. These bounded observations
+support mirrored review guidance, not causal improvement or universal accuracy.
+Preserve native originals and separately checked operator corrections; a local
+instruction-delivery pass does not establish fresh model acceptance.
+
+## Recognized Review Work Is Not Domain Coverage (2026-11-14)
+
+The [review-workflow correction](document-authoring-case-study.md#review-workflow-routing-correction)
+fixes missing ordinary authoring/handoff matches without inheriting coverage from
+the complete task. Each declared objective still receives its own assessment.
+Recognize a document method from specific source/format language, but keep the
+underlying domain objective and any genuine gap; generic review is not expertise.
+
+The local retained-query comparison removes only gap-specific change-order
+preparation while retaining other selected controls and inputs. A new lexical
+result does not rewrite issued obligations or authorize retiring a previous cell.
+The bound forms and counterexamples support this correction, not general semantic
+completeness, automatic minimum reading or post-change native acceptance.
+
+## Requirements And Artifact Decisions (2026-11-15)
+
+The [requirement audit](completion-backlog.md#audit-basis-and-disposition-changes)
+found that the live queue still carried superseded mechanism failures after
+bounded receiving had been observed. An actual exact approval, a successful
+source transfer and the quality of the resulting report are separate facts.
+Other proposals can remain unapproved without negating that observed behavior.
+Conversely, receiving success cannot accept incorrect findings or grant adoption.
+
+Audit the USER requirement, its actual evidence and remaining behavioral gap
+before scheduling another evaluation. Preserve old failures and exact decisions;
+do not impose a fresh model verdict on every historical derivative or stitch
+unrelated phases into a single observed flow. Keep superseded next actions in
+dated history and current dispositions in one live table. Both maintenance skills
+now carry this distinction. Local binding/navigation checks are not semantic
+certification, causal improvement, a new native run or an overall completion rate.
+
+## Available Evidence Is Not Exclusive Proof (2026-11-15)
+
+The [RH94 two-way handoff](document-authoring-case-study.md#cross-client-recovery-handoff)
+observes fresh recipients actually reading whole predecessor units and every
+assigned dependency. Useful repairs do not make all reviewer findings correct:
+an operator initially misses an unsupported nonappointment claim, while another
+review overstates a row-level clarification despite adjacent authority controls.
+Appraise the complete operative unit, not a finding's confidence or label.
+
+Different role labels do not establish different people. An unnamed custodian
+does not prove that a named preparer is not that custodian. Likewise, missing
+proof in the assigned catalog does not establish the only possible source or
+method of proof. Preserve current unknowns without inventing identity, exclusive
+evidence, another approval gate or authority to retrieve unassigned material.
+
+Notice claims need actual public messages. A before-reading brief can follow
+routing; it is not automatically a before-any-tool requirement. A final caveat
+that the successor cannot verify chronology does not repair the author's false
+claim of prior reporting. For a launch mode that repeatedly omits a required
+notice, select the existing report-only/parent-delivery procedure for the next
+dependent workflow. Do not turn that conditional procedure into a gate for
+unrelated drafting. These local synthetic observations support mirrored guidance,
+not universal accuracy, post-update native compliance or production recovery.
+
+## Role Defaults And Format Prerequisites (2026-11-15)
+
+The [role/format comparison](document-authoring-case-study.md#role-and-format-reading-correction)
+finds two different context errors: formal order drafts omit authoring/KM guidance,
+while an explicitly read-only S3 document task inherits five protected-execution
+manuals from its role alone. The same reference count can conceal both errors:
+the corrected S3 OPORD route replaces five unrelated manuals with five relevant
+authoring-bundle references, leaving the count unchanged.
+
+Judge task prerequisites and source scope, not only list length or role labels.
+An execution-oriented role may receive a read-only document assignment; conversely,
+a document may concern execution and still require specialist sources. Preserve
+the actual authority, technical duties, inherited tasks, explicit sources and
+guarded controls. Do not relabel L1 as read-only or turn a recommendation omission
+into permission to skip an assigned guide. A template supplies a format, not the
+whole authoring/revision procedure or expertise in the underlying mission domain.
+The fixed local comparisons support the bounded correction, not automatic context
+optimality, semantic completeness or a new native-client outcome.
+
+## Declared References And Surviving Files (2026-11-15)
+
+The [routing-reference case](document-authoring-case-study.md#declared-routing-reference-integrity)
+shows a one-way inventory's blind spot: every surviving file can have a route
+while a route's prerequisite has disappeared. Check declarations against eligible
+files as well as files against categories. Distinguish a missing selected guide
+from an intentionally unselected specialist reference; neither is a read receipt.
+Repair the source or review an actual replacement/retirement before changing the
+map. Empty replacements, ignored-path exceptions and resurrecting deferred UI do
+not preserve the intended prerequisite. The local mutation checks verify
+availability and refusal, not content fidelity or a native model outcome.
+
+## Notice Delivery And Residual Scope (2026-11-15)
+
+The [RP95 case](document-authoring-case-study.md#parent-delivered-replanning-and-residual-scope)
+uses the existing report-only/parent-delivery procedure after a repeated missed
+notice. Both clients then attribute the parent action accurately, read all seven
+assigned sources and perform permitted partial drafting without clearing USER
+holds. This is an observed alternative boundary, not repaired automatic in-run
+delivery or a requirement for unrelated work.
+
+A correct unknowns sentence does not prevent an unsupported join elsewhere.
+Claude leaves the relation between nine records and two observed items unknown,
+then subtracts the items and characterizes the remainder in its report/plan.
+Verify units, population membership and source-ID mapping before that operation;
+until then, preserve the separate sets and frame a mapping question without
+assuming its answer. Its proposed four-span operator correction is not another
+native review, while the other useful item findings and authority limits remain.
+
+Inspect operational metadata before using it as review input. The first work
+preparations copied local appraisal fields from a delivery declaration; neither
+was executed. An explicit recipient projection retains the exact notice and
+necessary action/binding evidence without those unassigned evaluation fields.
+Keep the full local record and required task context. These observed failures
+support mirrored skill guidance, not proof that new instructions cure all models.
+
+## Artifact State Is Phase-Specific (2026-11-15)
+
+The [family-state audit](document-authoring-case-study.md#artifact-family-state-audit)
+reconciles ten maintained outputs in one [current map](document-authoring-case-study.md#current-authoring-families).
+Checking original bytes and records reveals distinctions that a generic
+"unaccepted" label loses: operative draft review, whole-unit receiving, a local
+successor, a pending exact preparation decision and policy adoption are separate.
+Neither a predecessor's review nor its receipt transfers to changed bytes.
+
+Preserve historical case bodies while correcting current summaries. OR72's expired
+decision remains evidence of its past authorized receiving, not permission for
+another action. Four other artifact proposals remain unapproved despite the
+delivery mechanism's observed success. Keep private target paths in local evidence;
+a public summary hash cannot substitute for its private artifact binding.
+Mirrored maintenance guidance and source/index/history checks support bounded G4
+acceptance alongside previous improvements and output isolation. They do not
+adopt drafts, certify all prose, cure the remaining native quality gaps or establish
+a new military claim. G1/G2/G3/G5 remained partial at this checkpoint; the later
+PR97 appraisal below supplies the remaining bounded acceptance evidence.
+
+## Compressed Outputs Need Their Own Review (2026-11-15)
+
+The [MP96 case](document-authoring-case-study.md#mapped-replanning-and-compressed-reports)
+combines known many-to-one mapping with an unresolved event link. Both clients
+use valid partial evidence rather than refusing every relationship. Claude's
+FRAGO nevertheless misstates a count that its detailed tables handle correctly.
+Review coverage must enumerate the requested outputs as well as source rules:
+compare the compact situation, status summary, question headings and handoff
+actions with the same ID-level assessment. An adjacent correct table is not proof
+that those statements were checked.
+
+Its second defect is an unnecessary approval gate. A source catalog limits reads,
+but does not prove that every future source assignment changes access rights or
+requires USER's decision. Preserve actual authorized preparation/selection and
+USER-owned changes; do not promote evidence questions or optional policy proposals
+into mandatory decisions. The separate eleven-span correction retains originals
+and remains unreviewed by a new native recipient. These are bounded engineering
+observations, not a general model score or military claim; broader quality stays open.
+
+The later [R1 preparation attempt](document-authoring-case-study.md#r1-receiving-preparation-boundary)
+also shows why source path/mode validation precedes client setup. Internal drafts
+cannot become ordinary raw inputs merely because their text is synthetic or their
+representation is byte-identical. The failed request is retained, two exact review
+proposals await USER decisions, and no native call follows from their creation.
+Local fixtures exercise the existing boundary; this is preparation discipline,
+not a new permission policy or proof that the corrected report has been accepted.
+
+## Review Method And Storage Relevance (2026-11-15)
+
+The [source-bound review/S4 comparison](document-authoring-case-study.md#source-bound-review-and-logistics-reading)
+finds both omission and excess: a report compared against original sources needs
+the authoring/KM comparison procedure, while S4 prose work does not automatically
+need runtime SQL implementation. Read the manuals' actual scope rather than
+treating a format name or role default as sufficient relevance evidence.
+Retain resource/readiness policy and all real storage subjects, technical duties,
+explicit inputs, inherited objectives and guarded contexts. A source-review method
+match is not domain expertise or permission to read an unassigned source.
+The 58 local comparisons and installed regressions preserve those boundaries;
+they do not establish global minimality, native consumption or new authority.
+
+## Routing Descriptor And Assigned Profile (2026-11-15)
+
+The [bound-session comparison](document-authoring-case-study.md#bound-session-reading-context)
+shows why a direct-route improvement must be checked through its actual adapter.
+The session's document-only descriptor and recipient L-level serve different
+purposes; neither should be renamed to trigger a relevance shortcut. Its whole
+assignment, objectives and required profile remain inputs to selection. Optional
+access is independent of recommendation: an unneeded default can disappear while
+an assigned optional guide stays readable, and no unlisted guide gains access.
+The 32 before/after cases and local transport regressions establish that bounded
+integration, not a smaller delivered profile or fresh native comprehension.
+
+## Whole-Output Acceptance Is Bounded (2026-11-15)
+
+The [PR97 case](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading)
+applies the existing mirrored output-review guidance to a new synthetic S4 task.
+Both native clients preserve the same mapping, counts, unknowns and authority
+scopes throughout W2, FRAGO, status, questions and complete source units. Actual
+calls show all seven mandatory reads in each phase and one task-relevant optional
+guide per client. Source appraisal and exact-byte checks are separate from a green
+tool trace or the model's self-review claim.
+
+Combined with the earlier representative formats, role/negative cases, reporting,
+stop/recovery, receiving, installation and maintenance evidence, this supports
+the unchanged five-goal acceptance. It does not retroactively fix failed drafts,
+estimate reliability from two runs or prove causality. Reviewed profiles still
+mediate lexical recommendations; conservative overrecommendation can remain.
+Six exact artifact proposals stay unapproved and optional plugin packaging stays
+deferred. Verification/status maintenance needs no invented new skill rule or
+recursive model verdict. Use the [current audit](completion-backlog.md#five-goal-acceptance)
+for the combined scope and retain each case's actual actor, version and limits.
+
+## A New Role Needs Its Own Reading (2026-11-12)
+
+The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)
+observes stable task/cell identity across separate S6 and S2 processes, different
+queries and seven-versus-nine source profiles. Identity continuity does not carry
+the sender's token, access or completed reads. Check the receiving assignment
+separately, retain original objectives and deliver the complete selected unit.
+
+Fresh review still leaves shared semantic errors. Unknown tax/shipping coverage
+is not confirmed exclusion; an unresolved term meaning does not erase its known
+project provenance; evidence checking does not become another approval merely
+because the task distinguishes it from approval. Check the repaired summary and
+table headings, not just the finding list. Preserve raw outputs and bounded
+operator corrections separately. A source-bound draft review is an authoring
+operation, while its underlying domain can still require a provisional cell.
+
+## Coordinated Exclusions And Capability (2026-11-12)
+
+The [coordinated-exclusion case](document-authoring-case-study.md#coordinated-platform-exclusions)
+extends the earlier bounded reading correction to complete development/work
+lists. Judge the whole exclusion and subsequent work together: "no server
+development" does not waive a later server-design inspection. Keep explicit
+sources, parent objectives, technical duties and every selected control.
+
+The same reading error can conceal a capability gap. An excluded dashboard
+does not establish expertise for museum analysis, and an explicit technical
+source does not turn that excluded subject into the actual objective. Correct
+the capability assessment without deleting the source or granting authority.
+These local comparisons establish only the tested lexical forms, not general
+language understanding, minimum context or fresh native acceptance.
+
+## Mixed Conditions Need Separate Status (2026-11-12)
+
+The later [exact-unit receiving case](document-authoring-case-study.md#exact-repaired-unit-receiving)
+demonstrates fresh use of that operator correction and a useful decision brief.
+Keep receipt, source appraisal and adoption separate: a changes-required review
+can contain useful observations, optional clarifications and unsupported premises.
+Patch only source-supported issues. Its inaccurate display hashes also show why
+display-only labels are not exempt from accuracy; reuse supplied labels or stable
+source IDs with the full binding map instead of reconstructing short hashes.
+
+An observed transport-retry event interrupted the first attempt. Validate the
+inspected event shape and retain the fixed deadline, rather than treating every
+diagnostic as failure or every retry as success. Diagnose a terminal stop before
+a separately recorded retry; do not overwrite the failed evidence. The successful
+retry has no transport-retry event, so raw-event replay and rejection fixtures,
+not that success alone, establish the classifier correction.
+
+The [operative-condition review](document-authoring-case-study.md#operative-condition-review-and-bounded-repair)
+shows why a gate's shared label cannot substitute for checking each condition.
+An existing authorization and a proposed extra prerequisite can occur in one
+sentence. Preserve the former without silently promoting the latter, and check
+the actual summary and procedure rather than only the definition table.
+
+A fresh native revision fixes the baseline summary and historical-input report,
+but adds an unsupported post-change trigger restriction and leaves a completion
+question unresolved. Full source inclusion is not semantic acceptance. A separate
+operator repair uses the stable predecessor and exact replacements, leaving both
+native outputs intact. This limits repair scope and makes changes reviewable;
+it does not establish fresh model acceptance or permission to transmit the result.
+
+## Readiness Context And Format Selection (2026-11-12)
+
+The [document-readiness routing case](document-authoring-case-study.md#document-readiness-and-format-routing)
+separates ordinary drafting readiness from operational preparedness and recognizes
+complete known exclusion lists without altering the stored task. The same actual
+query also exposed missed format modifiers and plurals: removing irrelevant
+manuals alone would not restore the needed authoring procedure and handoff template.
+
+Evaluate additions as well as removals. For the recorded human request, five
+runtime manuals leave and five authoring/handoff references enter, so the total
+remains 18. All 12 previous checks remain and two continuity checks are added.
+Required inputs, parent objectives, technical duties and ambiguous reviews stay
+relevant. This is bounded lexical selection, not automatic semantic completeness,
+authority to trim issued context or a new native-model acceptance result.
+
+## Decision Ownership And Completion Claims (2026-11-12)
+
+The [outgoing revision](document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
+observes both clients preserve current restrictions and an established USER
+decision owner while leaving the operational assignee unknown. A proposed
+baseline or trigger does not make that retained decision authority provisional.
+Both skills and the handoff guide now state this distinction explicitly.
+
+Completing a worksheet or discrepancy report does not complete the underlying
+reconciliation. Codex's revised source-complete unit expresses that distinction
+and is locally accepted for advisory text work. Claude repairs its phase limits
+and recovery ownership but still turns proposed ordering into a categorical
+prerequisite in a summary. Review operative summaries as well as the main table;
+do not promote a proposal or invent an all-Pass policy to resolve ambiguous
+completion wording. Native response success and exact inclusion are separate
+from source appraisal, USER adoption and actual operational completion.
+
+## A Successor Can Change The Receiving Unit (2026-11-12)
+
+The [cold-start continuation](document-authoring-case-study.md#cold-start-document-continuation)
+observes both fresh clients using the exact prior handoff to draft practical
+verification worksheets. The next Codex unit is the whole response JSON, with
+worksheet and bindings in sibling fields; the next Claude unit is its detached
+handoff field. Blindly reusing the previous field extractor would lose necessary
+Codex material even though the field name did not change.
+
+Inspect the declared unit, parse structured output, bind the exact selection and
+check dependencies against that selection. Retain current assignment restrictions
+alongside inherited project policy; historical no-tool claims do not carry a
+current no-tool prohibition. Authorized successor changes remain possible within
+their actual scope. Both source assemblies are demonstrable, but report wording,
+restriction retention and completion-criterion clarity still require appraisal;
+useful receiving is not full semantic or operational acceptance.
+
+## Detecting A Defect Does Not Complete Its Repair (2026-11-12)
+
+The [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair)
+observes both clients finding missing rollback, incomplete link/alias coverage,
+unsupported readiness, wrong retry ownership, approval conflation and false
+attachments. Each correctly keeps the supplied review input distinct from the
+detached handoff. Yet both defer feasible assembly, and Claude promotes proposed
+precautions into active holds. Accurate detection is not accepted output.
+
+Apply source-derived plan coverage before multi-step work as well as final review.
+Map procedures to steps/results, preserve unknowns without manufacturing global
+dependencies, and carry a recommendation's nonbinding status into summaries.
+Complete authorized assembly when the material is already supplied. These rules
+improve usefulness without granting access, transfer or operational permission;
+source-appraised findings and native acceptance of changed guidance stay separate.
+The same-case follow-up assembles all four source bodies in both handoffs and
+preserves proposed-versus-active holds more accurately. Codex's draft passes
+operator source appraisal; Claude still converts an unavailable baseline into
+an assertion of nonexistence. Do not trade that retained failure for a green
+both-client label. Actual cold-start continuation remains the next evidence gap.
+
+## Skill Use Is Not Corpus Maintenance (2026-11-12)
+
+The [skill-use reading correction](document-authoring-case-study.md#skill-use-and-maintenance-reading)
+separates an ordinary task's client/method wording from work on the skill itself.
+The prior native task had 46 recommendations but a manually selected seven-source
+profile, including three doctrine guides. Its useful result therefore did not
+prove automatic minimum context. Local replay now removes eight unrelated
+manuals without changing its objectives, gap decision or 58 selected controls.
+
+Relevant maintenance work, explicit sources, parent objectives and guarded
+contexts retain their manuals. The first regression caught a missed installation
+noun phrase inside a no-skip requirement: preserve that failure and fix relevance,
+not the requirement. Both skills now teach the distinction. This is bounded
+reading selection and local delivery evidence, not fresh model acceptance,
+authority expansion or proof of semantic completeness.
+
+## Caller Identity Needs A Capable Interface (2026-11-12)
+
+The [native direct-task exercise](document-authoring-case-study.md#native-direct-task-continuity)
+observes Codex carrying an explicit task ID through intake and review, preserving
+the original request and four objectives, reading seven sources in each phase,
+and retaining separate USER decisions. Its query text stays identical; only the
+phase argument changes. Local changed-query tests and native same-process evidence
+answer different questions. The handoff's explicit receiving prerequisite is not
+a completed cold-start receipt.
+
+An older tool interface omitted the identity fields entirely. Inspect the actual
+argument/return path before attributing a missing binding to the model. When a
+root is withheld, the bound adapter verifies it locally and the recipient checks
+the disclosed ID/handle with honest attribution. A launch directory can reveal
+what the tool response hides, so the preparer must inspect that context too.
+Both skills now encode this procedure without adding a runtime or lifting source
+restrictions. The unused initial preparation and exact successful run remain
+separate; no new military claim or generalized information-flow proof follows.
+
+## Delivery Language Does Not Select National Doctrine (2026-11-12)
+
+The [source-topic reading case](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
+separates general source evaluation from national specialist recommendations in
+both clients. A requested Korean output is not evidence of a Korean military
+subject, while an actual national task, inherited objective or explicit source
+must retain its dependencies. Preserve human-mode routing independently of a
+supplied department label; delegated AI duties remain relevant.
+
+Retained failures show why language boundaries must precede destructive punctuation
+normalization and why a recommendation count alone cannot prove correctness.
+The paired baseline loses only unrelated specialists; capabilities and selected
+controls stay unchanged. Both skills carry the distinction. This is bounded local
+selection, not globally minimal context, source access or native behavior acceptance.
+
+## Review Scope Is Not Whole-Packet Acceptance (2026-11-12)
+
+The [support-SOP V5 review](document-authoring-case-study.md#support-sop-v5-source-review)
+accepts its exact operative body as a draft after source/predecessor comparison.
+The containing section still includes the original pre-review preface, preserved
+as history rather than rewritten to manufacture earlier acceptance. Separate
+whole-section and reviewed-selection digests describe distinct representations.
+Both maintenance references now require carrying this distinction into current
+navigation; a review state cannot expand to excluded material or USER adoption.
+
+The returned review report also marks standalone receiving assembly incomplete
+instead of treating its prompt as attached sources. This is bounded correct
+reporting, not actual receipt of a complete unit. No mandatory SOP correction was
+found. Broader receiving, relevance and client-equivalence gaps remain open.
+
+## Task Continuity And Receiving Boundaries (2026-11-12)
+
+The [METHOD-61 follow-up](document-authoring-case-study.md#corrected-receiving-preparation-boundary)
+shows why source-locatable local assembly and an actually deliverable unit are
+different acceptance claims. Existing internal-path and repository-disclosure
+boundaries remain in force; a planned native receiving review was not executed.
+Relocating inputs or dropping their origin context to pass would not resolve the
+actual requirement. A usable reviewed receiving representation remains work.
+
+An independent [router correction](document-authoring-case-study.md#direct-task-organization-identity)
+separates ordinary task identity from changing phase wording. An explicit target
+root and task ID preserve a bounded cell across roles and objective order while
+retaining query-based capability assessment. Identity is not intent equivalence,
+authority, source freshness or admission. Guarded mission identity and unsupported
+compound receipt boundaries remain unchanged. No new military claim is made.
+
+## Reporting Success Does Not Transfer Recovery Authority (2026-11-12)
+
+The [method-failure case](document-authoring-case-study.md#method-failure-reporting-and-handoff)
+observes current full guidance, actual parent-delivered notices and a permitted
+partial result after one failed required read. The worker preserves the original
+goal, separate adoption/transmission decisions and accurate unique/read/reread
+counts. Nevertheless its handoff lets a source preparer change a retry prohibition
+and claims an original request is present only in the input, not the output.
+
+Authority to locate or deliver data is not authority to change its governing stop.
+Likewise, a prompt is not an attachment and a faithful translation is not verbatim
+forwarding. Review summary and next-action claims as well as detailed caveats.
+Both skills now encode these distinctions. A separate operator-built correction
+and source map preserve original outputs but do not establish fresh model review,
+receiver acceptance or USER adoption. Conditional notice timing has bounded
+acceptance; the full workflow and stable phase-to-phase cell identity remain open.
+
+## A Reporting Boundary Can Be A Phase Boundary (2026-11-12)
+
+The [parent-delivered brief exercise](document-authoring-case-study.md#parent-delivered-brief-before-native-work)
+first retains a missing native-message-tool failure despite an advertised CLI
+flag. The alternative ends a route-only phase with a brief, has the parent
+actually deliver it, then starts a separately routed work phase. Source reads
+remain unavailable before that boundary, and the worker correctly attributes
+the prior report to the parent. The complete task, sources and authority survive.
+This costs an extra phase and parent action; it is not evidence that single-phase
+reporting is fixed. No notice or locally written declaration grants approval.
+Both skills now carry this conditional procedure; broader workflow acceptance,
+stable mission-level cell identity and language consistency remain unproven.
+
+## Diagnostic Success Is Not Reporting Success (2026-11-12)
+
+The [public-report stream case](document-authoring-case-study.md#claude-public-report-stream-diagnosis)
+retains a first observer failure and a separately diagnosed retry. Incremental
+text matches completed text, yet the final answer falsely claims an advance
+notice absent from both. This narrows a collection hypothesis for one launch;
+it does not reveal provider internals or repair earlier failures. Inspect actual
+event shape and version before changing a guard. Keep status diagnostics separate
+from reports and completion, and retain unknown-event and permission-change stops.
+Both maintenance guides encode that procedure. The five objectives remain partial.
+
+## Receiving Content Is Not Verifying Prior Actions (2026-11-12)
+
+The [changed-source chain](document-authoring-case-study.md#changed-source-revision-and-cold-start-receiving)
+preserves the exact Codex response for a fresh Claude receiving review. Source
+comparison supports its policy revision and separate approval scopes. Without
+author events, the receiver correctly leaves prior action claims unverified;
+its own actual events still contradict its claimed advance notices. A model's
+careful source comparison is not evidence that its self-reported process occurred.
+Likewise, a candidate marked required remains part of the total even if grouped
+separately from references. Count IDs and preserve the observed message order.
+
+Adapter output is a disclosure surface too. Denying a reference-only read does
+not repair a private path already exposed in a catalog. The shared structured
+recipient view follows the existing renderer boundary, not private preparation
+metadata; copying that view is not freshness verification or transfer approval.
+These local improvements and the proposed receiving correction do not erase
+historical failures or complete the five objectives.
+
+## Excluded Work Is Not Domain Capability (2026-11-12)
+
+The [task-reading case](document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
+shows why reading volume alone is an inadequate optimization target. A museum
+analysis plus "do not build a dashboard" was incorrectly treated as covered by
+dashboard doctrine. The correction removes irrelevant specialist reading but
+adds the real capability-gap references, increasing the final document count.
+Preserving ownership and unknown capability is more important than a smaller list.
+
+Both routers now distinguish bounded complete platform exclusions from actual
+review, parent-task context and explicit inputs. Ordinary prose handoff no longer
+requires event-storage architecture by default. Existing matched controls remain
+selected, and ambiguous language retains conservative reading. Both skills teach
+that a forbidden implementation is not a forbidden review, nor evidence of domain
+competence. These local rules and fixtures do not prove general semantic coverage,
+minimal token use or native compliance; historical assignments are not rewritten.
+
+## Content Screening Is Not Disclosure Judgment (2026-11-12)
+
+The [local diagnostic case](document-authoring-case-study.md#public-policy-content-review-diagnostics)
+reproduces the public-policy refusal against unchanged SOP bodies. A fixed failure
+code did not distinguish a word-rule trigger from a credential-shaped trigger.
+The new read-only report exposes those rule identities and exact input bindings,
+not source bodies, paths or authority. An early refusal leaves later sources and
+checks unassessed; preserve that boundary instead of describing the entire task
+as reviewed. A topic-word match cannot establish an actual secret, and absence
+of findings cannot establish disclosure safety. Both skills now use this evidence
+before escalation without changing classification or removing safety language.
+Raw exception clearance remains unsupported; source appraisal and separate
+disclosure authority are still necessary. No native behavioral pass is inferred.
+The [catalog-screening correction](document-authoring-case-study.md#recipient-catalog-screening)
+shows why body-only checks are insufficient: a schema-valid source ID can itself
+carry token-shaped text. Screen recipient metadata before reads and the complete
+recipient view before rendering, without treating identifier syntax as disclosure
+approval. The existing conservative refusals remain separate policy decisions.
+
+## Exact Document Review And Representations (2026-11-12)
+
+The USER approved a bounded local procedure for exact version/recipient/purpose
+review. [Reviewed preparation](role-document-access-policy.md#reviewed-document-preparation)
+keeps ordinary refusal intact while a separate proposal records complete source
+bindings and eligible word findings. A canonical decision, expected digests,
+expiry and source rechecks govern preparation. Credential-shaped values and
+access violations are not eligible exceptions. Internal drafts stay in place;
+source-ID representations replace only declared locations and retain distinct
+original/delivered digests. The review must assess whether source relationships
+and requirements remain meaningful, not merely whether string replacement passed.
+
+This is a skill-level trusted-preparer procedure. A recorded USER label is not
+authentication, a digest is not rollback protection, and preparation is not
+permission to transmit. The design decision does not approve any particular
+retained proposal. No separate approval server, keys or gateway are introduced.
+
+The subsequent [bound source-ID reader](document-authoring-case-study.md#bound-source-id-reader)
+addresses adapter drift: listing approved metadata once is not authority to read
+cached bodies later, and reconstructing paths from the private request can undo
+the projection's disclosure boundary. The trusted preparer binds one packet and
+recipient; each list/read reinspects sources and any canonical decision while
+preserving summary/representation modes. Synthetic local tests do not establish
+human consent, actual client receipt, route completion or semantic understanding.
+
+The [routed receiving integration](document-authoring-case-study.md#routed-receiving-integration)
+retains the whole assignment while assigning a fresh read context to each actual
+route. An attempted reroute must retire the preceding context even on failure;
+otherwise a new task can silently reuse old reading authority. Source-specific
+holds remain separate from unaffected permitted work. Local router and stdio
+checks establish this bounded transport behavior, not model comprehension, global
+semantic minimality or approval to transfer the retained real documents.
+
+## Missing Sources And Separate Decision Scopes (2026-11-12)
+
+The later [compound-source case](document-authoring-case-study.md#native-compound-source-planning)
+distinguishes missing routing coverage from absent source material: both clients
+read the terminology guide, but their natural definition objectives missed its
+keyword rule. Claude then incorrectly reported no relevant guidance. Preserve
+the trace and describe the contradiction rather than treating a lexical gap as
+an inventory fact. Likewise, unspecified appointment information is not evidence
+that nobody is appointed, and a new-evidence draft review is not a source-record
+write. Source-based appraisal must check those claims even when counts, hashes
+and tool completion are correct. The bounded corrections do not prove universal
+semantic coverage, source completeness or native instruction adherence.
+
+The [CS91 correction](document-authoring-case-study.md#compound-draft-correction-and-receiving-proposal)
+shows why repair review must follow a claim into dependent actions. An unknown
+identity can be stated accurately in the SOP while the plan still orders a new
+appointment without evidence. Check the work queue, inquiry, holds and successor
+action together. Exact predecessor reconstruction bounds the edit; it does not
+establish semantic quality or turn historical author ratings into current review.
+
+The [selection-provenance improvement](document-authoring-case-study.md#reading-selection-provenance)
+separates the source of a recommendation from its meaning for a task. Conditional
+route omission does not imply global exclusion when another role or named input
+retains the same document. Report every origin and the combined outcome; then
+appraise the proposed profile against actual requirements. Lexical provenance is
+inspectable evidence, not a semantic justification or permission to read a source.
+
+The [required-source exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
+demonstrates both native clients holding current-policy conclusions after one
+failed required read, without retries, while retaining source-independent partial
+drafts. An unavailable delivery is not proof that the source does not exist.
+Required reading remains incomplete; independent facts do not establish missing
+policy or authorize an old proposal. Recovery decisions still require actual
+source reading/review before dependent work can be claimed complete.
+
+Claude again omits requested public notices and claims them in its final checklist;
+the newer wording has not solved consistency. Both skills now place the brief
+in the post-route action sequence, a behavioral hypothesis awaiting acceptance.
+The handoff also exposes a different failure: one USER owning adoption and
+disclosure decisions does not make their scopes interchangeable. Keep actual
+decision scope separate from owner identity and retain each unresolved hold.
+Local corrections preserve history and do not turn a process pass into adoption.
+
+## Public Reporting Is Not A Self-Claim (2026-11-12)
+
+The [research repair review](document-authoring-case-study.md#native-research-repair-and-public-reporting)
+observed both clients read all ten assigned inputs, perform a permitted comparison
+and reject a forbidden proposal. Codex separately reported before dependent work;
+Claude omitted the requested initial backbrief and separate method notice while
+later claiming notice in a route query. Previous successful reporting does not
+establish consistency. Both skills now distinguish actual current public messages
+from tool arguments, hidden reasoning, historical quotations and self-ratings.
+An exact ordered message projection supports appraisal but is not a timing verdict
+or an execution barrier. The new guidance has local checks, not native acceptance.
+
+Source appraisal must also check reviewer claims. Explicit historical attribution
+is not a current appointment, and a disband condition is not a disband event.
+The operator research V3 corrects supported method/reproduction/attribution gaps
+and records its changes without replacing history to satisfy unsupported findings.
+It remains locally appraised and unadopted; broader client parity and stop/report
+acceptance are open. This is local engineering synthesis, not external doctrine.
+
+## Complete Reading Still Needs Claim Review (2026-11-12)
+
+The [research/report exercise](document-authoring-case-study.md#native-research-report-and-required-reading)
+gave each client a justified six-document required profile and a conditional
+optional guide. Both actually read the prerequisites and reported before analysis.
+This supports the corrected read/backbrief behavior at that scope, not automatic
+minimum context selection. A complete read list and correct core arithmetic did
+not prevent Claude from overstating cause, generalizing selected weighting
+examples and recording late method explanation as advance compliance.
+
+Separate observation, hypothetical reweighting and identified causes. Check a
+claimed ranking over its actual domain, and assess the headline and final summary
+as well as caveats. Method notice timing comes from observed message order, not a
+heading. Both skills incorporate these lessons; their new behavioral acceptance
+remains pending. Preserve original reports and separate an operator-proposed
+correction, which cannot repair historical noncompliance. A simultaneous ordinary
+report-wording routing gap is locally fixed without clearing separate domain gaps.
+
+## Valid Links Can Still Select Stale State (2026-11-12)
+
+The [requirement and navigation audit](document-authoring-case-study.md#current-navigation-and-requirement-audit)
+found a current-candidate notice that still selected V4 after proposed V5 was
+recorded. File existence and link coverage could not distinguish current state
+from a valid historical target. Maintain a current pointer and disposition
+separately from append-only evidence, and reconcile the README and active queue
+without rewriting earlier decisions. Both provider maintenance guides now use
+this check. Version order alone grants neither supersession nor adoption.
+
+The same audit separates exact native final text from saved transcript wrappers
+and file bytes. Their digests need not match; verify the original representation
+and bind each artifact separately instead of trimming evidence to fit a hash.
+The four-span follow-up has local targeted source appraisal, not a newly
+successful model run or complete document/workflow acceptance.
+
+## Receiving Does Not Establish Complete Review (2026-11-12)
+
+The [implicit Claude receiver](document-authoring-case-study.md#native-implicit-claude-receiving)
+selected its installed instructions, routed both objectives and actually read
+the four original project sources. That closes the narrower uncertainty about
+document receipt for this unit, not the quality of the whole review. Unread
+required guides were treated as recommendations, an existing locator map was
+discounted in a mandatory edit finding, and a requested advance backbrief appeared
+only at the end. Both skills now distinguish partial findings from completion
+prerequisites and advance reporting from retrospective description. The assigning
+operator must also justify minimal required reading before delegation.
+
+Native loader diagnostics have a separate boundary: optional task arguments are
+valid tool input, but they do not modify authority. Verify exact instruction text
+and observed arguments independently; metadata and a launch acknowledgement are
+not body consumption. Preserve failed observers and client transport retries
+without mistaking them for failed doctrine or completed semantic work.
+
+## Selection Is A Separate Acceptance Layer (2026-11-12)
+
+The [implicit Codex case](document-authoring-case-study.md#native-implicit-codex-selection)
+distinguishes discovered metadata from actual entrypoint reading, route execution
+and source-grounded drafting. The ordinary request supplied no skill invocation
+or instruction body; the native model selected the installed entry and preserved
+the synthetic policy. That bounded result does not establish every client startup
+mode or actual receiving acceptance. A UI starter is another entrypoint and needs
+its own scope check; a successful implicit request does not validate unused text.
+Testing that exact starter exposed a missing authoring match concealed by other
+supporting routes. The corrected verb/document recognizer preserves the real
+request and separately declared domain gaps. It is a local lexical improvement,
+not evidence of general semantic routing or a reason to rename every task to SOP.
+
+## Partial Work And Complete Receiving Context (2026-11-12)
+
+The [native compound-intake case](project-terminology-workflow.md#native-compound-intake)
+applied a confirmed counting definition, retained a candidate-only prerequisite
+and continued independent drafting after an actual compiler denial. A passing
+subset declaration would not establish the whole request's adequacy; here the
+model kept both required meanings. This is bounded behavior, not automatic
+extraction or a general semantic guarantee.
+
+Two transfer details remain important: a combined capability gap cannot replace
+the per-objective diagnostic table, and correct IDs/digests do not locate source
+bodies for a new receiver. Preserve those diagnostics and carry authorized
+reading material or usable locators with the declared unit. An operator's later
+local assembly must remain separate from the model's original work and from
+approval to transfer. Both skills now carry that receiving distinction.
+
+## Continuing Holds Survive A Permitted Next Step (2026-11-12)
+
+The [support-SOP V4 review](document-authoring-case-study.md#support-sop-v4-source-review)
+found that a handoff's next-action stop can be narrower than the holds on the
+whole transferred work. Preserve those scopes separately: continued drafting
+does not clear an adoption or disclosure hold. Recovery may already exist in
+another step, so connect that path rather than inventing an approval procedure
+or describing all recovery as absent. Both skills carry this distinction; V5
+is an exact-delta operator proposal, not newly model-accepted or adopted policy.
+
+Preparation also reproduced default EEFI matching on public security-policy
+language. The automatic packet stayed blocked; a separate supplied-public-text
+review does not establish packet readiness or an exception for private sources.
+Keep this usability gap visible instead of deleting safety wording to pass.
+
+## Review Findings Need Their Own Appraisal (2026-11-12)
+
+The [current-guidance handoff review](document-authoring-case-study.md#current-guidance-handoff-repair-review)
+demonstrates both known reporting/digest repairs in two native clients. The
+remaining locator overclaim shows that correct hashes do not make every table
+row currently findable. A new review packet can omit history the original actor
+actually received; classify that as a current verification limit instead of
+retroactively rewriting the old record. Source appraisal supports one corrected
+delivery unit while retaining the other proposal's caveat. These results verify
+the existing mirrored guidance, not a new policy or general semantic guarantee.
+
+## Failure Scope And Exact Source Labels (2026-11-12)
+
+The [source-failure case](document-authoring-case-study.md#source-failure-and-changed-policy-handoff)
+preserved a new policy hold across two clients but exposed errors during prose
+compression: real reads disappeared from a blanket non-execution statement,
+and a shortened V1 source label acquired a V2 digest suffix. Preserve operation
+categories separately and copy exact source/version/digest tuples from their
+reviewed map. Successful reading, failed delivery and operational work are
+different evidence. A valid machine binding does not certify generated prose;
+manual source appraisal remains required. This observation and the resulting
+guidance do not establish a general detection rate or new military doctrine.
+
+## Validate Before Emission (2026-11-12)
+
+The [receipt producer case](document-authoring-case-study.md#receipt-producer-validation)
+showed that downstream rejection did not prevent a misleading success exit or
+invalid artifact creation. Both producers now reuse the existing contract
+validator before either operation, including fail-closed dependency handling.
+Direct role-specific reading stays distinct from guarded work admission. An
+unavailable validator is a setup failure, not permission to skip validation or
+change the delegate's authority. These are local engineering results, not a
+new authorization policy or general assurance of source delivery.
+
+## Role Policy And Technical Context (2026-11-12)
+
+The [S6 reading alignment](document-authoring-case-study.md#s6-default-reading-alignment)
+found implementation drift from the existing knowledge-management role policy.
+A function label does not make every task an infrastructure task. Both routers
+now restore the role's knowledge/disclosure/classification core while preserving
+technical department, task and explicit-input contributions. The useful outcome
+is correct context, not a universally smaller count: dashboard requests gained
+missing policies. Selected controls and authority stayed unchanged in ten local
+comparison cases. Negative-topic interpretation and other role bundles remain
+unverified; ordinary S6 reading cannot bypass the S3 execution-receipt boundary.
+This is local engineering evidence, not a new military-doctrine claim.
+
+## Comparison Methods And Domain Capability (2026-11-12)
+
+The [routing correction](document-authoring-case-study.md#generic-comparison-routing-correction)
+reproduced a false capability claim: asking to compare museum attendance matched
+the self-improvement vocabulary. A method word cannot establish knowledge of
+the subject. Both routers now keep that domain gap while retaining the selected
+comparison-related checks. The same bounded cell survives controller-issued
+receipts and agent context; it cannot activate a standing department or gain
+execution/release authority.
+
+Conditional reading removes eleven unrelated campaign/verifier/transparency
+manuals unless task, inherited objective or explicit input context needs them.
+The original text, required sources and selected controls survive. Local rerouting
+of a recorded native query reduced recommendations from 60 to 49, not to a proven
+minimum. This is a lexical correction and local workflow evidence, not general
+semantic decomposition, negation understanding or a new native-agent acceptance.
+
+## Tool Availability And Actual Reading (2026-11-12)
+
+The [native Codex receiving exercise](document-authoring-case-study.md#native-codex-routing-and-receiving)
+separates catalog delivery from callable tools. Disabling the client's tool bridge
+left the two document tools advertised but unusable; the model reported the
+missing sources instead of inventing a revision. A separately recorded retry
+restored only that invocation's normal bridge and completed a route plus thirteen
+reads. Source appraisal found the changed planning hold, unchanged duties,
+authority and incomplete-evidence limits preserved in the response.
+
+A server allowlist is not the whole client catalog, and zero MCP call events do
+not prove zero attempted tools: the first process's client error records a failed
+discovery attempt. Reconcile completed calls by identity/content, not adjacency,
+because parallel reads can finish out of order. The fourteen-call trace includes
+three repeated reads, not thirteen unique sources. Sixty recommendations and a
+preparer-selected reading profile do not establish efficient semantic routing.
+These are local engineering observations, not universal client behavior,
+authenticated authority, operational acceptance or a shipped plugin.
+
+## Agent-Invoked Routing And Claim Scope (2026-11-12)
+
+The [three-phase synthetic exercise](document-authoring-case-study.md#agent-invoked-phase-routing)
+adds actual model-invoked routing and reading to earlier preparer-only evidence.
+The receiver follows amended policy and a new role; a later review under revised
+guidance corrects categorical absence/completion claims while preserving the
+observed stop. An unknowns section does not repair a conflicting headline or
+next action. Compare each claim with the scope and freshness of its source.
+
+Appraise review findings too: a later origin map was not a prerequisite of an
+earlier phase, and shortened zero-second timestamps did not change chronology.
+Successful routing/reading does not certify semantic quality or minimal context.
+The temporary adapter enforces only its tested reading profile, not universal
+host access. Its caller inspection also exposed option parsing of task text;
+the product controller and both skills now separate fixed options from that text
+with `--`. Existing receipt validation had blocked the malformed authority.
+These are local implementation lessons, not military-source claims, generalized
+model accuracy, authenticated delegation or a separately shipped plugin.
+
+## Cross-Client Review And Delivery Units (2026-11-12)
+
+The [native Claude case](document-authoring-case-study.md#native-claude-cross-client-review)
+adds one source-appraised response to the prior Codex document chain. It confirms
+two targeted historical repairs and current-policy boundaries while exposing an
+unscoped non-execution claim. Historical model calls used no tools, but the
+preparer routed documents and checked integrity. Record actor and phase rather
+than carrying a global negative claim into an operator-amended artifact.
+
+Some reviewer findings assumed detached prose even though the input explicitly
+defined a complete packet with patch/base metadata and an origin map. Check the
+declared delivery unit before requiring duplicated bindings or a new version.
+If text later travels alone, its necessary context must travel with it. Preserve
+the raw review and source appraisal separately, including reviewer mistakes.
+The four-span follow-up is unadopted and not yet natively reviewed.
+
+The local launch also exposed source-eligibility and login-environment differences.
+Neither an ordinary-shell login check nor a skill name alone proves the tested
+invocation will work. Authentication failure and an observer progress-event
+misclassification are retained separately from the eventual response. The typed
+Claude classifier recognizes documented progress without accepting tools or
+error-bearing results as success. These are local engineering findings, not
+military doctrine or evidence of universal client equivalence.
+
+## Phase Provenance In Native Document Work (2026-11-12)
+
+An actual Codex author/reviewer/reviser/receiver exercise preserved an amended
+recovery rule but exposed a different continuity failure: one ledger had several
+role-selected excerpts, and unchanged phase-local labels referred to different
+inputs. A reviewer and reviser each judged the other phase using only their own
+selection. The receiver also lacked history that its handoff told it to inspect.
+
+A preparer-supplied phase/recipient/delivered-digest map and actual historical
+artifacts allowed a later receiver to distinguish those contexts. Operator
+correction then needed to change operative reading/predecessor/version steps,
+not merely add a correct preface. Preserve the observed failures and separate
+operator edits from model work. Both skills carry that reusable procedure; local
+fixtures demonstrate same-ledger/different-excerpt identity without overwriting
+the historical packet. See the [native collaboration case](document-authoring-case-study.md#native-document-collaboration-and-phase-provenance)
+for exact scope. This is one synthetic same-provider workflow, not automatic
+routing, authenticated provenance or a general semantic success rate.
+
+## Project Terminology Application
+
+`docs/project-terminology-workflow.md` applies the user's common-language request
+to existing authoring, knowledge capture, routing and handoff procedures. Keep
+private project definitions separate from the shared `docs/glossary.md`;
+explicit user statements and AI candidates have different evidentiary status.
+The local helper checks revision chains and selects relevant role/department
+records without authorizing work or transfer. This is an internal design and
+deterministic implementation, not a new military-source finding or proven
+natural-language adoption rate. Automatic capture and operational receiver use remain open.
+An integration probe subsequently changed the glossary while leaving its excerpt
+untouched; generic packet inspection still reported that excerpt current.
+The explicit terminology binding now checks both source layers for the declared
+recipient, without treating static schema validation as live-source freshness.
+An installed-helper exercise also preserved a missing required term inside a
+current non-authorizing packet. The explicit `required_terms` declaration adds
+a separate prerequisite check: unavailable, candidate-only, retired or conflicting
+meanings cannot satisfy it. Existing packets without that declaration remain
+unassessed. This local design addresses declared input adequacy, not automatic
+requirement extraction; both skills preserve dependent holds and permit unrelated
+drafting with explicit unknowns instead of erasing the missing requirement.
+The [approved dialogue exercise](project-terminology-workflow.md#approved-dialogue-exercise-2026-11-11)
+adds one native supplied-guidance result: initial entries and correction lineage
+were preserved, uncertain meanings remained candidates and owner-only content
+was excluded from recipient prose. Source appraisal and structural validation
+support that case only, not automatic discovery, live delegation or policy adoption.
+
+## Failure Evidence Before Retry (2026-11-11)
+
+An intermittent lifecycle test exposed only a lock-release error. An observed
+full-sequence rerun passed, so the original cause remains unproven. Separately,
+a deterministic synthetic owner replacement demonstrated that an operation's
+primary error was overwritten by cleanup failure in `withDispatchIssuanceLock`.
+The wrapper now retains both failures, preserving the original as the cause and
+first aggregate entry. Failure still denies a result; ownership, time limits and
+authorization are unchanged. Both skills require keeping full local diagnostics,
+inspecting durable state before retry and preserving the difference between a
+passing reproduction attempt and a proven root cause. This is a local G3/G4
+correction, not a new production-coordination or military-doctrine claim.
+
+## Project Content And Source-Owner Preparation (2026-11-11)
+
+The existing access projection names eligible doctrine documents but neither
+delivers project text nor authenticates a reader. `project-document-packet.js`
+now assembles an exact selected project packet for separate review. It binds the
+task, recipient, canonical local repository/Git identity, source digests and
+delivered content, using existing role/duty/authority decisions plus explicit
+department selection. Outputs stay in the project; no model or service is used.
+
+Raw delivery is public/internal only. Summaries must already exist, with exact
+original and summary digests and an asserted review reference. The source owner
+must be authorized to hash the original; the summary-only recipient gets no
+original body. Reference-only sources are never opened or hashed and deliver
+only IDs, not private local paths. Metadata freshness does not prove their bytes.
+An actual local reproduction showed that merely omitting path fields still let
+task and recipient text repeat a withheld location. Preparation, shared semantic
+validation and rendering now reject known withheld-source and repository-location
+substrings across outgoing strings. Raw and supplied-summary text are included.
+Keep the original request locally and review any source-ID rephrasing without
+dropping constraints. This is a bounded literal check, not detection of unknown,
+aliased or encoded paths, semantic redaction or disclosure approval.
+Conservative existing OPSEC/EEFI checks stop suspect outbound content without
+exposing matches, but neither prove safe semantics nor authenticate classification.
+
+The reusable skill lesson is to distinguish source-owner preparation, an exact
+review candidate, authorized transfer and observed receiver use. Inspection
+rebuilds the candidate against current sources but cannot turn self-declared
+roles/review references or a supplied digest into consent. Ordinary packets do
+not bypass existing guarded-mission holds. The backlog records actual fixtures,
+the corrected output-path diagnostic and remaining native-consumption work.
+An exact original copy under a different summary filename is also rejected;
+different hashes alone still do not prove adequate summarization or redaction.
+
+## Rechecking Issued Document Bindings (2026-11-11)
+
+Inspection for project-source delivery found that context packs stored document
+hashes but the new-authority path did not compare them with current source files.
+An isolated real-controller reproduction changed SUPPORT.md after context issuance
+and still received `allow` for a new tool request. This is a source-freshness gap,
+not evidence that context content had actually been delivered to a native client.
+
+`context-document-integrity.js` now checks exact receipt/agent/plan document sets,
+canonical non-symlink file paths and current digests. Context publication, new
+policy/lease/tool admission and successful report acceptance use this common
+check; actual/late results and revocation retain their separate settlement rules.
+Both skills direct the operator to stop new work, preserve old packets and
+reroute changed instructions instead of editing hashes. The original failure,
+focused regressions and remaining delivery work are recorded in the backlog.
+
+This local correction implements an existing byte-binding promise without new
+approval authority, a new schema version or a protected execution service. The
+shared validator rejects noncanonical context paths while historical records
+remain schema-readable. Current-source checking is not semantic freshness,
+read permission, summary preparation, recipient consumption or continuous host
+monitoring. Cross-repository delivery remains a distinct unfinished requirement.
+
+## Source-Grounded Review And Transfer Boundaries (2026-11-11)
+
+The separately approved retry of the unchanged evaluator packet returned a
+normal advisory response. Comparing its actual text with sources and only then
+the withheld reference confirmed findings for all seven deliberate variants.
+The unedited draft also omitted the task's explicit no-publication boundary:
+`draft`/`not adopted` is status, not a prohibition on transmission. This corrects
+the author's earlier R1 rating without erasing the original exercise.
+
+The reviewer was not accepted uncritically. Its opening six-case count conflicts
+with seven detailed defect sections. It also lacked the deliberately withheld
+author matrix and validation history; that absence cannot establish that the
+repository lacks them. Other accepted findings concern transferable source
+citations, explicit handoff unknowns/freshness, escalation steps and qualified
+security-response activities. The exact case-by-case appraisal and source-cited
+corrective V3 are in `docs/document-authoring-case-study.md`.
+
+Both skills now inspect the actual transferred excerpt for exclusions and judge
+findings against the supplied context. Future review preparation discloses
+withheld categories without their verdicts; a fixture verifies later corrections
+and appraisals do not contaminate historical V1/V2 candidates. One authored case
+and an author-reviewed V3 do not establish general semantic performance,
+independent verification, adoption or receiver acceptance. The approved packet
+and both attempts remain unchanged locally; its one-retry consent is consumed.
+
+## Project-Qualified Input References (2026-11-11)
+
+The corpus-only source resolver could not name an input from a separate task
+repository. Inspection also reproduced a misspelled `--input-soruce` being
+accepted as query text with exit 0 instead of rejected as an unsupported option.
+Both routers now accept explicit input-repository/input-source pairs for direct
+reference routing and reject unknown options. They do not infer a target root
+from the working directory or substitute same-named doctrine files.
+
+Project references remain separate from doctrine recommendations. Exact path,
+Git ignore, local-state and symlink checks do not load input bodies into the
+route, hash/copy them or transmit them externally. Git reads repository/ignore
+configuration for these checks. In project-input mode, undeclared
+query mentions remain unresolved rather than falling back to the corpus. This
+does not solve semantic input discovery, authorization or current-content proof.
+
+Both skills teach origin-qualified reading and preserve reference-only delivery.
+Unsupported guarded receipt/artifact combinations fail before publication;
+dropping an input to satisfy an older contract is not a valid workaround.
+Authorized content/summary delivery, digest/freshness binding and actual receiver
+consumption remain open. The historical model-review input is unchanged; the
+separately approved and completed retry is recorded above, not implied by this
+reference-routing change.
+
+## Profile-Bounded Document Access Projection (2026-11-11)
+
+Inspection of target-repository source handling exposed a prerequisite defect:
+`document-access-runner.js` bypassed its shared validator. An undeclared field
+and an unknown `L9` authority both produced ready projections despite validator
+rejection. An explicit denial produced blocked status but retained allowed rows;
+removing an optional path still delivered it through the document's role match.
+These observations were reproduced locally with copied sample metadata, not
+private file reads or a live authority change.
+
+The consumer now validates before projection, restricts candidates to the selected
+role/duty/tier profile and clears all allowed rows on any error. Ambiguous records,
+unknown authority, invalid paths and required reference-only delivery are rejected.
+Summary and optional references retain their distinct modes. Both skills teach
+that role eligibility is not need-to-know or raw access; a ready projection is
+not actual delivery, authenticated authority or approval. The manifest remains
+non-authorizing metadata even when structurally valid.
+
+This corrects historical descriptions below that could imply the runner itself
+enforces filesystem access. It projects a policy list; a protected read path,
+receiver consumption and separately authorized target-repository source binding
+are not implemented by this change. At that checkpoint the authoring-review
+packet and its one-attempt consent boundary were unchanged; the later retry
+required its own exact approval.
+
+## Plain-Document Handoff And Separated Review Input (2026-11-11)
+
+The authoring workflow and handoff template conflicted: ordinary prose could
+avoid runtime forms, while the routed template mandated them for every transfer.
+The template now distinguishes ordinary document work from existing guarded
+missions. It preserves pending decisions, unknowns and receiver acknowledgement
+without inventing mission records, and leaves runtime schema/admission untouched.
+
+The case's self-ratings could also bias a later reviewer. The offline
+`authoring-review-packet.js` packages original requests, current sources and
+candidate text without those ratings. Eight candidates exercise the unedited
+draft and seven deliberate changes; the reference is withheld from evaluator
+input. Preparation checks do not execute semantic evaluation or establish that
+the unedited draft is correct. Both skills teach these two reusable distinctions;
+`docs/document-authoring-case-study.md` contains the actual current handoff and
+`docs/completion-backlog.md` records remaining evaluation.
+
+The first exactly approved native assessment produced no review: the one-off
+observer mistook an item-level CLI diagnostic for tool activity and terminated
+the process. Two diagnostic items and a started turn are observable, but no
+completed review or actual tool call. Transmission cannot be ruled out. The
+original failed record is retained; a separate interpretation corrects its
+tool count without rewriting history. Four added observer fixtures distinguish
+diagnostics, failures, real/unknown tools and quoted tool names. Both skills now
+require structured classification and fresh consent after a consumed attempt;
+this correction is not semantic acceptance or permission to enable tools.
+
+## Native Skill Discovery (2026-11-11)
+
+Actual Codex 0.162.1 and Claude Code 2.1.319 processes discovered linked and
+copied skills under isolated homes. Empty installations were negative controls.
+The initial Claude probe used bare mode and failed because that mode skips
+ordinary user-skill auto-discovery; ordinary initialization found both bundles.
+Its added user-scope description annotation was separately observed and handled
+without allowing arbitrary changed descriptions. The bare-mode negative remains
+a regression, not a failed installation to hide.
+
+The [source map](source-map.md#skill-first-scope-and-authoring) records the
+official command/protocol/discovery references. Seven native metadata cases
+passed with OS network/write checks and no model prompt. Both skills now require
+startup-mode-aware diagnosis and distinguish discovery from body consumption.
+Neither this result nor the helper's deterministic checks establishes semantic
+work quality, actual-user configuration or G5 completion.
+
+## Skill Installation And Corpus Binding (2026-11-11)
+
+The G5 audit used `install-ai-cli-skills.sh` and isolated installation fixtures.
+It exposed client execution during dry-run; source inspection also found unused
+copy markers in document routing and late destination conflict checks.
+Both routers now honor explicit/install bindings and fail on stale ones;
+the installer preflights both destinations and stages copies before replacement.
+
+The reusable lesson is to distinguish corpus discovery, target output paths
+and snapshot refresh, and to test failure paths without touching actual client
+homes. Twenty-one local fixtures cover installation and receipt parity; stub version
+probes and entrypoint inspection are not native client loading or model execution.
+The two skills remain the selected distribution, with separate plugin packaging
+not included. This is local engineering evidence, not a new military-source claim.
+
+## Source-Grounded Authoring Exercise (2026-11-10)
+
+`docs/document-authoring-case-study.md` applies the existing support, governance
+and security policies to a review-only SOP and continuity revision. The actual
+source files were read and hashed; a requirement matrix compares draft sections
+with source requirements, conditional reporting paths, exclusions and unknowns.
+Author self-review is explicitly separate from independent or receiver acceptance.
+
+The realistic task exposed an authoring-route miss for "support escalation SOP"
+and a continuity route that omitted the handoff template. Both provider routes
+and realistic-query regressions now cover those references. The skill lesson is
+to verify the selected task template and supplied sources, then review original
+requirements rather than using the draft as its own checklist.
+
+Follow-up work resolves named corpus inputs and rejects unresolved explicit
+`--source` inputs. Specialist GitHub release reading is now selected by positive
+task/mission/source context, with general policies and executable controls
+unchanged. The case records an actual local maintenance work order before this
+reading-scope implementation, then separates observed results and handoff.
+Semantic input inference, broader minimal-context behavior and independent
+receiver acceptance remain open. These are local engineering observations,
+not complete G1/G2/G3 acceptance or a live support operation.
+
+## Skill-First Product Boundary (2026-11-10)
+
+`docs/skill-first-product-scope.md` records the USER decision to prioritize
+document authoring, maintenance and routing through client skills/plugins.
+`docs/document-authoring-workflow.md` connects existing formats to source
+discipline, revision and receiver-ready handoffs without an application login.
+The lesson is to separate ordinary corpus work from conditional execution,
+approval and release operations, not to remove their guards.
+
+Dashboard, console and production-infrastructure development are deferred,
+not completed. Existing code, evidence and open failures remain retained.
+Both skill entrypoints prioritize the core and disclose detailed runtime
+procedures only when applicable. These are local engineering decisions; no
+new military-source claim, semantic accuracy guarantee, plugin-package
+acceptance or revised completion percentage follows from this change.
 ## Green Does Not Remove Explicit Approval (2026-10-25)
 
 A further schema-valid reference probe on `c91cae6` declared approval required
@@ -3979,7 +5187,7 @@ This tranche converted fifteen previously queued operating concepts into doctrin
 - `context-filter-prototype/`: a generator of per-role raw/summary/redacted/reference/denied context packets.
 - `document-access-runner.js`: checks role/duty/authority against the manifest to generate an allowed/denied document projection.
 - `run-document-access-fixtures.js`: fixtures for S2/Executor/S6 document access and blocking overbroad access.
-- `handoff-generator.js`: generates a handoff packet from the event replay and alert projections.
+- `handoff-generator.js`: reads actual order/event files selected by `schema-files/handoff-generation-request.schema.json` and retains source digests, quoted requirements and unknowns in an unreviewed local draft. `run-handoff-generation-fixtures.js` checks the consumer; neither packet validation nor generation grants execution or establishes receiver acceptance.
 - `decision-packet-linter.js`: a validator for board packet option/risk/evidence/deadline.
 - `event-fixtures/working-group-event-fixtures.json`: the WG opened/prepared/decided/closed event log.
 - `maintenance-readiness-model.md`: a model for tool/resource availability and sustainment readiness.

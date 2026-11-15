@@ -1,5 +1,555 @@
 # Source Map
 
+The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)
+uses a new synthetic assignment, actual Claude tool/client records and separate
+operator source appraisal. It establishes bounded changed-role continuity and
+receiving, not authenticated authority or independent infrastructure. The draft
+review routing fix and uncertainty/approval distinctions are local engineering
+and authoring rules, not new military claims. Preserve the partial review result.
+
+The [coordinated-exclusion case](document-authoring-case-study.md#coordinated-platform-exclusions)
+uses exact local before/after route results, an observed maintenance query and
+focused counterexamples in both bundles. It supports bounded reading/capability
+correction with retained controls, not new military doctrine, access permission
+or native-model acceptance. An explicit source is required reading, not proof
+that an excluded platform topic covers the actual task's domain.
+
+The [exact repaired-unit receiving case](document-authoring-case-study.md#exact-repaired-unit-receiving)
+uses the exact synthetic OP1, native response and separate source appraisal. It
+establishes bounded receipt/use, not blanket review acceptance or new military
+claims. Claude's [TypeScript message reference](https://code.claude.com/docs/en/agent-sdk/typescript#sdkmessage)
+lists `SDKAPIRetryMessage`; the official
+[@anthropic-ai/claude-agent-sdk 0.3.322 package](https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.322.tgz)
+defines its fields in `sdk.d.ts:3718-3738` and error values at line 3832.
+Inspected 2026-11-12. The retained observed event and that declaration support
+diagnostic classification; the field validation, fixed deadline and rejection
+policy are local controls, not claims of native review success.
+
+The [operative-condition review](document-authoring-case-study.md#operative-condition-review-and-bounded-repair)
+compares exact synthetic current/predecessor units, assignments and guidance.
+It separates useful native repairs from unsupported findings and a separately
+materialized operator correction. This is local source appraisal, not new military
+research, authenticated authority or acceptance inferred from process success.
+
+The [document-readiness routing case](document-authoring-case-study.md#document-readiness-and-format-routing)
+uses the exact earlier maintenance query, retained before/after CLI output and
+counterexamples for both providers. It supports bounded relevance and restored
+format selection, not new military claims, model understanding or authority.
+All prior commands remain; retained ambiguous wording limits the conclusion.
+
+The [outgoing handoff revision](document-authoring-case-study.md#outgoing-handoff-revision-and-decision-ownership)
+adds native source/predecessor comparison and exact selected-unit checks. It
+supports bounded limit/decision-owner retention, not new military research or
+operational acceptance. Preserve the partial Claude appraisal and actual scope.
+
+The [cold-start continuation](document-authoring-case-study.md#cold-start-document-continuation)
+uses exact synthetic incoming text, fresh native responses and an operator-selected
+unit audit. Both recipients produce useful worksheets; field-only versus whole-
+object selection has different completeness results. This is local document-flow
+evidence, not new military research, authenticated authority or private-source
+clearance. Preserve the separate outgoing-quality findings.
+
+The [request-first plan review](document-authoring-case-study.md#request-first-plan-review-and-repair)
+uses four synthetic source texts, exact no-tool native responses and a separate
+operator appraisal. Both clients detect six seeded defect families, but retained
+repair/assembly defects prevent full handoff acceptance. This is local workflow
+evidence, not a new military fact or an exception to source-delivery policy.
+Its separately bound current-guidance follow-up carries exact source bodies in
+both outputs; operator acceptance covers the Codex draft, not USER adoption,
+Claude equivalence or actual receiving behavior.
+
+The [skill-use reading case](document-authoring-case-study.md#skill-use-and-maintenance-reading)
+uses a retained local before/after baseline, a prior native task's CLI arguments
+and installed/guarded regression checks. It adds no external doctrine claim or
+permission. A replay of routing is not a replay of the model or evidence that
+every remaining document is necessary; retain the initial maintenance-phrase miss.
+
+The [native direct-task case](document-authoring-case-study.md#native-direct-task-continuity)
+uses a fresh synthetic assignment, exact installed guidance and reconciled local
+client/tool records. It observes caller identity and objective retention without
+exposing the private source root in the inspected outgoing text. Adapter checks,
+model self-review and parent source appraisal are distinct evidence; this is not
+military doctrine, authenticated delegation or complete receiver acceptance.
+
+The [source-topic selection case](document-authoring-case-study.md#source-topic-and-delivery-language-reading)
+uses local CLI comparisons, retained implementation failures and the existing
+purposes of the Korean/multinational reference documents. It adds no military
+fact or access permission; positive relevance matching is not semantic minimality.
+
+The [V5 source review](document-authoring-case-study.md#support-sop-v5-source-review)
+uses exact public repository text and a native Codex comparison, not new military
+evidence. Draft-quality acceptance covers the operative body, not its historical
+preface, a complete receiving packet or USER policy adoption.
+
+The [direct-task identity correction](document-authoring-case-study.md#direct-task-organization-identity)
+is based on inspected local router behavior, not a military-source claim. Its
+project/task binding is distinct from authenticated ownership or admission.
+The [receiving preparation refusal](document-authoring-case-study.md#corrected-receiving-preparation-boundary)
+is historical local contract evidence, not a native model verdict or completed
+handoff. METHOD61's later exact preparation proposal remains unapproved; the
+[current family map](document-authoring-case-study.md#current-authoring-families)
+separates that artifact decision from successful receiving in other cases.
+
+The [method-failure reporting case](document-authoring-case-study.md#method-failure-reporting-and-handoff)
+uses synthetic policy/counts and exact installed guidance, not external military
+evidence. It verifies a parent-mediated notice boundary after a failed read while
+retaining source-provenance and recovery-owner defects. The new wording about
+preparer authority, translated queries and actual attachments is local operating
+guidance, not a new approval or independently accepted correction.
+
+<!-- current-document:support-sop:start -->
+Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
+State: proposed; review: native-reviewed; adoption: not-adopted.
+<!-- current-document:support-sop:end -->
+
+`docs/source-map-navigation.json` and `source-map-navigation.js` bind maintained
+current-document blocks to exact candidate and appraisal sections. The existing
+`source-map-linter.js` checks their declared consistency without granting adoption.
+See [navigation maintenance](knowledge-management-sop.md#current-document-navigation).
+The [navigation integrity case](document-authoring-case-study.md#declared-navigation-integrity)
+records the local audit and its unregistered-prose and authority limits.
+Evidence entries below retain their original scope and limits; the active
+[completion queue](completion-backlog.md#active-core-work) owns next work.
+
+The [parent-delivered brief case](document-authoring-case-study.md#parent-delivered-brief-before-native-work)
+uses installed CLI help/code, exact initialization and two normal-output native
+phases. The [CLI reference](https://code.claude.com/docs/en/cli-reference) and
+[hook contract](https://code.claude.com/docs/en/hooks#pretooluse) inform the bounded
+failed message-tool probe, not a claim of available tools or delivered reports.
+The successful alternative is parent-mediated and preserves original task/source
+bindings. Its operator delivery record is not authenticated proof or USER approval;
+this is local workflow evidence, not a new military claim or universal reporting fix.
+
+The [Claude report-stream diagnostic](document-authoring-case-study.md#claude-public-report-stream-diagnosis)
+uses the official [CLI streaming](https://code.claude.com/docs/en/headless#stream-responses),
+[SDK streaming](https://code.claude.com/docs/en/agent-sdk/streaming-output) and
+[status type](https://code.claude.com/docs/en/agent-sdk/typescript#sdkstatusmessage)
+references. The installed 2.1.322 binary and native records additionally establish
+`requesting`, absent from the public status union at inspection. Partial/completed
+text agreement narrows the reporting diagnosis for this launch, not every client.
+The observer correction retains unknown-event and permission-change denial;
+local evidence is not new military doctrine or a repaired reporting workflow.
+
+The [changed-source receiving case](document-authoring-case-study.md#changed-source-revision-and-cold-start-receiving)
+uses two actual native phases, unchanged candidate bytes and synthetic policy
+sources. It supports the bounded revision/receiving comparison while retaining
+Claude's false reporting claims and wrong total. Catalog preparation led to a
+shared structured recipient view and both-provider guidance; this is engineering
+evidence, not new military doctrine, authenticated authority or universal compliance.
+
+The [task-reading correction](document-authoring-case-study.md#task-relevant-runtime-reading-and-excluded-work)
+uses local before/after routing, both installed-provider fixtures and guarded
+wave contexts. It conditions five specialist references and prevents supported
+platform exclusions from supplying runtime capability evidence, while retaining
+original requests and selected controls. This is engineering evidence, not a
+military-source claim, universal semantic parsing or new native acceptance.
+
+The [public-policy diagnostic case](document-authoring-case-study.md#public-policy-content-review-diagnostics)
+uses retained exact SOP V3/V4 bodies, `project-document-packet.js` and local packet
+fixtures. It records rule/digest metadata without changing detectors or granting
+clearance. This is local engineering evidence, not military doctrine, semantic
+false-positive certification or native workflow acceptance. The access policy's
+[diagnostic procedure](role-document-access-policy.md#content-review-diagnostics)
+defines the source-reader and partial-inspection limits.
+The [catalog-screening regression](document-authoring-case-study.md#recipient-catalog-screening)
+closes a separate token-shaped source-ID bypass with unchanged detector rules.
+Its synthetic local cases are not clearance of the retained SOP or internal drafts.
+The USER subsequently approved the bounded
+[reviewed-preparation design](role-document-access-policy.md#reviewed-document-preparation).
+`project-document-review.js`, its proposal/decision schemas, v0.2 representation
+contracts and `run-project-document-review-fixtures.js` implement local exact-input
+decision binding and reinspection. These are engineering decisions, not military
+source claims or authenticated human consent. Exact retained sources still need
+their own USER review; synthetic fixture decisions do not clear them.
+The [bound-reader correction](document-authoring-case-study.md#bound-source-id-reader)
+adds `project-document-reader.js` and `run-project-document-reader-fixtures.js`.
+It reuses existing inspection and recipient projection for ID-only catalog/reads,
+preserving representation modes and current decision checks. This is local
+engineering evidence, not a new disclosure decision, authenticated recipient,
+native receiving result or separate service.
+The [routed-session integration](document-authoring-case-study.md#routed-receiving-integration)
+adds `project-document-session.js`, its optional stdio adapter and integration
+fixtures. It uses the existing pinned MCP client/server packages from
+`package.json`, not a new service dependency. Actual local router/protocol calls
+support phase and source-binding checks; they are not native model acceptance,
+complete semantic source selection or authenticated authority.
+The [compound-source case](document-authoring-case-study.md#native-compound-source-planning)
+adds exact native client streams, source-bound tool returns and operator appraisal
+for the committed session adapter. Its synthetic policy is not military doctrine
+or real policy adoption. Natural terminology phrases exposed a lexical routing
+miss in both clients; retained before/after CLI outputs and routing/installation
+fixtures support the correction, not fresh native acceptance of new guidance.
+The [operator R1 correction](document-authoring-case-study.md#compound-draft-correction-and-receiving-proposal)
+adds exact predecessor reconstruction and a pending seven-source receiving
+proposal. Those records establish edit scope and proposed source bindings only;
+the candidate retains navigation issues and has no fresh native acceptance.
+The [reading-selection diagnostic](document-authoring-case-study.md#reading-selection-provenance)
+is supported by same-request before/after outputs and actual local CLI/transport
+fixtures. These establish selection provenance and unchanged boundaries, not
+automatic relevance, required-reading authority or new native acceptance.
+
+The [required-source failure exercise](document-authoring-case-study.md#required-source-failure-and-partial-work)
+adds local native evidence for no-retry policy holds and independent partial
+drafting in both clients. It retains Claude reporting/approval-scope defects,
+an unadopted operator correction and explicitly unverified behavioral guidance.
+This synthetic case is not external doctrine or permission to waive a failed read.
+
+The [native research repair review](document-authoring-case-study.md#native-research-repair-and-public-reporting)
+is local synthetic evidence, not new military doctrine. Both clients read ten
+required inputs and distinguish permitted/forbidden proposals; Claude still
+misses requested public reporting and overstates some mandatory findings. The
+public-message projection and operator research V3 retain evidence and correct
+source-backed defects without claiming universal compliance or policy adoption.
+
+## Skill-First Scope And Authoring
+
+The [OR72 optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
+binds native route/read records, delivered source bytes and separate operator
+appraisal. Optional-guide selection is observed; source-body byte counts are not
+token savings or global minimality. The later
+[snapshot/locator correction](document-authoring-case-study.md#or72-snapshot-and-locator-correction)
+binds fifteen explicit operator edits and preserved sources/history. It supports
+bounded repair scope, not fresh model acceptance or delivery approval. These are
+local synthetic observations, not external military doctrine. The reusable
+lessons are recorded in the [compendium](research-compendium.md#optional-reading-and-temporal-source-claims-2026-11-13).
+
+The [approved OR72 receiving case](document-authoring-case-study.md#approved-or72-representation-receiving)
+adds actual exact-decision-bound representation reads and native review. Current
+receiving does not retroactively alter the predecessor's nondelivery history or
+authorize another recipient. Separate source appraisal retains incorrect finding
+premises alongside preserved operative repairs; no new military claim follows.
+
+The [exact-quote location case](document-authoring-case-study.md#exact-quote-location-checks)
+adds `project-document-quote.js` and `run-project-document-quote-fixtures.js` to the
+existing routed session. Its opt-in operation returns byte/line context only
+after a current full read and fresh source checks. Local Node/string and actual
+stdio tests support binding and access behavior, not Markdown interpretation,
+semantic support, native compliance or a new military source claim. The
+[access procedure](role-document-access-policy.md#exact-quote-lookup) defines its limits.
+
+The subsequent [native quote-review case](document-authoring-case-study.md#native-quote-review-and-decision-ownership)
+records both clients' actual calls against new synthetic sources. Original events,
+full bodies and source bindings support the bounded observation; operator appraisal
+separates correct finding dispositions from a report's wrong numeric locator and
+decision owner. Local instruction-delivery checks do not establish post-update
+model compliance. This is engineering evidence, not new military doctrine or
+an independent reliability estimate.
+
+The [review-workflow routing correction](document-authoring-case-study.md#review-workflow-routing-correction)
+uses the exact retained QL93 queries for a local before/after comparison. It adds
+bounded vocabulary to existing routes, with separate domain-gap, installed-client
+and guarded-parent regressions. The unchanged query/body bindings support the
+comparison, not a new model call, comprehension claim or external military source.
+
+The [2026-11-15 requirement audit](completion-backlog.md#audit-basis-and-disposition-changes)
+reconciles these retained observations with the unchanged skill-first criteria.
+Exact response/source bindings and the approved OR72 decision window support
+bounded flow and delivery dispositions; source appraisal remains separate from
+structural presence checks. The previous queue/table remain verbatim history.
+This is local engineering evidence, not a new source claim, transfer approval or
+native rerun. Pending individual proposals are not new product prerequisites.
+
+The subsequent [RH94 cross-client recovery handoff](document-authoring-case-study.md#cross-client-recovery-handoff)
+records four bounded native processes, unchanged whole-unit transfers and fresh
+recipient route/read evidence in both directions. Separate operator appraisal
+retains author errors, useful reviewer repairs and an overstated finding; the
+initial operator miss is corrected explicitly. Its [reusable lesson](research-compendium.md#available-evidence-is-not-exclusive-proof-2026-11-15)
+distinguishes unknown identity, current missing proof and public notice evidence.
+The new instruction checks are local, not causal behavior evidence. This advances
+bounded receiving without adopting policy, approving other proposals or claiming
+a production outage/recovery test or external military source.
+
+The [role/format reading case](document-authoring-case-study.md#role-and-format-reading-correction)
+compares 56 fixed queries against both routers before and after a bounded change.
+The authoring workflow and prompt templates establish the missing drafting
+procedure; the five execution manuals' stated scope supports conditional S3
+recommendations. The [lesson](research-compendium.md#role-defaults-and-format-prerequisites-2026-11-15)
+separates role, task and authority without redefining the assigned reading profile.
+This is local source appraisal and routing evidence, not an external military
+claim, current source consumption by a native model or universal minimality.
+
+The [declared-reference integrity case](document-authoring-case-study.md#declared-routing-reference-integrity)
+reproduces a green inventory after loss of a selected authoring guide in both
+routers. Reverse declaration checks and selected-reference refusal repair that
+local availability gap; the [maintenance lesson](research-compendium.md#declared-references-and-surviving-files-2026-11-15)
+does not infer source reading, semantic acceptance or an external military claim.
+
+The [RP95 parent-delivered replanning case](document-authoring-case-study.md#parent-delivered-replanning-and-residual-scope)
+records four native processes with route-only notices, actual parent relay and
+seven-source continuations. Its [lesson](research-compendium.md#notice-delivery-and-residual-scope-2026-11-15)
+separates successful reporting boundaries from unsupported aggregate/item mapping.
+An operator catches an appraisal-bearing preparation before transfer and retains
+it alongside the corrected input. Original responses, four-span local correction
+and later mirrored instruction checks are distinct evidence; none grants adoption,
+new source access or an external military doctrine claim.
+
+The [artifact-family audit](document-authoring-case-study.md#artifact-family-state-audit)
+checks ten maintained outputs against original artifact, review, receiving and
+decision records. Its [maintenance lesson](research-compendium.md#artifact-state-is-phase-specific-2026-11-15)
+keeps local successors distinct from predecessor reviews, preserves four pending
+decisions and scopes OR72's expired grant to its historical in-window event.
+This is source/status appraisal, not a new model review or military-source claim.
+
+The [MP96 compound-report case](document-authoring-case-study.md#mapped-replanning-and-compressed-reports)
+binds two native runs to synthetic record/event sources and exact installed guides.
+Its [output-coverage lesson](research-compendium.md#compressed-outputs-need-their-own-review-2026-11-15)
+distinguishes correct detailed tables from contradictory summaries and unsupported
+approval gates. The local operator derivative is not a new native review, policy
+adoption or external military-source claim.
+
+Its [R1 preparation boundary](document-authoring-case-study.md#r1-receiving-preparation-boundary)
+retains a rejected raw request and two pending exact review proposals. Mirrored
+path/mode preflight and identity-representation fixtures document the existing
+boundary; they do not establish a new native review or grant preparation approval.
+
+The [source-bound review and S4 case](document-authoring-case-study.md#source-bound-review-and-logistics-reading)
+compares 58 local route results with the authoring procedure and storage/readiness
+manual scopes. Its [relevance lesson](research-compendium.md#review-method-and-storage-relevance-2026-11-15)
+preserves actual task sources, specialist counterexamples and existing authority;
+it is engineering evidence, not new military doctrine or native acceptance.
+
+The [bound-session reading case](document-authoring-case-study.md#bound-session-reading-context)
+tests the actual adapter's role, descriptor and original/current task composition.
+Its [descriptor/profile distinction](research-compendium.md#routing-descriptor-and-assigned-profile-2026-11-15)
+preserves exact access profiles and old evidence without a military-source claim
+or inferred native reading.
+
+The [PR97 whole-output case](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading)
+binds two current-guidance native runs to exact synthetic sources and appraises
+every requested output, actual required reads and useful optional choices.
+Its [acceptance synthesis](research-compendium.md#whole-output-acceptance-is-bounded-2026-11-15)
+supports the final four required audit rows alongside earlier evidence, not a
+military claim, universal reliability, draft adoption or new preparation authority.
+
+The [native research/report case](document-authoring-case-study.md#native-research-report-and-required-reading)
+uses synthetic aggregate counts, not external military or statistical evidence.
+Both clients read six required documents and give advance backbriefs; source
+appraisal retains unsupported causal/weighting claims and late method notice in
+one report. Local arithmetic and an operator correction do not establish causal
+inference, fresh native acceptance or policy adoption. The minimum-reading and
+quantitative-review additions are project operating practices.
+
+The [current-navigation audit](document-authoring-case-study.md#current-navigation-and-requirement-audit)
+found a valid but stale V4 pointer after V5 existed. Current links now name the
+unadopted candidate while original evidence remains historical. The separate
+four-span source appraisal checks retained claims and exact representations,
+not new model behavior, military doctrine, authority or operational acceptance.
+
+The [implicit Claude receiving case](document-authoring-case-study.md#native-implicit-claude-receiving)
+adds observed native loading, current-role routing and actual receipt of a complete
+synthetic unit. Process success is separated from missing required reads, an
+unsupported mandatory locator finding and retrospective rather than advance
+reporting. Both original observer failures and corrected evidence remain local
+history. This is not a military claim, full semantic acceptance or USER adoption.
+
+The [implicit Codex selection case](document-authoring-case-study.md#native-implicit-codex-selection)
+is a synthetic desk-duty exercise in a controlled native catalog. Installed-body
+selection, complete objective routing and source reads are observed, not inferred
+from metadata. The source appraisal supports this draft unit only, not Claude
+parity, globally minimal reading or an operational handoff.
+The subsequent starter fixture exposed a real lexical omission; its correction
+and local regressions are separate from the earlier native execution evidence.
+
+The [native compound-intake case](project-terminology-workflow.md#native-compound-intake)
+is local synthetic evidence, not a museum-domain or military claim. Actual
+routing, selected reads and a required-term compiler denial reconcile with
+source bytes; operator appraisal separates correct partial drafting from missing
+per-objective adapter output and cold-start source locations. The later local
+lookup is operator work, not original model output or approved transfer.
+
+The [support-SOP V4 review](document-authoring-case-study.md#support-sop-v4-source-review)
+is a native supplied-text comparison against repository policies, not new military
+doctrine or agent-routed acceptance. Its changes-required verdict leads to a
+proposed V5 that distinguishes continuing work holds from a next action's stop
+and connects existing resolution procedures. The original packet refusal on
+public security wording remains separate; neither a model verdict nor operator
+source appraisal authorizes disclosure, policy adoption or operational work.
+
+The [current-guidance review](document-authoring-case-study.md#current-guidance-handoff-repair-review)
+adds two native responses and 24 reconciled calls on the retained synthetic
+handoff. Both repair the two known errors; source appraisal distinguishes the
+Codex correction from a remaining Claude locator overclaim. An omitted historical
+input limits the new review, not necessarily the truth of the old record. This
+is local behavior evidence, not military doctrine, USER adoption or general parity.
+
+The [source-failure handoff](document-authoring-case-study.md#source-failure-and-changed-policy-handoff)
+is local native-client evidence from a synthetic delivery outage and changed
+policy, not a military claim or production recovery test. Twenty-one calls are
+reconciled; the received prose still contains an inaccurate activity summary and
+a mixed-revision abbreviated hash label. New reporting/binding instructions are
+manual review criteria, not automatically enforced semantic guarantees.
+
+The [receipt producer correction](document-authoring-case-study.md#receipt-producer-validation)
+is local evidence from both scripts and isolated artifact stores. Existing
+schema/semantic rules now run before output or persistence; downstream role,
+preflight and execution controls remain independent. This is not proof of
+authentic delegation or actual document delivery.
+
+The [S6 reading correction](document-authoring-case-study.md#s6-default-reading-alignment)
+reconciles both router defaults with the existing S6 row in
+[Role Document Access Policy](role-document-access-policy.md#4-default-document-bundle-by-role).
+Local before/after and negative-admission checks establish policy-context
+preservation, not semantic minimality, authenticated access or native acceptance.
+
+The [generic-comparison correction](document-authoring-case-study.md#generic-comparison-routing-correction)
+is local engineering evidence: a red routing regression, both provider outputs,
+source/mission-context preservation and controller-issued context checks.
+Comparison methods do not establish domain expertise. Conditional specialist
+reading does not remove selected controls, modify retained receipts or grant
+authority. No new military or provider-behavior claim follows from these tests.
+
+The [Codex receiving case](document-authoring-case-study.md#native-codex-routing-and-receiving)
+adds local native-tool evidence with a retained client-bridge failure, fourteen
+reconciled calls/results and source appraisal. These observations are specific
+to Codex CLI 0.162.1, not military claims or universal access enforcement.
+The official [MCP configuration](https://learn.chatgpt.com/docs/extend/mcp#other-configuration-options)
+describes server-scoped tool lists and startup readiness; the
+[SDK item definitions](https://github.com/openai/codex/blob/main/sdk/typescript/src/items.ts)
+describe MCP call identity, arguments, status and results (accessed 2026-11-12).
+The loopback capture separately observed four native helpers outside that
+server's two-tool list. Local SDK discovery was empty and resource reads rejected;
+no claim of an empty native catalog follows. Client errors, not an absent MCP
+item alone, establish the first attempt's failed discovery path.
+
+The [agent-invoked routing case](document-authoring-case-study.md#agent-invoked-phase-routing)
+records three synthetic native Claude phases with reconciled tool arguments,
+delivered results and source digests. It is local engineering evidence, not a
+military claim or a production access guarantee. The observed unsupported
+status assertions motivate the headline/assessment/action review rule in both
+skills. A separately reproduced caller failure motivates the existing `--`
+delimiter in controller calls and documented examples. Current regressions
+exercise actual routing and installed commands; no authority expansion follows.
+
+The [native Claude review](document-authoring-case-study.md#native-claude-cross-client-review)
+records an exact synthetic correction candidate, retained launch/observer failures
+and source appraisal. Declared delivery units and actor/phase-scoped work claims
+are local lessons, not new military claims. The bounded classifier uses the
+official [thinking-progress event definition](https://code.claude.com/docs/en/agent-sdk/typescript#sdkthinkingtokensmessage)
+(accessed 2026-11-12); progress estimates are not final usage or completed work.
+Its adversarial fixtures preserve unknown/tool/error rejection. Authentication
+environment and user-source eligibility observations are specific to the tested
+client, not claims that the reference documents prescribe those local settings.
+
+The [native document collaboration case](document-authoring-case-study.md#native-document-collaboration-and-phase-provenance)
+records a synthetic author/reviewer/reviser/receiver chain and its actual errors.
+Phase-qualified source IDs, recipient context, delivered excerpt digests and
+operative reading updates are local engineering lessons, not new military claims.
+Both skills carry the correction; `run-project-terminology-handoff-fixtures.js`
+preserves historical recipient excerpts while checking new role selections.
+Model response appraisal and local binding checks do not authenticate authority,
+prove independent providers or establish operational acceptance.
+
+`docs/project-terminology-workflow.md`, `project-terminology.js` and its schema,
+samples and fixtures implement a local skill-first design: user-stated versus
+inferred meanings, scoped revisions and recipient selections. This is not a
+claim that military terminology has a universal one-word/one-meaning mapping.
+Local checks do not authenticate source statements or demonstrate automatic
+model capture, semantic correctness or recipient acceptance.
+The subsequent project-packet binding addresses a locally reproduced stale-copy
+gap: unchanged excerpt bytes did not prove the glossary remained current.
+`run-project-terminology-handoff-fixtures.js` exercises the actual packet path;
+this evidence is source-binding behavior, not semantic or native-agent acceptance.
+A separate installed-helper exercise produced a current packet after access to
+a task-required term was withdrawn: the missing term was visible, but freshness
+was not a readiness check. The optional `required_terms` packet declaration now
+tests that explicit subset for unique confirmed meanings before publication.
+Legacy bindings stay unassessed. The same handoff fixtures cover the contract;
+operator declarations are not proof of semantic completeness or authority.
+The workflow's [approved dialogue exercise](project-terminology-workflow.md#approved-dialogue-exercise-2026-11-11)
+records one separately consented native response with supplied instructions and
+synthetic sources. Its hashes and scoped appraisal are local execution evidence,
+not new military doctrine, automatic skill selection or operational acceptance.
+
+The issuance-lock failure handling in `dispatch-runtime-controller.js` preserves
+both the primary and cleanup failures under `docs/enforced-dispatch-and-resume.md`.
+Its deterministic ownership-substitution fixtures are local engineering evidence,
+not proof of the earlier intermittent lifecycle-test failure's cause. Both skill
+maintenance references require durable-state inspection rather than blind retries.
+
+`project-document-packet.js`, the request/packet schemas and
+`run-project-document-packet-fixtures.js` implement local project-content
+preparation under `docs/role-document-access-policy.md`. Source-origin and exact
+byte checks, non-reading of reference-only files and provider-wrapper parity are
+local engineering evidence, not military claims or authenticated consent/native
+receiver acceptance. Both skill entrypoints and routing references carry the
+source-owner preparation versus recipient-delivery boundary.
+The same helper now rejects literal withheld-source and repository locations
+across recipient-facing strings, not just document metadata. The reproduction
+and limits are local engineering evidence; this is neither semantic secrecy
+detection nor a new source-read/disclosure grant.
+
+`context-document-integrity.js` and its isolated controller/dispatch fixtures
+implement the existing source-binding rule in
+`docs/skill-operational-mission-lifecycle.md`. The observed stale-source admission
+and correction are local execution evidence, not a new military claim or native
+agent-consumption proof. The same rule is mirrored in both client skills; project
+content authorization/delivery and independent receiver acceptance remain open.
+
+The approved review retry and corrective V3 in
+`docs/document-authoring-case-study.md` use the local source policies and an
+actual model response, not new external doctrine. The author's subsequent
+appraisal distinguishes candidate defects from withheld evaluator context and
+retains an observed reviewer counting error. Source comparison is not independent
+acceptance. Both skills carry the resulting transfer-boundary rule; preparation
+fixtures verify historical candidate isolation, not V3 semantic correctness.
+
+Project input references in the two document routers are a local G2/G5 design,
+not a new military-source claim. Explicit Git-root and file selectors keep task
+inputs separate from doctrine recommendations without reading or approving their
+contents. `run-document-authoring-input-fixtures.js` tests resolution, rejected
+inputs and unchanged authority in both bundles. Receipt/content-delivery binding
+is not implemented by this metadata step.
+
+The document-access correction is a local implementation audit against the
+existing `docs/role-document-access-policy.md`, not a new military claim.
+`document-access-runner.js` now consumes shared validation, selects only the
+profile's named documents and emits an empty allowed list on any block.
+`run-document-access-fixtures.js` checks the projection and CLI; it does not
+establish protected file reads, current approval or cross-repository delivery.
+
+`authoring-review-packet.js` uses the current local support/governance/security
+policies and the existing authoring case to prepare evaluator input separately
+from the author's reference. Its deliberate variants are test material, not
+new policy or executed incidents. The handoff-template scope clarification
+applies the USER's skill-first decision; it makes no new military-source claim.
+`run-authoring-review-packet-fixtures.js` checks preparation integrity, not
+semantic quality or independent receiver acceptance.
+
+Native metadata inspection uses OpenAI's
+[prompt-input command](https://learn.chatgpt.com/docs/developer-commands#codex-debug-prompt-input),
+Claude's [initialization response](https://code.claude.com/docs/en/agent-sdk/typescript#sdkcontrolinitializeresponse)
+and [bare-mode discovery boundary](https://code.claude.com/docs/en/headless#start-faster-with-bare-mode).
+The initialization-only wire shape was inspected in the official
+[Python SDK source](https://github.com/anthropics/claude-agent-sdk-python/blob/main/src/claude_agent_sdk/_internal/query.py).
+Accessed 2026-11-11. `skill-client-discovery-probe.js` is a local, opt-in macOS
+diagnostic with denied network and writes outside owned temporary state, not
+an upstream SDK, authenticated model test or protected production implementation.
+Native metadata discovery is separate from the installation fixtures below.
+
+`install-ai-cli-skills.sh`, both document routers and
+`run-skill-installation-fixtures.js` provide local installation/binding evidence.
+Temporary homes and stub client binaries isolate failure/replacement checks.
+These results do not establish native client discovery, authentication, model
+execution or separate plugin-package acceptance.
+
+`docs/document-authoring-case-study.md` uses the repository's `SUPPORT.md`,
+`GOVERNANCE.md` and `SECURITY.md` as its actual policy sources. It records source
+hashes, draft/revision boundaries and a requirement comparison. The scenario
+is a local authoring exercise, with an initial self-review followed by a separately
+approved advisory model review and author appraisal. It is not an adopted policy,
+independent operator/provider evaluation or externally performed support action.
+Its separate maintenance work order records actual local router work, with
+pre-implementation requirements and later verification kept distinct. This
+uses the project scope and local execution evidence, not external military
+authority or an invented approval.
+
+`docs/skill-first-product-scope.md` records the USER's 2026-11-10 scope decision,
+not a military-source claim. `docs/document-authoring-workflow.md` synthesizes
+the existing knowledge-management, prompt, order, source and handoff guidance
+into a document-only entry path. Both provider skills apply this boundary while
+preserving existing guarded execution and release procedures as conditional
+references. No new external-source assertion is introduced.
+
 `docs/gateway-effect-settlement.md` is local engineering synthesis of the
 existing USER, supervisor, verifier, gateway review and OCI containment contracts.
 `gateway-effect-settlement.js`, its schema pair, fixture runner and both skill
@@ -734,7 +1284,7 @@ protected runtime/custody evidence; production enforcement remains unproven.
 | Release gate decision schema | release gate audit | The final judgment synthesizing execution authority and release authority must also be recorded in the event log | Preserves the release gate allow/block fact and its snapshot/evidence | `schema-files/release-gate-decision-event.schema.json`, `sample-payloads/valid-release-gate-decision-event.json` |
 | Context filter prototype | need-to-know execution | Converts a context item into a per-role raw/summary/redacted/reference/denied packet | Multi-agent context distribution control | `context-filter-prototype/README.md` |
 | Document access runner | need-to-know document access | Ahead of the context filter, the documents a role can even open must themselves be restricted | Cross-checks the manifest against role/duty/authority to generate an allowed/denied document projection | `document-access-runner.js`, `document-access-fixtures/README.md` |
-| Handoff generator artifact | Handoff automation | Generates a handoff packet from event replay and alert projection | Context transition safety automation | `handoff-generator.js` |
+| Handoff generator artifact | Source-grounded handoff drafting | Reads explicitly selected order/events, retains digests and requirements, and distinguishes recorded claims from verified state | Local unreviewed draft only; no execution, release or receiver acceptance | `handoff-generator.js`, `schema-files/handoff-generation-request.schema.json`, `sample-payloads/valid-handoff-generation-request.json`, `sample-payloads/invalid-handoff-generation-request.json`, `run-handoff-generation-fixtures.js` |
 | Decision packet linter | Decision packet quality | Automatically checks for missing option/risk/evidence/deadline | Commander board packet quality gate | `decision-packet-linter.js` |
 | Working group event fixtures | B2C2WG lifecycle | Represents WG opened/prepared/decided/closed as an event log | Staff integration replay fixture | `event-fixtures/working-group-event-fixtures.json` |
 | Maintenance readiness model | Sustainment/maintenance | Evaluates tool/resource/context/fallback readiness as operational continuity | S4/S6 runtime sustainment | `maintenance-readiness-model.md` |
