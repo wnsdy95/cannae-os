@@ -29,7 +29,7 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "const": "0.1" },
+    "schema_version": { "type": "string", "enum": ["0.1", "0.2"] },
     "type": { "type": "string", "const": "AgentDispatchLease" },
     "id": { "$ref": "common.schema.json#/$defs/id" },
     "mission_id": { "$ref": "common.schema.json#/$defs/id" },
@@ -57,8 +57,11 @@
     "issued_at": { "$ref": "common.schema.json#/$defs/timestamp" },
     "not_before": { "$ref": "common.schema.json#/$defs/timestamp" },
     "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
-    "authority": { "$ref": "#/$defs/authority" }
+    "authority": { "$ref": "#/$defs/authority" },
+    "issuance_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" }
   },
+  "allOf": [{ "if": { "properties": { "schema_version": { "const": "0.2" } } },
+    "then": { "required": ["issuance_ref"] }, "else": { "not": { "required": ["issuance_ref"] } } }],
   "$defs": {
     "safe_identifier": {
       "type": "string",

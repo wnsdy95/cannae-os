@@ -24,7 +24,7 @@ function decisionOption(request) {
 
 function proposalPayload(request, draft, observedManifest, now) {
   return {
-    schema_version: "0.1", type: TYPES["order-adoption-proposal"],
+    schema_version: request.schema_version, type: TYPES["order-adoption-proposal"],
     id: `OAP-${digest(request).slice(0, 32)}`, mission_id: request.mission_id, wave_id: request.wave_id,
     request, request_sha256: digest(request), plan_sha256: digest(request.plan),
     observed_manifest: observedManifest, recorded_at: now,
@@ -36,7 +36,7 @@ function proposalPayload(request, draft, observedManifest, now) {
 function recordPayload(request, proposal, observedManifest, now) {
   const bound = digest(request);
   return {
-    schema_version: "0.1", type: TYPES["order-adoption-record"], id: `OAR-${bound.slice(0, 32)}`,
+    schema_version: request.schema_version, type: TYPES["order-adoption-record"], id: `OAR-${bound.slice(0, 32)}`,
     mission_id: request.mission_id, wave_id: request.wave_id, request, request_sha256: bound,
     plan_sha256: proposal.plan_sha256, status: { approve: "adopted", reject: "rejected", revise: "revision_required" }[request.disposition],
     issued_order_id: request.disposition === "approve" ? `IO-${bound.slice(0, 32)}` : "none",
@@ -141,20 +141,23 @@ function adoptionIssues(payload, type) {
     }
   }
   if (type === "order-adoption-proposal-request") {
+    if ((payload.schema_version === "0.2") !== Object.hasOwn(payload, "semantic_review_ref")) {
+      issues.push(problem("ORDER_SEMANTIC_REVIEW_REQUIRED", "$", "Version 0.2 binds an exact retained semantic review; legacy requests cannot carry one."));
+    }
     if (payload.plan.schema_version !== "0.2" || payload.mission_id !== payload.plan.mission_id || payload.wave_id !== payload.plan.wave_id) {
       issues.push(problem("ORDER_PROPOSAL_PLAN_SCOPE_MISMATCH", "$.plan", "Adoption requires a versioned plan in the proposal's exact mission and wave."));
     }
   }
   if (type === "order-adoption-proposal") {
     issues.push(...adoptionIssues(payload.request, "order-adoption-proposal-request"));
-    if (payload.id !== `OAP-${digest(payload.request).slice(0, 32)}` || payload.request_sha256 !== digest(payload.request) ||
+    if (payload.schema_version !== payload.request.schema_version || payload.id !== `OAP-${digest(payload.request).slice(0, 32)}` || payload.request_sha256 !== digest(payload.request) ||
         payload.plan_sha256 !== digest(payload.request.plan) || payload.mission_id !== payload.request.mission_id || payload.wave_id !== payload.request.wave_id) {
       issues.push(problem("ORDER_PROPOSAL_BINDING_MISMATCH", "$", "The proposal must bind its complete request and plan."));
     }
   }
   if (type === "order-adoption-record") {
     const bound = digest(payload.request);
-    if (payload.id !== `OAR-${bound.slice(0, 32)}` || payload.request_sha256 !== bound ||
+    if (payload.schema_version !== payload.request.schema_version || payload.id !== `OAR-${bound.slice(0, 32)}` || payload.request_sha256 !== bound ||
         payload.mission_id !== payload.request.mission_id || payload.wave_id !== payload.request.wave_id ||
         payload.status !== { approve: "adopted", reject: "rejected", revise: "revision_required" }[payload.request.disposition] ||
         payload.issued_order_id !== (payload.request.disposition === "approve" ? `IO-${bound.slice(0, 32)}` : "none") ||

@@ -25,3 +25,14 @@ Make Playwright resolvable using `NODE_PATH`; it is not a runtime dependency.
 The browser check starts/closes its own loopback service, proves real desktop
 and mobile owner decisions and retains screenshots with no credential/nonce
 values or setup fragments. It never touches a real owner's account or work.
+
+The coverage review cases compare actual source fragments, every real receiver,
+exact locations and the full plan. Filtering, tabs (including keyboard navigation)
+and pagination must not change the prepared nonce or original subject sent to the
+real controller. Extra context/unknown fragments, long literal markup and more
+than 25 rows are explicitly synthetic display-only variants; they are restored
+before approval and are not retained as approved operational records. A delayed
+authenticated owner preview cannot restore hidden review data in a later viewer
+session. An intercepted incomplete response must leave no actionable preview.
+`node run-operator-coverage-ui-fixtures.js` separately covers the pure presentation
+projection. Neither suite establishes semantic equivalence or model calibration.

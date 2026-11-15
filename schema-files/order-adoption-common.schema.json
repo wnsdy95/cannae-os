@@ -10,6 +10,9 @@
         "task_assignments"
       ],
       "properties": {
+        "planning_ref": {
+          "$ref": "common.schema.json#/$defs/artifact_ref"
+        },
         "revision_ref": {
           "$ref": "common.schema.json#/$defs/artifact_ref"
         },
@@ -90,6 +93,9 @@
         },
         "assessment": {
           "$ref": "opord.schema.json#/properties/assessment"
+        },
+        "semantic_review": {
+          "$ref": "semantic-review-assignment.schema.json"
         }
       }
     },

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/workload-control-input.schema.json",
+  "title": "Bounded Report And Evidence Control Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "purpose", "mission_id", "wave_id", "invocation_id", "report_id_sha256", "report_input_sha256", "subject_set_sha256", "repository_identity_fingerprint", "repository_state_sha256", "manifest_sha256", "policy_source_sha256", "agent_bindings", "report", "evidence", "observed_at", "execution_authorized", "release_authorized", "human_final_decision_authority"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "type": { "const": "WorkloadControlInput" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "purpose": { "const": "report_and_evidence_opsec" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "type": "string", "minLength": 1 },
+    "invocation_id": { "type": "string", "pattern": "^[a-f0-9]{32}$" },
+    "report_id_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "report_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "subject_set_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "repository_identity_fingerprint": { "$ref": "common.schema.json#/$defs/sha256" },
+    "repository_state_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "manifest_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "policy_source_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "agent_bindings": {
+      "type": "array", "minItems": 1,
+      "items": { "type": "object", "additionalProperties": false, "required": ["agent_id_sha256", "context_ref_sha256"],
+        "properties": { "agent_id_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "context_ref_sha256": { "$ref": "common.schema.json#/$defs/sha256" } } }
+    },
+    "report": { "$ref": "mission-wave-report.schema.json" },
+    "evidence": {
+      "type": "array", "maxItems": 64,
+      "items": { "type": "object", "additionalProperties": false, "required": ["reference", "content_sha256", "byte_size", "text"],
+        "properties": { "reference": { "$ref": "common.schema.json#/$defs/artifact_ref" }, "content_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "byte_size": { "type": "integer", "minimum": 0, "maximum": 2097152 }, "text": { "type": "string", "maxLength": 2097152 } } }
+    },
+    "observed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "execution_authorized": { "const": false },
+    "release_authorized": { "const": false },
+    "human_final_decision_authority": { "const": "USER" }
+  }
+}

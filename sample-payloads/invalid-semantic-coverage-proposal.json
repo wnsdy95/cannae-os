@@ -1,0 +1,151 @@
+{
+  "schema_version": "0.1",
+  "type": "SemanticCoverageProposal",
+  "mission_id": "MIS-ADOPTION",
+  "wave_id": "W1",
+  "inventory_ref": {
+    "artifact_id": "RI-ee3788380de90abac4739db2beab5e53",
+    "relative_path": "repositories/repo-4ab2504372ab/missions/MIS-ADOPTION/W1/requirement-inventories/RI-ee3788380de90abac4739db2beab5e53.json",
+    "sha256": "8786e9d426854829ed77a8f6a15f288bb406983daecf7661e29bc21dccf8bfe1"
+  },
+  "draft_ref": {
+    "artifact_id": "OD-ab339cc26a3c1bbccaf0d6c22a3353c7",
+    "relative_path": "repositories/repo-4ab2504372ab/missions/MIS-ADOPTION/W1/order-drafts/OD-ab339cc26a3c1bbccaf0d6c22a3353c7.json",
+    "sha256": "02b4938483cad100646ae2d8b036c48758c7fe066f71eb4f9cb5c1b69d02d4e1"
+  },
+  "plan_sha256": "3153d6c75b5dce5dc757990d844d44ff13e9dd8b8f8ef8d8c04978aa2584a501",
+  "request_text_sha256": "fad82a878f3a06904e28ec8e95cd24224c4b3e9b97bafa0023d2d2ed4d1127bc",
+  "classification": "internal",
+  "recorded_at": "2026-09-29T16:00:18.000Z",
+  "expires_at": "2026-09-29T17:00:00.000Z",
+  "coverage": [
+    {
+      "requirement_id": "REQ-1",
+      "target_id": "order",
+      "disposition": "preserved",
+      "pointer": "/mission/statement",
+      "quote": "Request quote: Prepare an internal comparison of two onboarding options.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-1",
+      "target_id": "TASK-S2",
+      "disposition": "not_applicable",
+      "pointer": "",
+      "quote": "",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-1",
+      "target_id": "TASK-S3",
+      "disposition": "preserved",
+      "pointer": "/task_order/task",
+      "quote": "Proposal: Compare the two options and prepare a draft recommendation.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-2",
+      "target_id": "order",
+      "disposition": "preserved",
+      "pointer": "/situation/constraints/0",
+      "quote": "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-2",
+      "target_id": "TASK-S2",
+      "disposition": "preserved",
+      "pointer": "/task_order/inherited_constraints/0",
+      "quote": "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-2",
+      "target_id": "TASK-S3",
+      "disposition": "preserved",
+      "pointer": "/task_order/inherited_constraints/0",
+      "quote": "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-3",
+      "target_id": "order",
+      "disposition": "preserved",
+      "pointer": "/situation/constraints/0",
+      "quote": "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-3",
+      "target_id": "TASK-S2",
+      "disposition": "preserved",
+      "pointer": "/task_order/inherited_constraints/0",
+      "quote": "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-3",
+      "target_id": "TASK-S3",
+      "disposition": "preserved",
+      "pointer": "/task_order/inherited_constraints/0",
+      "quote": "Request quote: Use only the supplied repository evidence. Do not publish or modify customer data.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-4",
+      "target_id": "order",
+      "disposition": "preserved",
+      "pointer": "/command_and_signal/authority/approval_required/0",
+      "quote": "Request quote: The user decides the target segment and any budget change.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-4",
+      "target_id": "TASK-S2",
+      "disposition": "preserved",
+      "pointer": "/task_order/retained_user_decisions/0",
+      "quote": "Request quote: The user decides the target segment and any budget change.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-4",
+      "target_id": "TASK-S3",
+      "disposition": "preserved",
+      "pointer": "/task_order/retained_user_decisions/0",
+      "quote": "Request quote: The user decides the target segment and any budget change.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-5",
+      "target_id": "order",
+      "disposition": "preserved",
+      "pointer": "/mission/target_end_state/0",
+      "quote": "Request quote: Return a recommendation with explicit uncertainties.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-5",
+      "target_id": "TASK-S2",
+      "disposition": "not_applicable",
+      "pointer": "",
+      "quote": "",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    },
+    {
+      "requirement_id": "REQ-5",
+      "target_id": "TASK-S3",
+      "disposition": "preserved",
+      "pointer": "/task_order/deliverables/0",
+      "quote": "Request quote: Return a recommendation with explicit uncertainties.",
+      "rationale": "Authored synthetic coverage only; no real USER approval."
+    }
+  ],
+  "review_class": "human_inventory_and_coverage",
+  "model_calibrated_for_admission": false,
+  "semantic_completeness_proven": false,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "status": "ready_for_human_review",
+  "id": "SCV-invalid-binding"
+}

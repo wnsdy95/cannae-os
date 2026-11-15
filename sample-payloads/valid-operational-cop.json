@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1",
+  "type": "OperationalCopSnapshot",
+  "as_of": "2026-10-22T20:00:00.000Z",
+  "snapshot_valid_until": "2026-10-22T20:01:00.000Z",
+  "audience": { "account_role": "owner", "mission_filter": null, "role_filter": null, "role_filter_is_authority": false },
+  "classification": "restricted",
+  "approval_authorized": false,
+  "tool_execution_authorized": false,
+  "release_authorized": false,
+  "worker_liveness_verified": false,
+  "alerts_cover_visible_scope": true,
+  "manifest_sha256": "none",
+  "manifest_revision": 0,
+  "visible_wave_count": 0,
+  "matching_wave_count": 0,
+  "waves": [],
+  "alerts": [],
+  "roles": [],
+  "critical_count": 0,
+  "next_boundary_at": null
+}

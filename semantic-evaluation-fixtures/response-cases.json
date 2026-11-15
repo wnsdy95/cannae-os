@@ -1,0 +1,12 @@
+{
+  "request": "Do not publish customer data.",
+  "targets": [{ "id": "order", "content": { "boundary": "Customer data must not be published." } }],
+  "valid": {
+    "requirements": [{ "source_quote": "Do not publish customer data.", "start_byte": 0, "end_byte": 29, "kind": "prohibition", "coverage": [{ "target_id": "order", "disposition": "preserved", "pointer": "/boundary", "quote": "Customer data must not be published.", "explanation": "The prohibition is preserved by a paraphrase." }] }],
+    "conflicts": [], "execution_authorized": false, "release_authorized": false
+  },
+  "invalid": {
+    "requirements": [{ "source_quote": "Do not publish customer data.", "start_byte": 0, "end_byte": 29, "kind": "prohibition", "coverage": [{ "target_id": "order", "disposition": "preserved", "pointer": "/boundary", "quote": "Customer data must not be published.", "explanation": "The prohibition is preserved by a paraphrase." }] }],
+    "conflicts": [], "execution_authorized": false, "release_authorized": true
+  }
+}

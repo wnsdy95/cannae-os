@@ -31,7 +31,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "0.1"
+      "enum": ["0.1", "0.2"]
     },
     "id": {
       "$ref": "common.schema.json#/$defs/id"
@@ -99,8 +99,19 @@
     "release_authorized": {
       "const": false
     },
+    "root_launch_slot_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "predecessor_enrollment_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "interruption_checkpoint_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "continuation_index": { "type": "integer", "minimum": 1, "maximum": 16 },
+    "expected_source": { "enum": ["resume", "clear", "fork"] },
     "human_final_decision_authority": {
       "const": "USER"
     }
-  }
+  },
+  "allOf": [{ "if": { "properties": { "schema_version": { "const": "0.2" } } },
+    "then": { "required": ["root_launch_slot_ref", "predecessor_enrollment_ref", "interruption_checkpoint_ref", "continuation_index", "expected_source"] },
+    "else": { "not": { "anyOf": [
+      { "required": ["root_launch_slot_ref"] }, { "required": ["predecessor_enrollment_ref"] },
+      { "required": ["interruption_checkpoint_ref"] }, { "required": ["continuation_index"] }, { "required": ["expected_source"] }
+    ] } } }]
 }

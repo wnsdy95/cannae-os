@@ -135,8 +135,56 @@ function braceDependencyRegressions() {
   });
 }
 
+function ipZoneDependencyRegressions() {
+  const cases = [
+    ["the installed parser and lock both pin the reviewed patch", `
+      assert.equal(require("ip-address/package.json").version, "10.7.4");
+      assert.equal(require("./package-lock.json").packages["node_modules/ip-address"].version, "10.7.4");
+    `],
+    ["isValid rejects large zones with each line terminator within the child deadline", `
+      for (const end of ["\\n", "\\r", "\\u2028", "\\u2029", "\\ntrailer"]) {
+        assert.equal(Address6.isValid("%".repeat(160000) + end), false);
+      }
+    `],
+    ["constructor retains typed rejection for large invalid zones", `
+      for (const end of ["\\n", "\\r", "\\u2028", "\\u2029", "\\rtrailer"]) {
+        assert.throws(() => new Address6("%".repeat(160000) + end), error => error.name === "AddressError");
+      }
+    `],
+    ["ordinary zones and CIDR keep exact parsing semantics", `
+      for (const zone of ["%eth0", "%en0%extra", "%zone-with-space "]) {
+        const address = new Address6("fe80::1" + zone + "/64");
+        assert.equal(address.zone, zone); assert.equal(address.correctForm(), "fe80::1"); assert.equal(address.subnetMask, 64);
+      }
+      assert.equal(new Address6("2001:db8::1/128").zone, "");
+    `],
+    ["long valid zones are not truncated or rejected by a blanket input cap", `
+      const zone = "%" + "x".repeat(160000), address = new Address6("fe80::1" + zone);
+      assert.equal(address.zone, zone); assert.equal(address.correctForm(), "fe80::1");
+    `],
+    ["equal-size non-zone and unterminated controls still reject", `
+      assert.equal(Address6.isValid("!".repeat(160000) + "\\n"), false);
+      assert.equal(Address6.isValid("%".repeat(160000)), false);
+    `],
+    ["library parsing no longer calls the retained deprecated zone regex", `
+      const { RE_ZONE_STRING } = require("ip-address/dist/v6/constants"); let invoked = false;
+      RE_ZONE_STRING.exec = () => { invoked = true; throw new Error("DEPRECATED_ZONE_REGEX_CALLED"); };
+      assert.equal(new Address6("fe80::1%eth0").zone, "%eth0");
+      assert.equal(Address6.isValid("%".repeat(160000) + "\\n"), false); assert.equal(invoked, false);
+    `]
+  ];
+  return cases.map(([name, program]) => {
+    const child = spawnSync(process.execPath, ["--max-old-space-size=128", "-e", `
+      const assert = require("node:assert/strict"), { Address6 } = require("ip-address");
+      ${program}
+    `], { cwd: __dirname, env: { PATH: process.env.PATH, LANG: "C.UTF-8" }, encoding: "utf8", timeout: 2500, maxBuffer: 65536 });
+    return { name: `patched IP-zone dependency: ${name}`, ok: child.status === 0 && !child.error,
+      detail: child.error ? child.error.code : child.stderr.trim() };
+  });
+}
+
 function runFixtures() {
-  const results = braceDependencyRegressions();
+  const results = [...braceDependencyRegressions(), ...ipZoneDependencyRegressions()];
   const { Address6 } = require("ip-address");
   for (const address of ["64:ff9b:1::", "64:ff9b:1:7f00:0:100::", "64:ff9b:1::7f00:1", "64:ff9b:1:ffff:ffff:ffff:ffff:ffff"]) {
     const parsed = new Address6(address);
@@ -329,6 +377,7 @@ function runFixtures() {
     results.push({
       name: `current engine replays exact historical source profile ${profile.commit.slice(0, 7)} without rewriting it`,
       ok: validatePayload(historical, "github-release-independent-verification").valid &&
+        validatePayload(historical, "github-release-independent-verification").can_execute === false &&
         validateIndependentVerificationEvidence(historical, rawVerification, trustedRoot, EXPECTED).length === 0 &&
         JSON.stringify(historical) === retainedBytes
     });
@@ -359,6 +408,16 @@ function runFixtures() {
     ok: sha256(preMcpBytes) === "e2c7bd72279cd6af7d3423cb1595402c655049a61624ab74b847cf178720cf0e" &&
       validateIndependentVerificationEvidence(JSON.parse(preMcpBytes), rawVerification, trustedRoot, EXPECTED).length === 0 &&
       fs.readFileSync(preMcpPath).equals(preMcpBytes) });
+
+  const preZonePath = path.join(__dirname, "sample-payloads/valid-github-release-independent-verification-pre-zone-v0.2.json");
+  const preZoneBytes = fs.readFileSync(preZonePath), preZone = JSON.parse(preZoneBytes);
+  results.push({ name: "byte-identical accepted pre-zone producer replays under the patched parser without mutation",
+    ok: sha256(preZoneBytes) === "874ab43758c1a312e9cb45a2dbe675bb3738d9a09ac48b562b494b154ebdc484" &&
+      preZone.verifier.module_sha256 === "012795a0c4cb6d63e0b4ad18edc9495db4732a54994cea534f38a279184a69c3" &&
+      preZone.verifier.dependency_lock_sha256 === "ef9fcf979ddc996bf9b2808d7f565264bedd8d45319bc6baae2f19510a9589f3" &&
+      validatePayload(preZone, "github-release-independent-verification").valid === true &&
+      validateIndependentVerificationEvidence(preZone, rawVerification, trustedRoot, EXPECTED).length === 0 &&
+      fs.readFileSync(preZonePath).equals(preZoneBytes) });
 
   const priorBytes = fs.readFileSync(path.join(__dirname,
     "sample-payloads/valid-github-release-independent-verification-prior-v0.2.json"));

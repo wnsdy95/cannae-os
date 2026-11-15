@@ -1,0 +1,117 @@
+{
+  "schema_version": "0.1",
+  "type": "WorkloadControlInput",
+  "purpose": "report_and_evidence_opsec",
+  "mission_id": "MIS-SKILL-DEMO",
+  "wave_id": "W1",
+  "invocation_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "report_id_sha256": "e9dc88442193ce8d16d9a844e8a2e8e6e64f3571aebd99fef0690f820a0e0b0e",
+  "report_input_sha256": "d7262b2050d4f56f565970abe2206a008eeb86b32dd94e2d8ece82ad5ca5112b",
+  "repository_identity_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "repository_state_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "policy_source_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "agent_bindings": [
+    {
+      "agent_id_sha256": "34ad3cae404a9675001d2312306537879580624a78f84a26a43ee6e7e33b6ce1",
+      "context_ref_sha256": "ce0947f16d256dcb4f9b8747227c58929509aaa8bee7b380c90518e5470d5f58"
+    },
+    {
+      "agent_id_sha256": "498cb2ce1e29884421dc2ce73f494f92809151eb0744c2230520cb9d89d6425e",
+      "context_ref_sha256": "85e6f3f6195538343fae55c2ab7109deecba0f55d48a84bd2243cfe9055c86c8"
+    }
+  ],
+  "report": {
+    "schema_version": "0.1",
+    "type": "MissionWaveReport",
+    "id": "MWR-SKILL-DEMO-W1",
+    "mission_id": "MIS-SKILL-DEMO",
+    "wave_id": "W1",
+    "plan_ref": {
+      "artifact_id": "MWP-SKILL-DEMO-W1",
+      "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/mission-wave-plans/MWP-SKILL-DEMO-W1.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "routing_preflight_ref": {
+      "artifact_id": "ARP-W1",
+      "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/routing-preflights/ARP-W1.json",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "agent_results": [
+      {
+        "agent_id": "plans-agent",
+        "context_pack_ref": {
+          "artifact_id": "ACP-W1-plans-agent",
+          "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/agent-context-packs/ACP-W1-plans-agent.json",
+          "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "status": "complete",
+        "summary": "Implemented the scoped skill change.",
+        "completed_actions": [
+          "Implemented the assigned change."
+        ],
+        "blockers": [],
+        "evidence_refs": [
+          {
+            "artifact_id": "EVD-WORKLOAD-SYNTHETIC",
+            "relative_path": "synthetic/work.json",
+            "sha256": "28206aaf00e9e2591a14ea8045d85b2b13763f2edb3353e50001b443b1c1b2df"
+          }
+        ],
+        "improvement_candidates": [
+          "Reduce repeated setup commands."
+        ],
+        "next_actions": [
+          "Run independent verification."
+        ]
+      },
+      {
+        "agent_id": "verification-agent",
+        "context_pack_ref": {
+          "artifact_id": "ACP-W1-verification-agent",
+          "relative_path": "repositories/demo/missions/MIS-SKILL-DEMO/W1/agent-context-packs/ACP-W1-verification-agent.json",
+          "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        },
+        "status": "complete",
+        "summary": "Verified the acceptance criteria and authority boundary.",
+        "completed_actions": [
+          "Ran deterministic validation."
+        ],
+        "blockers": [],
+        "evidence_refs": [
+          {
+            "artifact_id": "EVD-WORKLOAD-SYNTHETIC",
+            "relative_path": "synthetic/work.json",
+            "sha256": "28206aaf00e9e2591a14ea8045d85b2b13763f2edb3353e50001b443b1c1b2df"
+          }
+        ],
+        "improvement_candidates": [],
+        "next_actions": [
+          "Conduct the AAR."
+        ]
+      }
+    ],
+    "wave_status": "complete",
+    "human_decisions_required": [],
+    "release_requested": false,
+    "recorded_at": "2026-07-23T05:00:00+09:00"
+  },
+  "evidence": [
+    {
+      "reference": {
+        "artifact_id": "EVD-WORKLOAD-SYNTHETIC",
+        "relative_path": "synthetic/work.json",
+        "sha256": "28206aaf00e9e2591a14ea8045d85b2b13763f2edb3353e50001b443b1c1b2df"
+      },
+      "content_sha256": "28206aaf00e9e2591a14ea8045d85b2b13763f2edb3353e50001b443b1c1b2df",
+      "byte_size": 46,
+      "text": "{\"result\":\"Synthetic scoped work completed.\"}\n"
+    }
+  ],
+  "observed_at": "2026-07-23T05:00:00+09:00",
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "subject_set_sha256": "22496b6e2412f53a95e753dcb94d869aff5464033339c858e51da5bca3dde073",
+  "id": "WCI-ea506fd8ca87b0751ec6aff45a68ee8a4268a1d3"
+}

@@ -52,6 +52,104 @@ const fixtures = [
     exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
     requiredCodes: prefix === "valid" ? [] : [type.endsWith("request") ? "PROJECT_PACKET_DELIVERY_DENIED" : "PROJECT_PACKET_BINDING_MISMATCH"]
   }))),
+  { name: "valid non-authorizing CLI model selection", file: "sample-payloads/valid-codex-model-selection.json", type: "codex-model-selection",
+    exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
+  { name: "changed CLI model selection digest", file: "sample-payloads/invalid-codex-model-selection.json", type: "codex-model-selection",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["SEMANTIC_MODEL_SELECTION_SUBSTITUTED"] },
+  ...["entity", "request", "proposal", "authorization", "event"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing force registry ${suffix}`, file: `sample-payloads/${prefix}-force-registry-${suffix}.json`,
+    type: `force-registry-${suffix}`, exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"]
+  }))),
+  { name: "force authorization rejects missing displayed subject commitment", file: "sample-payloads/valid-force-registry-authorization.json",
+    type: "force-registry-authorization", exitCode: 1, expectedCanExecute: false, requiredCodes: ["MISSING_REQUIRED"],
+    mutate(value) { delete value.displayed_review_sha256; } },
+  { name: "force proposal rejects a null nested entity before semantic access", file: "sample-payloads/valid-force-registry-proposal.json",
+    type: "force-registry-proposal", exitCode: 1, expectedCanExecute: false, requiredCodes: ["TYPE_MISMATCH"],
+    mutate(value) { value.request.entity = null; } },
+  ...["workload-control-input", "workload-policy-assessment", "workload-control-receipt"].flatMap(type => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type,
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"]
+  }))),
+  ...["missing", "null-item"].map(kind => ({ name: `workload input rejects malformed ${kind} before semantic validation`,
+    file: "sample-payloads/valid-workload-control-input.json", type: "workload-control-input", exitCode: 1,
+    expectedCanExecute: false, requiredCodes: [kind === "missing" ? "MISSING_REQUIRED" : "TYPE_MISMATCH"],
+    mutate(payload) { if (kind === "missing") delete payload.evidence; else payload.evidence[0] = null; } })),
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing readiness drop reconciliation`,
+    file: `sample-payloads/${prefix}-readiness-drop-reconciliation.json`, type: "readiness-drop-reconciliation",
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"] })),
+  ...["missing", "null-item"].map(kind => ({ name: `readiness report handles malformed ${kind} before semantic replay`,
+    file: "sample-payloads/valid-readiness-drop-reconciliation.json", type: "readiness-drop-reconciliation", exitCode: 1,
+    expectedCanExecute: false, requiredCodes: [kind === "missing" ? "MISSING_REQUIRED" : "TYPE_MISMATCH"],
+    mutate(payload) { if (kind === "missing") delete payload.results; else payload.results[0] = null; } })),
+  ...["authorization", "record"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing analysis reconciliation ${suffix}`, file: `sample-payloads/${prefix}-operator-analysis-reconciliation-${suffix}.json`,
+    type: `operator-analysis-reconciliation-${suffix}`, exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : [suffix === "authorization" ? "CONST_MISMATCH" : "ANALYSIS_RECONCILIATION_PUBLICATION_INVALID"]
+  }))),
+  { name: "validator fixture expectations are explicit before any child runs", check() {
+    for (const requiredCodes of [undefined, null, "CONST_MISMATCH", [7]]) {
+      assert.throws(() => assertFixtureDefinitions([{ name: "malformed definition", requiredCodes }]),
+        /must explicitly declare requiredCodes as a string array/);
+    }
+    assert.doesNotThrow(() => assertFixtureDefinitions([{ requiredCodes: [] }, { requiredCodes: ["CONST_MISMATCH"] }, { check() {} }]));
+  } },
+  { name: "evaluated proposed analysis remains non-authorizing", file: "sample-payloads/valid-operator-order-analysis-evaluated.json",
+    type: "operator-order-analysis", exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
+  ...[["order-analysis-response", "CONST_MISMATCH"], ["operator-order-analysis", "ORDER_ANALYSIS_RESULT_STATE_INVALID"]]
+    .flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} proposed ${type}`,
+      file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+      expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code] }))),
+  ...[["bounded-planning-request", "PLANNING_DUPLICATE_AGENT"], ["bounded-planning-proposal", "PLANNING_PROPOSAL_BINDING_INVALID"]]
+    .flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,
+      file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+      expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code] }))),
+  ...[["requirement-inventory", "REQUIREMENT_INVENTORY_PARTITION_INVALID"],
+    ["semantic-coverage-proposal", "SEMANTIC_REVIEW_ID_BINDING_INVALID"], ["semantic-review-assignment", "CONST_MISMATCH"]]
+    .flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,
+      file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+      expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code] }))),
+  ...[["valid-operator-semantic-evaluation", 0, []], ["valid-operator-semantic-evaluation-legacy", 0, []],
+    ["invalid-operator-semantic-evaluation", 1, ["MODEL_EVALUATION_VERDICT_BINDING_INVALID"]]].map(([name, exitCode, requiredCodes]) => ({
+    name, file: `sample-payloads/${name}.json`, type: "operator-semantic-evaluation", exitCode, requiredCodes, expectedCanExecute: false
+  })),
+  ...["termination", "response", "time"].map(kind => ({ name: `signed model evaluation rejects ${kind}`,
+    file: "sample-payloads/valid-operator-semantic-evaluation.json", type: "operator-semantic-evaluation", exitCode: 1, expectedCanExecute: false,
+    requiredCodes: [kind === "time" ? "MODEL_EVALUATION_TIME_INVALID" : "MODEL_EVALUATION_STATE_BINDING_INVALID"],
+    mutate(value) { if (kind === "termination") value.collection.process_group_absent = false;
+      if (kind === "response") value.response_payload_sha256 = "0".repeat(64);
+      if (kind === "time") value.started_at = "2026-10-23T00:00:02Z"; }
+  })),
+  ...["authorization", "record"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing model reconciliation ${suffix}`, file: `sample-payloads/${prefix}-operator-model-reconciliation-${suffix}.json`,
+    type: `operator-model-reconciliation-${suffix}`, exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
+    requiredCodes: prefix === "valid" ? [] : [suffix === "authorization" ? "CONST_MISMATCH" : "MODEL_RECONCILIATION_RECORD_BINDING_INVALID"]
+  }))),
+  ...["time", "action", "observation", "extra"].map(kind => ({ name: `model reconciliation rejects ${kind}`,
+    file: "sample-payloads/valid-operator-model-reconciliation-authorization.json", type: "operator-model-reconciliation-authorization",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: [kind === "extra" ? "ADDITIONAL_PROPERTY" : "MODEL_RECONCILIATION_AUTHORIZATION_BINDING_INVALID"],
+    mutate(value) { if (kind === "time") value.expires_at = value.created_at;
+      if (kind === "action") value.action_id = value.reconciliation_id;
+      if (kind === "observation") value.subject.observed_at = value.expires_at;
+      if (kind === "extra") value.tool_execution_authorized = true; }
+  })),
+  { name: "model receipt cannot expand nested authority", file: "sample-payloads/valid-operator-model-reconciliation-record.json",
+    type: "operator-model-reconciliation-record", exitCode: 1, expectedCanExecute: false,
+    mutate(value) { value.authorization.release_authorized = true; }, requiredCodes: ["CONST_MISMATCH"] },
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} read-only operational COP`, file: `sample-payloads/${prefix}-operational-cop.json`,
+    type: "operational-cop", exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"] })),
+  { name: "COP snapshot cannot invert display validity", file: "sample-payloads/valid-operational-cop.json", type: "operational-cop",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.snapshot_valid_until = value.as_of; }, requiredCodes: ["COP_SNAPSHOT_VALIDITY_INVALID"] },
+  { name: "COP snapshot counts cannot silently omit rows", file: "sample-payloads/valid-operational-cop.json", type: "operational-cop",
+    exitCode: 1, expectedCanExecute: false, mutate(value) { value.matching_wave_count = 1; }, requiredCodes: ["COP_SNAPSHOT_COUNTS_INVALID"] },
+  ...[["method-control-channel-policy", "MISSING_REQUIRED"], ["method-control-launch-slot", "MISSING_REQUIRED"],
+    ["method-control-session-observation", "ENUM_MISMATCH"]].flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({
+      name: `${prefix} non-authorizing continuation ${type}`, file: `sample-payloads/${prefix}-${type}-continuation.json`, type,
+      exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code]
+    }))),
+  { name: "initial-only policy cannot carry a continuation capability", file: "sample-payloads/valid-method-control-channel-policy-continuation.json",
+    type: "method-control-channel-policy", exitCode: 1, expectedCanExecute: false,
+    mutate(value) { value.schema_version = "0.1"; }, requiredCodes: ["NOT_SCHEMA_MATCH"] },
   ...["method-control-channel-policy", "method-control-launch-slot", "method-control-session-observation", "method-control-enrollment",
     "method-control-request", "method-control-receipt", "method-control-delivery", "method-control-response"]
     .flatMap(type => ["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing ${type}`,
@@ -537,15 +635,20 @@ const fixtures = [
     name: "current independent release evidence v0.2",
     file: "sample-payloads/valid-github-release-independent-verification-v0.2.json",
     type: "github-release-independent-verification",
-    exitCode: 0,
+    exitCode: 0, expectedCanExecute: false,
     requiredCodes: []
   },
   {
     name: "prior v0.2 producer evidence remains structurally readable",
     file: "sample-payloads/valid-github-release-independent-verification-prior-v0.2.json",
     type: "github-release-independent-verification",
-    exitCode: 0,
+    exitCode: 0, expectedCanExecute: false,
     requiredCodes: []
+  },
+  {
+    name: "frozen pre-zone producer remains non-authorizing and structurally readable",
+    file: "sample-payloads/valid-github-release-independent-verification-pre-zone-v0.2.json",
+    type: "github-release-independent-verification", exitCode: 0, expectedCanExecute: false, requiredCodes: []
   },
   {
     name: "pre-console v0.2 producer evidence remains structurally readable",
@@ -558,9 +661,17 @@ const fixtures = [
     name: "legacy independent evidence remains structurally readable",
     file: "sample-payloads/valid-github-release-independent-verification-legacy.json",
     type: "github-release-independent-verification",
-    exitCode: 0,
+    exitCode: 0, expectedCanExecute: false,
     requiredCodes: []
   },
+  { name: "both validator APIs keep current and historical independent evidence non-executable", check() {
+    for (const name of ["v0.2", "pre-zone-v0.2", "legacy"]) {
+      const payload = JSON.parse(fs.readFileSync(path.join(ROOT, `sample-payloads/valid-github-release-independent-verification-${name}.json`)));
+      for (const api of [validateSchemaPayload, validatePayload]) {
+        const result = api(payload, "github-release-independent-verification"); assert.equal(result.valid, true); assert.equal(result.can_execute, false);
+      }
+    }
+  } },
   {
     name: "evidence version cannot substitute another verifier generation",
     file: "sample-payloads/invalid-github-release-independent-verification-version-pair.json",
@@ -727,6 +838,7 @@ const fixtures = [
     file: "sample-payloads/valid-readiness-event.json",
     type: "readiness-event",
     exitCode: 0,
+    expectedCanExecute: false,
     requiredCodes: []
   },
   {
@@ -979,7 +1091,38 @@ const fixtures = [
     file: "sample-payloads/valid-agent-dispatch-lease.json",
     type: "agent-dispatch-lease",
     exitCode: 0,
+    expectedCanExecute: false,
     requiredCodes: []
+  },
+  {
+    name: "frozen non-authorizing issuance request",
+    file: "sample-payloads/valid-dispatch-lease-issuance-request.json",
+    type: "dispatch-lease-issuance-request", exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  },
+  {
+    name: "issuance request nonce substitution",
+    file: "sample-payloads/invalid-dispatch-lease-issuance-request.json",
+    type: "dispatch-lease-issuance-request", exitCode: 1, requiredCodes: ["DISPATCH_ISSUANCE_ID_MISMATCH"]
+  },
+  {
+    name: "non-authorizing issuance resolution",
+    file: "sample-payloads/valid-dispatch-lease-issuance-resolution.json",
+    type: "dispatch-lease-issuance-resolution", exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  },
+  {
+    name: "issuance commit without its actual baseline",
+    file: "sample-payloads/invalid-dispatch-lease-issuance-resolution.json",
+    type: "dispatch-lease-issuance-resolution", exitCode: 1, requiredCodes: ["DISPATCH_ISSUANCE_RESOLUTION_INVALID"]
+  },
+  {
+    name: "journal-linked lease remains non-authorizing as standalone JSON",
+    file: "sample-payloads/valid-agent-dispatch-lease-issuance.json",
+    type: "agent-dispatch-lease", exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  },
+  {
+    name: "new lease without an issuance reference",
+    file: "sample-payloads/invalid-agent-dispatch-lease-issuance.json",
+    type: "agent-dispatch-lease", exitCode: 1, requiredCodes: ["MISSING_REQUIRED"]
   },
   {
     name: "unsafe agent dispatch lease",
@@ -2922,6 +3065,14 @@ const fixtures = [
   }
 ];
 
+function assertFixtureDefinitions(entries) {
+  for (const [index, fixture] of entries.entries()) {
+    if (typeof fixture.check === "function") continue;
+    assert(Array.isArray(fixture.requiredCodes) && fixture.requiredCodes.every(code => typeof code === "string"),
+      `Validator fixture ${index} (${fixture.name}) must explicitly declare requiredCodes as a string array.`);
+  }
+}
+
 function runFixture(fixture) {
   if (fixture.check) {
     try {
@@ -3001,6 +3152,7 @@ function runFixture(fixture) {
   };
 }
 
+assertFixtureDefinitions(fixtures);
 const results = fixtures.map(runFixture);
 const failed = results.filter(result => !result.ok);
 

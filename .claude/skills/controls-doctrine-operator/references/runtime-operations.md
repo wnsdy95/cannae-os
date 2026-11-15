@@ -405,3 +405,28 @@ Escalate to the user before:
   authority, or treating missing Administration-read credentials, TUF trust
   evidence, checkpoint continuity, or independent bundle replay as evidence
   of no drift.
+
+## Retained Integration Controls
+
+For report admission and force enrollment, follow their separate procedures in
+`references/document-routing.md`. Fixture passes are not workload clearance;
+require controller-issued workload receipts and a fresh report ID after rejection.
+Registry enrollment never qualifies a performer or activates a standing unit;
+leave its one-use decision to the authenticated owner.
+
+For new captured-request adoption, read `docs/requirement-inventory-admission.md`.
+Use `scripts/review_controls_requirements.js` against the explicit target repository,
+classify every source fragment and review each requirement against the actual order
+and task/agent targets. Bind the returned review to request v0.2 before proposing
+adoption; any plan edit requires new coverage and fresh USER review. Never use an
+advisory model `complete` as admission or relabel missing restrictions as context.
+This human review class does not prove semantics or model calibration. Preserve
+old records/results for inspection and settlement; do not downgrade a captured-
+request wave to obtain another call.
+
+For live Operations reads, use `docs/operational-cop.md` and the COP procedure in
+`references/document-routing.md`; display filters never remove critical reporting
+or create execution authority. Deferred development does not waive these controls.
+Manual receipt commands are diagnostic/lower-level integration only; use the
+manual receipt procedure in `references/document-routing.md`. The lifecycle
+controller remains the default guarded dispatch path.

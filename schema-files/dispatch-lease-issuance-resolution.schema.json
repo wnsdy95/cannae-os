@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/dispatch-lease-issuance-resolution.schema.json",
+  "title": "Dispatch Lease Issuance Resolution",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "mission_id", "wave_id", "agent_id", "request_ref", "outcome", "lease_ref", "baseline_ref", "supersession_ref", "reason", "recorded_at", "execution_authorized", "continuation_authorized", "release_authorized", "human_final_decision_authority"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "DispatchLeaseIssuanceResolution" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" },
+    "wave_id": { "$ref": "agent-dispatch-lease.schema.json#/$defs/safe_identifier" },
+    "agent_id": { "$ref": "agent-dispatch-lease.schema.json#/$defs/safe_identifier" },
+    "request_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "outcome": { "enum": ["committed", "cancelled"] },
+    "lease_ref": { "$ref": "agent-dispatch-lease.schema.json#/$defs/artifact_ref_or_none" },
+    "baseline_ref": { "$ref": "agent-dispatch-lease.schema.json#/$defs/artifact_ref_or_none" },
+    "supersession_ref": { "$ref": "agent-dispatch-lease.schema.json#/$defs/artifact_ref_or_none" },
+    "reason": { "type": "string", "minLength": 1, "maxLength": 1024 },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "execution_authorized": { "const": false }, "continuation_authorized": { "const": false }, "release_authorized": { "const": false },
+    "human_final_decision_authority": { "const": "USER" }
+  }
+}

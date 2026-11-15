@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/force-registry-event.schema.json",
+  "title": "Immutable Force Registry Definition Transition",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "purpose", "sequence", "previous_ref", "authorization_ref", "proposal_ref", "operation", "entity", "repository_binding", "recorded_at", "execution_authorized", "release_authorized", "human_final_decision_authority", "qualification_granted", "standing_activation_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "ForceRegistryEvent" }, "id": { "$ref": "common.schema.json#/$defs/id" }, "purpose": { "const": "force_registry_enrollment" },
+    "sequence": { "type": "integer", "minimum": 1, "maximum": 256 }, "previous_ref": { "$ref": "force-registry-request.schema.json#/$defs/reference_or_none" },
+    "authorization_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" }, "proposal_ref": { "$ref": "common.schema.json#/$defs/artifact_ref" },
+    "operation": { "enum": ["enroll", "revise", "retire"] }, "entity": { "$ref": "force-registry-entity.schema.json" }, "repository_binding": { "$ref": "force-registry-authorization.schema.json#/$defs/repository_binding" },
+    "recorded_at": { "$ref": "common.schema.json#/$defs/timestamp" }, "execution_authorized": { "const": false }, "release_authorized": { "const": false },
+    "human_final_decision_authority": { "const": "USER" }, "qualification_granted": { "const": false }, "standing_activation_authorized": { "const": false }
+  }
+}

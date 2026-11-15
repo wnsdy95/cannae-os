@@ -9,6 +9,7 @@ function environment(configuration = {}) {
   env.plan.method_control.schema_version = "0.2"; env.plan.method_control.broker = { ...policy(), ...configuration.broker };
   for (const value of env.policies) value.provider = configuration.provider || "codex";
   env.policies.forEach((value, index) => { value.provider = configuration.providers?.[index] || value.provider; });
+  if (configuration.configure) configuration.configure(env);
   env.plan.dispatch_control.policy_authorizations = env.policies.map(value => ({ agent_id: value.agent_id, provider: value.provider,
     policy_id: value.id, draft_sha256: methods.dispatch.inputDigest(value) }));
   try {

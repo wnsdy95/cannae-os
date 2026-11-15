@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/workload-control-receipt.schema.json",
+  "title": "Observed Workload Control Execution Receipt",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "purpose", "mission_id", "wave_id", "input_binding", "assessment", "process", "repository_state_before_sha256", "repository_state_after_sha256", "policy_source_before_sha256", "policy_source_after_sha256", "repository_unchanged", "policy_source_unchanged", "status", "execution_authorized", "release_authorized", "human_final_decision_authority"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "WorkloadControlReceipt" }, "id": { "$ref": "common.schema.json#/$defs/id" }, "purpose": { "const": "report_and_evidence_opsec" },
+    "mission_id": { "$ref": "common.schema.json#/$defs/id" }, "wave_id": { "type": "string", "minLength": 1 },
+    "input_binding": { "type": "object", "additionalProperties": false,
+      "required": ["input_id", "input_sha256", "subject_set_sha256", "invocation_id", "report_id_sha256", "report_input_sha256", "policy_source_sha256"],
+      "properties": { "input_id": { "$ref": "common.schema.json#/$defs/id" }, "input_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "subject_set_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "invocation_id": { "type": "string", "pattern": "^[a-f0-9]{32}$" }, "report_id_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "report_input_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "policy_source_sha256": { "$ref": "common.schema.json#/$defs/sha256" } } },
+    "assessment": { "anyOf": [{ "$ref": "workload-policy-assessment.schema.json" }, { "type": "null" }] },
+    "process": { "type": "object", "additionalProperties": false,
+      "required": ["worker", "shell", "stdin_sha256", "timeout_ms", "duration_ms", "exit_code", "signal", "stdout_sha256", "stdout_bytes", "stderr_sha256", "stderr_bytes", "sandbox_enforced"],
+      "properties": { "worker": { "const": "workload-control-worker.js" }, "shell": { "const": false }, "stdin_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "timeout_ms": { "const": 10000 }, "duration_ms": { "type": "integer", "minimum": 0 }, "exit_code": { "type": "integer", "minimum": -1 }, "signal": { "type": "string" }, "stdout_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "stdout_bytes": { "type": "integer", "minimum": 0 }, "stderr_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "stderr_bytes": { "type": "integer", "minimum": 0 }, "sandbox_enforced": { "const": false } } },
+    "repository_state_before_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "repository_state_after_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "policy_source_before_sha256": { "$ref": "common.schema.json#/$defs/sha256" }, "policy_source_after_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "repository_unchanged": { "type": "boolean" }, "policy_source_unchanged": { "type": "boolean" },
+    "status": { "enum": ["passed", "blocked", "failed"] },
+    "failure_code": { "enum": ["POLICY_FINDINGS", "WORKER_FAILED", "WORKER_TIMEOUT", "WORKER_OUTPUT_INVALID", "WORKER_BINDING_INVALID", "REPOSITORY_DRIFT", "POLICY_SOURCE_DRIFT"] },
+    "execution_authorized": { "const": false }, "release_authorized": { "const": false }, "human_final_decision_authority": { "const": "USER" }
+  }
+}

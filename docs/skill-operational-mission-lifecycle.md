@@ -15,6 +15,7 @@ MissionWavePlan
 -> per-agent dispatch policy and session lease
 -> pre-tool admission and post-tool checkpoint
 -> manifest-backed work evidence
+-> actual bounded report/evidence policy scan and separate workload receipt
 -> controller-executed required controls and digest-only receipts
 -> MissionWaveReport and SITREP
 -> AAR and readiness update
@@ -30,7 +31,8 @@ The human user remains final decision authority throughout this sequence.
 | `MissionWavePlan` | Defines intent, success/failure conditions, agent tasks, operational roles, delegated authority, model-preflight requirement, finite adaptive budget, and retained USER authorities. |
 | `RoutingReceipt` v0.2 | Separates the narrow router query from the common mission capability query; records existing coverage or one deterministic provisional cell and standing-department candidate. |
 | `AgentContextPack` v0.4 | Gives one agent its exact intent/task/delegation commitments, mission capability state, provisional organization when required, role, authority, digest-bound doctrine documents, compiled controls, model identity and references. Legacy v0.2/v0.3 is historical and cannot receive new covered-tool authority; preserve admitted-result settlement and migrate through a newly reviewed wave. |
-| `ControlExecutionReceipt` | Proves that the controller ran one allowlisted, shell-free control for the exact canonical report input, repository, and doctrine states; stores only output digests and byte counts. |
+| `ControlExecutionReceipt` | Records one allowlisted, shell-free framework regression for the exact canonical report-input digest, repository and doctrine states; not proof that its child consumed the workload. |
+| `WorkloadControlInput` / `WorkloadPolicyAssessment` / `WorkloadControlReceipt` | Separately binds actual report and same-mission/wave work bytes to a bounded core-pattern scan. New report admission and publication recheck require its controller-issued passing receipt. No execution or release authority. See [scope and limits](subject-bound-workload-controls.md). |
 | `MissionWaveReport` | Records one result per expected agent and requires exact context-pack, control-receipt, and manifest-backed work-evidence references. |
 | `MissionWaveCloseout` | Binds plan, report, AAR, readiness update, campaign, next-wave decision, verified artifact state, and a permanently false release grant. |
 | `MissionWaveTerminationRequest` / `MissionWaveTermination` | Ends an expired, aborted, or superseded wave without manufacturing a report, AAR, readiness promotion, or execution-success claim. Preserves exact historical references and blocks reuse. |

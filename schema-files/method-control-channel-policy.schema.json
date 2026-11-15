@@ -5,13 +5,19 @@
   "type": "object", "additionalProperties": false,
   "required": ["schema_version", "type", "transport", "identity_assurance", "runtime_sha256", "max_requests", "max_validity_seconds", "request_validity_seconds", "output_max_bytes"],
   "properties": {
-    "schema_version": { "const": "0.1" }, "type": { "const": "MethodControlChannelPolicy" },
+    "schema_version": { "enum": ["0.1", "0.2"] }, "type": { "const": "MethodControlChannelPolicy" },
     "transport": { "const": "mcp_stdio_reference" },
     "identity_assurance": { "const": "local_operator_enrollment_reference" },
     "runtime_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
     "max_requests": { "type": "integer", "minimum": 1, "maximum": 128 },
     "max_validity_seconds": { "type": "integer", "minimum": 1, "maximum": 3600 },
     "request_validity_seconds": { "type": "integer", "minimum": 1, "maximum": 60 },
-    "output_max_bytes": { "type": "integer", "minimum": 4096, "maximum": 262144 }
-  }
+    "output_max_bytes": { "type": "integer", "minimum": 4096, "maximum": 262144 },
+    "continuation": {
+      "type": "object", "additionalProperties": false, "required": ["mode", "max_handoffs"],
+      "properties": { "mode": { "const": "observed_session_lineage" }, "max_handoffs": { "type": "integer", "minimum": 1, "maximum": 16 } }
+    }
+  },
+  "allOf": [{ "if": { "properties": { "schema_version": { "const": "0.2" } } }, "then": { "required": ["continuation"] },
+    "else": { "not": { "required": ["continuation"] } } }]
 }

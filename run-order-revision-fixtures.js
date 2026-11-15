@@ -192,7 +192,9 @@ try {
       const result = call(["propose", ...args, "--input", input]); assert.equal(result.status, 0, result.stderr);
       const proposed = JSON.parse(result.stdout); assert.equal(proposed.execution_authorized, false);
       const adoptionInput = path.join(parent.root, `adoption-${index}.json`);
-      fs.writeFileSync(adoptionInput, JSON.stringify({ ...child.request, plan: proposed.successor_plan }));
+      child.plan = proposed.successor_plan; child.request.plan = child.plan;
+      s.prepareSemanticReview(child, new Date().toISOString());
+      fs.writeFileSync(adoptionInput, JSON.stringify(child.request));
       const adoption = spawnSync(process.execPath, [path.resolve(folder, "scripts/adopt_controls_order.js"), "propose", ...args, "--input", adoptionInput],
         { cwd: parent.root, encoding: "utf8" });
       assert.equal(adoption.status, 0, adoption.stderr); assert.equal(JSON.parse(adoption.stdout).execution_authorized, false);

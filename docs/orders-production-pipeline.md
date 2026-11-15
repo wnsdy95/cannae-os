@@ -1,5 +1,11 @@
 # Orders Production Pipeline
 
+The [bounded structural generator](bounded-plan-synthesis.md) can now turn an
+actual ready OPORD and explicit finite roster/policy bounds into a complete plan
+proposal. Use its finalized `planning_ref`, and finalize any linked revision
+before fresh coverage/adoption. Generation is not strategic reasoning, semantic
+assurance, USER approval or permission to dispatch the successor early.
+
 ## 0. Purpose
 
 The [request intake compiler](request-order-intake.md) retains the original

@@ -5,7 +5,7 @@ const path = require("path");
 const { resolveRepository, writeRepositoryArtifact } = require("./repository-artifact-store");
 const { loadVerifiedStore } = require("./campaign-supervisor");
 const { validatePayload } = require("./validator-cli-prototype/validate");
-const { AUTHORITY, FIELDS, sha256, same, buildDraft } = require("./order-intake-contract");
+const { AUTHORITY, FIELDS, MAX_ORDER_ARTIFACT_BYTES, sha256, same, buildDraft } = require("./order-intake-contract");
 
 const REQUESTS = "mission-requests";
 const DRAFTS = "order-drafts";
@@ -42,7 +42,7 @@ function readBytes(store, ref, scope, kinds) {
     "ORDER_INTAKE_REFERENCE_SCOPE_MISMATCH");
   const namespace = fs.realpathSync(path.join(store.artifactRoot, "repositories", store.verification.repository.key));
   const file = fs.realpathSync(path.resolve(store.artifactRoot, entry.relative_path));
-  requireTrue(file.startsWith(`${namespace}${path.sep}`) && fs.statSync(file).isFile() && fs.statSync(file).size <= 8388608,
+  requireTrue(file.startsWith(`${namespace}${path.sep}`) && fs.statSync(file).isFile() && fs.statSync(file).size <= MAX_ORDER_ARTIFACT_BYTES,
     "ORDER_INTAKE_REFERENCE_PATH_INVALID");
   const bytes = fs.readFileSync(file);
   requireTrue(sha256(bytes) === ref.sha256, "ORDER_INTAKE_REFERENCE_DIGEST_MISMATCH");

@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "RequirementInventory"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "mission_id": {
+      "type": "string",
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "wave_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "request_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "request_text_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "classification": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "restricted"
+      ]
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "fragments": {
+      "minItems": 1,
+      "maxItems": 2048,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "start_byte": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "end_byte": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 131072
+          },
+          "classification": {
+            "type": "string",
+            "enum": [
+              "operative",
+              "context",
+              "unknown"
+            ]
+          },
+          "requirement_ids": {
+            "maxItems": 1024,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            }
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          }
+        },
+        "required": [
+          "id",
+          "start_byte",
+          "end_byte",
+          "quote",
+          "classification",
+          "requirement_ids",
+          "rationale"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "requirements": {
+      "maxItems": 1024,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "instruction": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "obligation",
+              "prohibition",
+              "approval",
+              "resource",
+              "deadline",
+              "condition"
+            ]
+          },
+          "source_fragment_ids": {
+            "minItems": 1,
+            "maxItems": 2048,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            }
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "global",
+              "task"
+            ]
+          },
+          "task_ids": {
+            "maxItems": 64,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "instruction",
+          "kind",
+          "source_fragment_ids",
+          "scope",
+          "task_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ready_for_review",
+        "needs_clarification"
+      ]
+    },
+    "semantic_completeness_proven": {
+      "type": "boolean",
+      "const": false
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    }
+  },
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "request_ref",
+    "request_text_sha256",
+    "classification",
+    "recorded_at",
+    "expires_at",
+    "fragments",
+    "requirements",
+    "status",
+    "semantic_completeness_proven",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority"
+  ],
+  "additionalProperties": false,
+  "$id": "https://controls.local/schema-files/requirement-inventory.schema.json",
+  "title": "requirement-inventory"
+}

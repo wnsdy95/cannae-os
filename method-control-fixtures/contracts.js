@@ -8,6 +8,9 @@ function policy() {
     identity_assurance: "local_operator_enrollment_reference", runtime_sha256: runtimeDigest(), max_requests: 32,
     max_validity_seconds: 600, request_validity_seconds: 30, output_max_bytes: 65536 };
 }
+function continuationPolicy() {
+  return { ...policy(), schema_version: "0.2", continuation: { mode: "observed_session_lineage", max_handoffs: 2 } };
+}
 function samples() {
   const scope = { mission_id: "MIS-FIXTURE", wave_id: "W1", agent_id: "fixture-agent" };
   const slot = identified("MethodControlLaunchSlot", { ...scope, provider: "codex", plan_ref: reference("MWP-FIXTURE"), context_ref: reference("ACP-FIXTURE"),
@@ -36,4 +39,12 @@ function samples() {
       request_ref: reference(request.id), receipt_ref: reference(receipt.id), result: receipt.result, ...require("../method-control-contract").AUTHORITY } };
 }
 function rekey(value) { const { id, ...body } = value; return { ...value, id: `MCTL-${digest(body).slice(0, 40)}` }; }
-module.exports = { clone, reference, policy, samples, rekey, at };
+function continuationSamples() {
+  const basic = samples(), slot = rekey({ ...basic["method-control-launch-slot"], schema_version: "0.2",
+    root_launch_slot_ref: reference(basic["method-control-launch-slot"].id), predecessor_enrollment_ref: reference(basic["method-control-enrollment"].id),
+    interruption_checkpoint_ref: reference("AEC-INTERRUPTED"), continuation_index: 1, expected_source: "resume", recorded_at: at(10) });
+  const observation = rekey({ ...basic["method-control-session-observation"], schema_version: "0.2", source: "resume",
+    launch_slot_ref: reference(slot.id), recorded_at: at(11) });
+  return { "method-control-channel-policy": continuationPolicy(), "method-control-launch-slot": slot, "method-control-session-observation": observation };
+}
+module.exports = { clone, reference, policy, continuationPolicy, samples, continuationSamples, rekey, at };

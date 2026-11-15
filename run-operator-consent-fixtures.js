@@ -39,6 +39,11 @@ async function main() {
   results.push({ name: "separately pinned Ed25519 verification rejects issuer, scope and decision substitution without granting execution", ok: true });
   await check("owner exact one-use consent reaches real adoption and lifecycle consumers", async env => {
     const p = await preview(env), input = commitInput(p);
+    assert.equal(p.review.request.schema_version, "0.2");
+    assert.equal(p.review.semantic_review.coverage.review_class, "human_inventory_and_coverage");
+    assert.equal(p.review.semantic_review.coverage.plan_sha256, digest(env.plan));
+    assert.equal(p.review.semantic_review.coverage.semantic_completeness_proven, false);
+    assert.equal(p.review.semantic_review.inventory.fragments.map(item => item.quote).join(""), support.read(env, env.captured.artifact_ref).text);
     const result = await env.owner.post("/api/order-decisions/commit", input);
     assert.equal(result.adoption_status, "adopted"); assert.equal(result.execution_authorized, false); assert.equal(result.release_authorized, false);
     assert.equal(orderForPlan(env.plan, env.options).payload.id, result.adoption_ref.artifact_id);

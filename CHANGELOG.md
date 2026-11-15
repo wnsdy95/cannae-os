@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Integrate the skill-first branch with retained mainline controls without replacing either history. Preserve document-context integrity together with readiness revocation, combine non-executing validator types and both routing inventories, and retain captured-request, workload and registry procedures in both conditional skill references. Prior native acceptance remains bound to its recorded revisions; merge validation is not a new model review or permission grant.
+
 - Record PR97's two bounded native whole-output reviews under existing mirrored guidance: seven mandatory reads per phase, one useful optional guide per client, exact source appendices and separately appraised W2/FRAGO/status/question/handoff fidelity. Reconcile the final A01/A05/A10/A20 acceptance with prior cases: twenty required rows and all five skill-first goals now have bounded evidence. Preserve historical failures, six pending preparation proposals, unadopted drafts and deferred infrastructure/plugin packaging. This is verification/status maintenance, not new permission, universal reliability or a shipped plugin.
 
 - Recognize the existing document-only receiving descriptor in S3/S4 relevance selection without renaming authority or changing profiles. Compare 32 actual session routes, retain technical/required/ambiguous counterexamples, and cover assigned/optional/denied reads, holds, rerouting and local stdio transport. Mirror descriptor-versus-profile guidance in both skills; do not infer smaller native reading or new preparation approval.
@@ -185,6 +187,182 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 - Replace the active eight-outcome platform goal with five explicit skill-first objectives (G1-G5), each with behavioral acceptance and remaining evidence. Separate completed scope/entrypoint groundwork from goal completion; both skills now bind continuation tasks and evidence to the selected active objective. Retain deferred platform requirements and existing controls unchanged.
 
 - Refocus the active product on document authoring, role-bounded routing, handoffs and corpus maintenance through Codex/Claude skills. Defer dashboard, operator application and production-platform development without deleting evidence or weakening existing guards. Add an authoring workflow and route, preserve detailed runtime procedures in conditional references, and mirror the core-first continuation rule in both skills. Keep local historical archives out of current-document link checks while retaining hidden provider-skill validation. The broader implementation inventory is retained, not reclassified as core completion; separate plugin packaging and end-to-end semantic acceptance remain unproven.
+- Preserve readiness minimums and prohibitions through reference approval/release
+  composition after actual synthetic allow counterexamples. Validate exact
+  matrix/request scope, overlap and expiry; reject missing ratings/unknown risk
+  and bind approval request/task/approver. Migrate only synthetic bundle labels,
+  add exact-code regressions and adapt both skills. This is not authenticated
+  qualification, P-stage supervision, actual grant restoration or installed rollout.
+  Preserve an explicit request approval flag even when computed ROE is Green;
+  add separate denied/approved Green cases and release-composition regression.
+
+- Resolve an explicitly selected CLI-default model during trusted host preparation,
+  freeze its concrete name and strict selection commitment in owner packets, and
+  preserve literal-model history. Bound metadata-only protocol and process cleanup;
+  reject ambiguity, active remote control, unsupported providers and substitution.
+  Add actual synthetic omission/analysis/compiler and browser coverage, both skill
+  routing/procedures and non-work evidence classification. No inference consent,
+  model access, calibrated semantics or installed rollout is inferred.
+  Require an independently computed complete-display invocation commitment at
+  both model commit endpoints; reject altered/rekeyed previews before reservation.
+
+- Pin transitive `ip-address` 10.7.4 after bounded public-parser timeouts in the
+  installed baseline. Preserve accepted main's exact pre-zone evidence and
+  replay it with the current engine; regenerate only current structural examples.
+  Add bounded line-terminator, valid long-zone, deprecated-helper and producer
+  substitution regressions. Both skills route advisories directly and prohibit
+  hiding parser defects behind blanket caps. HTTP-cache and rollout remain open.
+  Keep valid monitoring-only release evidence non-executable in both validator
+  APIs and the CLI; historical replay never grants fresh execution authority.
+
+- Add local stable organization/capability/performer definition enrollment with
+  explicit alias history, exact pinned configuration declarations and separate
+  password-reauthenticated owner consent. Bind full reviewed subjects to immutable
+  event lineage, preserve partial publication holds and expose actual inspection
+  and definition review in the console. Keep every definition unassessed and all
+  execution/qualification/standing activation flags false. Both skills teach the
+  owner-only ceremony and no-replay procedure; full goal-5 consumers remain open.
+
+- Separate actual workload inspection from framework fixture execution after a
+  retained input-flow counterexample. New report admission captures bounded
+  exact report/evidence bytes, invokes a fixed local OPSEC worker, retains only
+  digest-bound findings and rechecks the subject at publication. Keep framework
+  gates/timeouts, legacy read access and all authority boundaries. Both skills
+  teach reviewed replacement/fresh report admission, not receipt reuse or waivers.
+  Custom policies, release review, regression caching and rollout remain open.
+
+- Add a restrictive retained-readiness consumer after an actual allow-after-drop
+  dispatch probe. Fence exact role/task issuance, next-call/gateway publication
+  and completion; revoke old grants or retain blocked state while results/effects
+  remain unsettled. Later promotions never restore scope. Keep stable capability
+  registration, authenticated qualification/restoration and operational rollout
+  open. Both skills teach actual grant inspection and no-replay settlement.
+
+- Repair the size regression's fixture-layer interference: prove structural
+  validity before requiring the complete-output denial instead of expecting
+  that semantic rule after a correct per-field MAX_LENGTH rejection. Preserve
+  the failed exact-source ladder and adapt both skills; no limit is weakened.
+
+- Reject derived order drafts that exceed the unchanged 8 MiB reader limit
+  before serialization/publication, including UTF-8, escaping and inherited
+  repetition. Retain the actual small-response/21 MiB-publication counterexample;
+  test exact byte boundaries, real compilation/inspection and held synthetic
+  native collection without truncating tasks or widening authority. Both skills
+  require reviewed decomposition rather than automatic retry or boundary loss.
+
+- Separate independent analysis-recovery denial fixtures from the real commit
+  throttle and regress its exact ninth-attempt denial. Preserve the original
+  21-pass/one-failure suite and update both skills; do not widen production limits
+  or count an unrelated rate rejection as proof of a later rule.
+
+- Fence stale evidence actions during full manifest refresh after actual compiler
+  publication. Keep server snapshot denial and the failed browser ladder intact;
+  regress delayed list delivery instead of bypassing freshness or retrying consent.
+  Both skill sources carry the refresh-boundary lesson.
+
+- Add separate failed-analysis acknowledgment with exact original journal,
+  response and observed draft-publication appraisal, two owner acknowledgments
+  and distinct signed records/endpoints. Preserve failures, existing drafts and
+  review-time absence through legitimate later publication without model/compiler
+  replay or adoption/cleanup authority. Keep missing/integrity/unknown-process
+  holds closed, retain receipt-boundary crash/lost-response behavior and old
+  omission compatibility, and adapt both routed skills. Acceptance stays separate.
+
+- Repair the native-analysis validator fixture's missing explicit issue-code
+  expectation. Preflight every CLI fixture definition before spawning children
+  and regress malformed definitions without defaulting missing expectations.
+  Both skills require the actual CLI ladder early and preserve harness failures
+  separately from runtime results; predecessor failures remain retained.
+
+- Recompute complete invocation and nested preview commitments during historical
+  consent/result verification for both model purposes. Preserve the actual
+  signed-scope substitution counterexample and fresh-execution denial separately;
+  changed history becomes unverifiable and fences further transfers. Both skills
+  prohibit repairing history by rehashing or re-signing altered content.
+
+- Add a separate existing-Codex request-analysis purpose over a shared bounded
+  collector and actual OPORD compiler. Keep owner nonce/session/password review,
+  exact quotes, proposed-role bounds, original journal and generated draft
+  bindings; share model holds without allowing omission-only reconciliation to
+  clear an analysis action. Both skills require exact purpose and fresh human
+  coverage/adoption. Calibration, analysis recovery and orchestration stay open.
+
+- Route the explicit semantic-review-assignment contract alias through the actual
+  semantic-admission query rule, not only artifact inventory hints. Preserve the
+  failed hosted checks and local reproduction; extend both-provider query and
+  planner regressions. Both skills distinguish query correctness from inventory
+  coverage without disabling genuine mission-scoped capability gaps.
+
+- Reject raw planner operation envelopes and nested semantic/planning packets as
+  task work, including historical untyped bundles, arrays and MIME/key-order
+  aliases. Tag all planning operation returns and retain the actual data-only
+  wave counterexample separately from earlier positive checks. Preserve
+  reference-only independent work; update both skills and real consumer fixtures.
+
+- Construct complete source-bound plans/policy drafts from actual OPORD tasks
+  and finite roster/control/estimate bounds. Link generated provenance to real
+  adoption/context/policy/lease/next-call consumers; finalize successor revisions
+  before fresh coverage. Preserve parent controls and subtract actual admission
+  usage instead of resetting spent budgets. Add contracts, synthetic examples,
+  executable consumer/negative fixtures and both skill wrappers/adaptation.
+  Structural synthesis is not model strategy, calibrated semantics, attested
+  resource readiness or completion of the eight program outcomes.
+
+- Compare owner-reviewed source fragments, requirements and actual order/task/agent
+  locations in a bounded, read-only coverage UI. Preserve the full plan/raw subject,
+  filter-invariant one-use consent and session/view clearing; reject incomplete
+  display matrices. Extend synthetic projection and actual authenticated browser
+  regressions, and adapt both skills. This remains uncalibrated human review,
+  not automatic planning, proven completeness or program acceptance.
+
+- Require coverage to follow plan creation and finalize the exact returned
+  successor before reviewing a revision. Update both skills and the real
+  revision/adoption wrapper fixture; preserve its earlier missing-review failure.
+
+- Bound repeated immutable inventory/coverage/proposal replay to one synchronous
+  operation without changing lease timeouts; recheck freshness per use and start
+  publication with a fresh appraisal. Preserve the original expired-lease test
+  failure separately from corrected-source verification.
+
+- Add source-accounted, non-authorizing requirement inventories and human coverage
+  proposals bound to the whole plan and actual adoption/context/next-call
+  consumers. Preserve legacy history and admitted-result settlement; update both
+  skills and target-explicit wrappers. Model calibration, automatic planning and
+  all eight program outcomes remain open. Candidate acceptance remains separate.
+
+- Preserve bounded model HTTP statuses, UI errors and sanitized action/result state on browser fixture failure; diagnose failed observation before changing deadlines or consent validity.
+
+- Separate synthetic collector reservation-collision checks from expired transfer consent, retaining exact denial and immutable-journal assertions without renewing operational authority.
+
+- Bind signed model evaluation v0.2 to exact collector-returned journal bytes before owner review, then require that original commitment for model-hold acknowledgment and replay. Reject PID substitution before preview or before signing; preserve authentic v0.1 history without retrospectively blessing unsigned journals. Add a strict shared current/legacy evaluation schema and state/verdict rules; both skills require original provenance rather than a newly computed hash. The earlier passing selected ladder did not cover this counterexample and is not evidence that it was prevented.
+
+- Add a separate exact owner acknowledgment for verifiable failed model transfers: fresh password/session/nonce consent, current PID/group absence, signed one-use outbox and atomically verified receipt. Preserve original failure/journal bytes and every consumed attempt; changed or missing proof remains held. Receipt publication and corrupted state-label regressions fail closed. Both skills require fresh review rather than replay, and new acknowledgment records remain non-authorizing control metadata. Unknown-process/integrity recovery, remote billing, calibration and mandatory semantic consumers remain open.
+
+- Start model-collector and worker-queue shutdown fences together and wait for both actual exits before closing private auth state. A delayed model close must not leave queued work admissible. Both skills preserve this shared shutdown rule.
+
+- Reject null/non-object JSONL and malformed UTF-8 inside the collector before field access, preserving the HTTP service and observed child/group termination. Keep these actual-process regressions separate from model-quality evidence; both skills preserve the failed one-use action without replay.
+
+- Connect exact model-transfer owner preview/password/stored-session consent to the actual bounded CLI collector, with asynchronous queryable signed results, cancellation, logout revocation and shutdown exit checks. Preserve model holds and missing/changed signed history; never replay a nonce or promote an advisory verdict into authority. Both skills require the real ceremony and exclude semantic control copies from work evidence. Measure that type catalog in issuance/channel bindings and regenerate only their synthetic examples. Calibration, mandatory consumers, model-hold discharge, planning and protected operation remain open.
+
+- Add a source-bound semantic omission collector foundation for the existing local Codex CLI login. Compare compiled order/receiver projections rather than unused analysis; require purpose-specific pinned-key transfer consent, a durable one-use reservation, bounded process collection and strict quoted response validation. Both skills prohibit reusing order consent, manufacturing operational approval or treating fake-provider tests as semantic calibration. Actual owner transfer UI, mandatory semantic admission and bounded planning/replanning remain open.
+
+- Fence delayed console reads and mutation responses by session, principal, view and request generation. Clear hidden evidence, account/activity/decision rows, previews and invitation links on identity changes; ignore old-session 401 and reversed selections. Reproduce the owner-to-viewer stale-list counterexample and add nine real-browser response-order regressions without disabling authentication throttles. Both skills require fresh principal-bound reads and forbid replaying discarded approval writes. Previously copied data, broader approvals and protected operation remain outside this boundary.
+
+- Add a local authenticated Operations candidate over actual verified wave/context/terminal and dispatch history. Preserve mission-bounded access, role display filters without hidden critical alerts, finite snapshots, stale/future activity, pending results/issuance and execution obligations. Reads never recover or grant authority, and COP copies remain metadata rather than work. Both skills require full permitted attention and fresh manifest inspection. Complete reporting thresholds, CoS decisions, broader COP blocks and all eight outcomes remain open.
+
+- Strengthen the issuance stop-publication fixture to require the exact campaign-blocked code, retained stop reason and a denied successor tool admission. This test/documentation-only alignment preserves the unchanged stricter runtime instead of accepting a broad error union or reverting to generic CAS. Both skills teach the exact assertion and non-authorizing pending state.
+
+- Preserve specific reconciled-failure and required-revocation denials before generic legacy/source eligibility in the actual active-lease projection. Keep exact existing active/interrupted/resumed-descendant assertions and result-only migration; both skills inspect failure and migration as separate non-authorizing conditions.
+
+- Reappraise repository-wide gateway and unknown-effect holds before the generic issuance publication conflict, including obligations arriving in another wave. Preserve the existing exact denial/no-grant regression. An optional exact gateway fixture filter rejects unknown/empty selections; filtered checks are not full-suite acceptance. Both skills require cross-wave hold inspection.
+
+- Preserve supervisor/terminal/settlement denial reasons through journaled resume and publication guards; retain neutral legacy-context result settlement without enabling new calls. Verify stronger pre-issuance rejection of unobserved startup and unknown effects without partial publications. Both skills require the complete consuming regression families, not only issuance-specific fixtures; full acceptance remains separate.
+
+- Reappraise the issuance source-entry binding at actual new-call admission and its final allow-publication guard. Generic store recovery can restore final commit history but cannot authorize changed-source work. Preserve already-admitted results and explicit revocation, and verify unchanged final-resolution recovery with original nonce/expiry and no repeated task. Both skills distinguish historical commit recovery from current execution eligibility; this is not isolated execution attestation.
+
+- Journal every new lease as a non-authorizing frozen issuance request, exact optional supersession, lease v0.2, baseline and one guarded commit/cancellation resolution. Recover only missing publications with the original ID, nonce, bindings and expiry; preserve pending holds, stop/revocation, drift and known results. Task/control consumers reject unfinished or cancelled grants, while report, termination and successor consumers account for pending issuance. Legacy leases remain result-only, and schema validity cannot authorize either version. Both skills teach exact inspection/recovery/cancellation and keep operator control CLI commands out of agent task execution. Unrecorded legacy partial issuance, actual native startup and all eight broader outcomes remain open.
+
+- Add an explicitly reviewed channel policy v0.2 for bounded same-wave continuation: fresh dormant slots bind exact interruption and supersession history, new observed session enrollment and an immutable root deadline. Preserve metadata request IDs/budgets and task-policy/per-rule counters across leases; stale files, missing reports/delivery, unknown effects, exhausted handoffs and schema-valid branch/deadline substitutions cannot execute. The three agent tools and authority scope stay unchanged. Both skills teach the trusted prepare/observe/resume/enroll sequence and preserve partial issuance holds; actual native startup and dispatch partial-resume recovery remain open.
 
 - Sanitize private-channel filesystem/parser exceptions before the actual hook can return them to an agent. Preserve only fixed non-secret codes and test missing-file paths plus invented malformed-input sentinels through the real hook executable. Both skills keep raw private-state diagnostics on the trusted operator side; resumed broker lineages require separately reviewed successor handling rather than reusing initial enrollment.
 

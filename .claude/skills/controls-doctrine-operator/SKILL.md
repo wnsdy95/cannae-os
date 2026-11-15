@@ -387,6 +387,11 @@ Keep raw drafts private and record receiver acknowledgement only when observed.
 
 ## Delegate Without Losing Intent
 
+For captured-request adoption, workload report admission, force enrollment or
+Operations reads, use the retained procedures in
+[Conditional Runtime Operations](references/runtime-operations.md).
+Their separate decisions and controls remain required despite deferred development.
+
 For actual delegated waves, use `docs/skill-operational-mission-lifecycle.md`
 and [Conditional Runtime Operations](references/runtime-operations.md).
 The controller's `open` path creates the CoS and expected S3 receipts, runs

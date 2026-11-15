@@ -1,0 +1,76 @@
+{
+  "schema_version": "0.1",
+  "type": "OperatorAnalysisReconciliationAuthorization",
+  "id": "OARA-32a18873-1a60-4a28-a399-6f07e9b6821e",
+  "reconciliation_id": "32a18873-1a60-4a28-a399-6f07e9b6821e",
+  "action_id": "075b474d-820d-49ec-8153-231e6c888afd",
+  "sequence": 1,
+  "purpose": "acknowledge_one_failed_order_analysis_transfer",
+  "resolution": "acknowledge_failed_transfer",
+  "principal_id": "2a2f67c9-6bce-4070-87e2-8a4b178a0ca4",
+  "principal_epoch": 1,
+  "authentication_method": "local_owner_password_reauthentication",
+  "session_sha256": "6f6f7b58085c10176dfce79c57e9d8a75b370703f5df59302e0ae9266b047da4",
+  "nonce_sha256": "9b78867da06877011f8c47af21ff6e8d2939ce7ad057fbdeba3f255a56958099",
+  "rationale": "Synthetic acknowledgment preserves the failed analysis and published non-executable draft, not provider billing or adoption.",
+  "created_at": "2026-10-24T00:00:01Z",
+  "expires_at": "2026-10-24T00:02:00Z",
+  "subject": {
+    "action_id": "075b474d-820d-49ec-8153-231e6c888afd",
+    "repository_binding": {
+      "repository_key": "synthetic-analysis-repository",
+      "identity_fingerprint": "049c7b98ef783c39d4a26d620bb7816e2e324a13bbe7d9ee3184b37fe7ae0aba"
+    },
+    "original_action_sha256": "d5576baf2d3d77d36671f88b2ce7aad5f42f64b4b51db0b9df7fd169dfee6265",
+    "invocation_sha256": "e2fdc254d363247ec0f209e1d07b94a3a37065d4ac6f0d33aaaf5b4ff70c0fd9",
+    "consent_sha256": "77035df6a2cb546c32fa08a986a2c0d7457c1ec02a71f66a3590f5eeb84921cf",
+    "result_sha256": "5dd363e81c9e00a2bc21516b0f79662803caee7629a20a313ea786ff3d986128",
+    "journal_sha256": "503bedd17566df20786cdfd9587a2d2d2a18f5dd5e5595591357408b41c73092",
+    "manifest_sha256": "de031725af80704c66ce6a4adc45f79df1df30b147f8524386e1e0f27c90d8ef",
+    "repository_state_sha256": "5b4d5690877f744a251846344fea059fb6ce3a2c24c88b9a46e6f32d5dc0e470",
+    "runtime_source_sha256": "60de0084c58a14e897b87be5e29d793a39a7656a259f8ac0cb1afa3726433fda",
+    "prior_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "trusted_key_sha256": "d8c7bacc0a3f6e0ec1f4b647b1d9e9abdb1838e986064020a1684b4f269a9bc7",
+    "process_id": 2147483000,
+    "observed_at": "2026-10-24T00:00:00Z",
+    "child_exit_recorded": true,
+    "child_absence_observed": true,
+    "process_group_absence_observed": true,
+    "failure_reasons": [
+      "SEMANTIC_ANALYSIS_PUBLICATION_UNKNOWN"
+    ],
+    "transfer_effects": "possibly_transmitted",
+    "provider_billing_verified": false,
+    "provider_cancellation_verified": false,
+    "model_purpose": "order_analysis",
+    "publication": {
+      "kind": "accepted_response",
+      "response_sha256": "74ad7f0c24433e3e7f89b96d23f3b509b0766687bc7b54f965dbaf463d33521f",
+      "analysis_sha256": "1dab8966e957dbec1b451fb724b042024cc5999c34e64e1e6c8c675bf4c895c2",
+      "expected_draft_id": "OD-d58b0af2c1369697e336f704d938157b",
+      "publication_state": "published",
+      "draft_ref": {
+        "artifact_id": "OD-d58b0af2c1369697e336f704d938157b",
+        "relative_path": "synthetic/order-draft.json",
+        "sha256": "9d2f10babe925996408fdc54eacb32653c7eb340d553b8b476a8a8170999ce22"
+      },
+      "draft_status": "ready_for_review",
+      "request_ref": {
+        "artifact_id": "MR-SYNTHETIC",
+        "relative_path": "synthetic/request.json",
+        "sha256": "d66c403008b775687ad2bee79d51dd83cf006b6e68724be26a91d01ce22d4ac0"
+      },
+      "draft_adoption_authorized": false,
+      "artifact_settlement_authorized": false
+    }
+  },
+  "provider_uncertainty_acknowledged": true,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_sha256": "d8c7bacc0a3f6e0ec1f4b647b1d9e9abdb1838e986064020a1684b4f269a9bc7",
+    "value": "VNc6blRrHFco0FK04eWUtFMegniAHDhFjTLcXO4J27bCKib7IYOB5BRmSDGwEIKgr9QMhO3j1r8AzUW1HRTrBQ=="
+  }
+}

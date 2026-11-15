@@ -15,6 +15,17 @@ It performs two layers of checks:
 
 The prototype is intentionally small. It is not a complete JSON Schema implementation.
 
+Current and historical independent release-verification evidence is monitoring-only:
+both validation APIs return `can_execute: false` even when it is valid. Historical
+replay, schema validity and cryptographic success are not tool or release permission.
+
+Fixture CLI cases must explicitly declare `requiredCodes`, including `[]` when
+no issue code is expected. The runner checks all definitions before spawning
+children and separately exercises malformed expectation definitions. Missing
+expectations are harness failures, not successful payload validation. After adding
+cases, run this CLI fixture ladder before the more expensive runtime suites;
+contract-specific runner passes do not prove the CLI harness can execute them.
+
 ## Usage
 
 ```bash

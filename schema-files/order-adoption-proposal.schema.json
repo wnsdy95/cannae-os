@@ -24,7 +24,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "0.1"
+      "enum": ["0.1", "0.2"]
     },
     "id": {
       "$ref": "common.schema.json#/$defs/id"

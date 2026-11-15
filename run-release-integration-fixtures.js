@@ -58,6 +58,19 @@ const cases = [
   }
 ];
 
+for (const [name, mutate, reason] of [
+  ["valid release review cannot repair below-minimum readiness", value => { value.authority_request.readiness = "P"; }, "READINESS_BELOW_MINIMUM"],
+  ["valid release review cannot substitute a different authority target", value => { value.authority_request.target = "production"; }, "AUTHORITY_REQUEST_TARGET_MISMATCH"]
+]) cases.push({ name, file: "release-integration-fixtures/valid-release-bundle.json", mutate,
+  expected: { allowed: false, blocked: true, final_decision: "prohibit", reason } });
+cases.push({ name: "valid release review cannot erase explicit Green request approval", file: "release-integration-fixtures/valid-release-bundle.json",
+  mutate(value) {
+    Object.assign(value.tool_request, { tool: "validator", action: "validate", target: "local workspace", risk_level: "low", roe_class: "Green", approval_required: true });
+    Object.assign(value.authority_request, { tool: "validator", target: "local workspace", roe_class: "Green", readiness: "T" });
+    Object.assign(value.authority_matrix.rules[0], { tool_scope: ["validator"], target_scope: ["local workspace"], roe_class: "Green", decision: "allow" });
+    delete value.authority_matrix.rules[0].approval_authority; delete value.approval_scope; delete value.risk_acceptance;
+  }, expected: { allowed: false, blocked: true, final_decision: "blocked_pending_authority", reason: "MISSING_APPROVAL_SCOPE" } });
+
 function readJson(relativePath) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, relativePath), "utf8"));
 }
@@ -71,7 +84,12 @@ function matches(actual, expected) {
 
 const results = cases.map(testCase => {
   const bundlePath = path.join(ROOT, testCase.file);
-  const actual = integrate(readJson(testCase.file), { baseDir: path.dirname(bundlePath) });
+  const bundle = readJson(testCase.file);
+  if (testCase.mutate) {
+    bundle.authority_bundle = JSON.parse(fs.readFileSync(path.resolve(path.dirname(bundlePath), bundle.authority_bundle_path), "utf8"));
+    delete bundle.authority_bundle_path; testCase.mutate(bundle.authority_bundle);
+  }
+  const actual = integrate(bundle, { baseDir: path.dirname(bundlePath) });
   return {
     name: testCase.name,
     ok: matches(actual, testCase.expected),

@@ -23,7 +23,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "0.1"
+      "enum": ["0.1", "0.2"]
     },
     "id": {
       "$ref": "common.schema.json#/$defs/id"
@@ -50,7 +50,7 @@
       "$ref": "agent-dispatch-lease.schema.json#/properties/session_binding"
     },
     "source": {
-      "const": "startup"
+      "enum": ["startup", "resume", "clear", "fork"]
     },
     "provider_startup_verified": {
       "const": false
@@ -70,5 +70,8 @@
     "human_final_decision_authority": {
       "const": "USER"
     }
-  }
+  },
+  "allOf": [{ "if": { "properties": { "schema_version": { "const": "0.1" } } },
+    "then": { "properties": { "source": { "const": "startup" } } },
+    "else": { "properties": { "source": { "enum": ["resume", "clear", "fork"] } } } }]
 }

@@ -557,6 +557,179 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+The [readiness intersection correction](readiness-authority-intersection.md)
+is local engineering synthesis of existing authority-ceiling rules after actual
+synthetic reference-consumer counterexamples. Exact scope, restriction
+intersection and non-overridable minimums are not a new military-source claim
+or proof of evaluator identity, positive qualification or protected execution.
+The subsequent explicit-request approval check is the same local synthesis:
+computed Green never removes a stricter request flag, including at release review.
+
+The [CLI-default bridge](codex-default-model-binding.md) uses the official
+[App Server model catalog](https://learn.chatgpt.com/docs/app-server#list-models-modellist)
+and effective configuration RPC plus locally generated 0.162.1 schemas. Catalog
+recommendations depend on the client/account; they do not prove an entitlement or
+immutable model snapshot. Frozen exact model/selection consent, inactive-status
+validation, privacy and observed child cleanup are local engineering policy.
+An empty-HOME network-denied protocol probe is not the real user's configuration
+or a successful inference. No new military-source claim is introduced.
+
+The [force registry enrollment candidate](force-registry-enrollment.md) is local
+engineering synthesis over the existing force-structure, task/readiness, owner
+authentication and immutable artifact contracts. It distinguishes signed exact
+definition enrollment from readiness qualification and actual grant activation.
+Reviewed alias history is not semantic task equivalence or provider attestation.
+There is no new external military-source claim or implicit standing activation.
+
+The [subject-bound workload candidate](subject-bound-workload-controls.md) is local
+engineering synthesis over existing report, artifact-store and OPSEC contracts.
+A report digest on a framework fixture receipt does not prove that the child
+consumed the report. Separate typed input, actual work-byte capture, bounded
+worker observation and publication recheck address that input-flow gap without
+new military-source claims, universal detection or release/host attestation.
+
+The [readiness-drop candidate](readiness-drop-reconciliation.md) is local
+engineering synthesis over the existing readiness-event and dispatch/gateway
+settlement contracts. It follows an actual allow-after-drop dispatcher probe,
+reads verified cross-mission observations and fences exact role/task grants.
+Manifest path order is not introduction history. Late results and ownership
+obligations survive revocation attempts; later promotions cannot restore scope.
+This does not prove a full capability registry, qualified models, authenticated
+evaluator provenance, fresh USER requalification or protected-host enforcement.
+
+The complete-draft size boundary in [request intake](request-order-intake.md)
+and [native analysis](native-order-analysis.md) is local engineering synthesis,
+not a military-source or model-quality claim. It follows an actual synthetic
+small-response/amplified-publication counterexample and reuses the reader's
+unchanged byte limit. Complete serialized output is bounded without dropping
+inherited constraints or renewing consent. Historical oversize recovery and
+current-source operational acceptance remain separate.
+Both issuance/channel runtime commitments now directly include the intake
+contract and compiler; only synthetic structural samples are regenerated.
+Existing operational signatures or runtime commitments are never rewritten.
+
+The [analysis recovery candidate](order-analysis-reconciliation.md) is local
+engineering synthesis over the existing purpose-bound collector, signed owner
+reservation, exact journal inspection and actual compiler reader. Separate
+analysis authorization/receipt types do not share omission consent or upgrade
+unbound legacy provenance. A review-time verified-manifest absence is not a
+no-effect assertion; later legitimate publication preserves that old observation.
+Current response/journal/publication bindings and failed receipt history remain
+accountable. No new military source, protected-host/human-presence guarantee,
+provider cancellation or semantic-quality claim is introduced.
+Its retained initial browser failure was a stale evidence-selection race during
+full manifest refresh; the server denied correctly. The UI now removes old
+actions/counts before the new list arrives and tests delayed delivery without
+weakening snapshot validation or automatically retrying a decision.
+Its later HTTP fixture failure was rate-limit interference with a different
+intended rule, not an authorization bypass. Independent exact-error cases and
+an actual throttle case preserve both requirements without weakening the limit.
+
+The shared model invocation/history integrity rule is local engineering synthesis.
+A retained actual-controller probe found that original signatures and a supplied
+digest field could label a changed projected mission as verified in history,
+although new collection rejected it. The verifier now recomputes both nested and
+outer commitments before trusting history; no fresh model call, history repair,
+scope grant or protected-host claim follows from this check.
+
+The [native request-analysis candidate](native-order-analysis.md) uses the official
+[Codex exec interface](https://learn.chatgpt.com/docs/developer-commands#codex-exec)
+and a separately purpose-bound adapter over the existing bounded collector.
+Its exact quotation, proposed-role envelope, compiler consumption, shared model
+hold and owner nonce checks are local engineering synthesis. Source fidelity and
+fake-provider fixtures do not prove strategy quality, complete semantics, protected
+execution, provider cancellation or a calibrated model-origin adoption class.
+
+The [bounded structural generator](bounded-plan-synthesis.md) is local engineering
+synthesis over actual OPORD/adoption/revision/dispatch contracts. It selects a
+finite declared roster without inventing tasks or authority and binds generated
+plans to retained source/history. Replanning checks exact parent policy bytes
+and remaining admitted-use budgets; actual consumers still require fresh review
+and supersession. No new military, model-quality or availability claim is made.
+Declared cost units and synthetic fixtures are not measured budgets, attested
+readiness, semantic calibration or protected deployment.
+Its structured-packet guard follows the report's actual nested JSON values,
+including legacy untyped CLI envelopes; it does not infer task execution from
+metadata, parse arbitrary encoded strings or reject reference-only work facts.
+
+The [requirement inventory admission candidate](requirement-inventory-admission.md)
+is local engineering synthesis, not a new military or model-quality source
+claim. `requirement-inventory-contract.js` and its controller bind source byte
+partitions, requirement/target matrices and whole-plan digests to actual adoption,
+receiver and next-call consumers. Authored synthetic fixtures are not independent
+calibration. Exact quotes and authenticated human review do not prove semantic
+equivalence, complete extraction or a non-bypassable deployment.
+Its local `operator-console/coverage.js` presentation compares exact source
+fragments and actual receiver locations, retains the full plan/raw subject and
+rejects incomplete display matrices. Projection fixtures and authenticated
+desktop/mobile browser cases test presentation, unchanged consent and stale
+response clearing, not independent semantic calibration or cryptographic proof.
+
+The [failed model-transfer ceremony](model-transfer-reconciliation.md) is local
+engineering synthesis over the existing signed owner-transfer service, private
+outbox and process lifecycle. It verifies exact failed history, observes PID/group
+absence and appends fresh signed acknowledgment without rewriting the failure or
+calling the model. SQLite reservation order is not trusted time, and PID/group
+absence is not provider cancellation. No new military-source claim is introduced.
+Its v0.2 signed evaluation commits the collector's original journal before
+reconciliation. The service compares bounded bytes to the actual returned
+observation; a later hash of unsigned mutable state is not equivalent provenance.
+
+The [model-transfer ceremony](model-transfer-consent.md) is local engineering
+synthesis over existing auth, owner reauthentication, pinned operator signatures,
+verified intake, the semantic collector and the wave-report metadata boundary.
+It checks the actual stored session for logout revocation and owns the native
+child separately from disposable read workers. API/browser fixtures distinguish
+actual approval, cancellation, unknown results and stale display context. This
+does not attest protected hosts/keys, account equivalence or provider cancellation.
+
+The [semantic omission collector](semantic-omission-evaluation.md) uses the
+official [Codex non-interactive interface](https://developers.openai.com/codex/noninteractive)
+for saved local authentication, JSONL, ephemeral runs and structured output.
+The exact pinned profile is additionally checked against local CLI 0.162.1.
+Source/preview binding, separate transfer-consent purpose, private one-use
+journal and conservative no-authority result handling are local engineering
+synthesis. Neither documentation nor fake-process tests prove native isolation,
+semantic completeness, hard cost cancellation or an authenticated owner ceremony.
+
+The local console's shared browser response fencing is local engineering
+synthesis. `operator-console/app.js` and
+`operator-console-fixtures/session-browser-check.js` bind rendering to current
+session/principal/view/request state and test delayed real authenticated bodies.
+They do not strengthen provider identity or replace server RBAC/consent. The
+existing login rate limit remains active during browser tests.
+
+The [operational COP](operational-cop.md) is local engineering synthesis over
+the verified manifest, historical routing/context/terminal replay, dispatch and
+existing authenticated evidence APIs. Its snapshot schema, negative samples,
+actual-controller/HTTP fixtures and both skill routes distinguish recorded
+state, display filters, restricted mission access and execution authority.
+This does not add a military-source claim, trusted worker heartbeat or the
+remaining readiness, configurable reporting and CoS decision workflow.
+
+The [issuance transaction](dispatch-issuance-recovery.md) extends the existing
+verified manifest, dispatch, stop, intent and lifecycle contracts. It freezes
+one planned lease before supersession and requires actual stage references at
+the consuming gate. Fault-injection fixtures and both skills distinguish exact
+recovery, unused cancellation, legacy result settlement and new authority.
+Actual call and allow-publication gates also reappraise the frozen source entry
+after generic final-resolution journal recovery. Copied-runtime fixtures retain
+the denial without discarding admitted results or valid unchanged recovery.
+This is local engineering synthesis, not a new military-source claim,
+authenticated USER ceremony or protected execution attestation.
+Historical legacy result settlement remains distinct from live context
+eligibility. Full supervisor, gateway/effect, intent, channel and lifecycle
+consumers verify specific hold precedence and pre-issuance no-write rejection;
+issuance-only fixtures cannot establish their compatibility.
+Existing hook-settlement fixtures also check specific reconciled-failure codes
+for active/interrupted legacy leases and resumed descendants. Generic result-only
+migration cannot conceal the failure or required post-settlement revocation.
+The issuance stop-publication fixture additionally checks exact stop precedence
+and denied admission from the unfinished successor, without changing runtime code.
+Actual lease-publication races also reappraise repository-wide gateway/effect
+holds, not only the issuing wave. Exact fixture selection rejects an unknown
+case; a filtered pass is not the complete gateway suite.
+
 The [local method channel](method-control-channel.md) applies the official SDK,
 Codex hooks/MCP and Claude hook-provenance interfaces listed below to existing
 method/dispatch contracts. Its strict schemas, synthetic sample pairs, actual
@@ -564,6 +737,10 @@ SDK transports, synthetic native callbacks and both skills distinguish dormant
 startup, exact enrollment and response delivery. These are local reference
 checks, not native agent-client startup attestation, semantic mission completion
 or protected production execution. No new military-source claim is made.
+Its optional channel policy v0.2 adds a finite observed-session continuation
+chain over existing dispatch interruption/supersession records. Shared counters
+and root expiry are reappraised by actual consumers; the SDK/synthetic-provider
+fixtures are not independent process or complete resume-recovery evidence.
 
 The [method runtime](method-deviation-runtime.md) is local engineering synthesis
 of the existing mission-command, disciplined-initiative, intent, adoption,
@@ -661,6 +838,14 @@ and [10.7.2 release](https://github.com/beaugunderson/ip-address/releases/tag/v1
 The patched library's NAT64 classification is tested locally; exact former
 v0.2 producer replay is our compatibility design, not an upstream trust claim.
 Neither proves complete network security or historical protected execution.
+
+The subsequent IPv6 zone migration uses the primary
+[zone-parser advisory](https://github.com/advisories/GHSA-rxp7-6hxx-x8q5),
+[index-based fix](https://github.com/beaugunderson/ip-address/commit/ec80fcd)
+and [10.7.4 release](https://github.com/beaugunderson/ip-address/releases/tag/v10.7.4).
+Local bounded-child counterexamples and regressions distinguish parser liveness,
+normal semantics, deprecated helpers and exact accepted producer replay. They do
+not establish application reachability, protected execution or release authority.
 
 The subsequent brace dependency migration uses the primary
 [5.0.9-to-5.0.12 changes](https://github.com/juliangruber/brace-expansion/compare/v5.0.9...v5.0.12)

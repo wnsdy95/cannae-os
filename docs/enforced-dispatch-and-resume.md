@@ -1,5 +1,11 @@
 # Enforced Dispatch And Resumable Execution
 
+New lease v0.2 requires the complete [issuance transaction](dispatch-issuance-recovery.md),
+not a schema-valid lease alone. Inspect `status.issuances` after interruption,
+recover only the retained request ID or cancel an unused request explicitly.
+Pending issuance blocks task admission and settled report/terminal claims.
+Lease v0.1 is retained-result and revocation history, not new tool authority.
+
 ## 1. Purpose
 
 The operational mission lifecycle proves that an agent received a current routing
@@ -83,6 +89,13 @@ the repository namespace, and a second provider session cannot create a
 parallel lineage under the same agent assignment. Explicit `resume` may
 continue the existing lineage after review; it does not create an independent
 initial authority path.
+
+For an explicitly reviewed method-channel policy v0.2, initial and resumed
+leases share the same plan/context/policy admission and per-rule use counters.
+The channel's original deadline also gates actual work after resume. A fresh
+nonce does not replenish those bounds. Follow the separate
+[observed-session channel continuation](method-control-channel.md#reviewed-same-wave-continuation)
+before dispatch; a resumed lease alone does not enroll its new channel.
 
 Issuance is also serialized across the repository namespace. No policy can
 become active while another lease is nonterminal. The local controller does not

@@ -40,8 +40,8 @@ function successor(parent, wave = "W2", offset = 200, classification) {
     mission_id: env.plan.mission_id, wave_id: wave, parent_plan_ref: parent.opened.plan_ref,
     parent_adoption_ref: parent.adopted.record_ref, change_request_ref: env.captured.artifact_ref,
     successor_plan: env.plan, ...ADOPTION_AUTHORITY };
-  env.request = { schema_version: "0.1", type: "OrderAdoptionProposalRequest", id: `OAPR-${wave}`,
-    mission_id: env.plan.mission_id, wave_id: wave, plan: env.plan, ...ADOPTION_AUTHORITY };
+  env.request = { schema_version: "0.2", type: "OrderAdoptionProposalRequest", id: `OAPR-${wave}`,
+    mission_id: env.plan.mission_id, wave_id: wave, plan: env.plan, semantic_review_ref: env.captured.artifact_ref, ...ADOPTION_AUTHORITY };
   return env;
 }
 function propose(env) {

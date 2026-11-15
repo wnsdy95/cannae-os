@@ -1,5 +1,24 @@
 # Local Operator Console
 
+The separate [Force Registry enrollment](force-registry-enrollment.md) view and
+ceremony approve only exact organization/capability/performer definitions.
+They do not reuse order-adoption consent, train a subject or grant tools/release.
+Partial enrollment publication preserves its own hold and requires a separate
+terminal-review protocol; never delete the action or re-sign history to proceed.
+
+The separate [native request-analysis candidate](native-order-analysis.md) adds
+an explicitly configured `--analysis-executable`/`--analysis-model` profile.
+Owners may propose an OPORD analysis from a retained mission request; Model Actions
+keeps its exact purpose and result distinct from omission evaluation. The latter's
+old failed-transfer acknowledgment cannot clear an analysis hold. Neither purpose
+can adopt an order or grant task execution; global installed/runtime rollout is
+separate from this source candidate's tests.
+
+The optional [model-transfer review](model-transfer-consent.md) adds exact-packet
+owner consent and signed semantic result inspection when the trusted host supplies
+both CLI/model flags. It never grants task execution or release and preserves
+failed/unknown model holds without automatic replay.
+
 ## Implemented Boundary
 
 This is a real loopback HTTP application over the configured repository's
@@ -16,8 +35,17 @@ Evidence and viewer access remain read-only. `approval_authorized`,
 do not grant blanket tool or release authority. Exact order decisions instead
 report `decision_recorded` and the controller's `adoption_status`.
 Login, opening a proposal or assigning viewer access never creates a decision.
-General tool approval consumption, operational COP and automatic replanning
-remain open. A legacy CLI document containing `USER` is not authenticated consent.
+The [Operations read product](operational-cop.md) now replays real wave/control
+history with scoped views, exact evidence and explicit freshness. Complete COP,
+CoS integration, general tool approvals and automatic replanning remain open.
+A legacy CLI document containing `USER` is not authenticated consent.
+
+Captured-request decisions include a [source/requirement/receiver comparison](requirement-inventory-admission.md)
+with explicit human-review limits, all source classifications and the complete
+proposed plan. Display filters never narrow the exact approval subject or renew
+its nonce. Raw evidence remains inspectable; a missing matrix row fails the new
+preview rather than displaying an actionable partial approval. This is not an
+automatic completeness evaluator or evidence that the owner read every row.
 
 ## Start And Initialize
 
@@ -67,6 +95,22 @@ existing sessions. Long evidence reads recheck the account before response.
 Logout destroys the session. Rate limits, strict JSON bodies, exact Host/Origin,
 session-bound CSRF, SameSite/HttpOnly cookies and restrictive CSP are mandatory.
 
+Browser responses also bind the current session epoch, authenticated principal,
+view and per-surface request sequence. Logout/session replacement clears hidden
+tables, details, approval previews and invitation links before further display.
+Late reads, old-session 401 errors and obsolete mutation responses cannot paint
+the new workspace; reversed filter/detail responses cannot replace a newer
+selection. Form completion and Operations refresh state belong to their exact
+request. New authentication waits for a fresh session CSRF value. These local
+display guards neither revoke previously copied information nor replace server
+authorization, nonce checks or retained unknown-outcome holds. Never replay a
+mutation because its old response was intentionally discarded.
+
+Run the [session browser regressions](../operator-console-fixtures/session-browser-check.js)
+with the existing browser, consent/reconciliation, HTTP and worker suites. The
+tests use temporary users and real authenticated response bodies; they wait for
+the unchanged login throttle rather than bypassing it.
+
 Authentication state uses a private owner-UID directory and single-link private
 SQLite files. Symlink traversal and repository-contained state are denied.
 The store is bound to the exact repository identity and configured artifact
@@ -79,6 +123,7 @@ and credential rotation are not implemented in this increment.
 
 | Method and path | Contract |
 | --- | --- |
+| `GET /api/operations` | Authenticated read-only verified wave/control snapshot; optional mission/staff display filters never hide alerts elsewhere in the permitted scope. |
 | `GET /api/session` | Setup state, current principal, CSRF token; repository identity only after authentication. |
 | `POST /api/setup`, `/api/login`, `/api/register`, `/api/logout` | Strict JSON and exact Origin plus session CSRF. Setup/register tokens are never evidence. |
 | `GET /api/evidence` | Verified, repository-isolated manifest; at most 50 permitted entries per page. Optional exact mission/kind filters. Missing namespace is empty, not demo data. |

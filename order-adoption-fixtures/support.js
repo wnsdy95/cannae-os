@@ -59,11 +59,47 @@ function environment(epoch = Date.parse("2026-09-29T16:00:00.000Z"), validForSec
   env.plan.dispatch_control = { required: true, enforcement_level: "guardrail", gateway_exclusive: false,
     policy_authorizations: env.policies.map(policy => ({ agent_id: policy.agent_id, provider: policy.provider,
       policy_id: policy.id, draft_sha256: inputDigest(policy) })) };
-  env.request = { schema_version: "0.1", type: "OrderAdoptionProposalRequest", id: "OAPR-ADOPTION",
-    mission_id: env.plan.mission_id, wave_id: env.plan.wave_id, plan: env.plan, ...ADOPTION_AUTHORITY };
+  env.request = { schema_version: "0.2", type: "OrderAdoptionProposalRequest", id: "OAPR-ADOPTION",
+    mission_id: env.plan.mission_id, wave_id: env.plan.wave_id, plan: env.plan,
+    semantic_review_ref: env.captured.artifact_ref, ...ADOPTION_AUTHORITY };
   return env;
 }
-function propose(env) { env.proposed = proposeOrder(env.request, optionsAt(env, 20)); return env.proposed; }
+function prepareSemanticReview(env, recordedAt) {
+  const { templateFor, reviewTargets } = require("../requirement-inventory-contract");
+  const { retainInventory, retainCoverage } = require("../requirement-inventory-controller");
+  const request = read(env, env.captured.artifact_ref), input = templateFor(request);
+  const taskId = env.plan.order_binding.task_assignments.find(item => item.agent_id.startsWith("agent-S3")).task_order_id;
+  // Authored synthetic expectations, not model-generated or independently calibrated truth.
+  const specs = [
+    ["obligation", "task", "/mission/statement", "/task_order/task"],
+    ["prohibition", "global", "/situation/constraints/0", "/task_order/inherited_constraints/0"],
+    ["prohibition", "global", "/situation/constraints/0", "/task_order/inherited_constraints/0"],
+    ["approval", "global", "/command_and_signal/authority/approval_required/0", "/task_order/retained_user_decisions/0"],
+    ["obligation", "task", "/mission/target_end_state/0", "/task_order/deliverables/0"],
+    ["obligation", "task", "/execution/tasks/1/task", "/task_order/task"]
+  ];
+  if (![5, 6].includes(input.fragments.length)) throw new Error("Synthetic inventory requires an explicitly authored source update.");
+  input.requirements = input.fragments.map((fragment, index) => {
+    const id = `REQ-${index + 1}`, [kind, scope] = specs[index];
+    fragment.classification = "operative"; fragment.requirement_ids = [id]; fragment.rationale = "Authored synthetic fixture expectation.";
+    return { id, instruction: fragment.quote.trim(), kind, source_fragment_ids: [fragment.id], scope, task_ids: scope === "global" ? [] : [taskId] };
+  });
+  env.inventoryInput = { request_ref: env.captured.artifact_ref, ...input };
+  const at = seconds => recordedAt ? { ...env.options, now: recordedAt } : optionsAt(env, seconds);
+  env.inventory = retainInventory(env.inventoryInput, at(16));
+  const pointerValue = require("../semantic-omission-contract").pointerValue;
+  const coverage = input.requirements.flatMap((requirement, index) => reviewTargets(env.draft, env.plan).map(target => {
+    const applicable = target.id === "order" || requirement.scope === "global" || requirement.task_ids.includes(target.id);
+    const pointer = applicable ? specs[index][target.id === "order" ? 2 : 3] : "";
+    return { requirement_id: requirement.id, target_id: target.id, disposition: applicable ? "preserved" : "not_applicable",
+      pointer, quote: applicable ? pointerValue(target.content, pointer) : "", rationale: "Authored synthetic coverage only; no real USER approval." };
+  }));
+  env.coverageInput = { inventory_ref: env.inventory.artifact_ref, coverage };
+  env.semanticReview = retainCoverage(env.coverageInput, env.plan, at(18));
+  env.request.semantic_review_ref = env.semanticReview.artifact_ref;
+  return env.semanticReview;
+}
+function propose(env) { prepareSemanticReview(env); env.proposed = proposeOrder(env.request, optionsAt(env, 20)); return env.proposed; }
 function brief(env, index) {
   const agent = env.plan.agents[index], task = env.draft.opord.execution.tasks[index], order = env.draft.opord;
   return { schema_version: "0.1", type: "OrderBackbrief", id: `OBB-${agent.agent_id}`, mission_id: env.plan.mission_id,
@@ -98,7 +134,7 @@ function rehearse(env) {
   env.rehearsalRef = retainOrderEvidence(env.rehearsal, optionsAt(env, 40), "order-rehearsals").artifact_ref;
 }
 function decisionRequest(env, disposition = "approve") {
-  return { schema_version: "0.1", type: "OrderAdoptionDecisionRequest", id: "OADR-ADOPTION", mission_id: env.plan.mission_id,
+  return { schema_version: env.proposed.proposal.schema_version, type: "OrderAdoptionDecisionRequest", id: "OADR-ADOPTION", mission_id: env.plan.mission_id,
     wave_id: env.plan.wave_id, proposal_ref: env.proposed.proposal_ref, backbrief_refs: env.briefRefs || [],
     rehearsal_ref: env.rehearsalRef || { ...NONE }, disposition, decision_ref: { ...NONE }, ...ADOPTION_AUTHORITY };
 }
@@ -119,5 +155,5 @@ function adopt(env) {
   env.adopted = decideOrder(env.decisionRequest, optionsAt(env, 60));
   return env.adopted;
 }
-module.exports = { clone, run, sample, read, optionsAt, persist, environment, propose, brief, retainBriefs,
+module.exports = { clone, run, sample, read, optionsAt, persist, environment, prepareSemanticReview, propose, brief, retainBriefs,
   rehearsal, rehearse, decisionRequest, decision, adopt };

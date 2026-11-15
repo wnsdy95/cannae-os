@@ -1,0 +1,389 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "statements": {
+      "minItems": 1,
+      "maxItems": 256,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "request_quote",
+              "assumption",
+              "proposal",
+              "unknown"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 131072
+          },
+          "blocking": {
+            "type": "boolean"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "request"
+                  },
+                  "start_byte": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "end_byte": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "kind",
+                  "start_byte",
+                  "end_byte"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "none"
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "text",
+          "blocking",
+          "source"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "sections": {
+      "type": "object",
+      "properties": {
+        "mission.statement": {
+          "maxItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "mission.target_end_state": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "intent.purpose": {
+          "maxItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "intent.key_tasks": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "intent.failure_to_avoid": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "situation.known_facts": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "situation.assumptions": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "situation.constraints": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "execution.concept": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "execution.coordinating_instructions": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "sustainment.tools": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "sustainment.fallback": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "command_and_signal.authority.requested": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "command_and_signal.authority.approval_required": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "command_and_signal.authority.prohibited": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "command_and_signal.ccir.pir": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "command_and_signal.ccir.ffir": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "command_and_signal.ccir.eefi": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "command_and_signal.reports.sitrep_trigger": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "assessment.mop": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "assessment.moe": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        },
+        "assessment.verification": {
+          "maxItems": 256,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          }
+        }
+      },
+      "required": [
+        "mission.statement",
+        "mission.target_end_state",
+        "intent.purpose",
+        "intent.key_tasks",
+        "intent.failure_to_avoid",
+        "situation.known_facts",
+        "situation.assumptions",
+        "situation.constraints",
+        "execution.concept",
+        "execution.coordinating_instructions",
+        "sustainment.tools",
+        "sustainment.fallback",
+        "command_and_signal.authority.requested",
+        "command_and_signal.authority.approval_required",
+        "command_and_signal.authority.prohibited",
+        "command_and_signal.ccir.pir",
+        "command_and_signal.ccir.ffir",
+        "command_and_signal.ccir.eefi",
+        "command_and_signal.reports.sitrep_trigger",
+        "assessment.mop",
+        "assessment.moe",
+        "assessment.verification"
+      ],
+      "additionalProperties": false
+    },
+    "tasks": {
+      "maxItems": 64,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "assigned_to": {
+            "type": "string",
+            "enum": [
+              "COS",
+              "S2",
+              "S3",
+              "S4",
+              "S6",
+              "RED_TEAM",
+              "EVALUATOR",
+              "EXECUTOR",
+              "RECORDER"
+            ]
+          },
+          "task": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "purpose": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "deliverables": {
+            "maxItems": 256,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            }
+          },
+          "verification": {
+            "maxItems": 256,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            }
+          },
+          "ccir": {
+            "maxItems": 256,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "assigned_to",
+          "task",
+          "purpose",
+          "deliverables",
+          "verification",
+          "ccir"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "retained_user_decisions": {
+      "maxItems": 256,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+      }
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "required": [
+    "statements",
+    "sections",
+    "tasks",
+    "retained_user_decisions",
+    "execution_authorized",
+    "release_authorized"
+  ],
+  "additionalProperties": false,
+  "$id": "order-analysis-response.schema.json",
+  "title": "order-analysis-response"
+}

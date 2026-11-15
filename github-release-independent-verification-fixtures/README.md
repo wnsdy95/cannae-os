@@ -45,6 +45,17 @@ tests. An old module combined with the new lock is not an approved producer.
 Installed `ip-address` checks cover NAT64 local-use boundaries and a public IPv6
 control; they are dependency regressions, not a complete SSRF defense.
 
+The IPv6-zone migration separately freezes accepted main `22c61c3` in the
+pre-zone v0.2 sample. Run `freeze-ip-zone-baseline.js` only to create or confirm
+its exact source bytes; it refuses to replace a different existing sample.
+Credential-free child tests require the installed 10.7.4 parser, exercise each
+line terminator through constructor and `isValid()`, preserve long valid zones,
+and trap any library call to the retained deprecated regex. A child timeout is a
+failure, not a successful rejection. Historical replay, unknown producer/schema
+substitution, changed signed claims and fresh current-sample equality remain
+mandatory. These tests do not prove a live application exploit or protected
+runtime provenance.
+
 The byte-identical `valid-github-release-independent-verification-pre-brace-v0.2.json`
 freezes accepted producer `1b51ef6` before the 5.0.12 brace dependency migration.
 Its original file hash and exact module/lock metadata are checked separately

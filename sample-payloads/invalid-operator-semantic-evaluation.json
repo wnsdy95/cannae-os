@@ -1,0 +1,63 @@
+{
+  "schema_version": "0.2",
+  "type": "OperatorSemanticEvaluation",
+  "id": "bc0a199c-309f-438c-a768-5695b8b804c3",
+  "status": "evaluated",
+  "invocation_sha256": "ead718f1ce68c36aa43d091c4351ceaf8ab82c55fa1e17a1bb583d3bb8c5fe31",
+  "consent_sha256": "780b673d92c7ce70d9ea5c6421f359dc8544293ebade299f33fb4a0ae6dedc80",
+  "rationale_sha256": "de5dbd32d1b6366f9be0606b5e27a3ecd33fe2241011e9a39e35366c315788f4",
+  "started_at": "2026-10-23T00:00:00Z",
+  "ended_at": "2026-10-23T00:00:01Z",
+  "requested_model": "synthetic-model",
+  "method_sha256": "b2d00fb2c07d564c59d31b4ed7ad8e919b455e535e706ac38047d26a47085757",
+  "cli_executable_sha256": "0cf6f8e2262f759c901a1838fc5cdbb1fda2eedbefb4c0906ae7fc6f3bdbe804",
+  "assessment": {
+    "verdict": "incomplete",
+    "semantic_completeness_proven": false,
+    "calibrated_for_admission": false,
+    "execution_authorized": false,
+    "release_authorized": false,
+    "human_final_decision_authority": "USER"
+  },
+  "response": {
+    "requirements": [
+      {
+        "source_quote": "Do not publish.",
+        "start_byte": 0,
+        "end_byte": 15,
+        "kind": "prohibition",
+        "coverage": [
+          {
+            "target_id": "order",
+            "disposition": "preserved",
+            "pointer": "/constraint",
+            "quote": "No external publication.",
+            "explanation": "Synthetic paraphrase only; not an operational task."
+          }
+        ]
+      }
+    ],
+    "conflicts": [],
+    "execution_authorized": false,
+    "release_authorized": false
+  },
+  "response_payload_sha256": "ab9656377c924bf9fa1adc951571a75501a6fb4a162ff5a4bd1fa946c9bb6c11",
+  "collection": {
+    "status": "evaluated",
+    "journal_sha256": "e975e2967e259936b0f616aa6cf1fcad4d5e5f90389999ea908d6915f6fcfb0b",
+    "process_exit_confirmed": true,
+    "process_group_absent": true,
+    "stdout_sha256": "1ae5bf72e734abe7503eb3e2d27ddb54f912bbc9a891d2147d79f432f7fe8f97",
+    "stderr_sha256": "8833257d2e0370a60917f9de0cab151203a679c77e56ebdf0fd2f16871141d21",
+    "response_sha256": "b9a20b6b9409e24549a212bf99d6e0a879dcebba9169e495f77816d63da32b77",
+    "failure_reasons": []
+  },
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_sha256": "5ba96d399c23ae8d6525a7a86bf2b1126e54f7b4ebf2c2987cd047b5d6181599",
+    "value": "qiR2yHZzvJgznr8jV8S7j+g8G196gXUXKXL0riYKMdEhoC38yLXXIBICwZuPxQ+dfadtU5FsTZnJjFJ04LXkCQ=="
+  }
+}

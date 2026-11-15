@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "CodexModelSelection"
+    },
+    "selector": {
+      "type": "string",
+      "const": "current_cli_default"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "configured_model",
+        "catalog_default"
+      ]
+    },
+    "requested_model": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+    },
+    "provider": {
+      "type": "string",
+      "const": "openai"
+    },
+    "reasoning_effort": {
+      "type": "string",
+      "const": "medium"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "cli_version": {
+      "type": "string",
+      "const": "codex-cli 0.162.1"
+    },
+    "executable_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "configuration_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "catalog_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "selection_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "process_exit_confirmed": {
+      "type": "boolean",
+      "const": true
+    },
+    "process_group_absent": {
+      "type": "boolean",
+      "const": true
+    },
+    "model_access_attested": {
+      "type": "boolean",
+      "const": false
+    },
+    "model_snapshot_attested": {
+      "type": "boolean",
+      "const": false
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    }
+  },
+  "required": [
+    "schema_version",
+    "type",
+    "selector",
+    "source",
+    "requested_model",
+    "provider",
+    "reasoning_effort",
+    "resolved_at",
+    "cli_version",
+    "executable_sha256",
+    "configuration_sha256",
+    "catalog_sha256",
+    "selection_sha256",
+    "process_exit_confirmed",
+    "process_group_absent",
+    "model_access_attested",
+    "model_snapshot_attested",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority"
+  ],
+  "additionalProperties": false,
+  "$id": "https://cannae-os.dev/schemas/codex-model-selection.schema.json",
+  "title": "CodexModelSelection"
+}

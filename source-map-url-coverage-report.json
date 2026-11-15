@@ -1,13 +1,13 @@
 {
   "report_type": "source-map-url-coverage",
-  "as_of": "2026-11-12",
+  "as_of": "2026-11-15",
   "source_map": "docs/source-map.md",
   "valid": true,
   "checked_hosts": 56,
   "indexed_doctrine_outputs": 21,
   "document_navigation": {
     "registry": "docs/source-map-navigation.json",
-    "registry_sha256": "7e1e0620d9bcf76a0c671790a9fda462d3874e0cf3ca5cfdfee2eac1b933be24",
+    "registry_sha256": "0ab5fac77375d01deda1a35a4b3d78547fafcda903f0b4bd50de52961931fe23",
     "documents": [
       "support-sop"
     ],
@@ -154,6 +154,7 @@
       "host": "developers.openai.com",
       "files": [
         "docs/research-compendium.md",
+        "docs/semantic-omission-evaluation.md",
         "docs/source-map.md"
       ]
     },
@@ -298,9 +299,11 @@
     {
       "host": "learn.chatgpt.com",
       "files": [
+        "docs/codex-default-model-binding.md",
         "docs/document-authoring-case-study.md",
         "docs/enforced-dispatch-and-resume.md",
         "docs/method-control-channel.md",
+        "docs/native-order-analysis.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
       ]

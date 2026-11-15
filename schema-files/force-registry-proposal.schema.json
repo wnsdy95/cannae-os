@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/force-registry-proposal.schema.json",
+  "title": "Exact Force Registry Enrollment Proposal",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "id", "purpose", "request", "request_sha256", "created_at", "expires_at", "execution_authorized", "release_authorized", "human_final_decision_authority", "qualification_granted", "standing_activation_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "ForceRegistryProposal" }, "id": { "$ref": "common.schema.json#/$defs/id" }, "purpose": { "const": "force_registry_enrollment" },
+    "request": { "$ref": "force-registry-request.schema.json" }, "request_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" }, "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "execution_authorized": { "const": false }, "release_authorized": { "const": false }, "human_final_decision_authority": { "const": "USER" },
+    "qualification_granted": { "const": false }, "standing_activation_authorized": { "const": false }
+  }
+}

@@ -185,7 +185,7 @@ function assertSupersession(store, revision, plan, options) {
   const executionKinds = ["dispatch-tool-policies", "agent-dispatch-leases", "tool-admission-events", "tool-gateway-requests"];
   requireTrue(!entries(before, plan).some(entry => executionKinds.includes(entry.kind)), "ORDER_REVISION_SUCCESSOR_EXECUTED_EARLY");
   const status = require("./dispatch-runtime-controller").dispatchStatus(options, { missionId: value.mission_id, waveId: value.wave_id });
-  requireTrue(status.unresolved_gateway_obligations.length === 0 && status.leases.every(lease =>
+  requireTrue(status.unresolved_issuances.length === 0 && status.unresolved_gateway_obligations.length === 0 && status.leases.every(lease =>
     ["completed", "revoked", "superseded"].includes(lease.status) && lease.pending_tool_requests === 0 &&
     lease.unresolved_tool_effects === 0 && lease.unresolved_gateway_transactions === 0 && !lease.failed_effect_revocation_required),
   "ORDER_REVISION_PREDECESSOR_NOT_SETTLED");

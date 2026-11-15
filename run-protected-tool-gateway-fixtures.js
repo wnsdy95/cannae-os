@@ -723,7 +723,11 @@ for (const stage of ["decision", "authorized", "executing"]) {
 
 async function main() {
   let passed = 0;
-  for (const item of fixtures) {
+  const args = process.argv.slice(2);
+  assert(args.length === 0 || (args.length === 1 && args[0].startsWith("--case=")), "Expected at most one exact --case filter.");
+  const selected = args.length ? fixtures.filter(item => item.name === args[0].slice(7)) : fixtures;
+  assert(selected.length > 0, "The exact fixture filter matched no cases.");
+  for (const item of selected) {
     try {
       await item.fn();
       passed += 1;
@@ -735,7 +739,7 @@ async function main() {
     }
   }
   if (!process.exitCode) {
-    console.log(`Protected tool gateway fixtures: ${passed}/${fixtures.length} passed`);
+    console.log(`Protected tool gateway fixtures: ${passed}/${selected.length} passed${args.length ? " (exact filtered case)" : ""}`);
   }
 }
 
