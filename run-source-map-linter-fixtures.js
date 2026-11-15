@@ -172,8 +172,33 @@ function runOrientationFixtures() {
     current.includes("**A14, partial -> verified (bounded):**") &&
     current.includes("**A16, partial -> verified (bounded):**"),
   "PR97 must reconcile the unchanged requirements without erasing pending decisions, prior evidence or bounded limits.");
+  const successor = span(current, "### Skill Reliability And Efficiency", "### Completed Baseline (2026-11-15)");
+  const successorRows = successor.split("\n").filter(line => /^\| SR\d\d \|/.test(line));
+  const successorStates = successorRows.map(line => line.split("|").at(-2).trim());
+  const successorVerified = successorStates.filter(state => state === "Verified (bounded)").length;
+  assert(successorRows.length === 18 && successorRows.every((line, index) =>
+    line.startsWith(`| SR${String(index + 1).padStart(2, "0")} |`)) &&
+    successorStates.every(state => ["Planned", "In progress", "Blocked", "Verified (bounded)"].includes(state)) &&
+    successor.includes(`${successorVerified}/18 required criteria verified`) &&
+    successor.includes("The earlier until-completion verification consent has ended.") &&
+    successor.includes("Optional plugin packaging remains deferred.") &&
+    successor.includes("keep dashboards, servers and production infrastructure deferred."),
+  "Successor registration must not inherit baseline passes, renew consent or reactivate deferred work.");
+  const scope = read("docs/skill-first-product-scope.md");
+  for (let index = 1; index <= 6; index++) assert(scope.includes(`**R${index} -`), `Missing R${index} objective.`);
+  for (const file of ["README.md", "docs/source-map.md", "docs/research-compendium.md", "docs/military-operating-deep-research-queue.md"]) {
+    assert(read(file).includes("completion-backlog.md#skill-reliability-"), `${file} lost the successor queue.`);
+  }
+  const cycleLesson = provider => span(read(`${provider}/controls-doctrine-operator/references/self-improvement-loop.md`),
+    "Tie each continuation task and its evidence to the current cycle and acceptance",
+    "Separate current navigation from retained evidence history. After a proposed");
+  assert(cycleLesson("codex-skills") === cycleLesson(".claude/skills") &&
+    cycleLesson("codex-skills").includes("R1-R6 and SR01-SR18") &&
+    cycleLesson("codex-skills").includes("Registration is not implementation or model-transfer consent.") &&
+    cycleLesson("codex-skills").includes("absence of an app goal is not proof"),
+  "Both provider skills must preserve cycle-specific acceptance and consent boundaries.");
   // These assertions protect declared orientation and links, not semantic truth.
-  return 12;
+  return 14;
 }
 
 function runNavigationFixtures() {

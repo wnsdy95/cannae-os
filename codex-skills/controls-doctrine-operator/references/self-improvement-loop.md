@@ -102,11 +102,18 @@ disabling it or accepting its rejection in place of the intended exact error.
 Keep out-of-corpus capability routing for genuinely uncovered domains, not
 ordinary corpus maintenance.
 
-Tie each continuation task and its acceptance evidence to one of the five
-active objectives, G1-G5, in `docs/skill-first-product-scope.md`. Keep completed
-entrypoint/scope cleanup separate from behavioral goal acceptance. Do not count
-that preparation as a completed goal or reuse the old eight-outcome list as
-the active queue. A goal remains open until its own evidence is sufficient.
+Tie each continuation task and its evidence to the current cycle and acceptance
+ID in `docs/skill-first-product-scope.md` and `docs/completion-backlog.md`.
+For the USER-requested reliability cycle, use R1-R6 and SR01-SR18; keep completed
+G1-G5/A01-A20 as a separate baseline, not carried-forward passes. Freeze expected
+sources, holds, evaluation cases and scoring before tuning. Record a case exposed
+to tuning as a regression, not an unseen success. Count loaded bytes, selection
+and semantic quality separately; shorter text must not silently drop controls.
+Registration is not implementation or model-transfer consent. Previous
+until-completion consent does not carry into a successor goal. Preserve exact
+pending artifact decisions and obtain applicable new consent before native calls.
+Do not reuse the old eight-outcome list as the active queue. A goal remains open
+until its own evidence is sufficient; absence of an app goal is not proof of it.
 
 Separate current navigation from retained evidence history. After a proposed
 successor or completed review, reconcile the document's opening current-candidate

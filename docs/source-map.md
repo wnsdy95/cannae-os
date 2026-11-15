@@ -203,6 +203,14 @@ source-backed defects without claiming universal compliance or policy adoption.
 
 ## Skill-First Scope And Authoring
 
+The [Skill Reliability And Efficiency queue](completion-backlog.md#skill-reliability-and-efficiency)
+records the USER's next skill-only goal and local probes at `21a90d8`: wording-
+sensitive overreading, Korean-query fallback, manual objective declaration and
+instruction/reference size. These observations do not establish model accuracy
+or grant access. Its eighteen planned criteria are separate from the completed
+baseline. See the [compendium](research-compendium.md#skill-reliability-successor-goal-2026-11-15);
+no new external military-source claim or platform work is introduced.
+
 The [OR72 optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
 binds native route/read records, delivered source bytes and separate operator
 appraisal. Optional-guide selection is observed; source-body byte counts are not

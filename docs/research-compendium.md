@@ -20,6 +20,24 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Skill Reliability Successor Goal (2026-11-15)
+
+USER requested a next goal within the existing skill boundary, not resumed
+dashboard/server development. The [local audit and new acceptance inventory](completion-backlog.md#skill-reliability-and-efficiency)
+retain equivalent-request probes: a `Task:` prefix changes the documented
+read-only SOP selection from 18 to 23 documents; combined negation selects 28;
+literal Korean intake misses authoring; explicit per-objective declarations
+preserve a gap hidden by the unsplit compound query. These are paired local
+outputs from both providers, not native comprehension or approval evidence.
+
+The lesson is to separate accepted representative behavior from the next cycle's
+measurable generalization and efficiency work. Freeze baselines, expected sources,
+holds and withheld cases before tuning; distinguish bytes from quality and actual
+reads from recommendations. R1-R6 and SR01-SR18 start planned, while the original
+twenty accepted rows remain historical acceptance. Both maintenance skills now
+require cycle-specific evidence rather than carried-forward completion. New
+native calls need applicable consent; pending artifact decisions are unchanged.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

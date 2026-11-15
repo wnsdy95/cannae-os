@@ -10,6 +10,104 @@ Deferral is not completion, deletion or permission to bypass existing controls.
 
 ## Active Core Work
 
+### Skill Reliability And Efficiency
+
+Decision: USER, 2026-11-15. Investigate and improve remaining skill limitations;
+keep dashboards, servers and production infrastructure deferred. R1-R6 in the
+[scope](skill-first-product-scope.md#active-objectives) are the new active goal.
+The completed G1-G5/A01-A20 baseline below remains intact. New status:
+**0/18 required criteria verified**; this is a work inventory, not an accuracy
+or product-completion percentage. Registration and baseline probes close none.
+
+#### Observed Skill Limits
+
+Read-only probes at `21a90d8` used both installed-source routers with
+`--actor=ai --role=S3 --department=operations --authority=read-only`, all options
+before `--`. Both providers produced the same results and retained the complete
+original query. These are local routing observations, not native model behavior.
+
+| Input variant | Recommended documents | Observed limitation |
+| --- | --- | --- |
+| Draft a support SOP from supplied policy. Do not publish. Do not build a dashboard. | 18 | Reference form includes authoring and omits protected-execution/dashboard guides. |
+| The same request prefixed by `Task:` | 23 | Five protected-execution defaults return although the assignment is unchanged. |
+| Draft a support SOP from supplied policy. Do not publish or build a dashboard. | 28 | Combined negation retains dashboard and protected-execution reading. |
+| Draft a support SOP from supplied policy. Exclude dashboard and server work. | 26 | Another ordinary exclusion formulation retains specialist reading. |
+| Literal Korean equivalent requesting a support procedure and excluding publication/dashboard work | 20 | No authoring guide; capability gap reported. The documented English-query translation is still a manual dependency. |
+| ICP sales-targeting comparison plus support SOP, without separate objective declarations | 18 | The supported SOP masks the uncovered domain in the combined capability result. |
+| The identical compound request with both `--capability-query` declarations | 29 | The gap is retained. Explicit decomposition works; automatic semantic completeness is not implemented. |
+
+An earlier probe used the unrecognized `document-review` authority descriptor;
+its conservative role defaults are not treated as a narrowing regression. The
+table uses the documented `read-only` descriptor. Unsupported guarded project or
+multi-objective inputs must continue to fail, not be downgraded to direct work.
+
+Both entrypoints have 499 lines and 32,902/32,916 UTF-8 bytes (Codex/Claude).
+Their routing references have 1,389 lines and 110,091/110,100 bytes. Length is a
+context-cost observation, not proof of worse answers. Existing installed/native
+acceptance is version-scoped; reviewed access profiles and required-term lists
+are still supplied by operators. The terminology helper validates/selects but
+does not capture a conversation or compute all affected drafts. The completed
+audit also records separate workflow cases rather than one recovery chain and
+two unavailable historical temporary bodies. Do not reconstruct missing evidence.
+
+#### Skill Reliability Acceptance
+
+Freeze case IDs, expected sources/holds, baseline revision and scoring before
+implementation or candidate evaluation. Use a fixed 24-request routing corpus
+(12 development, 12 withheld cases) across language, heading, exclusion, compound
+intent, role and explicit-source variants. Use eight source-grounded authoring
+tasks across SOP, research, order/report and handoff, with four reserved until
+candidate evaluation. Withheld inputs and answers stay out of tuning prompts;
+run the frozen baseline and candidate on them only after freezing the candidate.
+Task sources must not include evaluator answers. A case
+used for tuning becomes a regression, not an unseen case on the next attempt.
+
+| ID | Objective | Required evidence for closure | Status |
+| --- | --- | --- | --- |
+| SR01 | R1 | Freeze 24 original requests, expected objectives/documents, exclusions and the baseline revision; record development outputs in both providers. Label withheld cases and keep them out of tuning until the candidate is frozen. | Planned |
+| SR02 | R1 | Fix the demonstrated heading/exclusion excess and Korean intake gap through a documented skill path. Preserve original language/text and explicit translation/normalization provenance; equivalent covered tasks receive authoring guidance. | Planned |
+| SR03 | R1 | Preserve each compound objective and genuine gap, required/parent sources, actual technical subjects and declared authority. Pass the fixed negative cases without reducing issued controls or accepting unsupported guarded inputs. | Planned |
+| SR04 | R2 | Reduce each entrypoint's UTF-8 bytes by at least 20% from the recorded baseline, remain within 500 lines and move applicable detail into discoverable task-specific references. Do not merely join lines or delete controls. | Planned |
+| SR05 | R2 | On a frozen six-task ordinary-work subset, reduce median loaded instruction/reference bytes by at least 20%, counting every delivered section and entrypoint. Preserve all assigned source content; report document counts and bytes separately from tokens, cost or quality. | Planned |
+| SR06 | R2 | Verify both providers still find conditional procedures for actual runtime maintenance, explicit inputs and sensitive handoffs; ordinary work need not load retained platform history. Selection is not read authority or an automatic access-profile grant. | Planned |
+| SR07 | R3 | Freeze eight source-grounded tasks and a rubric covering omitted obligations, invented facts/approvals, false findings, locators, unknowns and complete/compressed output consistency; record both-client baseline and candidate artifacts separately. | Planned |
+| SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | Planned |
+| SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | Planned |
+| SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | Planned |
+| SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Planned |
+| SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | Planned |
+| SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | Planned |
+| SR14 | R5 | Include a changed-source/term or unavailable-source interruption in those chains; observe dependent work held, permitted independent work retained, a truthful notice and separately authorized fresh continuation without invented receipts or retry permission. | Planned |
+| SR15 | R5 | Validate the final receiving unit and actual next-agent use against original objectives, current sources, unresolved decisions and recipient scope. A prepared packet or final self-claim alone cannot close this criterion. | Planned |
+| SR16 | R6 | Verify linked and copied skills from a different target repository in the installed client configurations; diagnose stale copy/root/version problems without silently reinstalling, changing settings or reading credentials. Record a bounded compatibility matrix. | Planned |
+| SR17 | R6 | Map affected surfaces to focused checks and retain full integration validation before merge. Keep a non-authorizing local evidence index with exact source/result versions and unavailable-evidence states; no temporary-file loss may be presented as a fresh pass. | Planned |
+| SR18 | R6 | Demonstrate one bounded gap -> candidate -> both-skill adaptation -> regression/source appraisal -> accepted change cycle. Preserve review/adoption distinctions, historical evidence and unrelated edits; reconcile scope, indexes, backlog and actual goal status at closure. | Planned |
+
+#### Execution Order And Boundaries
+
+1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
+2. Implement R1 and R2 with focused local comparisons, then R4's change workflow.
+3. Evaluate R3 and R5 with new applicable native-call consent and exact scoped
+   inputs. Use existing clients/local helpers, not a new server or application.
+4. Complete R6 and current integration gates, then audit all eighteen criteria.
+
+Do not run an unbounded improve/rerun loop. Preserve each failed attempt; use at
+most one baseline and one candidate native execution per case under its approved
+execution proposal. A later repair needs an explicit bounded plan and applicable
+consent, and previously exposed cases stay labeled as such. Do not replace a hard
+case or lower a threshold to claim completion; scope changes return to USER.
+
+The earlier until-completion verification consent has ended. This goal registration
+does not renew it, approve the six pending artifact preparations, adopt drafts or
+authorize model transfer, external publication, permission expansion or deployment.
+Optional plugin packaging remains deferred. Hooks and declared roles remain local,
+bypassable controls; proving a non-bypassable host is outside this skill cycle.
+
+### Completed Baseline (2026-11-15)
+
+The following is the completed baseline's audit and its retained limitations,
+not a claim that the new R1-R6 queue is complete.
+
 Current audit: 2026-11-15 (Asia/Seoul), after
 [PR97 whole-output and reading appraisal](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading).
 All five USER objectives now have bounded acceptance against their unchanged

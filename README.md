@@ -71,14 +71,21 @@ Existing guarded operations still retain their controls and unresolved holds.
 See [Skill-First Product Scope](docs/skill-first-product-scope.md) for the active
 acceptance criteria. A separate plugin package is not yet claimed implemented.
 
-The [five active objectives](docs/skill-first-product-scope.md#active-objectives)
-are authoring quality, role-bounded routing/delegation, a complete working flow,
+The [five baseline objectives](docs/skill-first-product-scope.md#completed-baseline-objectives)
+cover authoring quality, role-bounded routing/delegation, a complete working flow,
 bounded improvement/corpus maintenance, and client distribution. Preparatory
 cleanup is recorded separately; none is declared complete from a routing pass.
 The [2026-11-15 acceptance audit](docs/completion-backlog.md#five-goal-acceptance)
 now records bounded completion of all five through source-appraised actual use
 and local checks. This is not a guarantee of hallucination-free work or production
 security; the limitations and deferred scope remain.
+
+The next USER-requested cycle is [Skill Reliability And Efficiency](docs/skill-first-product-scope.md#active-objectives):
+robust intake, smaller useful context, withheld-case quality, terminology/change
+impact, repeatable cross-client workflows and reproducible maintenance. Its
+[eighteen new criteria](docs/completion-backlog.md#skill-reliability-acceptance)
+start planned; prior acceptance does not count as their completion. Dashboards,
+servers and optional plugin packaging remain deferred.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">
@@ -1039,7 +1046,7 @@ score or evidence of current production operation.
 
 ### Active Skill Status
 
-Of the five [active objectives](docs/skill-first-product-scope.md#active-objectives),
+Of the five [baseline objectives](docs/skill-first-product-scope.md#completed-baseline-objectives),
 all five now have bounded acceptance. The fixed inventory has twenty verified
 required rows and no remaining partial row. This combines representative document
 work, role-based routing, actual reads, source-bound handoffs, maintenance and
@@ -1049,6 +1056,10 @@ supplies the final complete-report, replanning, useful-reading and client-equiva
 evidence. Historical failures remain visible below. New work still needs source
 review; lexical overrecommendation and manually reviewed profiles remain limitations.
 Separate plugin packaging remains optional and deferred.
+
+The [active objectives](docs/skill-first-product-scope.md#active-objectives) are
+now R1-R6, with a separate [0/18 planned acceptance inventory](docs/completion-backlog.md#skill-reliability-acceptance).
+The completed twenty-row baseline is not a completion score for this new cycle.
 
 The [optional-reading case](docs/document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
 observes both clients choosing useful guides while retaining assigned sources.

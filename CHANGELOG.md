@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Define the USER-requested skill reliability successor goal from current routing probes and retained limits. Separate six objectives and eighteen planned criteria from the completed twenty-row baseline; preserve deferred dashboard/server/plugin work and exact pending decisions. Mirror cycle-specific evidence, withheld-case and consent guidance in both skills. Goal registration and local probes are not implementation or new native acceptance.
+
 - Integrate the skill-first branch with retained mainline controls without replacing either history. Preserve document-context integrity together with readiness revocation, combine non-executing validator types and both routing inventories, and retain captured-request, workload and registry procedures in both conditional skill references. Prior native acceptance remains bound to its recorded revisions; merge validation is not a new model review or permission grant.
   Keep the installation refresh fixture within the source's existing line count and explicitly reject oversized skill replacements without modifying either installation. The 500-line limit is unchanged.
 

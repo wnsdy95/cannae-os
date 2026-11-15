@@ -5,6 +5,10 @@ Dashboard and platform integration gaps below are retained research history,
 not the active implementation queue. Select current work from the active
 [Completion Backlog](completion-backlog.md#active-core-work).
 
+The current successor is [Skill Reliability And Efficiency](completion-backlog.md#skill-reliability-and-efficiency),
+with eighteen planned criteria distinct from completed G1-G5 acceptance. It does
+not reactivate this page's retained platform program or require a plugin package.
+
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
 State: proposed; review: native-reviewed; adoption: not-adopted.
