@@ -136,6 +136,9 @@ errored or interrupted Git calls even when their exit status appears successful;
 unverified metadata must not be reported as a source-exclusion decision.
 The [Git process regressions](run-project-document-git-fixtures.js) exercise this
 boundary without model calls or simulated recovery claims.
+The [cross-client workflow protocol](docs/evaluation-metrics.md#cross-client-workflow-evidence)
+keeps preparation, actual notices, changed-source holds, bounded resumption and
+cold receiving separate within each observed chain.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">

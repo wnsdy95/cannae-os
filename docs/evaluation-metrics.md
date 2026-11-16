@@ -395,6 +395,76 @@ does not freeze the global candidate for withheld evaluation or authorize a mode
 call; use a fresh exact execution proposal rather than migrating the consumed
 baseline approval. The helper has no launch command or automatic retry path.
 
+#### Cross-Client Workflow Evidence
+
+R5 uses two distinct document-only chains: Codex to Claude and Claude to Codex.
+Each keeps one original assignment, target repository and stable task ID through
+all phases. Existing packet, document-session and registered-dependency helpers
+support the exercise; no new service or dashboard is required. This protocol is
+not an execution proposal or permission to send a prepared input.
+
+Freeze each chain's original request, required outputs, source IDs/versions,
+sender and receiver role/department/authority, allowed partial work and planned
+source-change condition before its first native phase. Keep source-owner test
+revisions and evaluator appraisals outside recipient inputs until the appropriate
+phase. Label operator-authored synthetic exercises as exposed, not independently
+blind or withheld R3 cases. Do not modify the R1/R3 frozen evaluation bundle.
+
+| Checkpoint | Evidence required for the actual chain |
+| --- | --- |
+| Initial intake and plan | Exact original task and assigned source versions; native current-phase route and plan covering each required output, limit and prerequisite |
+| Advance brief | The native brief-only response; no dependent source reads or drafting; actual parent delivery of the exact notice before work, following the authoring workflow's reporting procedure |
+| Work and first report | Fresh routing, successful source-read responses, actual draft/revision and source-appraised report; distinguish model work from preparer inspection and fixture setup |
+| Changed input or failed read | Retained old source/artifact bytes and exact changed version or read failure; actual report and dependent-work hold, without erasing the original assignment |
+| Permitted partial work | Its unchanged source bindings and actual bounded output, separate from the held deliverable; no blanket completion or new permission inferred from a current dependency record |
+| Bounded resumption | A separate applicable USER decision for the exact continuation, current sources and scope; any required fresh model-transfer consent, new phase route and actual revised work |
+| Cold receiving | A new opposite-client agent using only the declared complete delivery unit and authorized lookups; actual response checked against original requirements, current versions, authority and unresolved decisions |
+
+For every checkpoint, retain the chain/task ID, phase, predecessor artifact
+digests, exact input/output files, client/model/configuration, native attempt and
+tool trace, source versions, declared recipient and actual action evidence. Keep
+delivery declarations distinct from successful channel results and human read
+receipts. A local route token belongs to its own phase; do not give a native
+worker a preparer's token as proof it routed. Never join separate attempts or
+different cases into one apparent complete chain.
+
+Compare the actual recipient-facing phase context with its adapter configuration:
+chain/task ID, phase, recipient/provider, role, department, duty and bounded
+authority. A role inside a private configuration file is not a delivered role
+instruction. Keep USER final authority distinct from the worker's assignment,
+and preserve pending notice, continuation and transfer status in both surfaces.
+
+Use the existing `brief` document-session mode for a report-only phase. Local
+source preparation can read authorized material without delivering it to that
+recipient. Inspect the actual brief input and tool responses: catalog hashes
+and source IDs are not body delivery. A prepared packet, successful local route
+and denied test read do not establish a native brief, actual notice or receiving.
+Both applicable conditional guide bodies and original task constraints must be
+available in each phase; do not supply an evaluation key as an instruction.
+
+After a source changes, an old packet can become wholly stale even when some
+work is independent. Preserve already supplied, still-current independent
+material and inspect its separately registered dependencies; do not pretend the
+old reader can safely serve selected sources or omit a required source to revive
+it. A fresh packet must preserve all original requirements and explicit holds.
+`registered_inputs_current` after a reviewed refresh is input-state evidence,
+not work-quality acceptance or the USER continuation decision. Reconcile the
+actual held instruction and its decision owner before resumed work.
+
+Future phases depend on actual predecessor outputs. Inspect and assemble their
+exact authorized delivery units before the next applicable execution proposal;
+preparation consent, a native baseline approval or this protocol cannot authorize
+unknown later bytes. Respect each proposal's counts, deadline and retry rule.
+Keep failed attempts and unexecuted suffixes; do not automatically relaunch or
+rewrite a missed notice as prior delivery. Local fixture decisions are synthetic,
+not actual USER decisions that clear a live continuation hold.
+
+At final appraisal, inspect every required artifact and source locator from the
+declared receiver unit, not the author's whole workspace. Record omitted tasks,
+unsupported facts or approvals, false findings, locator errors, uncertainty and
+summary contradictions separately. Both actual directions must satisfy SR13-SR15;
+local preparation or a successful helper trace alone closes none of them.
+
 ## 9. Case Study Evaluation Sheet
 
 ```text

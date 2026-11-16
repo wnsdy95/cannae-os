@@ -66,6 +66,15 @@ actual bytes. Both client-operation guides require that appraisal. Baseline
 prompts remain reproducible; neither a development snapshot nor its prepared byte
 count establishes native improvement, a withheld freeze or renewed transfer consent.
 
+The [cross-client workflow protocol](evaluation-metrics.md#cross-client-workflow-evidence)
+separates local input preparation from actual chain evidence: native planning,
+delivered advance notice, source-grounded work, changed-input hold, independent
+partial work, separately authorized continuation and a cold receiver. Each
+direction retains its own original task and predecessor bindings. A dependency
+refresh is not the continuation decision, and preparer routing is not worker
+routing. Existing local helpers prepare two synthetic initial inputs without
+starting either model or completing the active receiving criteria.
+
 Eight separately authorized [native baseline responses](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
 now expose why a nearly complete fixed checklist is insufficient: 57/58 frozen
 checks pass, yet source appraisal finds unsupported added units and a detached

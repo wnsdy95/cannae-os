@@ -82,7 +82,7 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | Verified (bounded) |
 | SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Verified (bounded) |
 | SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | Verified (bounded) |
-| SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | Planned |
+| SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | In progress |
 | SR14 | R5 | Include a changed-source/term or unavailable-source interruption in those chains; observe dependent work held, permitted independent work retained, a truthful notice and separately authorized fresh continuation without invented receipts or retry permission. | Planned |
 | SR15 | R5 | Validate the final receiving unit and actual next-agent use against original objectives, current sources, unresolved decisions and recipient scope. A prepared packet or final self-claim alone cannot close this criterion. | Planned |
 | SR16 | R6 | Verify linked and copied skills from a different target repository in the installed client configurations; diagnose stale copy/root/version problems without silently reinstalling, changing settings or reading credentials. Record a bounded compatibility matrix. | Verified (bounded) |
@@ -1462,6 +1462,74 @@ All four result sets are retained, including failures; historical source drift
 and the earlier missing checks stay visible. Eighteen evidence entries are not
 eighteen completed acceptance criteria, complete dependency coverage or merge
 authorization.
+
+#### Cross-Client Initial Preparation (2026-11-17)
+
+The [R5 protocol](evaluation-metrics.md#cross-client-workflow-evidence) fixes the
+actual evidence needed for each chain, using the existing packet, document-session
+and registered-dependency helpers. Local preparation now retains two distinct
+synthetic project roots and task IDs: `CHAIN-CODEX-CLAUDE` and
+`CHAIN-CLAUDE-CODEX`. Each starts with S3/operations/L1 and names a later
+S6/knowledge/L1 receiver in the opposite client. USER retains final decisions.
+These are exposed operator-authored exercises, not withheld R3 tasks.
+
+Each assignment requires an advance brief, SOP, status note, independent roster
+appendix and complete handoff. Three versioned synthetic sources are assigned.
+One later case stages a seven-to-five-day policy revision; the other stages a
+term-definition revision adding a source-version requirement. These revisions
+remain unapplied and outside the initial recipient input. Separate SOP and roster
+dependency records are current; that is neither completed work nor permission
+to clear a future hold. Initial real local router calls preserved the original
+tasks and four required sources including the assigned authoring guide. In both
+`brief` sessions an attempted task-source read returned `PROJECT_SESSION_SOURCE_HELD`.
+Those calls were preparer checks, not native worker behavior or actual notice.
+
+Evidence root: `.cannae/maintenance/skill-workflow-r5-20261117/`. The first
+preparation report, `preparation-d846f6b1-fbba-4c36-97d4-06059afa5f9e/report.json`,
+has SHA-256 `cd6859c2cde6af4ac00cf208b26501555e648d410ca5f7cb813b2c136420ef60`.
+Appraisal found that the exact role/department/authority existed only in private
+adapter configuration, not the actual model input. This omission remains recorded
+in `appraisal-117362b2-f303-48dd-822a-9e8ae6503510.json`, SHA-256
+`42a0da1fbdfbbff2a19406e21217f96262ee4d2a2478c5d8a9a49025319874e8`.
+The original input bodies, projects and preparer are preserved; no model saw them.
+
+The corrected preparation adds explicit matching delegated phase context without
+changing the original tasks, source bodies or supplied instruction bodies. Both
+client-operation guides now require this comparison before delegated native use.
+The two initial inputs total 164,932 bytes. Their report is
+`preparation-f5cf59bc-8da1-470a-bc2c-3337fa2f3944/report.json`, SHA-256
+`278db628d58532842edb69df7855ecda62995d4acd7f7cab9b8ea8fe05906721`.
+The successful two-input appraisal is
+`appraisal-282008b6-7c03-4d96-b48c-3098c45007dd.json`, SHA-256
+`83aa0afcc0c7140f71ddf7d35f72a3c075fb3e55573a9a4141ca604bc79fab4d`.
+It checks recipient/configuration parity, original tasks, source/instruction
+bindings, withheld task bodies and absence of preparer-token reuse; it does not
+establish model understanding or authenticated authority.
+
+SR13 is in progress only at preparation. No native R5 launch, notice delivery,
+applied revision, interruption/resumption or receiver use has occurred. SR14/SR15
+remain planned and the verified count stays **6/18**. Native launch envelopes and
+fresh exact approvals are still needed, including separate decisions for future
+actual outputs and any held-work continuation. Existing R2/R3 proposals cannot
+authorize this work. Dashboards, servers and blanket approval remain excluded.
+
+Ten focused checks passed: current input appraisal, progressive disclosure, both
+skill validators and router coverage, source-map, Markdown links, English-only
+and diff checks. The source-bound report is
+`gate-24c0c9d9-5950-48dc-b298-383140e2c871/verification.json`, SHA-256
+`e23a8d53ab7302963dfdc805c69b1a868c0f35dc14c1ca3879067a8893961336`.
+This focused result does not close the outstanding packet/session consumer gates
+or full integration, and does not supply any missing native-chain phase.
+
+Private `evidence-index-v4.json` has SHA-256
+`7cd10aefdd565f78ecc5b330822a0239c42f5d54a4f0f3623dcb368ed43a1d9d`;
+`evidence-inspection-v4.json` has SHA-256
+`85ee3bb64f37843590022101ac4f7f912ca3d6dfafd402a2e27d001878ed6a64`.
+It preserves all prior entries and separately retains the initial role-context
+failure, corrected preparation appraisal and focused gate. The repository-local
+index does not traverse external synthetic project roots; their declared source
+bindings were checked by the preparation appraisal. Prior failures, changed
+historical sources and unexecuted checks remain visible.
 
 #### Execution Order And Boundaries
 

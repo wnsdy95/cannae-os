@@ -77,3 +77,16 @@ file may reflect the intended isolation profile; check the bound input instead
 of enabling discovery or suppressing warnings. A failed assigned-source read
 still holds dependent work. A repaired parser never changes the failed attempt
 or renews the stopped batch's transfer consent.
+
+For cross-client workflow evaluation, use the chain protocol in
+`docs/evaluation-metrics.md`. Preserve one original task and predecessor artifact
+bindings per direction; do not join separate runs into a complete chain. Keep
+preparer routes apart from native agent routing and prepared briefs apart from
+actual parent delivery. After a changed source, distinguish retained independent
+work from a stale packet; a refreshed dependency record does not clear the USER
+continuation hold. Assemble the exact next receiving unit from observed outputs
+before seeking its applicable transfer consent, not from predicted responses.
+For adapter-bound delegated phases, compare the recipient, role, department,
+authority and phase in the actual model input with the adapter configuration.
+Hidden configuration alone does not deliver that context; distinguish the
+worker's bounded assignment from the USER's retained final decision authority.

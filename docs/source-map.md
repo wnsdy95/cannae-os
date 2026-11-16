@@ -294,6 +294,15 @@ guides distinguish this preparation from the global withheld freeze and a new
 native execution decision. These are local delivery-contract checks, not model
 quality findings or military-source evidence.
 
+The [cross-client workflow protocol](evaluation-metrics.md#cross-client-workflow-evidence)
+maps the active SR13-SR15 requirements onto existing packet, session, dependency
+and authoring procedures. Local paired initial preparation checks original task,
+recipient, source/version and brief-only boundaries. Native notices, changed-source
+recovery and cold receiving still require actual evidence. Both client-operation
+guides preserve chain lineage and separate dependency currentness from USER
+resumption authority. This is local workflow design and preparation evidence,
+not military doctrine or a completed model comparison.
+
 The [native development baseline](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
 now records eight actual responses, exact delivered input bodies and a separate
 source appraisal. Its findings concern unsupported event units, incomplete
