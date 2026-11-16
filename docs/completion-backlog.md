@@ -1531,6 +1531,67 @@ index does not traverse external synthetic project roots; their declared source
 bindings were checked by the preparation appraisal. Prior failures, changed
 historical sources and unexecuted checks remain visible.
 
+#### Brief-Phase Local Preflight (2026-11-17)
+
+The two corrected R5 inputs remain unchanged. Private `brief-native.js` now
+prepares Codex/Claude invocation arguments and wraps the existing document-session
+MCP adapter for this brief-only exercise. Both client allowlists and the actual
+local tool catalog expose only `route_current_task`. Task-source bodies remain
+held; role/department/authority and all four assigned source IDs are preserved.
+This is a per-invocation stdio helper, not a new standing server or dashboard.
+
+The local wrapper binds the exact configuration and an external absolute process
+deadline, opens its audit path exclusively and rejects a third route or an
+unadvertised tool. Its parsed-message tap is not exact wire accounting, backend
+attestation or protected-host isolation. The privacy profile allows necessary
+helper corpus reads; no native model has been shown to honor this configuration.
+Metadata checks retain Codex 0.162.1 with `gpt-6-astra` and Claude Code 2.1.322 with
+its unset CLI model override. No Claude runtime model identity is inferred.
+
+The first local run recorded a closed denied-read transport while its adapter
+process remained alive. It was stopped by the operator; the loose negative
+assertion was not accepted as evidence of prompt connection closure. The partial
+traces and original helper bytes are retained in
+`brief-preflight-025c52d9-e4ef-48d4-be32-22b1524ca0ff/interruption.json`, SHA-256
+`3dd91c81d4e62ed7c899955356540ee67e1b10de0b0968f155c71decfd5c0d0d`.
+A subsequent run caught the test's outdated numeric SDK error expectation, not
+a source-release failure. Its report is
+`brief-preflight-f65c3fc6-0105-473f-b8fa-0df3d8867956/report.json`, SHA-256
+`7b697e73c74651ed15a478fb35f4a2723bddf932e53b0c499b46efe91e923537`.
+
+The corrected adapter exits after closing its one-use audit. The preflight uses
+the installed SDK's `ConnectionClosed` code, bounded request options and a
+separate child-exit check. Eleven local groups passed: absolute deadline/state
+validation plus each provider's argv, catalog/route, forbidden-read, route-cap
+and invalid-role checks. Reusing the audit path is also rejected. The report is
+`brief-preflight-767c6b8f-5030-42b4-82be-3781bf448a22/report.json`, SHA-256
+`070227463c656fcb0b9b926e67891788cba5ea6d921769f7d1c99493036e1bbf`.
+All three paths are under `.cannae/maintenance/skill-workflow-r5-20261117/`.
+Both skills now instruct operators to compare phase-specific tool surfaces and
+verify process termination rather than accepting any rejected request.
+
+Only CLI version metadata and local SDK fixtures ran. Native model executions,
+advance notices, source changes/resumption and receiver use remain zero. The
+native event observer/replay appraisal and exact fresh transfer proposal are still
+missing; the generated launch rows explicitly state that the envelopes are
+incomplete. This does not renew stopped R2 consent or consume pending R3 consent.
+SR13 remains preparation-only, SR14/SR15 remain planned, the verified inventory
+stays **6/18**, and the outstanding integration gates remain unpassed.
+
+Ten focused guidance/input checks passed, including both skill validators and
+router inventories, progressive disclosure, retained input appraisal, source-map,
+English-only, Markdown links and diff checks. The report is
+`gate-e3520a26-f37c-4703-a473-9dffe7e1cd7d/verification.json`, SHA-256
+`e51667fb46b10a89f3bcb7b33cf50555e00f91ae9c80f69fcefa272bafafa5bd`.
+The private evidence index now retains 25 entries without changing the previous
+21: `evidence-index-v5.json`, SHA-256
+`1be248ecab51e4f9dcf7b0f7eac2a453cfbfae59175951faf5653bdbc6435f4f`,
+and `evidence-inspection-v5.json`, SHA-256
+`830681846e1f15a8581335b0b7a6a9bdd07b365f4122449fe2f2b3d3d0048b57`.
+The index covers declared local helper snapshots/results; external project roots
+and binaries remain separately bound in the preflight report. Historical failures,
+source drift and missing checks remain visible; 25 entries are not 25 acceptances.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

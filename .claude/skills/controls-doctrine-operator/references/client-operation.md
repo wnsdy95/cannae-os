@@ -90,3 +90,15 @@ For adapter-bound delegated phases, compare the recipient, role, department,
 authority and phase in the actual model input with the adapter configuration.
 Hidden configuration alone does not deliver that context; distinguish the
 worker's bounded assignment from the USER's retained final decision authority.
+
+Before a brief-only native phase, inspect both the client allowlist and the
+adapter's advertised tools; neither may expose task-source reading. Run a local
+protocol preflight in the intended process environment/profile, without invoking
+the model. Preserve the helper's required corpus access rather than weakening
+source checks to accommodate an incompatible profile. This checks a local tool
+boundary, not protected-host isolation or native agent behavior. Bind the absolute
+deadline outside the helper and do not renew it or route limits on reconnect.
+On denial or timeout, check the child process actually exited: a `closed` audit
+entry can precede process termination. Negative tests must distinguish connection
+closure from request timeout; a generic rejected promise is not proof of the
+intended stop. Retain failed preflights and obtain any required new model consent.

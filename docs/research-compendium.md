@@ -74,6 +74,12 @@ direction retains its own original task and predecessor bindings. A dependency
 refresh is not the continuation decision, and preparer routing is not worker
 routing. Existing local helpers prepare two synthetic initial inputs without
 starting either model or completing the active receiving criteria.
+Local brief-phase preflight then found that an adapter could close its audit but
+leave the process running. The repair checks actual child exit and distinguishes
+connection closure from timeout; both skills retain this diagnostic discipline.
+Client allowlists and actual SDK catalogs are checked separately, while helper
+corpus reads remain available. These are local checks, not native phase evidence,
+exact wire accounting, protected-host isolation or renewed transfer approval.
 
 Eight separately authorized [native baseline responses](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
 now expose why a nearly complete fixed checklist is insufficient: 57/58 frozen

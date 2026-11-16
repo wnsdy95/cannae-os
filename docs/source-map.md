@@ -302,6 +302,11 @@ recovery and cold receiving still require actual evidence. Both client-operation
 guides preserve chain lineage and separate dependency currentness from USER
 resumption authority. This is local workflow design and preparation evidence,
 not military doctrine or a completed model comparison.
+The follow-on local brief-phase preflight distinguishes client tool configuration,
+SDK catalog/route behavior, audit closure and actual helper exit. Both skills now
+require phase-specific tool inspection and precise negative-test failure classes.
+This is a local engineering lesson; model behavior and execution consent remain
+separate, with no new external source claim.
 
 The [native development baseline](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
 now records eight actual responses, exact delivered input bodies and a separate

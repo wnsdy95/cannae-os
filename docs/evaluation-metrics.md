@@ -442,6 +442,18 @@ and denied test read do not establish a native brief, actual notice or receiving
 Both applicable conditional guide bodies and original task constraints must be
 available in each phase; do not supply an evaluation key as an instruction.
 
+Before native dispatch, compare the client tool allowlist with the actual adapter
+catalog in that phase. A brief-only session exposes current-task routing, not
+task-source reading. Check the local protocol under the proposed environment and
+privacy profile; required helper reads must still work without widening model
+tools or claiming arbitrary-file isolation. Parent-bounded deadlines, one-use
+attempt/audit paths and route caps must survive helper reconnection. Observe child
+exit separately from audit closure, and distinguish an expected connection-close
+error from a timeout in negative tests. Local SDK traffic is not a native client
+trace, and parsed-message records are not exact wire-byte accounting. Complete
+the native observer and exact transfer proposal before treating preflight as a
+dispatch-ready envelope; no preparer success supplies the missing consent.
+
 After a source changes, an old packet can become wholly stale even when some
 work is independent. Preserve already supplied, still-current independent
 material and inspect its separately registered dependencies; do not pretend the
