@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add private, exclusive baseline authoring input preparation with exact full-body instruction/task spans, separate evaluator references and explicit byte accounting. Reject altered/missing/unsafe inputs without claiming native delivery or quality. Mirror revision-specific context and no-tool reporting guidance in both clients; preserve candidate, withheld and cross-client acceptance as separate work.
+
 - Add a trusted-checkout, read-only installed-skill inspector. Compare current bundle bytes, executable modes and default corpus binding before invoking a possibly stale copy; report missing/unsafe/unexpected entries without reading unknown bodies, changing settings or reinstalling. Mirror appraisal guidance in both skills and retain native discovery/body delivery as separate evidence.
 
 - Add local registered document/task dependencies for exact sources, scoped terminology and upstream work. Preserve historical records, distinguish required holds from independent work and binding-only changes, and prepare unreviewed refresh requests for actual appraisal. Keep reader/requirement scope fixed during refresh, reject unsafe inputs and retain incomplete writes. Both skills teach the procedure without claiming automatic semantic discovery, authenticated review, native acceptance or transfer authority.

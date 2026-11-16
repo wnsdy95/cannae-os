@@ -3,6 +3,7 @@
 const assert = require("node:assert/strict"), fs = require("node:fs"), os = require("node:os"), path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const runner = require("./skill-evaluation-runner");
+const authoring = require("./skill-authoring-evaluation");
 const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "skill-evaluation-")));
 let count = 0;
 const check = (name, fn) => { fn(); count++; console.log(`PASS ${name}`); };
@@ -44,6 +45,11 @@ try {
       'const q=process.argv.at(-1);console.log(JSON.stringify({query:q,recommended_documents:[{path:"docs/source.md"}],operating_mode:{actor:"user",role:null,department:null,authority:null},capability_routing:{status:"covered",provisional_organization:{authority_expansion_authorized:false,standing_department_activation_authorized:false}}}));\n');
   }
   write(path.join(repo, "docs/source.md"), "Synthetic policy.\n");
+  for (const provider of ["codex", "claude"]) for (const format of ["sop", "research", "order-report", "handoff"]) {
+    for (const file of authoring.instructionPaths(provider, format)) {
+      if (!fs.existsSync(path.join(repo, file))) write(path.join(repo, file), "# Synthetic Guide\nFixture-only instructions.\n");
+    }
+  }
   git(["add", "."]); git(["commit", "-qm", "Fixture baseline"]);
   const frozen = dataset(git(["rev-parse", "HEAD"]));
   function publish() {
@@ -138,6 +144,95 @@ try {
     assert.equal(summary.withheld_execution_supported, false);
     const denied = spawnSync(process.execPath, [script, "withheld", "--bundle", bundle], { encoding: "utf8" });
     assert.equal(denied.status, 1); assert.equal(denied.stdout, "");
+  });
+  check("authoring preparation preserves every development task with exact full instruction spans", () => {
+    for (const provider of ["codex", "claude"]) for (const task of frozen.data["authoring-development.json"]) {
+      const packet = authoring.buildPacket(repo, provider, task, { baseline_commit: frozen.manifest.baseline_commit,
+        bundle_sha256: runner.hash(fs.readFileSync(path.join(bundle, "manifest.json"))) });
+      const result = authoring.verifyPacket(packet.prompt, packet.manifest);
+      assert.equal(result.valid, true); assert.equal(result.loaded_instruction_bytes, null);
+      assert.equal(result.native_transfer_authorized, false); assert.equal(result.semantic_acceptance, false);
+      for (const segment of packet.manifest.segments.filter(row => row.kind === "instruction")) {
+        assert(packet.prompt.subarray(segment.start_byte, segment.end_byte).equals(fs.readFileSync(path.join(repo, segment.path))));
+      }
+      const segment = packet.manifest.segments.at(-1);
+      assert.deepEqual(JSON.parse(packet.prompt.subarray(segment.start_byte, segment.end_byte)), task);
+      assert(!packet.prompt.toString().includes("HLD-"));
+    }
+  });
+  const sampleTask = frozen.data["authoring-development.json"][0];
+  const packet = () => authoring.buildPacket(repo, "codex", sampleTask, {
+    baseline_commit: frozen.manifest.baseline_commit, bundle_sha256: runner.hash(fs.readFileSync(path.join(bundle, "manifest.json"))) });
+  check("task serialization excludes attached evaluator fields and preserves multibyte source text", () => {
+    const task = structuredClone(sampleTask); task.checks = "ANSWER-NOT-FOR-MODEL";
+    task.sources[0].body += "\n\uC6A9\uC5B4 \uC815\uC758.\n"; task.sources[0].assertion = "ANSWER-NOT-FOR-MODEL";
+    const prepared = authoring.buildPacket(repo, "claude", task, {});
+    assert(!prepared.prompt.includes("ANSWER-NOT-FOR-MODEL"));
+    assert(prepared.prompt.includes(task.sources[0].body.replace(/\n/g, "\\n")));
+    assert.equal(authoring.verifyPacket(prepared.prompt, prepared.manifest).valid, true);
+  });
+  check("changed bytes and segment digests cannot be counted as delivered context", () => {
+    const prepared = packet(), changed = Buffer.from(prepared.prompt); changed[changed.length - 1] = 0;
+    assert.throws(() => authoring.verifyPacket(changed, prepared.manifest), /PACKET_INVALID/);
+    for (const mutate of [m => m.segments[0].sha256 = "0".repeat(64), m => m.segments[0].start_byte++,
+      m => m.segments[0].end_byte++, m => m.segments.pop(), m => m.prepared_instruction_bytes++,
+      m => m.framing_bytes++, m => m.task_sha256 = "0".repeat(64), m => m.segments[0].path = "../secret"]) {
+      const manifest = structuredClone(prepared.manifest); mutate(manifest);
+      assert.throws(() => authoring.verifyPacket(prepared.prompt, manifest), /SKILL_AUTHORING_EVALUATION_/);
+    }
+  });
+  check("preparation cannot become an authority or native receipt through manifest flag edits", () => {
+    const prepared = packet();
+    for (const [key, value] of [["native_transfer_authorized", true], ["loaded_instruction_bytes", 1],
+      ["native_model_calls", 1], ["semantic_acceptance", true], ["promotion_authorized", true],
+      ["split", "withheld"], ["phase", "candidate"]]) {
+      assert.throws(() => authoring.verifyPacket(prepared.prompt, { ...prepared.manifest, [key]: value }), /PACKET_INVALID/);
+    }
+  });
+  check("full packet framing has no uncounted trailing instructions", () => {
+    const prepared = packet(), changed = Buffer.concat([prepared.prompt, Buffer.from("Injected instructions")]);
+    const manifest = { ...prepared.manifest, prompt_sha256: runner.hash(changed), prompt_bytes: changed.length };
+    assert.throws(() => authoring.verifyPacket(changed, manifest), /ACCOUNTING_INVALID/);
+  });
+  check("missing symlinked and hardlinked full-body guides stop preparation", () => {
+    const file = path.join(repo, "docs/knowledge-management-sop.md"), backup = path.join(root, "saved-guide.md");
+    fs.renameSync(file, backup);
+    try {
+      assert.throws(packet, /MISSING/);
+      fs.symlinkSync(backup, file); assert.throws(packet, /PATH_INVALID/); fs.unlinkSync(file);
+      fs.linkSync(backup, file); assert.throws(packet, /FILE_INVALID/); fs.unlinkSync(file);
+    } finally { fs.renameSync(backup, file); }
+  });
+  check("empty or invalid UTF-8 instructions do not make valid packets", () => {
+    const file = path.join(repo, "docs/knowledge-management-sop.md"), original = fs.readFileSync(file);
+    try { for (const bytes of [Buffer.alloc(0), Buffer.from([0xff])]) {
+      fs.writeFileSync(file, bytes); assert.throws(packet, /INSTRUCTION_ENCODING_INVALID/);
+    } } finally { fs.writeFileSync(file, original); }
+  });
+  check("baseline preparation writes all eight private packets without executing a client", () => {
+    const output = path.join(root, "prepared");
+    const result = authoring.prepareBaseline(bundle, repo, output);
+    assert.equal(result.cases.length, 8); assert.equal(result.native_model_calls, 0);
+    assert.equal(result.withheld_executions, 0); assert.equal(result.loaded_instruction_bytes, null);
+    for (const row of result.cases) {
+      const directory = path.join(output, row.name), bytes = fs.readFileSync(path.join(directory, "prompt.md"));
+      assert.equal(runner.hash(bytes), row.prompt_sha256);
+      assert.equal(fs.statSync(path.join(directory, "prompt.md")).mode & 0o777, 0o600);
+      assert.equal(authoring.verifyPacket(bytes, JSON.parse(fs.readFileSync(path.join(directory, "manifest.json")))).valid, true);
+    }
+    assert.throws(() => authoring.prepareBaseline(bundle, repo, output), /EEXIST/);
+    assert.throws(() => authoring.prepareBaseline(bundle, repo, path.join(repo, "outputs")), /DESTINATION_INVALID/);
+    assert.throws(() => authoring.prepareBaseline(bundle, repo, path.join(bundle, "outputs")), /DESTINATION_INVALID/);
+    write(path.join(repo, "docs/source.md"), "changed");
+    try { assert.throws(() => authoring.prepareBaseline(bundle, repo, path.join(root, "dirty")), /BASELINE_NOT_CLEAN_PINNED_REVISION/); }
+    finally { write(path.join(repo, "docs/source.md"), "Synthetic policy.\n"); }
+  });
+  check("native candidate and withheld launch options are unsupported", () => {
+    for (const verb of ["execute", "withheld", "candidate"]) {
+      const denied = spawnSync(process.execPath, [path.join(__dirname, "skill-authoring-evaluation.js"), verb], { encoding: "utf8" });
+      assert.equal(denied.status, 1); assert.equal(denied.stdout, "");
+      assert.equal(denied.stderr, "SKILL_AUTHORING_EVALUATION_USAGE\n");
+    }
   });
   console.log(JSON.stringify({ valid: true, fixtures: count, native_model_calls: 0, actual_evaluation_withheld_executions: 0 }));
 } finally { fs.rmSync(root, { recursive: true, force: true }); }

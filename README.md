@@ -243,6 +243,7 @@ guides. Local emission is not native reading or measured end-to-end context savi
 - [Claude Code Controls Doctrine Operator Skill](.claude/skills/controls-doctrine-operator/SKILL.md): equivalent Claude Code project skill.
 - [AI CLI Skill Installer](install-ai-cli-skills.sh): installs the Codex and Claude Code skill entries.
 - [Installed Skill Inspector](skill-installation-inspector.js): compare an explicit installed directory with the trusted checkout's current bundle and default corpus binding, without executing installed code or changing settings. A match is not native discovery or work acceptance.
+- [Authoring Evaluation Preparation](skill-authoring-evaluation.js): prepare exact full-body baseline writing inputs with byte-range accounting and separate evaluator references. No model dispatch, implicit-discovery claim, withheld execution or quality acceptance follows from preparation; see [Evaluation Metrics](docs/evaluation-metrics.md) and its [prepared-input protocol](docs/evaluation-metrics.md#explicitly-prepared-authoring-inputs).
 
 ## Core Concepts
 

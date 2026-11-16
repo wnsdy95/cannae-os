@@ -220,6 +220,14 @@ development cases; no withheld/native execution or loaded-byte claim is added.
 The templates are author-aware, not independently blind. SR01 closes only the
 freeze/baseline criterion; the source-bound authoring evaluation remains open.
 
+`skill-authoring-evaluation.js` now prepares the four development writing tasks
+for both clients from that exact baseline. Its full-body manifests bind original
+tasks and instruction spans without evaluator answers or native dispatch. The
+[prepared-input procedure](evaluation-metrics.md#explicitly-prepared-authoring-inputs)
+in `docs/evaluation-metrics.md` and mirrored client-operation guidance prevent mixing current installed bytes
+into historical input. Preparation is not actual reading, discovery, routing,
+quality acceptance or cross-client receiving. No external doctrinal claim is added.
+
 The [English intake development](completion-backlog.md#english-intake-development-2026-11-15)
 binds paired local comparisons of heading/exclusion views and inferred task
 clauses. Original constraints, explicit sources, technical review and declared

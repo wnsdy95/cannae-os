@@ -531,6 +531,41 @@ No withheld case or full-repository integration was executed. Final evidence-ind
 edits receive separate documentation checks before commit; dashboard/server work
 and unrelated `.gitignore` remain deferred/preserved respectively.
 
+#### Authoring Input Preparation (2026-11-16)
+
+`skill-authoring-evaluation.js` now prepares all four frozen development tasks
+for both clients from baseline `9331ff5`, without evaluator answers, candidate
+execution or withheld inputs. Eight exact packets total 1,130,888 UTF-8 bytes.
+Each manifest accounts separately for supplied instruction bodies, original task
+JSON and framing, with exact contiguous prompt spans and hashes. These are
+prepared bytes, not R2's six-task loaded-context result or authoring-quality passes.
+The fixed full-body selection and limits are documented in
+[Evaluation Metrics](evaluation-metrics.md#explicitly-prepared-authoring-inputs).
+Both client-operation guides require revision-specific delivery and truthful
+no-tool reporting instead of mixing the current installation into the baseline.
+
+Preparation regressions pass 22/22, including all eight client/task packets,
+original-task preservation, answer exclusion, multibyte content, altered spans,
+unauthorized acceptance flags, unsafe/missing inputs and exclusive private output.
+The first broader local report is retained under
+`.cannae/maintenance/skill-authoring-baseline-20261116/local-274db055-c04e-460e-8637-ec0105662e68/verification.json`
+(SHA-256 `bbfcf6a08a246d100c557c3d18352e1c00b1aae30af01c2c48391672950ce2f1`).
+Its eleven bound sources stayed unchanged; 17/20 commands passed. The new doctrine
+index entry lacked three exact cross-index references, causing source-map and
+control-enforcement failures. Those references were repaired without weakening
+the check, and both checks then passed. The document-session suite exceeded the
+report harness's 300-second limit after the Codex phase; it was not counted as
+passing and is being inspected separately. The 15 instruction, 74 authoring-event,
+57 installation, 18 inspector, 22 preflight and 28 handoff-generation cases passed.
+
+The USER separately approved the exact eight-process baseline proposal, bound to
+execution-plan SHA-256 `5cc92f26d881172562e42e43b9a80ba922a015d0f0ebeaf7cd268ff72f40b716`,
+at the 2026-11-16 checkpoint. Existing client logins were observed without recording
+credential contents. Approval alone establishes no received output or quality;
+actual native results and source appraisals require a later checkpoint. No candidate,
+withheld or cross-client-chain call is included. SR05/SR07-SR09/SR13-SR15 remain open,
+and the verified inventory remains 4/18. Dashboards and servers remain deferred.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

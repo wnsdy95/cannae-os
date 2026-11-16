@@ -217,6 +217,41 @@ mandatory-task regression is critical. No automatic retry, approval renewal,
 policy adoption or promotion follows from a local pass. See the
 [dated freeze checkpoint](completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15).
 
+#### Explicitly Prepared Authoring Inputs
+
+`skill-authoring-evaluation.js prepare-baseline` prepares the four development
+tasks for each client from the clean pinned baseline. It includes that provider's
+full entrypoint, authoring/KM/handoff/prompt/source guides and the applicable SOP
+or terminology guide. This fixed full-body selection is a prepared writing
+experiment, not the router's whole recommendation list or an implicit-discovery
+test. It is not the separate six-task R2 context-saving measurement.
+
+```bash
+node skill-authoring-evaluation.js prepare-baseline \
+  --bundle /absolute/frozen-bundle --repository /absolute/clean-pinned-checkout \
+  --output /absolute/new-private-output-directory
+node run-skill-evaluation-fixtures.js
+```
+
+Every packet preserves the exact original task, sources and required outputs,
+excluding evaluator fields. Manifests distinguish full instruction bytes, task
+bytes and framing overhead, with contiguous verified byte ranges and hashes.
+No added trailing text may escape that accounting. Linked, hardlinked, missing,
+empty or non-UTF-8 instruction files fail; the baseline and bundle are rechecked.
+Output creation is exclusive and private; an interrupted preparation is not a
+complete index and must not be silently overwritten. The helper cannot execute
+a client, prepare withheld tasks or grant transfer/quality acceptance. Loaded
+instruction bytes remain null until separately observed delivery evidence exists.
+
+A native execution proposal must bind these exact inputs, client/model identity,
+arguments, configuration, observer and bounded attempt/deadline. Use current
+applicable consent, not an old goal-wide approval. Preserve process failures,
+unknown client events and internal transport retries; no automatic relaunch.
+Do not replace the frozen historical instructions with current installed bytes.
+Conversely, a later candidate must actually supply its required conditional
+guides instead of assuming a link is sufficient. Completed output proves neither
+source fidelity nor receiving by the next agent; appraise those separately.
+
 ## 9. Case Study Evaluation Sheet
 
 ```text

@@ -48,6 +48,16 @@ keeps selection, actual delivery and semantic quality separate. Withheld templat
 are operator-authored, not independently blind; no withheld execution, native
 transfer or operational authority is inferred from these local engineering checks.
 
+The next authoring preparation step uses `skill-authoring-evaluation.js` to bind
+each baseline instruction/source body to its exact prompt span. A selected path
+or a link is not delivered content; neither an emitted packet nor a completed
+response establishes faithful writing. Both client-operation guides now require
+revision-specific bodies and separate preparation/delivery/quality evidence.
+The fixed development preparation excludes answers and withheld bodies and does
+not call a model. It is not the six-task context-saving measurement or the two
+cross-client recovery chains. See `docs/evaluation-metrics.md` and its
+[procedure](evaluation-metrics.md#explicitly-prepared-authoring-inputs).
+
 The [first English intake change](completion-backlog.md#english-intake-development-2026-11-15)
 addresses four observed wording/compound defects without replacing original task
 text. It also exposes a decomposition risk: source-policy review and a draft's

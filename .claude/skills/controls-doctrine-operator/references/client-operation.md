@@ -26,3 +26,15 @@ current-route/source call. If the client cannot invoke it, hold dependent work
 without inventing source contents or substituting a previous agent's route.
 An empty MCP-call log alone does not exclude rejected tool attempts; inspect
 client errors before choosing a bounded retry.
+
+For explicitly supplied-context comparisons, bind each body's source revision and
+exact prompt byte range before dispatch. Do not silently supply the current
+installed guide to a historical baseline. Keep original task/source bodies apart
+from evaluator answers and include applicable conditional guides for the tested
+revision. If the recipient has no tools, a preparer must supply needed bodies;
+report unsupplied dependencies and unperformed checks instead of inventing reads.
+`skill-authoring-evaluation.js prepare-baseline` prepares only the frozen
+development writing inputs; it neither sends them nor prepares the candidate.
+Record selection, preparation, client input delivery, completed response and
+source-appraised quality separately. Explicitly supplying a skill does not test
+implicit discovery, agent-invoked routing or cold-start receiving of its output.
