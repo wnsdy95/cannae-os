@@ -242,6 +242,14 @@ Synthetic event fixtures and a transient local stdio exercise are engineering
 evidence only, not native delivery, backend attestation or external doctrine.
 Both client-operation guides require complete matched traces and source appraisal.
 
+The [skill-maintenance evidence procedure](evaluation-fixtures.md#skill-maintenance-checks-and-evidence)
+separates affected-surface checks, retained result bytes and full integration.
+`skill-evidence-index.js` and its fixtures inspect declared local file bindings,
+including source drift, missing evidence and wrong-repository cases, without
+executing a recorded command or appraising its verdict. Both maintenance guides
+preserve failures and unexecuted checks. This is local engineering evidence,
+not military doctrine, attested execution or an authorization contract.
+
 The [native startup failure](completion-backlog.md#native-context-startup-failure-2026-11-16)
 is direct local CLI evidence of diagnostic items preceding turn creation. The
 trace observer's ordering repair and captured-event replay retain the failed

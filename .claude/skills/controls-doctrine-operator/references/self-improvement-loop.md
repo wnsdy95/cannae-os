@@ -135,6 +135,17 @@ bodies during tuning or call author-aware templates independently blind. Never
 refresh expected results silently to fit a candidate. Native comparison still
 needs its own applicable consent and source-appraised artifacts.
 
+Use `docs/evaluation-fixtures.md`'s skill-maintenance map to select additive
+focused checks, then retain the full current CI gates before merge. Record an
+unexecuted suffix after a failed command; do not borrow an older pass for changed
+source. Keep a private cycle evidence index with the original source/result
+bindings and inspect it through `skill-evidence-index.js`. A retained failed log
+is still failure; matching hashes are not result appraisal. Missing, changed or
+unsafe evidence cannot be reconstructed as a fresh pass. Add a new entry for a
+new run instead of rewriting old expectations. Review declared dependency coverage
+and the original results before acceptance; the helper grants no execution,
+model-transfer or merge authority. See the evaluation guide for the local format.
+
 Separate current navigation from retained evidence history. After a proposed
 successor or completed review, reconcile the document's opening current-candidate
 pointer, README and active queue with the actual candidate and disposition.

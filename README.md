@@ -1027,6 +1027,7 @@ The repository intentionally includes many small runners instead of one large ru
 
 Important examples:
 
+- [Skill maintenance checks and evidence](docs/evaluation-fixtures.md#skill-maintenance-checks-and-evidence): additive focused-check map and read-only `skill-evidence-index.js`; retained bytes are not a passing verdict or full integration proof.
 - `run-handoff-generation-fixtures.js`: selected-source fidelity, unknown-state handling, non-authorizing validation and invalid mission/order/time/path/classification rejection; synthetic regressions, not receiver acceptance.
 - `validator-cli-prototype/run-fixtures.js`: schema and semantic validator regression suite.
 - `run-authority-integration-fixtures.js`: scoped approval and risk acceptance composition.

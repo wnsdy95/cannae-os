@@ -86,7 +86,7 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR14 | R5 | Include a changed-source/term or unavailable-source interruption in those chains; observe dependent work held, permitted independent work retained, a truthful notice and separately authorized fresh continuation without invented receipts or retry permission. | Planned |
 | SR15 | R5 | Validate the final receiving unit and actual next-agent use against original objectives, current sources, unresolved decisions and recipient scope. A prepared packet or final self-claim alone cannot close this criterion. | Planned |
 | SR16 | R6 | Verify linked and copied skills from a different target repository in the installed client configurations; diagnose stale copy/root/version problems without silently reinstalling, changing settings or reading credentials. Record a bounded compatibility matrix. | Verified (bounded) |
-| SR17 | R6 | Map affected surfaces to focused checks and retain full integration validation before merge. Keep a non-authorizing local evidence index with exact source/result versions and unavailable-evidence states; no temporary-file loss may be presented as a fresh pass. | Planned |
+| SR17 | R6 | Map affected surfaces to focused checks and retain full integration validation before merge. Keep a non-authorizing local evidence index with exact source/result versions and unavailable-evidence states; no temporary-file loss may be presented as a fresh pass. | In progress |
 | SR18 | R6 | Demonstrate one bounded gap -> candidate -> both-skill adaptation -> regression/source appraisal -> accepted change cycle. Preserve review/adoption distinctions, historical evidence and unrelated edits; reconcile scope, indexes, backlog and actual goal status at closure. | Planned |
 
 #### Evaluation Freeze Checkpoint (2026-11-15)
@@ -1296,6 +1296,54 @@ This is a development-visible lexical correction, not withheld evaluation,
 complete bilingual semantic handling, native delivery or an execution permission.
 The frozen native-context candidate remains unchanged; its approval cannot move
 to the current source. SR02/SR03 stay in progress and the inventory remains **6/18**.
+
+#### Local Evidence Index (2026-11-17)
+
+The previous deferral-routing work retained a passing comparison, complete routing
+check, short-check group, an interrupted gate and two failed session attempts in
+separate files. These were not one successful ladder. The new read-only
+`skill-evidence-index.js` preserves that distinction and reports declared source
+currentness separately from result retention. Both maintenance guides require
+original source/result bindings and new entries for new runs, not rehashing a past
+pass against current code. The [focused-check map](evaluation-fixtures.md#skill-maintenance-checks-and-evidence)
+and contribution instructions retain the complete current CI gates before merge;
+the aggregate is invoked once, not inside a second loop over its own suites.
+
+Thirteen synthetic regression groups cover retained failure, missing/changed logs,
+source drift, historical versions, not-run/incomplete records, repository identity,
+malformed bindings, unsafe links, concurrent changes, unrelated-cwd CLI use and
+discovery by the full aggregate without running that aggregate here.
+Matching file hashes do not execute recorded commands, appraise log semantics,
+attest revision attribution or authorize a merge. Source and log bodies are not
+printed. These checks are local behavior evidence, not a protected-host claim.
+
+The actual private index is
+`.cannae/maintenance/skill-evidence-r6-20261117/evidence-index.json`, SHA-256
+`019e416d43bd82aeb1895954785615924cd96c5d02eaffb534d281068c6be635`.
+Its first inspection has SHA-256
+`ba398cc983804298cbaeb18eb1f2e0792c6736f5c369bb2131d0891d7c4bdf05`.
+The six attempted records retain three recorded passes, two failures and one
+incomplete run; four pending focused checks and full integration remain not run.
+Original reports and logs were unchanged. Declared source subsets match, but this
+does not reconstruct complete historical dependency coverage; original reports
+remain attached for appraisal. The inspection correctly reports `integrity_ok:
+false` for the five unexecuted entries, not a new failed test or a complete pass.
+
+Ten focused validation commands passed, including the thirteen index groups,
+fifteen progressive-disclosure groups, both skill validators/coverage reports and
+documentation checks. The unrelated-cwd CLI also retained all eleven entries and
+returned the expected exit 1 for the five unexecuted checks, without replaying
+their commands. The final source-bound gate is
+`gate-8b177f86-2dbd-4763-975d-cbc138ead402/verification.json` under the same evidence
+root, SHA-256 `0fc1139e9037fe6228a8cc789dbd0b50af0a5ff417760110aa08d1bd28166797`.
+The earlier inspection remains intact; the final helper names its no-replay flag
+`recorded_commands_executed` to distinguish indexed checks from its own local Git
+metadata queries. Final evidence-index prose receives separate documentation checks.
+
+SR17 is in progress: local indexing and the focused-check map are implemented,
+but full integration, broader cycle indexing and final source/acceptance appraisal
+remain open. SR18 also remains open. The accepted inventory stays **6/18**; no
+withheld evaluation, native model transfer, dashboard or server work occurred.
 
 #### Execution Order And Boundaries
 

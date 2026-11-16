@@ -6,6 +6,82 @@ This document defines the list of fixtures and expected results for evaluating t
 
 Evaluation fixtures are used to verify that runtime gates actually function, not to assess document quality.
 
+## Skill Maintenance Checks And Evidence
+
+For the active [skill reliability cycle](completion-backlog.md#skill-reliability-acceptance),
+choose focused checks by the changed surface, not by the shortest green command.
+These groups are additive when a change crosses boundaries. They are a starting
+map, not automatic dependency discovery or permission to omit a routed control.
+
+| Changed surface | Focused checks before broader verification |
+| --- | --- |
+| Navigation or evidence/history prose | Both skill validators and router coverage; source-map linter; Markdown links; English-only; `git diff --check` |
+| Router or intake | `run-document-routing-fixtures.js`, `run-routing-korean-intake-fixtures.js`, `run-skill-maintenance-routing-fixtures.js`; preflight/control-enforcement and document-session consumers when affected |
+| Entrypoint or conditional instructions | `run-skill-progressive-disclosure-fixtures.js`, both skill validators, installation and context-document-integrity fixtures; actual authorized-input checks for native comparisons |
+| Project sources or handoff | `run-project-document-packet-fixtures.js`, `run-project-document-review-fixtures.js`, `run-project-document-reader-fixtures.js`, `run-project-document-session-fixtures.js` and affected terminology/dependency cases; source appraisal and actual receiving remain separate |
+| Terminology or dependencies | `run-project-terminology-fixtures.js`, `run-project-terminology-change-fixtures.js`, `run-project-terminology-writer-fixtures.js`, `run-project-terminology-handoff-fixtures.js`, `run-project-knowledge-dependency-fixtures.js` and affected stale-source cases |
+| Installation or client integration | Skill installation, installation-inspector and client-discovery fixtures; test both providers and the changed link/copy path |
+| Evidence index | `run-skill-evidence-index-fixtures.js`, inspection of the actual retained records, and the documentation checks above |
+
+Before merge, run the current complete gates from `.github/workflows/validate.yml`,
+including validator fixtures, `run-all-fixtures.js`, the unified proof gate and
+the declared live OCI requirement. A smaller passing group is not that full run.
+Record environment limitations, failed commands and unexecuted suffixes. Do not
+set skip modes, relax product deadlines or infer native-model consent to make a
+gate pass. CI completion and a local inspection are separate evidence.
+
+### Read-Only Evidence Index
+
+Keep the cycle's private index under its target repository's `.cannae/maintenance/`.
+`skill-evidence-index.js` inspects an explicitly supplied index; it never scans
+for logs, executes recorded commands, rewrites history or reconstructs lost files.
+Invoke the helper from the router's returned doctrine root, not a guessed target
+project installation path:
+
+```bash
+node "$DOCTRINE_ROOT/skill-evidence-index.js" \
+  --repository /absolute/target-repository \
+  --index .cannae/maintenance/cycle/evidence-index.json
+```
+
+The version-1 local format has `version`, `cycle`, `repository` and `entries`.
+`repository` is the exact root/Git-directory/device/inode identity returned by
+`project-terminology.js`'s existing `identity` helper. Each entry contains:
+
+- A unique `id`, applicable `criteria` from SR01-SR18, and `scope`: `focused`,
+  `full_integration`, `native` or `source_appraisal`.
+- `recorded_outcome`: `pass`, `fail`, `incomplete` or `not_run`; the exact
+  `source_revision`; and a recorded argument-array `command` or `null` for appraisal.
+- Nonempty `source_files` and the retained `evidence_files`, each binding an exact
+  repository-relative `path`, SHA-256 `sha256` and byte count `bytes`. A `not_run`
+  entry has no evidence files; an attempted check must retain its available evidence.
+
+Use the source hashes captured by the original run, including its actual harness,
+inputs and applicable dependencies. Take result hashes/sizes when recording it.
+Do not rehash changed current sources into an old entry to make it look current.
+New runs get new IDs; retain failed attempts alongside later results. Keep source
+and result bodies private, and review any index before sharing its paths/arguments.
+This local analysis format is not a runtime authorization contract.
+
+The report separates source currentness from result retention. Files can match,
+change, disappear, become unsafe/unavailable or change during inspection.
+Unexecuted checks stay `not_recorded`; missing input indexes return an unavailable
+inspection. Relative escapes, symlinks, hardlinks and repository substitutions do
+not become retained evidence. No source or log body is printed, including malformed
+JSON errors. Reads have file/inventory limits; no missing item is silently skipped.
+
+`integrity_ok` means only that every declared file matches and every entry has
+retained result bytes. It can be true for a recorded failed run. Exit 0 has this
+same limited meaning; exit 1 includes changed, unavailable, unexecuted or invalid
+inputs. `recorded_outcome`, scope and revision attribution remain metadata, not
+recomputed test verdicts or attested execution. The helper checks neither undeclared
+dependencies nor the completeness of a full-integration claim. Inspect the original
+result, invocation and source coverage before acceptance. Its recorded-command
+execution, semantic acceptance and merge-authorization flags always remain false.
+The inspection itself reads files and queries local Git repository metadata;
+those are not executions of the indexed checks. It is not a protected
+host or a replacement for guarded receipts, USER decisions or native receiving.
+
 ## 1. Fixture Categories
 
 | Category | Purpose |

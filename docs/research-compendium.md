@@ -127,6 +127,14 @@ synthetic event tests and a local stdio client cannot stand in for native use.
 Source quality and complete six-task coverage remain necessary before savings
 acceptance. The actual backend's hidden context remains unknown.
 
+The [skill-maintenance evidence procedure](evaluation-fixtures.md#skill-maintenance-checks-and-evidence)
+addresses scattered run records: a preserved failure can have perfectly matching
+hashes, while a past pass can lose its sources or logs. The local index inspector
+keeps recorded outcomes, source currentness and evidence retention separate.
+Both skills require additive affected-surface checks and original-result appraisal;
+neither a short green check nor an intact index replaces full integration before
+merge. Missing evidence stays unavailable instead of becoming a reconstructed pass.
+
 The [own-skill maintenance intake correction](completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
 addresses a separate mismatch: selecting relevant maintenance manuals did not
 mean the router recognized the maintenance objective. Specific action/subject
