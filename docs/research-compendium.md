@@ -118,6 +118,15 @@ in `docs/evaluation-metrics.md` keeps original requests, reused development-sour
 bodies, reference snapshots and native delivery separate. Both skills retain
 selective reading; neither catalog size nor initial prompt size proves savings.
 
+The [client-bound trace procedure](evaluation-metrics.md#client-bound-context-traces)
+in `docs/evaluation-metrics.md` addresses another measurement risk: native logs
+echo responses already recorded by the helper. Reconcile them instead of adding
+both copies, while retaining real repeated reads, errors and setup framing.
+`skill-context-trace.js` checks consistency, not authenticity or comprehension;
+synthetic event tests and a local stdio client cannot stand in for native use.
+Source quality and complete six-task coverage remain necessary before savings
+acceptance. The actual backend's hidden context remains unknown.
+
 The [own-skill maintenance intake correction](completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
 addresses a separate mismatch: selecting relevant maintenance manuals did not
 mean the router recognized the maintenance objective. Specific action/subject

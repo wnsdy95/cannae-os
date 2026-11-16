@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add bounded context-trace reconciliation for exact source responses, native call completion and full client-bound framing/repeat/error accounting. Reject incomplete or duplicate traces without inferring backend context, semantic quality or savings. Mirror complete-trace appraisal and non-renewable attempt/deadline guidance in both skills; actual six-task native measurement remains open.
+
 - Correct own-skill maintenance and bounded document context-evaluation intake in both routers, including a complete model-transmission/platform exclusion list. Preserve mixed-domain gaps and all non-gap controls; using or creating a skill for an uncovered task is not domain coverage. Add mirrored operator guidance and targeted routing counterexamples without changing native-call approval or issued receipts.
 
 - Prepare and inspect paired six-task context inputs at clean baseline/candidate revisions for both clients. Preserve original requests, bind identical development-source supplements, exclude evaluator answers and withheld inputs, and retain private source snapshots and exact prompt accounting. Mirror fair selective-reading and full-trace appraisal guidance; preparation does not dispatch a model, freeze the withheld candidate or prove context savings.

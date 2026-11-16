@@ -294,6 +294,37 @@ prompt shrinkage, a snapshot-size difference or prepared-file inspection cannot
 close SR05. The transport/observer and applicable transfer consent remain separate
 prerequisites; a preparation manifest always has null loaded bytes and no authority.
 
+#### Client-Bound Context Traces
+
+`skill-context-trace.js` reconciles a bounded native event stream with an exact
+local stdio relay transcript and current frozen-reference results. It accepts
+only the configured read tool, completed call pairs and a complete single-process
+transport lifecycle. Changed/missing responses, duplicate structured bodies,
+unexpected tools, extra sessions and truncated records fail instead of becoming
+a lower byte total. `run-skill-context-trace-fixtures.js` tests these rules with
+synthetic native-shaped events; those fixtures are not actual Codex/Claude use.
+
+The conservative controlled-client-input measure is original stdin bytes plus
+every adapter-to-client JSON-RPC line, including setup, tool schema, framing,
+errors and repeated results. Report source body, navigation, text payload and
+advertised instruction/schema bytes separately; they overlap the wire measure
+and must not be added to it again. The native transcript echo verifies receipt
+of the same response, not a second delivery. Client transformations and hidden
+provider/system context are unobserved; backend context bytes remain unknown.
+This is neither protected-host attestation nor token/cost/comprehension evidence.
+
+Keep an absolute native-process deadline and call count outside reconnectable
+tool processes. A one-attempt audit destination must not be silently reused.
+Capture partial/failed traces, stop the batch, and retain fresh approval and
+source-currentness checks for any new attempt. The private transient evaluator
+adapter has no listening port or standing service and is not the product runtime.
+
+Appraise every fixed task's output against its own source obligations before
+comparing each provider's six-task medians. Do not reuse the different R3 output
+contract unchanged, omit expensive failed cases, equate no reads with sufficiency,
+or let a consistent trace certify quality. Native delivery, semantic appraisal,
+20% acceptance and R5 receiving remain separate claims.
+
 #### Explicitly Prepared Authoring Inputs
 
 `skill-authoring-evaluation.js prepare-baseline` prepares the four development

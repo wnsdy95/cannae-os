@@ -51,3 +51,14 @@ framing, and appraise the finished work before reporting savings. A smaller
 initial prompt or inspected snapshot is not a complete native trace. An R2 input
 snapshot is not the global withheld-candidate freeze or a transfer decision;
 superseding it must not rewrite its original evidence or consume an unstarted call.
+
+For tool-assisted context measurement, reconcile each completed native call with
+the exact response written to that client and the frozen source selection. Count
+repeated reads, navigation, error responses and setup/schema framing; do not count
+a transcript echo as another delivery or discard failed cases from the comparison.
+A completed process with an unmatched, duplicate or truncated trace is unverified.
+Keep client-bound wire totals distinct from source-body bytes and unknown backend
+context. A zero-read or shorter trace still needs source-based output appraisal.
+Record one absolute process deadline and attempt limit outside the tool process;
+reconnecting a helper must not renew either. Stop the batch on an incomplete
+attempt, preserve it, and obtain any required fresh approval before retrying.

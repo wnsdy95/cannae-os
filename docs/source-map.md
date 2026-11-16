@@ -235,6 +235,13 @@ and exact initial-input accounting. Both client-operation guides preserve fair
 selective reading and distinguish preparation from complete native traces. No
 new military-source claim, transfer authority or context-saving acceptance follows.
 
+`skill-context-trace.js` and `run-skill-context-trace-fixtures.js` add
+[client-bound trace reconciliation](evaluation-metrics.md#client-bound-context-traces)
+for exact source responses, native completion, repeats and transport framing.
+Synthetic event fixtures and a transient local stdio exercise are engineering
+evidence only, not native delivery, backend attestation or external doctrine.
+Both client-operation guides require complete matched traces and source appraisal.
+
 The [own-skill maintenance intake case](completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
 records a local R1 counterexample and both-router correction, not new military
 doctrine or semantic coverage. `run-skill-maintenance-routing-fixtures.js` checks

@@ -855,6 +855,68 @@ SHA-256 `398d4e518899337954574c95e3bbb25e51eb3c0b9fca35bed9567e50c89d6d36`.
 SR02/SR03 remain in progress, the accepted inventory is still **4/18**, and no
 native comparison, actual context savings or general semantic coverage is claimed.
 
+#### Context Trace Preparation (2026-11-16)
+
+R2 now has `skill-context-trace.js` and thirteen synthetic fixture groups for
+exact native-call/source-response reconciliation. It counts client-bound setup,
+schema, framing, navigation, error responses and actual repeated reads without
+counting the native transcript echo again. Missing/changed/duplicate results,
+unknown tools/sessions and incomplete lifecycles are unverified. The measured
+boundary is controlled client input; hidden backend context remains unknown.
+Trace consistency does not establish authentic native execution or source quality.
+Both client-operation guides require this distinction and a non-renewable outer
+attempt/deadline rather than a helper reconnect resetting the execution budget.
+
+The private transient stdio relay has no listening port. A local SDK client
+tested both revisions/providers, repeated reads, error responses, exact wire
+reconciliation, child exit and rejection of audit-path reuse. The same exercise
+passed under both planned client privacy profiles. This is local subprocess
+evidence, not a native model result. Profile check:
+`.cannae/maintenance/skill-context-r2-20261116/profile-check-01f252f8-fdcb-4fc8-b43c-11fb1355fa86.json`,
+SHA-256 `2c99293b0126f3c646ec14d3348b6cd884d5808eebfd8636f73a4b08b6b2d5d7`.
+
+A new separate R2 snapshot binds candidate `4e02c09` without replacing the prior
+`7f64600` preparation or freezing the global withheld candidate. Its index at
+`.cannae/maintenance/skill-context-r2-20261116/prepared-4e02c09/index.json` has
+SHA-256 `5de7c4c9df63a3a025166ee916e71557b994708e87d18b94d82fa0302e8d6e23`.
+All 24 paired initial inputs still total 907,182 bytes; assigned development
+source bodies and original requests are unchanged. A task-specific evaluator
+rubric stays outside the input/catalog. Neither initial-byte reduction nor this
+unexecuted preparation proves the required complete-work median improvement.
+
+Native launch preparation binds exact inputs, code, binaries, tool configuration,
+one-attempt records, a ten-minute absolute limit and 64 reads per process. All 24
+prechecks passed; attempting execution without a new decision stopped before
+creating an attempt or invoking a model. Evidence:
+`.cannae/maintenance/skill-context-r2-20261116/native-precheck-79bf0a4c-04d4-4379-adde-37ecc25ee725.json`,
+SHA-256 `efb3ffae496b2061fb2c76699ddf27177d86c0a7661ad356bb9625a7f92608f8`.
+Approval and actual execution remain separate. SR05/SR06 and the broader R3/R5
+native work remain open; the verified inventory stays **4/18**.
+
+The focused gate passed 17/17 commands, including thirteen trace fixture groups,
+paired preparation, reference fidelity, authoring, progressive delivery, both
+skill validators, installation, preflight, integrity/enforcement and index/link/
+language checks. Source hashes and unrelated `.gitignore`/lockfile bytes stayed
+unchanged during the gate. This is not the merge-time full integration run.
+Evidence: `.cannae/maintenance/skill-context-r2-20261116/trace-gate-40f83519-6bc8-4cfa-b32b-9209e13f742b/verification.json`,
+SHA-256 `433a5834f7cac8e3416ca44a66859565a3f59da0752333733f387fe338317015`.
+
+The exact proposed native plan is retained at
+`.cannae/maintenance/skill-context-r2-20261116/native-plan-v1/execution-plan.json`,
+SHA-256 `2cd85b922555c876236965958709f55aea61c321a5bbb8479a362cb47ba8c83f`;
+the readable proposal digest is
+`e8862efe059783f6fbaf007ce5f726318fc6a2dcfc85cf58b0ea4e5c4b0076da`.
+It includes up to 24 sequential processes, not permission to relaunch failures.
+No new decision or model attempt exists at this checkpoint.
+
+An additional R1 observation remains unrepaired: the request beginning
+`Maintain the Controls skill-context-evaluation:` is still a capability gap in
+both routers, despite the explicit evaluation subject. Preserve the original
+request and gap, not a fabricated coverage claim or authority expansion. This
+was not used to alter the frozen six tasks or their R2 input preparation.
+Observation: `.cannae/maintenance/skill-context-r2-20261116/maintenance-hyphen-gap-d6960b6b-2dfe-434a-847c-3c63e2663976.json`,
+SHA-256 `67ab0b7b43a120af98cff13045590d3f62962363be940cd32ad27dc1dd1b149f`.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
