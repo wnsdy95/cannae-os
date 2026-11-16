@@ -112,6 +112,9 @@ actual six-task context savings remain unverified.
 The [paired context preparation](docs/evaluation-metrics.md#paired-context-inputs)
 binds identical synthetic task sources to both exact revisions and providers.
 Its snapshots and initial prompts are not native delivery or completed-work savings.
+The [maintenance intake correction](docs/completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
+recognizes own-skill upkeep and bounded context evaluation while preserving
+uncovered domain objectives, full prohibitions and guarded-input rejection.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">

@@ -12,6 +12,13 @@ const DEFINITION_KEYWORDS = ["user-defined term", "user defined term", "project 
 
 const RULES = [
   {
+    id: "skill-context-evaluation",
+    keywords: [],
+    docs: ["docs/evaluation-metrics.md", "docs/completion-backlog.md", "docs/skill-first-product-scope.md",
+      ...instructionPaths("client-operation")],
+    commands: ["node run-skill-context-evaluation-fixtures.js", "node run-skill-evaluation-fixtures.js"]
+  },
+  {
     id: "project-terminology",
     keywords: ["terminology", "glossary", "term definition", "shared vocabulary", "user vocabulary", "registered dependencies", "dependency impact", "dependency refresh", ...DEFINITION_KEYWORDS],
     docs: ["docs/project-terminology-workflow.md", "docs/glossary.md", "docs/knowledge-management-sop.md", "docs/document-authoring-workflow.md"],
@@ -406,7 +413,7 @@ const RULES = [
   },
   {
     id: "runtime-architecture-dashboard",
-    keywords: ["architecture", "dashboard", "event", "projection", "ui", "database", "maintenance", "readiness", "architectural", "control panel", "eventing", "projected view", "upkeep", "preparedness", "server design", "service design"],
+    keywords: ["architecture", "dashboard", "dashboards", "event", "projection", "ui", "database", "maintenance", "readiness", "architectural", "control panel", "eventing", "projected view", "upkeep", "preparedness", "server design", "service design"],
     docs: [
       "docs/reference-architecture.md",
       "docs/event-sourcing-model.md",
@@ -520,6 +527,7 @@ const GENERIC_ROUTE_KEYWORDS = new Set([
   "department",
   "framework",
   "incident",
+  "maintenance",
   "model",
   "models",
   "output",
@@ -867,6 +875,27 @@ function isCorpusOrientationRequest(query) {
     /\bwhere (?:can|should|do) i (?:start|begin)(?: with (?:cannae(?: os)?|controls (?:doctrine|framework)|(?:this|the) (?:doctrine|framework|repository|corpus)))?\b/,
     /\b(?:read|review|summarize) (?:the )?readme\b/
   ].some(pattern => pattern.test(text));
+}
+
+function isOwnSkillMaintenanceRequest(query) {
+  const text = taskHeadingView(query).trim();
+  const action = "(?:maintain|update|revise|edit|fix|repair|review|audit|improve|optimize|optimise|validate|test)";
+  const modifiers = "(?:(?:the|our|both|installed|existing|current)\\s+)*";
+  // Match an operation on this product, not any occurrence of a client or skill.
+  return new RegExp("^(?:please\\s+)?" + action + "\\s+" + modifiers +
+    "(?:controls|cannae(?:\\s+os)?)\\s+(?:skills?|skill instructions|skill entrypoints?|document router|document routing)" +
+    "(?=$|[.;!?]|\\s+(?:and|then|without|while)\\b)", "i").test(text);
+}
+
+function isSkillContextEvaluationRequest(query) {
+  const text = taskHeadingView(query).trim();
+  return /^(?:please\s+)?(?:prepare|design|freeze|review|verify|compare|measure|evaluate)\s+(?:(?:a|an|the|our|paired|native|bounded|fixed|skill)\s+)*context[- ](?:reading|delivery)\s+(?:evaluation|comparison|measurement)s?(?:\s+for\s+(?:(?:six|6|fixed|ordinary)\s+)*document tasks?)?(?=$|[.;!?]|\s+(?:and|then|without)\b)/i.test(text);
+}
+
+function isSkillMethodRequest(query) {
+  // A client/skill used to perform another task does not establish its domain.
+  return /^(?:please\s+)?(?:use|create|write|build|design)\s+(?:(?:a|an|the|this|our|controls|cannae|os|codex|claude|code|cli|operator)\s+)*skills?\s+(?:for|to)\s+\S/i
+    .test(taskHeadingView(query).trim());
 }
 
 function capabilityRouting(query, scoredRules, scopeIdentity) {
@@ -1624,7 +1653,7 @@ function runtimeWorkContext(text) {
     "\\s+(?:is|are|remain|remains)\\s+(?:deferred|out of scope))$", "i");
   const clauses = koreanMatchingView(taskHeadingView(text)).split(/[;\n]+|(?<=[.!?])\s+/)
     .map(clause => clause.trim().replace(/[.!?]+$/, ""));
-  const listedItem = "(?:" + platformItem + "|publication|transmission|deployment|private-source exceptions?|external operations?)";
+  const listedItem = "(?:" + platformItem + "|publication|(?:model\\s+)?transmission|deployment|private-source exceptions?|external operations?)";
   const excludedList = new RegExp("^(?:no|exclude|omit|defer)\\s+" + listedItem + "(?:" + separator + listedItem + ")*" +
     "(?:\\s+(?:for|from) this task)?$", "i");
   const retained = clauses.filter(clause => !excluded.test(clause) && !excludedList.test(clause));
@@ -1698,7 +1727,7 @@ function needsSkillOperationsReading(text, sources, guarded) {
     "(?:skills?|skillset|skill instructions|skill entrypoints?|(?:document\\s+)?(?:router|routing(?: rules)?))\\b(?![-_])", "i");
   return sources.some(file => rule.docs.includes(file) && !SKILL_GENERAL_DOCS.has(file) &&
     !Object.keys(TOPICS).some(topic => instructionPaths(topic).includes(file))) ||
-    isCorpusOrientationRequest(text) || edit.test(String(text)) ||
+    isCorpusOrientationRequest(text) || isOwnSkillMaintenanceRequest(text) || edit.test(String(text)) ||
     rule.keywords.some(keyword => !SKILL_USE_KEYWORDS.has(keyword) && keywordMatches(context, normalizeText(keyword))) ||
     countMatches(context, ["skill maintenance", "skill development", "skill installation", "skill configuration", "skill discovery", "skill instructions", "skill entrypoint",
       "router implementation", "router bug", "routing bug", "routing coverage", "route coverage", "skill coverage",
@@ -1735,13 +1764,18 @@ function route(query, repoRoot, options) {
     const authoring = rule.id === "document-authoring" && isDocumentAuthoringRequest(text) ? 1 : 0;
     const handoff = rule.id === "continuity-handoff" && isDocumentHandoffRequest(text) ? 1 : 0;
     const order = rule.id === "orders" && isOrderDocumentRequest(text) ? 1 : 0;
+    const maintenance = rule.id === "skill-operations" && isOwnSkillMaintenanceRequest(text) ? 1 : 0;
+    const contextEvaluation = rule.id === "skill-context-evaluation" && isSkillContextEvaluationRequest(text) ? 1 : 0;
+    const capabilityKeywords = rule.id === "skill-operations" && isSkillMethodRequest(text)
+      ? rule.keywords.filter(keyword => !SKILL_USE_KEYWORDS.has(keyword)) : rule.keywords;
     const sourceAppraisal = rule.id === "sources-research" &&
       /\b(?:review|check|read|appraise|assess)\s+(?:(?:the|all|supplied|assigned|original)\s+)*(?:source\s+(?:policy|policies|documents?)|source\s+quality)\b/i.test(text) ? 1 : 0;
     return {
       ...rule,
-      score: countMatches(text, rule.keywords) || authoring || handoff || order || sourceAppraisal ||
+      score: countMatches(text, rule.keywords) || authoring || handoff || order || sourceAppraisal || maintenance || contextEvaluation ||
         (rule.id === "orientation" && isCorpusOrientationRequest(text) ? 1 : 0),
-      specific_score: countSpecificMatches(rule.id === "runtime-architecture-dashboard" ? runtimeWorkContext(text) : text, rule.keywords) || authoring || handoff || order || sourceAppraisal
+      specific_score: countSpecificMatches(rule.id === "runtime-architecture-dashboard" ? runtimeWorkContext(text) : text, capabilityKeywords) ||
+        authoring || handoff || order || sourceAppraisal || maintenance || contextEvaluation
     };
   }).filter(rule => rule.score > 0)
     .sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));

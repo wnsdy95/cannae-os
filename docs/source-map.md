@@ -235,6 +235,13 @@ and exact initial-input accounting. Both client-operation guides preserve fair
 selective reading and distinguish preparation from complete native traces. No
 new military-source claim, transfer authority or context-saving acceptance follows.
 
+The [own-skill maintenance intake case](completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
+records a local R1 counterexample and both-router correction, not new military
+doctrine or semantic coverage. `run-skill-maintenance-routing-fixtures.js` checks
+specific maintenance/evaluation routes, independent domain gaps, full constraints,
+conditional technical reading and retained guarded-input rejection. Both routing
+guides require per-objective assessment rather than a manual-selection shortcut.
+
 `skill-authoring-evaluation.js` now prepares the four development writing tasks
 for both clients from that exact baseline. Its full-body manifests bind original
 tasks and instruction spans without evaluator answers or native dispatch. The

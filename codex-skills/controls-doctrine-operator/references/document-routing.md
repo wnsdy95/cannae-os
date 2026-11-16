@@ -266,6 +266,18 @@ merely to satisfy that contract or reinterpret its rejection as authorization.
 
 ### Using A Skill Versus Maintaining It
 
+For own-product maintenance, inspect every objective's capability assessment as
+well as selected manuals. `Maintain the Controls skills` and bounded document
+context-reading evaluations have specific routes; a client/skill used to analyze
+an uncovered domain does not establish that domain's coverage. Preserve mixed
+requests and their remaining cells instead of substituting a maintenance keyword.
+Distinguish a generic skill/client method from a specific subject named after it:
+using a skill to inspect mission lifecycle still needs lifecycle guidance and controls.
+A supported `No model transmission, dashboard or server development` clause
+narrows platform reading only: the full prohibition, explicit/parent inputs and
+selected controls remain. A fresh corrected route does not amend an issued receipt
+or authorize the evaluation's model calls. See the [maintenance intake case](../../../docs/completion-backlog.md#own-skill-maintenance-intake-2026-11-16).
+
 For ordinary direct work, a mention of Codex, Claude, CLI, skill, routing,
 operator, inventory or coverage alone does not require installation and corpus
 maintenance manuals. The selected skill-operations route keeps the product-scope,

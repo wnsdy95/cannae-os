@@ -767,6 +767,94 @@ This is an additional exposed counterexample, not a changed frozen expectation
 or a withheld success. Fix ordinary own-skill maintenance recognition without
 letting a supporting skill method clear a genuinely uncovered domain objective.
 
+#### Own-Skill Maintenance Intake (2026-11-16)
+
+The exposed R2 preparation request above is an additional R1 regression, not a
+withheld case. At `604f914`, both routers reported two capability gaps despite
+selecting maintenance-related guidance. `skills` did not match the singular
+keyword, the context-reading evaluation had no specific route, and `No model
+transmission, dashboard or server development` was outside the complete exclusion
+list grammar. The original observation and provisional cell remain historical.
+
+Both routers now recognize bounded own-product action/subject phrases, route
+document context-reading/delivery evaluation to its measurement protocol and
+client-operation guides, and handle that full exclusion clause for relevance.
+Client or skill methods cannot by themselves establish another domain's coverage.
+Mixed requests retain each objective and any uncovered domain's provisional cell;
+no standing organization or additional authority is granted. Both routing guides
+require these distinctions before treating a shorter reading list as appropriate.
+
+Fresh corrected routing preserves exact original text, two separate objectives,
+authority, model-transmission prohibition and all non-gap validation commands.
+The erroneous gap's two force-structure commands are absent from the newly
+computed direct route; this does not remove controls from old issued receipts.
+Five unrelated technical manuals and the gap-only organization reading are no
+longer recommended. Explicit technical sources, technical parent objectives and
+actual dashboard review still retain technical context. Partial/exception-bearing
+exclusions are not stripped, and guarded multiple objectives still fail closed.
+
+`run-skill-maintenance-routing-fixtures.js` exercises both providers and human/AI
+modes. Its first attempt read the English relevance field under Korean-only
+`normalization` and failed with a TypeError; the fixture was corrected to the
+actual `request_intake.runtime_relevance_query` contract, not a relaxed product
+assertion. Failed fixture/log are retained under
+`.cannae/maintenance/skill-context-r2-20261116/fixture-failure-2592a742-a13f-4567-916c-76a0c74a01ba/`;
+fixture SHA-256 `5b809ca8d2d1f6ffe4a1d0c8397a657c31bcfe93c8ba39777dde742dfc1a273d`,
+log SHA-256 `b0edd5c427e26a20a195546cf1a262cfc00b88f952185f098694c5bac3b9378a`.
+The next run exposed an existing overmatch: `Analyze maintenance productivity`
+was covered by the runtime route solely through `maintenance`. That generic
+keyword now selects supporting context/controls without establishing a domain;
+actual maintenance-dashboard architecture remains covered. The failed runner and
+both router sources are preserved in
+`.cannae/maintenance/skill-context-r2-20261116/routing-counterexample-eaa9fc02-c8f6-4225-87c2-db806c795e20/result.json`,
+SHA-256 `5406d3cef443c7e179d8d9c8b986c81c967be46f3cd2724cc45eb8d5ee73aac9`.
+Additional inspection found that removing the generic capability match exposed
+an unsupported plural: `Review maintenance dashboards` was covered at `7f64600`
+but became a gap. The in-progress broad gate was deliberately terminated after
+its targeted pass, not reported as a pass or a timeout; retained result SHA-256
+`21e87180b419d87b41a911307111ebef7eecd32fb00fa2142a387186182f3293` at
+`.cannae/maintenance/skill-maintenance-routing-20261116/gate-c1d391ba-6682-49ce-b33d-9e6d2647483b/verification.json`.
+Both routers now recognize that actual plural subject, and a positive countercase
+requires the full technical reading as well as coverage. The acceptance threshold
+and original evaluation bundle were not changed.
+The intermediate focused gate passed 17/17 commands, with 104 routing observations,
+four guarded rejections, the existing 1,776 routing cases, Korean intake,
+installation, preflight, document integrity and control-enforcement regressions,
+both skill validators and index/link/language checks. Tested sources and unrelated
+files stayed unchanged and matched the staged sources. Evidence:
+`.cannae/maintenance/skill-maintenance-routing-20261116/gate-bec1a747-185f-4ca4-baf5-b26d6d67cb28/verification.json`,
+SHA-256 `9212674b38ca43e8ebe89d7fd4b55ee060f9142e2b8e30c38b2bee7b23cdcd13`.
+This is not the full pre-merge integration gate.
+
+Final source review nevertheless found a regression outside those observations:
+`Use the Codex skill to inspect mission lifecycle` lost its specific subject when
+all skill-operation matches were suppressed for a skill-as-method phrase. Both
+providers covered it at `7f64600` and returned a gap in that intermediate candidate.
+The failed observation is `.cannae/maintenance/skill-maintenance-routing-20261116/method-d2d019fe-1a00-4012-9a2c-8a7aea7ba555.json`,
+SHA-256 `2a58ac76891452fb3a6a08b2e2bf6789104e2efd2cdbe2091547e464c777e6f6`.
+The correction filters only generic client/skill method terms, preserving specific
+subject phrases and their manuals/controls. Both skill guides and positive tests
+now require that distinction. The corrected method observation has SHA-256
+`6388915a16aefaa0d25b4b0c6d1a57a8b006be8f97c96959caeaeaea30744aa5` at
+`.cannae/maintenance/skill-maintenance-routing-20261116/method-2d4d67d9-5719-4800-9449-9dd48cd96813.json`.
+Final refined-source validation passed all 17 commands, now including 112 targeted
+routing observations and four guarded rejections, plus the unchanged broad
+routing, Korean, installation, preflight, integrity and enforcement suites.
+Sources stayed stable and matched the staged files; `.gitignore` and the lockfile
+were preserved. Final gate:
+`.cannae/maintenance/skill-maintenance-routing-20261116/gate-d7e9735d-ec4b-468c-a3c4-8d34323bf7e5/verification.json`,
+SHA-256 `13ccd709aa092062c797dc8f3927a1d6b7edf5ae4b78bc458a18579fca2ba20f`.
+
+The original request's final two-provider observation is retained at
+`.cannae/maintenance/skill-context-r2-20261116/maintenance-route-43e8ba6b-8fc1-4282-822e-c9ba2c84eb53.json`,
+SHA-256 `6d765f011a6cd41b4ddc4198e9763eabed86b7b55a4dafa19c649367cb669605`.
+Unchanged frozen development expectations still match 14/24 baseline and 24/24
+candidate observations across both providers; no withheld task was executed.
+Report: `.cannae/maintenance/skill-reference-r2-20261116/routing-af0403c6-5437-4628-b4e7-e4a2b04900b3.json`,
+SHA-256 `398d4e518899337954574c95e3bbb25e51eb3c0b9fca35bed9567e50c89d6d36`.
+SR02/SR03 remain in progress, the accepted inventory is still **4/18**, and no
+native comparison, actual context savings or general semantic coverage is claimed.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

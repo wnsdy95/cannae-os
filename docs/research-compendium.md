@@ -118,6 +118,14 @@ in `docs/evaluation-metrics.md` keeps original requests, reused development-sour
 bodies, reference snapshots and native delivery separate. Both skills retain
 selective reading; neither catalog size nor initial prompt size proves savings.
 
+The [own-skill maintenance intake correction](completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
+addresses a separate mismatch: selecting relevant maintenance manuals did not
+mean the router recognized the maintenance objective. Specific action/subject
+matching and context-evaluation routing now coexist with uncovered domain cells;
+using a skill is not itself subject expertise. Both skill guides preserve this
+distinction and existing receipt/transfer limits. This is local engineering
+evidence, not universal intent understanding or an unseen evaluation result.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
