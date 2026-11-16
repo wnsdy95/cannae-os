@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Refresh stale R2/R3/R5 native evaluation proposals against the committed metadata repair: preserve the original R2 input, reproduce paired R3 task hashes and prepare current R5 brief-only inputs. Record eleven passing metadata-only preflights and a new evidence-index version without reusing approvals, invoking models, closing criteria or changing skill behavior.
+
 - Reject errored, signaled and incomplete Git results in terminology identity and dependency registration/refresh, including status-zero results. Add initial/late failure, history-preservation and CLI regressions; mirror metadata-failure handling in both project-terms guides without changing deadlines or retry authority. Preserve the real reader timeout and pre-repair synthetic record writes separately.
 
 - Record focused skill-consumer verification at the current source: six suites passed, while review failed on unavailable Git metadata and reader remained unexecuted. Retain the earlier observation-budget interruptions and rejected index draft without weakening controls, changing skill behavior or claiming native/full-integration acceptance.

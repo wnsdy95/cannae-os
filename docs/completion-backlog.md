@@ -1748,6 +1748,49 @@ consent, not an edited hash or reuse of a pending/old approval. Historical promp
 decisions and failures remain unchanged. No new SR criterion is closed; the
 bounded inventory remains **6/18**, with broader consumer validation still open.
 
+#### Refreshed Native Proposals After The Metadata Repair
+
+The committed repair at `4eb6fc2ef5b1b455b46ee18863c938daea858eed`
+requires new exact execution envelopes. The earlier unexecuted R2 recovery,
+R3 candidate and R5 brief proposals remain historical and stale; no pending
+or consumed decision transfers to their replacements.
+
+- R2: `skill-context-r2-20261116/native-startup-recovery-v2/` retains the
+  identical 40,716-byte baseline input, frozen reference catalog, client and
+  limits. Only one startup-recovery process is proposed, not the stopped
+  batch's 23 unstarted cases. Plan SHA-256:
+  `8ae87fed6924c26b0adec8065cf63d45633c9129fdeb7cc4c9abd2b651b92c7a`.
+- R3: `skill-authoring-candidate-4eb6fc2-20261117/` prepares eight development
+  inputs from a separate clean checkout at that exact commit. All original
+  task hashes match the baseline; the total is 1,193,740 bytes. The changed
+  instruction selection is not a context-saving claim or withheld freeze.
+  Plan SHA-256:
+  `3e5be1141f0b57bc23fae6dd53a8a25c5aeadbfdd97e966583acf564f7c2fe25`.
+- R5: `skill-workflow-r5-20261117/native-brief-v2/` binds fresh two-chain
+  preparation with current guides, unchanged original assignments and synthetic
+  task sources. The 166,416-byte initial inputs support two brief-only processes,
+  not actual parent notice delivery, later drafting, resumption or receiving.
+  Plan SHA-256:
+  `c48c849a0f1d1cc0f01832dc207917ad8e00012ce1303220310f8cb9a7a12d49`.
+
+All paths above are under `.cannae/maintenance/`. The eleven metadata-only
+observer preflights passed, with no model calls or created approval decisions.
+Preflight SHA-256:
+`2b0d297c2e3fae9e228a3de1faedd778f40912b59b1aa026aa105887f88ae0de`.
+New exact decisions are required before execution; each proposal preserves
+its process limit, ten-minute deadline, 24-hour decision validity and stop-on-failure
+rule. Earlier failed attempts, inputs, proposals and decisions are unchanged.
+
+`skill-proposal-refresh-20261117/evidence-index-v10.json` preserves the earlier
+38 entries and adds this local preflight, for 39 total. Index SHA-256:
+`b42b7172c869c79e6a114f6a21fc6e2e6e2bce4dacf221a5794b4d026192ef5e`;
+inspection SHA-256:
+`735ee8506a3a5152b0d5ec62f6fd2f2dc90906c50e72cf78ddc9b005ac86a030`.
+This is declared-file inspection, not recursive dependency or result acceptance.
+This checkpoint is preparation/status maintenance, not a new skill behavior or
+closed criterion. The inventory remains **6/18**, and the consumer/integration
+gaps recorded above remain open. Dashboards and servers remain deferred.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
