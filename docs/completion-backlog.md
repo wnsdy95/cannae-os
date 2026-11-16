@@ -1040,6 +1040,72 @@ integration gate. Installation, context integrity, preflight and enforcement
 still require a completed local check before the proposed native retry. No
 further long-running gate or model attempt was launched at this checkpoint.
 
+#### Exact Terminology Proposal Paths (2026-11-16)
+
+A focused R4 audit reproduced an output-boundary defect in
+`project-terminology-change.js`: its generic `changes/probe` path was ignored,
+but a negated Git rule exposed the actual generated `proposal.json`. Preparation
+returned pending-review success and the synthetic private proposal appeared in
+Git's untracked listing. No canonical ledger, commit, transfer or native call
+occurred. Before evidence:
+`.cannae/maintenance/terminology-output-r4d-20261116/probe-4608e087-ab9a-4591-b38b-696d35f69a74.json`,
+SHA-256 `41432b1996342ef74b434f6203c090b1c17baf2ad7e7803b95abd6e5b8e8359d`.
+
+The repair checks the actual destination before directory creation, again before
+writing, and during inspection. Normal Git index handling also rejects a proposal
+that was force-tracked despite its ignore rule. Reviewed adoption uses that same
+inspection before acquiring a writer lock or changing the ledger. Changed storage
+rules never authorize automatically editing `.gitignore`, deleting evidence,
+untracking files or relocating private content. Both skill guides encode this
+operational distinction. A cooperative local check is not an atomic policy lock.
+
+The identical probe now rejects `TERMINOLOGY_CHANGE_OUTPUT_NOT_IGNORED` without
+creating the proposal or ledger:
+`.cannae/maintenance/terminology-output-r4d-20261116/probe-69b91608-4471-453f-9feb-96cc97b7ce86.json`,
+SHA-256 `cc5b91d3e639172cb3676330fe0e9d47ccbf4b44fdbd270d6af8735163b7c867`.
+The proposal suite passes 21 cases, including exact exceptions, a rule change
+between directory creation and writing, force-tracked inspection and unchanged
+historical evidence. Consumer and affected-surface checks are recorded separately;
+this local repair does not close SR10/SR12 or any native criterion. The accepted
+inventory remains **4/18**; the R2 retry consent and broader gate holds remain.
+
+The canonical writer had a related bypass: `--no-index` treated a force-tracked
+ledger as ignored and appended a synthetic definition to it. Its exact-output
+checks now consult the real index before locking and again before publication.
+The original writer probe is retained at
+`.cannae/maintenance/terminology-output-r4d-20261116/writer-probe-fa170946-ba49-436f-a9c5-642896c1a8d1.json`,
+SHA-256 `10567636eb6a34cbfde1bbad3f7b3815467af8dd1d8eba297f77ebf78a85b053`.
+New consumer cases check unchanged evidence, no lock/transaction on initial
+refusal, and a ledger added to Git's index immediately before publication.
+The same writer probe now rejects `TERMINOLOGY_WRITER_OUTPUT_NOT_IGNORED`, leaves
+the ledger byte-identical and adds no entry:
+`.cannae/maintenance/terminology-output-r4d-20261116/writer-probe-aceb4789-3abe-4f46-9e43-9c1d58bc267c.json`,
+SHA-256 `d81a77fae2a7656aa4b4593d621bcebea655599b91a26727fa59977d943dd754`.
+
+The initial focused gate passed the proposal suite but timed out during the
+writer suite at its newly chosen two-minute parent limit; the remaining eleven
+commands were not executed. Preserve that failed run:
+`.cannae/maintenance/terminology-output-r4d-20261116/gate-98ea15a5-a1b2-444c-846a-c56f7e3fb017/verification.json`,
+SHA-256 `7ac2d22b06d48ea29cb8ccee632b88f33d6f8e4adfbaf75ddfe5b4dd69410150`.
+The earlier 29-case writer suite took about 97 seconds, before these extra Git
+checks. The new bounded follow-up allows five minutes per local test process;
+no production lease, review expiry, model deadline or original failed result is
+changed. The initial harness body is retained separately. This adjustment is
+not evidence that the writer or the later suffix passed.
+
+The subsequent focused gate passed all thirteen commands with its twelve public
+source files and the user's `.gitignore` unchanged during the run:
+`.cannae/maintenance/terminology-output-r4d-20261116/gate-71dce0f0-2b9d-4f52-bc06-d8485334ee4e/verification.json`,
+SHA-256 `a443c44743df31ba2d5cdb9d7eba91961a3822cf03019d15554d783f5e9c7abc`.
+It covers 21 proposal, 31 writer, 16 terminology, 34 handoff and 25 dependency
+cases, the complete validator fixture command, both skill validators and index,
+coverage, link, English and whitespace checks. Linked/copied wrappers are exercised
+inside the proposal, writer and dependency suites. The writer completed in about
+142 seconds, not within the first harness's two-minute limit. Final evidence-index
+edits receive a separate short closure check. This is not the full repository
+integration gate, native term appraisal or actual cross-client receiving; earlier
+R2 failures remain separate and the accepted inventory is still **4/18**.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

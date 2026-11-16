@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Check exact terminology proposal destinations before writing and during inspection, rejecting Git ignore exceptions and already tracked files without altering user ignore rules or deleting retained evidence. Apply the same index-aware checks to canonical writer outputs, cover late tracking before publication, and mirror private-storage troubleshooting in both skills.
+
 - Preserve the first failed R2 native attempt and repair its observer's startup ordering: schema-shaped completed diagnostics may precede turn creation, but tools, malformed records and incomplete turns remain rejected. Add captured-sequence replay and mirrored retry discipline without suppressing warnings, weakening isolation, reusing consent or claiming a successful native comparison.
 
 - Recognize approval-proposal drafting without granting approval or uncovered-domain expertise. Preserve independently stated action clauses after a colon and maintenance verbs during bounded intake, while retaining quoted-source/time handling and guarded multi-objective rejection. Mirror per-objective failure diagnosis in both skills and preserve the earlier misdiagnosis and fixed native-evaluation snapshot.

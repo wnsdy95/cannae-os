@@ -142,7 +142,13 @@ may invoke this path. A CLI argument is not a new source-access grant.
 assigns its revision ID/version/predecessor and writes only
 `.cannae/knowledge/changes/<proposal-id>/proposal.json`. That destination must
 already be ignored by the project; the helper neither changes ignore rules nor
-commits anything. It creates no canonical ledger, even when none existed.
+commits anything. The exact proposed path is checked before creating its directory,
+immediately before writing and during inspection; a generic ignored probe is not
+enough. A negated Git rule or already tracked proposal stops this path. Preserve
+existing evidence and ask its owner to resolve storage; do not automatically edit
+ignore rules, untrack files, delete a proposal or move its private contents.
+This local recheck does not protect against a concurrent actor changing Git policy
+after the check. It creates no canonical ledger, even when none existed.
 New concepts have no delegated access by default; a correction preserves the
 predecessor's domain/task and role/department lists. A changed scope requires a
 separate concept, not rewriting prior meaning. Term capture cannot widen access.
@@ -175,7 +181,8 @@ The existing packet screening and required-term checks still govern handoffs.
 
 These two proposal commands never apply, confirm or retire a definition. The
 separate reviewed-append path below handles a designated writer's explicit
-canonical update. Registered document/task impact tracking remains open R4 work.
+canonical update. Registered document/task impact tracking uses the dependency
+procedure below; complete R4 appraisal remains separately tracked in the backlog.
 The checks do not claim a protected host, automatic semantic dependency discovery,
 authenticated human decisions or actual model use.
 
@@ -220,8 +227,10 @@ prevents reuse of that exact review, including after a failed partial preparatio
 Do not delete the directory or change an old hash to obtain another attempt.
 Retain it and prepare a fresh reviewed change if another append is still needed.
 
-Every actual output must already be ignored by Git. The helper changes no ignore
-rule and publishes nothing. It preserves the complete earlier ledger as a private
+Every actual output must already be ignored by Git and absent from its index,
+including an existing canonical ledger. A force-tracked file is not made private
+by an ignore rule. The helper changes no ignore rule, untracks nothing and
+publishes nothing. It preserves the complete earlier ledger as a private
 snapshot, appends exactly one validated entry, syncs the staged file and atomically
 renames it into place. It checks the resulting ledger and releases only its own
 unchanged lock. Source/review changes, expiry or changed exact ignore rules before publication stop the write;

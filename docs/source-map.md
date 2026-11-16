@@ -569,6 +569,13 @@ Local fixtures cover stale sources/bases, separate repositories, unsafe paths,
 secret-shaped values and installed wrappers; they do not authenticate USER
 statements or complete single-writer adoption, impact tracking or native use.
 
+The [exact proposal-path correction](completion-backlog.md#exact-terminology-proposal-paths-2026-11-16)
+records a synthetic Git counterexample: an ignored generic probe coexisted with
+an unignored proposal. The helper now checks the actual path, including tracked
+status, before writing and on inspection; reviewed adoption inherits that refusal.
+Canonical writer outputs also retain the actual Git index when checking privacy.
+This is local output hygiene, not transmission, protected storage or USER approval.
+
 The later [reviewed canonical append](project-terminology-workflow.md#reviewed-canonical-append)
 implements explicit local single-writer updates and exited-process reconciliation.
 It retains exact before/after snapshots, distinguishes current observations from

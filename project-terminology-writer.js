@@ -47,7 +47,7 @@ function directory(root, relative, create = false) {
 function ignored(root, relatives) {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith("GIT_")));
   for (const relative of relatives) {
-    const result = spawnSync("git", ["-C", root, "check-ignore", "--no-index", "--quiet", "--", relative],
+    const result = spawnSync("git", ["-C", root, "check-ignore", "--quiet", "--", relative],
       { env, timeout: 5000, encoding: "utf8" });
     if (result.status !== 0) fail("OUTPUT_NOT_IGNORED");
   }

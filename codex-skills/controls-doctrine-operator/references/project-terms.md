@@ -13,6 +13,12 @@ binding; do not turn an undefined term into an unscoped record during review.
 Use the loaded bundle's `scripts/project_terminology.js` for local checks and
 scoped selections. Only a reader authorized for the whole ledger may run it;
 delegates receive reviewed excerpts, never the private ledger by default.
+For private proposals and canonical appends, check each exact output path, not
+just an ignored directory or probe. Git exceptions and force-tracked files can
+expose that path; an ignore rule does not remove a ledger from Git's index.
+A failed ignore check holds preparation/inspection; preserve existing evidence
+and return the storage decision to its owner. Do not automatically edit ignore
+rules, untrack files, delete proposals or relocate private text to pass the check.
 Carry relevant definitions, versions and digest through backbrief and handoff.
 Check freshness at phase changes; clarify conflicting project/task meanings
 instead of silently preferring one. Use confirmed aliases only to supplement

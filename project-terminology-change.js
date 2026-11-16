@@ -103,6 +103,13 @@ function compile(request, repository) {
   return proposal;
 }
 
+function requireIgnored(root, relative) {
+  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith("GIT_")));
+  const ignored = spawnSync("git", ["-C", root, "check-ignore", "--quiet", "--", relative],
+    { env, timeout: 5000, encoding: "utf8" });
+  if (ignored.status !== 0) fail("OUTPUT_NOT_IGNORED");
+}
+
 function outputParent(root, create = false) {
   const walk = make => {
     let directory = root;
@@ -117,10 +124,7 @@ function outputParent(root, create = false) {
     return directory;
   };
   const directory = walk(false);
-  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith("GIT_")));
-  const ignored = spawnSync("git", ["-C", root, "check-ignore", "--no-index", "--quiet", "--", OUTPUT + "/probe"],
-    { env, timeout: 5000, encoding: "utf8" });
-  if (ignored.status !== 0) fail("OUTPUT_NOT_IGNORED");
+  requireIgnored(root, OUTPUT + "/probe");
   return create ? walk(true) : directory;
 }
 
@@ -134,6 +138,7 @@ function inspect(repository, relative, expected) {
   if (typeof relative !== "string" || !/^\.cannae\/knowledge\/changes\/[a-f0-9-]{36}\/proposal\.json$/.test(relative) ||
       !/^[a-f0-9]{64}$/.test(expected || "")) fail("PROPOSAL_LOCATION_INVALID");
   outputParent(origin.root);
+  requireIgnored(origin.root, relative);
   const stored = terms.readBoundFile(origin.root, relative, 2 * MAX_INPUT);
   if (stored.digest !== expected) fail("PROPOSAL_DIGEST_MISMATCH");
   const proposal = parse(stored.bytes);
@@ -152,9 +157,12 @@ function prepare(request, repository) {
   const proposal = compile(request, origin.root), bytes = encode(proposal);
   if (!same(origin, proposal.repository)) fail("ROOT_CHANGED");
   if (!same(proposal, compile(request, origin.root))) fail("INPUT_CHANGED");
-  const id = randomUUID(), directory = path.join(outputParent(origin.root, true), id);
-  fs.mkdirSync(directory, { mode: 0o700 });
+  const id = randomUUID();
   const relative = OUTPUT + "/" + id + "/proposal.json";
+  requireIgnored(origin.root, relative);
+  const directory = path.join(outputParent(origin.root, true), id);
+  fs.mkdirSync(directory, { mode: 0o700 });
+  requireIgnored(origin.root, relative);
   fs.writeFileSync(path.join(origin.root, relative), bytes, { flag: "wx", mode: 0o600 });
   // A failed final inspection may leave a private pending candidate, never an adopted entry.
   return inspect(origin.root, relative, hash(bytes));

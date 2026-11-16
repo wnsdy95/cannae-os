@@ -197,6 +197,44 @@ try {
     fs.symlinkSync(path.join(b.root, ".cannae"), path.join(p.root, ".cannae"));
     assert.throws(() => changes.prepare(p.request, p.root), /OUTPUT_INVALID/);
   });
+  const exposedProposalRules = ".cannae/knowledge/changes/**\n!.cannae/knowledge/changes/*/\n!.cannae/knowledge/changes/*/proposal.json\n";
+  check("an ignored probe does not authorize an unignored exact proposal path", () => {
+    const p = project("exact output exception");
+    fs.writeFileSync(path.join(p.root, ".gitignore"), exposedProposalRules);
+    assert.equal(spawnSync("git", ["-C", p.root, "check-ignore", "--quiet", "--", changes.OUTPUT + "/probe"], { env }).status, 0);
+    assert.throws(() => changes.prepare(p.request, p.root), /TERMINOLOGY_CHANGE_OUTPUT_NOT_IGNORED/);
+    assert(!fs.existsSync(path.join(p.root, changes.OUTPUT)));
+    assert(!fs.existsSync(path.join(p.root, terms.RELATIVE)));
+  });
+  check("exact ignore rules are rechecked after directory creation before private bytes are written", () => {
+    const p = project("output exception before write"), mkdir = fs.mkdirSync;
+    let proposalDirectory;
+    fs.mkdirSync = function(file, ...args) {
+      const result = mkdir.call(fs, file, ...args);
+      if (typeof file === "string" && path.dirname(file) === path.join(p.root, changes.OUTPUT)) {
+        proposalDirectory = file;
+        fs.writeFileSync(path.join(p.root, ".gitignore"), exposedProposalRules);
+      }
+      return result;
+    };
+    try { assert.throws(() => changes.prepare(p.request, p.root), /TERMINOLOGY_CHANGE_OUTPUT_NOT_IGNORED/); }
+    finally { fs.mkdirSync = mkdir; }
+    assert(proposalDirectory); assert(!fs.existsSync(path.join(proposalDirectory, "proposal.json")));
+    assert(!fs.existsSync(path.join(p.root, terms.RELATIVE)));
+  });
+  check("changed ignore rules and force-tracked proposals stop inspection without deleting evidence", () => {
+    const p = project("existing output exception"), result = changes.prepare(p.request, p.root);
+    const file = path.join(p.root, result.proposal_path), original = fs.readFileSync(file);
+    fs.writeFileSync(path.join(p.root, ".gitignore"), exposedProposalRules);
+    assert.throws(() => changes.inspect(p.root, result.proposal_path, result.proposal_sha256), /TERMINOLOGY_CHANGE_OUTPUT_NOT_IGNORED/);
+    assert.deepEqual(fs.readFileSync(file), original);
+    fs.writeFileSync(path.join(p.root, ".gitignore"), ".cannae/\n");
+    assert.equal(changes.inspect(p.root, result.proposal_path, result.proposal_sha256).status, "change_proposal_current_pending_review");
+    assert.equal(spawnSync("git", ["-C", p.root, "add", "-f", "--", result.proposal_path], { env }).status, 0);
+    assert.throws(() => changes.inspect(p.root, result.proposal_path, result.proposal_sha256), /TERMINOLOGY_CHANGE_OUTPUT_NOT_IGNORED/);
+    assert.deepEqual(fs.readFileSync(file), original);
+    assert(!fs.existsSync(path.join(p.root, terms.RELATIVE)));
+  });
   check("invalid UTF-8 oversized files and mutation during bounded read fail", () => {
     const p = project("read integrity"), source = path.join(p.root, p.request.source.path), original = fs.readFileSync(source);
     try {

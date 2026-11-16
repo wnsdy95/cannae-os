@@ -1093,6 +1093,15 @@ unrelated ledger edit invalidates the proposal base but does not invalidate all
 unrelated work. The [checkpoint](completion-backlog.md#terminology-change-proposals-2026-11-15)
 keeps single-writer adoption and registered impact reconciliation open.
 
+The [exact private-output case](completion-backlog.md#exact-terminology-proposal-paths-2026-11-16)
+shows why an ignored directory probe is insufficient: Git exceptions can expose
+the actual generated proposal, and a tracked file remains tracked despite an
+ignore rule. Check that exact path before writing and when reusing it. The
+helper and both skills preserve failed/previous evidence and return storage
+changes to its owner rather than automatically editing ignores or untracking.
+Canonical ledger writes use the same index-aware boundary, not `--no-index`.
+The local checks cannot prevent a non-cooperating concurrent policy edit.
+
 The subsequent [reviewed-append procedure](project-terminology-workflow.md#reviewed-canonical-append)
 adds cooperative single-writer serialization and immutable transaction snapshots.
 Its distinction is operational: recording an appraisal and applying a definition

@@ -92,6 +92,27 @@ async function main() {
       assert.throws(() => writer.adopt(p.root, proposal.proposal_path, proposal.proposal_sha256, "0".repeat(64)), /TERMINOLOGY_MISSING/);
       assert(!fs.existsSync(path.join(p.root, terms.RELATIVE))); assert(!fs.existsSync(path.join(p.root, writer.LOCK)));
     });
+    await check("an exact review cannot adopt a newly exposed or force-tracked proposal", () => {
+      for (const state of ["ignore-exception", "tracked"]) {
+        const p = project(), b = prepare(p), proposal = path.join(p.root, b.proposal_path);
+        const before = fs.readFileSync(proposal), review = fs.readFileSync(b.reviewFile);
+        if (state === "ignore-exception") fs.writeFileSync(path.join(p.root, ".gitignore"),
+          ".cannae/knowledge/changes/**\n!.cannae/knowledge/changes/*/\n!.cannae/knowledge/changes/*/proposal.json\n");
+        else assert.equal(spawnSync("git", ["-C", p.root, "add", "-f", "--", b.proposal_path], { env }).status, 0);
+        assert.throws(() => adopt(b), /TERMINOLOGY_CHANGE_OUTPUT_NOT_IGNORED/);
+        assert.deepEqual(fs.readFileSync(proposal), before); assert.deepEqual(fs.readFileSync(b.reviewFile), review);
+        for (const relative of [terms.RELATIVE, writer.LOCK, ".cannae/knowledge/transactions"])
+          assert(!fs.existsSync(path.join(p.root, relative)));
+      }
+    });
+    await check("an ignored but tracked canonical ledger cannot receive a reviewed append", () => {
+      const p = project(true), b = prepare(p), file = path.join(p.root, terms.RELATIVE), before = fs.readFileSync(file);
+      assert.equal(spawnSync("git", ["-C", p.root, "add", "-f", "--", terms.RELATIVE], { env }).status, 0);
+      assert.throws(() => adopt(b), /TERMINOLOGY_WRITER_OUTPUT_NOT_IGNORED/);
+      assert.deepEqual(fs.readFileSync(file), before);
+      assert(!fs.existsSync(path.join(p.root, writer.LOCK)));
+      assert(!fs.existsSync(path.join(p.root, ".cannae/knowledge/transactions")));
+    });
     await check("reviewed first append preserves snapshots and creates no execution or disclosure authority", () => {
       const p = project(), b = prepare(p), before = fs.readFileSync(path.join(p.root, b.proposal_path));
       const result = adopt(b), state = terms.read(p.root);
@@ -223,7 +244,7 @@ async function main() {
       assert(fs.existsSync(path.join(p.root, writer.LOCK))); assert(!fs.existsSync(path.join(p.root, terms.RELATIVE)));
     });
     await check("source review expiry and exact ignore rules are rechecked before the canonical write", () => {
-      for (const kind of ["source", "review", "expiry", "ignore"]) {
+      for (const kind of ["source", "review", "expiry", "ignore", "tracked"]) {
         const p = project(true), b = prepare(p), before = fs.readFileSync(path.join(p.root, terms.RELATIVE));
         const writeFile = fs.writeFileSync, open = fs.openSync, now = Date.now, names = new Map();
         fs.openSync = function(file, ...args) { const fd = open.call(fs, file, ...args); names.set(fd, file); return fd; };
@@ -233,11 +254,13 @@ async function main() {
             if (kind === "expiry") Date.now = () => now() + 7200000;
             else if (kind === "ignore") writeFile.call(fs, path.join(p.root, ".gitignore"),
               ".cannae/*\n!.cannae/knowledge/\n.cannae/knowledge/*\n!.cannae/knowledge/terminology.json\n");
+            else if (kind === "tracked") assert.equal(spawnSync("git", ["-C", p.root, "add", "-f", "--", terms.RELATIVE], { env }).status, 0);
             else fs.appendFileSync(kind === "source" ? path.join(p.root, p.request.source.path) : b.reviewFile, "\n");
           }
           return result;
         };
-        try { assert.throws(() => adopt(b), /SOURCE_STALE|DIGEST_MISMATCH|REVIEW_NOT_CURRENT|OUTPUT_NOT_IGNORED/); }
+        try { assert.throws(() => adopt(b), kind === "tracked" ? /TERMINOLOGY_WRITER_OUTPUT_NOT_IGNORED/ :
+          /SOURCE_STALE|DIGEST_MISMATCH|REVIEW_NOT_CURRENT|OUTPUT_NOT_IGNORED/); }
         finally { fs.writeFileSync = writeFile; fs.openSync = open; Date.now = now; }
         assert.deepEqual(fs.readFileSync(path.join(p.root, terms.RELATIVE)), before);
         assert(!fs.existsSync(path.join(p.root, writer.LOCK)));
