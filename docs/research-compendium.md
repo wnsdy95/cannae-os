@@ -1109,6 +1109,14 @@ separate source claims; keep general permission rules outside the quoted meaning
 Empty unsourced fields do not remove execution or disclosure controls. This
 development-sample repair is not evidence of native semantic compliance.
 
+The [local capture progression](completion-backlog.md#local-terminology-capture-2026-11-16)
+then exercised both bundled wrappers across two synthetic repositories. A candidate
+advanced history without replacing the operative confirmed meaning; the next USER
+correction followed that revision using its own source. Keep those two notions
+distinct in ordinary reporting. Questions need not manufacture ledger entries,
+and retirement preserves identifying text without making it current. The observed
+local sequence closes SR10's operator path, not native behavior or authentication.
+
 The subsequent [reviewed-append procedure](project-terminology-workflow.md#reviewed-canonical-append)
 adds cooperative single-writer serialization and immutable transaction snapshots.
 Its distinction is operational: recording an appraisal and applying a definition

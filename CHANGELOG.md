@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Observe the local source-appraised terminology capture path through both bundled CLI wrappers in two synthetic repositories. Preserve the failed evaluator assertion and finish read-only appraisal without repeating appends. Clarify operative meaning versus latest revision, question-only observations and retirement in both skills; close SR10 only at its local operator scope, not native comprehension or receiving.
+
 - Remove an unsourced execution-approval exclusion from the terminology change samples, rebind the sample family, and stop unrelated-concept fixtures inheriting old exclusions. Mirror field-by-field source appraisal in both skills while preserving all independent authority controls and negative-contract cases.
 
 - Check exact terminology proposal destinations before writing and during inspection, rejecting Git ignore exceptions and already tracked files without altering user ignore rules or deleting retained evidence. Apply the same index-aware checks to canonical writer outputs, cover late tracking before publication, and mirror private-storage troubleshooting in both skills.

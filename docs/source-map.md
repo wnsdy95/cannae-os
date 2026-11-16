@@ -582,6 +582,13 @@ removes an unsupported field value without changing the quote or authority rules
 This is an author/source review of development samples, not native semantic
 acceptance or a general automatic meaning validator.
 
+The [local capture progression](completion-backlog.md#local-terminology-capture-2026-11-16)
+retains minimal synthetic sources, field appraisals and actual bundled-CLI outcomes
+for definition, candidate, correction, separate-project meaning and retirement.
+Its question remains unresolved rather than becoming a definition. This is
+author/operator engineering evidence, not a military source, authenticated USER
+record, independent semantic review or native receiving test.
+
 The later [reviewed canonical append](project-terminology-workflow.md#reviewed-canonical-append)
 implements explicit local single-writer updates and exited-process reconciliation.
 It retains exact before/after snapshots, distinguishes current observations from

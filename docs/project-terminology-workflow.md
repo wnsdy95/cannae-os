@@ -69,6 +69,29 @@ execution authority or release permission. A project's informal use of
 rules. Qualify overloaded terms and retain the actual control fields unchanged.
 Do not infer role access from vocabulary familiarity or a newly suggested team.
 
+### Capture State Progression
+
+Use the local proposal, appraisal and writer commands below when the current
+task supplies a reusable meaning. A new question can remain a source-bound memo;
+capture does not require inventing a definition or writing a ledger entry.
+
+| Observation | Record and report | Current meaning |
+| --- | --- | --- |
+| Explicit USER definition | Prepare, compare each field with the statement, then explicitly append under existing writer authority. | No new current definition until the append completes. |
+| AI interpretation of that concept | Append a reviewed candidate with its AI basis; retain the earlier confirmed definition. | Report the operative definition and candidate separately. |
+| Later USER correction | Append after the latest revision, even when that revision is a candidate; use the new USER source. | The new confirmed revision becomes operative without relabeling the old AI entry. |
+| Same spelling in another project/domain | Appraise a separate concept; do not borrow aliases, exclusions or access lists. | Only that project's scoped selection applies. |
+| Question about meaning or approval | Retain the unresolved question; clarify when material. No definition or permission follows. | Unavailable in this selection is not universal absence. |
+| Explicit USER retirement | Append retirement and retain the identifying text and lineage. | Historical text is not a current meaning or authorized fallback. |
+
+The latest revision determines append lineage; it need not be the operative
+confirmed meaning. Reinspect the current ledger and obtain a fresh selection
+after writing. Preserve old reports and stale bindings instead of patching their
+digests. The [local capture walkthrough](completion-backlog.md#local-terminology-capture-2026-11-16)
+observed this progression through both bundled CLI wrappers in two synthetic
+repositories. It is operator-assisted engineering evidence, not automatic
+conversation understanding, authenticated USER authorship or native receiving.
+
 ## Local Checks And Selection
 
 From either loaded provider bundle, locate its `scripts/project_terminology.js`.

@@ -63,6 +63,14 @@ remain empty. Preserve still-applicable predecessor meaning on a correction,
 but appraise a different concept or scope separately. Authority controls remain
 independent of these vocabulary fields, including when an exclusion is empty.
 
+Distinguish the latest revision from the operative confirmed meaning. After a
+candidate, a new correction appends after that candidate but takes its confirmed
+meaning from the new USER statement; never relabel the old AI basis or skip its
+history. Report both the operative definition and pending candidate when they
+differ. Keep a question as an unresolved observation when it supplies no meaning;
+do not manufacture a proposal merely to make capture look complete. On retirement,
+retain identifying text as history, not as a current definition or fallback.
+
 Preserve the canonical ledger and other pending proposals. Use the registered-dependency
 procedure below for affected-document reconciliation; do not infer unlisted uses.
 Do not route or hand off a pending proposal as the current confirmed glossary.

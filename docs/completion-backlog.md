@@ -16,13 +16,14 @@ Decision: USER, 2026-11-15. Investigate and improve remaining skill limitations;
 keep dashboards, servers and production infrastructure deferred. R1-R6 in the
 [scope](skill-first-product-scope.md#active-objectives) are the new active goal.
 The completed G1-G5/A01-A20 baseline below remains intact. New status:
-**5/18 required criteria verified**; this is a work inventory, not an accuracy
+**6/18 required criteria verified**; this is a work inventory, not an accuracy
 or product-completion percentage. Registration and the initial probes closed none;
 the frozen evaluation closes SR01 and the conditional-instruction checkpoint
 below closes SR04. Registered local dependency impact closes SR11 at its bounded
 scope, and the installation/diagnostic compatibility matrix closes SR16 for its
 tested configurations. The requirement-level local terminology boundary appraisal
-closes SR12; operational capture, actual context savings and native quality remain open.
+closes SR12. The source-appraised local capture progression closes SR10; actual
+context savings, native quality and cross-client receiving remain open.
 
 #### Observed Skill Limits
 
@@ -78,7 +79,7 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR07 | R3 | Freeze eight source-grounded tasks and a rubric covering omitted obligations, invented facts/approvals, false findings, locators, unknowns and complete/compressed output consistency; record both-client baseline and candidate artifacts separately. | In progress |
 | SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | In progress |
 | SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | Planned |
-| SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | In progress |
+| SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | Verified (bounded) |
 | SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Verified (bounded) |
 | SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | Verified (bounded) |
 | SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | Planned |
@@ -1184,6 +1185,49 @@ was authorized or performed. Evidence:
 `.cannae/maintenance/terminology-appraisal-r4e-20261116/deferred-wording-observation-3d333b46-d5fd-4afd-9f90-7f8fd9289a96.json`,
 SHA-256 `2d96296733b95ac5c5876b7e426f037b0d24564e9454ebf7076612ba5b8abefb`.
 That case is development-visible, not withheld, and is not fixed by this appraisal.
+
+#### Local Terminology Capture (2026-11-16)
+
+SR10 is **Verified (bounded)** for the usable local operator path. The prepared
+contract was executed at `f5617226f4ff554011fe651ad0f959e3ebd47970` through the
+actual Codex and Claude bundled CLI wrappers, using two new synthetic Git roots.
+No native model, real-project glossary, background collector or external receiver
+was involved. Source labels are synthetic, not authenticated USER events.
+
+The operator retained six minimal statements with exact whole-file hashes and
+UTF-8 excerpt ranges, inspected each of five proposals, separately appraised its
+fields and then invoked the writer. A question was retained without a proposal.
+The complete sequence preserved source files, review records, transaction
+snapshots, selected outputs, pending states and chronological command outcomes.
+
+| Required behavior | Observed result |
+| --- | --- |
+| Explicit definition without automatic adoption | A1 preparation/inspection left the ledger absent. Missing review failed without a ledger or lock; a separately reviewed append produced the sourced definition. |
+| AI candidate and USER correction | A2 stayed a candidate beside A1's operative meaning. A3 appended after A2 with its own USER source; the AI revision and earlier definition remained unchanged. |
+| Scope and ambiguous capture | B1 recorded the same spelling with a different support meaning, no borrowed exclusion or access grant. B2's question produced no confirmed definition or publication approval; B's ledger bytes stayed unchanged. |
+| Retirement, access and history | A4 retained all four A revisions while removing the current confirmed meaning. Every delegated selection remained unavailable, earlier proposals/selections rejected stale bindings, and retained transactions still matched their historical snapshots. |
+
+The first final audit failed because its expected error-code name was wrong:
+the product returned `TERMINOLOGY_CHANGE_BASE_STALE`, not the evaluator's
+`TERMINOLOGY_CHANGE_LEDGER_STALE`. Preserve that driver and failure; no append
+was repeated. A separate read-only completion audit checked the actual rejection
+and finished the remaining assertions. B2's appraisal preceded B1's append;
+its unchanged-ledger check followed A4. This is not a native R5 work chain.
+
+Retained evidence root: `.cannae/maintenance/terminology-capture-r4f-20261116/`.
+`verification-completed.json` has SHA-256
+`f46dd1c9d8aea3f8f6d44f6ad40e10a61854e4d94f4828dd576a3f47d4cff076`
+and binds 123 source, appraisal, command and transaction artifacts. Review is
+by the implementing operator, not an independent reviewer. Hashes and helper
+validity do not determine true meaning, authenticate USER or prove actual model
+compliance; those limits remain explicit. Existing R3/R5 native requirements
+remain open, and this does not consume or renew model-transfer consent.
+
+Both project-terms guides now distinguish latest-revision lineage from the
+operative confirmed meaning, preserve unresolved questions without invented
+entries, and identify retired text as history rather than fallback. The workflow
+provides the matching state table. This bounded closure makes the accepted
+inventory **6/18**, not a product-accuracy or elapsed-effort percentage.
 
 #### Execution Order And Boundaries
 
