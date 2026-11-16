@@ -24,6 +24,8 @@ scope, and the installation/diagnostic compatibility matrix closes SR16 for its
 tested configurations. The requirement-level local terminology boundary appraisal
 closes SR12. The source-appraised local capture progression closes SR10; actual
 context savings, native quality and cross-client receiving remain open.
+The [latest focused consumer check](#focused-consumer-verification-2026-11-17)
+retains a failed review gate separately from six passing suites.
 
 #### Observed Skill Limits
 
@@ -1658,6 +1660,47 @@ and `evidence-inspection-v6.json`, SHA-256
 Twenty-nine entries are not acceptance criteria or native calls. Declared file
 integrity, historical event replay, fake-process checks and full integration
 remain separate; earlier failures and unexecuted gates are still retained.
+
+#### Focused Consumer Verification (2026-11-17)
+
+At source revision `7d7153a41e33c7d10478e11e22bb79bbad4f1666`, six local
+consumer suites completed: control enforcement 6/6, routing preflight 22/22,
+installation 57/57, context-document integrity 16/16, project packets 37/37 and
+Git-process failures 39/39. Both provider paths were exercised where applicable;
+these are local fixtures, not native client responses or actual receiving.
+
+Two earlier attempts exceeded the operator's 60-second parent observation budget:
+routing after 21 passing rows and installation before suite completion. They
+remain incomplete. A new four-consumer run used a five-minute parent budget per
+command and passed without changing assertions, product deadlines, power settings
+or authority. Its report is
+`gate-58b2f256-f830-4f74-9182-a23486cf595f/verification.json`, SHA-256
+`4f27f0df4a3f4014582d0967498e00e1443a3dfc7ddd53a3d49ee4e5826fa2ab`.
+
+The separate packet/Git/review/reader gate is **failed**, not a complete pass:
+after the first two suites passed, review exited with
+`PROJECT_PACKET_GIT_UNAVAILABLE` at 43.610 seconds, before the parent deadline.
+The Git wrapper rejected an error/signal/missing-status result; this log does
+not identify the underlying process failure or establish sleep as its cause.
+Reader was not launched after that failure. The report is
+`gate-52973985-1fd4-43e2-b622-e48792d03a7a/verification.json`, SHA-256
+`e82378d4ae2126163e061120bb4b73b499609c5dd5fb6dc22dec71cea5807fa7`.
+
+All paths in this checkpoint are under
+`.cannae/maintenance/skill-consumer-checks-20261117/`. `evidence-index-v8.json`
+(SHA-256 `9244dceca12996c0b711f632c15df5019eca0c21c7dd1e8b4055006ef196cdfe`)
+retains the previous 29 entries unchanged and adds these four attempts.
+Its inspection is `evidence-inspection-v8.json`, SHA-256
+`c75415641470f8ed2d444e01db36f2a2a3e2104eb091833c0b4a2dcf383db490`.
+The invalid v7 index and builder snapshot remain retained: it recorded a null
+argument for the original no-option command; v8 corrects attribution, not results.
+The inspector checks declared files, not every dependency in the bound reports.
+
+Review, reader, session and full integration remain open. No model call or new
+skill behavior was introduced; this is verification maintenance, not an accepted
+improvement cycle. SR17 remains in progress and the verified inventory is **6/18**.
+Existing native proposals still require their own applicable decisions; the
+stopped R2 batch cannot resume using its original approval.
 
 #### Execution Order And Boundaries
 
