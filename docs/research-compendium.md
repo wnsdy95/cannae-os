@@ -144,6 +144,14 @@ inheriting maintenance coverage; explicit action clauses now keep their separate
 assessments. Original evidence and unresolved semantic limits remain, and the
 pending native-context snapshot is not silently replaced with these later changes.
 
+The [deferral-list follow-up](completion-backlog.md#deferral-list-routing-2026-11-16)
+found that imperative deferrals and plural model-transfer nouns retained irrelevant
+technical manuals. Removing an English question mark caused the opposite error:
+an uncertain deferral was treated as settled. Match the complete known clause,
+preserve punctuation that changes certainty, and retain later technical review,
+explicit sources and issued controls. Both skills now teach this appraisal;
+the paired local result is not native savings or general semantic understanding.
+
 The first [native context attempt](completion-backlog.md#native-context-startup-failure-2026-11-16)
 exposed an observer regression: a stricter turn-state gate rejected startup
 diagnostics before the existing classifier could recognize them. Real event

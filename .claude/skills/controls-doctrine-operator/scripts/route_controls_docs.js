@@ -1653,14 +1653,16 @@ function runtimeWorkContext(text) {
     "(?:build|create|implement|develop|deploy|launch|start|operate|modify|change)\\s+" + platformList + ")";
   const excluded = new RegExp("^(?:(?:please\\s+)?(?:do not|don't|never)\\s+" +
     prohibitedAction + "(?:" + separator + prohibitedAction + ")*" +
-    "(?:\\s+(?:now|yet|for this task))?|" + platformList +
-    "\\s+(?:is|are|remain|remains)\\s+(?:deferred|out of scope))$", "i");
+    "(?:\\s+(?:now|yet|for this task))?)$", "i");
   const clauses = koreanMatchingView(taskHeadingView(text)).split(/[;\n]+|(?<=[.!?])\s+/)
-    .map(clause => clause.trim().replace(/[.!?]+$/, ""));
-  const listedItem = "(?:" + platformItem + "|publication|(?:model\\s+)?transmission|deployment|private-source exceptions?|external operations?)";
-  const excludedList = new RegExp("^(?:no|exclude|omit|defer)\\s+" + listedItem + "(?:" + separator + listedItem + ")*" +
+    .map(clause => clause.trim().replace(/[.!]+$/, ""));
+  const listedItem = "(?:" + platformItem + "|publication|(?:model\\s+)?transmissions?|model\\s+transfers?|deployment|private-source exceptions?|external operations?)";
+  const itemList = listedItem + "(?:" + separator + listedItem + ")*";
+  const excludedList = new RegExp("^(?:no|exclude|omit|defer)\\s+" + itemList +
     "(?:\\s+(?:for|from) this task)?$", "i");
-  const retained = clauses.filter(clause => !excluded.test(clause) && !excludedList.test(clause));
+  const deferredList = new RegExp("^(?:(?:please\\s+)?(?:keep|leave)\\s+" + itemList +
+    "|" + itemList + "\\s+(?:is|are|remain|remains))\\s+(?:deferred|out of scope)$", "i");
+  const retained = clauses.filter(clause => !excluded.test(clause) && !excludedList.test(clause) && !deferredList.test(clause));
   const dependentReview = new RegExp("\\b(?:review|inspect|assess|compare|evaluate|audit|verify|check|validate|read)\\s+" +
     "(?:(?:it|its|their|them|that|those|this)\\b|" + subject + "\\b)", "i");
   if (retained.length !== clauses.length && retained.some(clause =>

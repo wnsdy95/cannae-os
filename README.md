@@ -122,6 +122,9 @@ uncovered domain objectives, full prohibitions and guarded-input rejection.
 The [proposal/compound intake follow-up](docs/completion-backlog.md#proposal-drafting-and-compound-intake-2026-11-16)
 distinguishes preparing an approval document from granting approval, and retains
 independent tasks introduced after a colon instead of inheriting prefix coverage.
+The [deferral-list follow-up](docs/completion-backlog.md#deferral-list-routing-2026-11-16)
+recognizes complete mixed exclusions such as "Keep model transfers and dashboard
+development deferred", retaining questions, technical prerequisites and controls.
 The first [native context attempt](docs/completion-backlog.md#native-context-startup-failure-2026-11-16)
 stopped on an observer startup-order defect. Its failure is retained; local
 parser replay is not a successful native comparison or measured context saving.

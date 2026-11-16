@@ -263,6 +263,13 @@ It also retains explicit colon-separated tasks and their independent gaps.
 quoted/time counterexamples and guarded rejection. This is local engineering
 evidence, not new military doctrine or approval authority.
 
+The [deferral-list follow-up](completion-backlog.md#deferral-list-routing-2026-11-16)
+compares exact local requests before and after a bounded grammar correction.
+It retains original context, selected controls and technical prerequisites while
+distinguishing English questions from complete deferral declarations. These
+development cases and `run-document-routing-fixtures.js` are engineering evidence,
+not military doctrine, unseen evaluation or actual model-delivery measurements.
+
 `skill-authoring-evaluation.js` now prepares the four development writing tasks
 for both clients from that exact baseline. Its full-body manifests bind original
 tasks and instruction spans without evaluator answers or native dispatch. The

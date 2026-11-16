@@ -786,6 +786,13 @@ service/server nouns: "Dashboard and service development remain deferred" and
 Publication, transmission, deployment, private-source exceptions and external
 operations are recognized non-platform items in these complete exclusion lists.
 Unknown items, review qualifications and conditions remain relevant.
+Complete mixed lists also recognize plural model transmissions/transfers and
+"Keep ... deferred" or "Leave ... out of scope". Appraise the entire clause:
+"Keep model transfers and dashboard development deferred" is a scope constraint,
+whereas a question, conditional deferral or subsequent design review is not a
+reason to omit the technical subject. Do not drop an unknown list item or question
+mark to force a narrower route. Check the original request and retained controls;
+this wording support neither authorizes model transmission nor renews consent.
 Those clauses cannot by themselves establish runtime capability or require the
 five specialist manuals. The original task and capability query remain verbatim, and selected
 route IDs and validation commands remain. Thus "Analyze museum attendance; do not

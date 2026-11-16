@@ -613,12 +613,18 @@ function testDocumentReviewWorkflow(router) {
 function testPlatformExclusionLists(router) {
   const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
   const noWork = "No publication, external operations, dashboard or server development.";
+  const deferred = "Keep model transfers and dashboard development deferred.";
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
     const plain = route(router, args, "Draft a handoff document.");
     for (const clause of [noWork, "Dashboard and service development remain deferred.",
       "No dashboard implementation, database development, or server work.",
       "The dashboard, a separate server and service implementation are out of scope.",
-      "Do not build a dashboard or a server.", "No publication and external operation or dashboard implementation."]) {
+      "Do not build a dashboard or a server.", "No publication and external operation or dashboard implementation.",
+      deferred, "Please keep model transmissions, dashboard or server work deferred.",
+      "Leave publication, dashboard and server development out of scope.",
+      "Model transfers and dashboard development remain deferred.",
+      "No model transmissions, dashboard development or servers.",
+      "Exclude model transfers, dashboard and server work."]) {
       const query = "Draft a handoff document. " + clause, result = route(router, args, query);
       assert.equal(result.query, query); assert.equal(result.capability_query, query);
       for (const file of RUNTIME_SPECIALIST_DOCS) assert(!result.recommended_documents.some(row => row.path === file), query + ": " + file);
@@ -632,25 +638,45 @@ function testPlatformExclusionLists(router) {
       "No dashboard or server development unless the review requires it.",
       "No publication, dashboard or unknown work.", "No external operations or dashboard review omission.",
       "Do not build a dashboard or a server but review the design.",
-      "No dashboard implementation approval is needed."]) {
+      "No dashboard implementation approval is needed.",
+      deferred + " Review its design.", deferred + " Inspect the dashboard architecture.",
+      "Keep dashboard development deferred unless the review requires it.",
+      "Keep model transfers, dashboard and unknown work deferred.",
+      "Do not keep dashboard development deferred.", "Keep model transfers and dashboard development deferred?",
+      "Dashboard development is deferred?", "No model transmissions, dashboard development or servers?",
+      'The source says "Keep dashboard development deferred".', "Leave dashboard review out of scope."]) {
       const query = "Draft a handoff document. " + clause, result = route(router, args, query);
       for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file), query + ": " + file);
       for (const command of controls) assert(result.validation_commands.includes(command));
     }
-    const query = "Draft a handoff document. " + noWork;
-    for (const extra of [["--source=docs/command-post-dashboard.md"], ["--capability-query=Review dashboard architecture."]]) {
-      const result = route(router, [...args, ...extra], query);
-      for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file));
+    for (const clause of [noWork, deferred]) {
+      const query = "Draft a handoff document. " + clause;
+      for (const extra of [["--source=docs/command-post-dashboard.md"], ["--capability-query=Review dashboard architecture."]]) {
+        const result = route(router, [...args, ...extra], query);
+        for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file));
+      }
+      const domain = "Analyze museum attendance. " + clause, gap = route(router, args, domain);
+      assert.equal(gap.query, domain); assert.equal(gap.capability_routing.status, "gap_detected");
+      assert(gap.capability_routing.provisional_organization.required);
+      assert.equal(gap.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+      for (const command of [...controls, "node run-force-structure-change-fixtures.js"]) assert(gap.validation_commands.includes(command));
+      const compound = route(router, [...args, "--capability-query=" + domain, "--capability-query=Draft a handoff document."], query + " " + domain);
+      assert.deepEqual(compound.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
     }
-    const domain = "Analyze museum attendance. " + noWork, gap = route(router, args, domain);
-    assert.equal(gap.query, domain); assert.equal(gap.capability_routing.status, "gap_detected");
-    assert(gap.capability_routing.provisional_organization.required);
-    assert.equal(gap.capability_routing.provisional_organization.standing_department_activation_authorized, false);
-    for (const command of [...controls, "node run-force-structure-change-fixtures.js"]) assert(gap.validation_commands.includes(command));
-    const compound = route(router, [...args, "--capability-query=" + domain, "--capability-query=Draft a handoff document."], query + " " + domain);
-    assert.deepEqual(compound.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+    for (const query of [
+      "Audit the Controls project terminology workflow against SR10 and SR12 using local source-grounded capture, reviewed changes and recipient-bound handoff evidence. " + deferred,
+      "Execute the prepared SR10 local terminology capture walkthrough in two synthetic repositories, appraise exact source fields, retain candidate and correction history, and verify retirement and recipient restrictions. No model transmissions, dashboard development or servers."
+    ]) {
+      const result = route(router, args, query);
+      assert.equal(result.query, query); assert.equal(result.request_intake.authority_changed, false);
+      assert.equal(result.operating_mode.actor, args[0] === "--actor=user" ? "user" : "ai");
+      if (args.length > 1) assert.equal(result.operating_mode.authority, "read-only");
+      assert(result.recommended_documents.some(row => row.path === "docs/project-terminology-workflow.md"));
+      for (const file of RUNTIME_SPECIALIST_DOCS) assert(!result.recommended_documents.some(row => row.path === file));
+      for (const command of [...controls, "node run-project-terminology-fixtures.js"]) assert(result.validation_commands.includes(command));
+    }
   }
-  const task = "Draft a handoff document. " + noWork;
+  const task = "Draft a handoff document. " + deferred;
   const systems = route(router, ["--actor=ai", "--role=S6", "--department=systems", "--authority=read-only"], task);
   for (const file of ["docs/reference-architecture.md", "docs/event-sourcing-model.md"]) {
     assert(systems.recommended_documents.some(row => row.path === file));
@@ -664,6 +690,12 @@ function testPlatformExclusionLists(router) {
     ["codex-skills", ".claude/skills"].map(directory => directory + "/controls-doctrine-operator/" + file));
   assert.deepEqual(receipt.recommended_documents.map(row => row.path).sort(),
     [...new Set([...direct.recommended_documents.map(row => row.path), ...conditional])].sort());
+  const compoundTask = "Analyze museum attendance and draft a handoff document. " + deferred;
+  const rejected = spawnSync(process.execPath, [path.join(ROOT, router), "--actor=ai", "--role=S3",
+    "--department=operations", "--authority=scoped-execution", "--receipt", "--scope=agent",
+    "--mission=MIS-DEFERRED-COMPOUND", "--wave=W1", "--agent=writer", "--", compoundTask], { encoding: "utf8" });
+  assert.equal(rejected.status, 2); assert.equal(rejected.stdout, "");
+  assert(rejected.stderr.startsWith("MULTI_OBJECTIVE_MODE_UNSUPPORTED:")); rejectedObjectives++;
 }
 
 function testDocumentReadinessScope(router) {

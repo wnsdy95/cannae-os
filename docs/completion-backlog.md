@@ -1229,6 +1229,74 @@ entries, and identify retired text as history rather than fallback. The workflow
 provides the matching state table. This bounded closure makes the accepted
 inventory **6/18**, not a product-accuracy or elapsed-effort percentage.
 
+#### Deferral-List Routing (2026-11-16)
+
+The development-visible trailing deferral recorded above reproduced at `d60a352`.
+"Keep model transfers and dashboard development deferred" retained unnecessary
+runtime manuals, as did "No model transmissions, dashboard development or servers".
+The list grammar recognized neither the imperative deferral form nor plural
+transmissions/transfers. A counterexample also found that removing terminal
+English question marks made "Dashboard development is deferred?" look definitive.
+
+Both routers now recognize complete known mixed lists with `keep`/`leave` and
+`deferred`/`out of scope`, as well as the existing declarative forms. Their
+English relevance view retains question marks. Unknown list members, conditional
+deferrals, quoted statements and later technical reviews remain conservative;
+explicit sources, parent objectives and technical departments still apply.
+The original query and selected validation commands are not rewritten or removed.
+The routing guides require whole-clause appraisal, not dropping an unknown word
+or punctuation to force a smaller list. Model transfer and consent remain separate.
+
+Fixed local development comparison: 21 cases across both providers, 42 observations.
+Before the repair, 22 matched; after it, all 42 matched. Ten mismatches per provider
+comprised nine unnecessary selections and one omitted question-related selection.
+The paired comparison independently checked unchanged original/declared context,
+prior route IDs and every previously selected validation command. It also retained
+the real domain gap, required-source and technical-parent counterexamples.
+
+Evidence root: `.cannae/maintenance/routing-deferral-r1-20261116/`.
+The before/after manifest hashes are respectively
+`9b25c4d6a68a2f7f5a61a966fd63ba7755b25101cdac4fed1cc959edaf10febf`
+and `8e5638f7ac79237b2977dc742708271048274736a45576943e7ea360f61747e1`.
+`comparison.json` has SHA-256
+`94b304e1a4c9a4fc2f656a9476593d21429be78ccb102b73604b56444a9ff56f`.
+The expanded `run-document-routing-fixtures.js` covers the actual two observed
+requests, retained constraints, guarded compound rejection and context parity.
+Broader verification is recorded separately, not inferred from this comparison.
+
+The complete routing suite passed: 1,864 queries across both providers, 58 direct
+task identity checks, 32 required-source rejections, 38 objective-declaration
+rejections, three link-inventory checks and 50 declared-reference checks.
+The unchanged frozen development set matched 24/24 observations; Korean intake,
+own-skill maintenance and progressive-disclosure fixtures also passed. Eight
+short checks passed for both skill entrypoints, both corpus coverage reports,
+source-map validity, Markdown links, English-only content and diff whitespace.
+Their source-bound report is
+`remaining-07c2844a-0352-4df2-b242-ff6b1a2ea2e6/verification.json`, SHA-256
+`e095c1966c06d073b7ec405e162a2fdace75cd9e22f2d2aadcbd1e9d71b7ce83`.
+
+Do not describe the whole verification ladder as passed. The document-session
+suite first exceeded its ten-minute parent limit after 14/16 cases. A separate
+twenty-minute parent allowance, without changing product deadlines, then failed
+with `PROJECT_PACKET_SOURCE_OTHER_REPOSITORY`. One instrumented diagnostic failed
+with `PROJECT_PACKET_SOURCE_EXCLUDED` after four completed cases. Its report is
+`session-diagnostic-ba979030-00bf-478c-a9b2-73b09757d260/report.json`, SHA-256
+`40601b3b80470359e6b1627c79c893c4f9eb039dd83c178b69dbc6b0551ff31f`.
+It recorded Git timeout events coincident with host sleep/wake intervals; neither
+that correlation nor the overloaded error labels prove the cause of every failure.
+All three failed attempts remain intact. No source-identity check, product timeout,
+power setting or approval expiry was relaxed, and no model was invoked.
+
+Session completion and the unexecuted installation, context-integrity, preflight
+and control-enforcement checks remain pending for this exact source revision.
+Older passes are not substituted. Resume the longer local checks only in a stable
+awake interval; a focused routing pass is not merge-ready integration evidence.
+
+This is a development-visible lexical correction, not withheld evaluation,
+complete bilingual semantic handling, native delivery or an execution permission.
+The frozen native-context candidate remains unchanged; its approval cannot move
+to the current source. SR02/SR03 stay in progress and the inventory remains **6/18**.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
