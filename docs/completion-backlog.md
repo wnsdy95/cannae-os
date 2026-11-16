@@ -1791,6 +1791,46 @@ This checkpoint is preparation/status maintenance, not a new skill behavior or
 closed criterion. The inventory remains **6/18**, and the consumer/integration
 gaps recorded above remain open. Dashboards and servers remain deferred.
 
+#### Current Host And Integration Prerequisites
+
+At `dafd1b3`, an independent current-source document-session attempt failed
+before its first positive routing assertion on `PROJECT_PACKET_GIT_UNAVAILABLE`.
+The transparent observer recorded 993 Git calls and one `rev-parse` result with
+status zero plus `ETIMEDOUT`: 8,875 ms against the unchanged 5,000 ms limit.
+Its interval overlapped Maintenance Sleep. The consumer correctly refused that
+result, but intended session behavior remains unverified. The observed process
+exited; the test was not restarted and no deadline or power setting changed.
+
+A separate prerequisite gate passed Codex coverage, JSON parsing, registry audit,
+English-only and Markdown links. Its validator process exceeded the operator's
+60-second observation budget and was terminated; no completed validator result
+exists. This is an incomplete parent-bounded attempt, not a demonstrated product
+assertion failure. Its eight-command suffix was not run in that gate.
+
+A separately declared scope then passed both skill validators, Claude coverage,
+14 context-trace groups, 15 progressive-disclosure groups, source-map and diff
+checks. With `CANNAE_REQUIRE_LIVE_OCI=1`, the OCI gate refused startup because
+the selected `desktop-linux` Docker daemon was unavailable. Its `failed: 21`
+summary does not mean 21 container cases executed; none did. No skip mode, daemon
+start, context change or substitute full-integration claim was used.
+
+The three retained reports and exact logs are indexed by
+`.cannae/maintenance/skill-consumer-checks-20261117/current-blocker-appraisal.json`.
+`evidence-index-v11.json` preserves the earlier 39 entries and adds three failed
+or incomplete scopes, for 42 entries. Index SHA-256:
+`142b4159a33b895f0b86f31b30e14bfe1c3da9b85e030a12671f7b18b19eab73`;
+inspection SHA-256:
+`a5104605a99ec383edcd9d609fc06823bfd14dba5ae4694e926256546319d2ef`.
+The 12 passing commands across separate scopes do not make any failed gate pass.
+
+Next local execution needs a stable awake interval; validator observation also
+needs an appropriate bounded parent budget without changing product limits.
+Full integration additionally needs an available Docker runtime. Do not repeat
+long attempts unchanged while these prerequisites remain unmet. The fresh native
+proposals still require actual applicable decisions. No model call, consumer
+acceptance, skill behavior change or new criterion closure occurred here; **6/18**
+remains the bounded inventory. This is verification/status maintenance only.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
