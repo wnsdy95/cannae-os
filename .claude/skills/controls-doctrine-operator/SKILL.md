@@ -229,6 +229,9 @@ An authorized successor assignment can change a phase-specific limit; record
 that change and scope rather than silently dropping or perpetuating it.
 Check that every "above", "attached" or original-request reference exists in
 that unit or its actual supplied lookup. Prompt context is not an attachment.
+Simulate the next review using only the selected unit: every named candidate,
+table and question must be available there. A summary is not the exact draft
+being reviewed. Reconcile whole-packet labels with section ranges and trailing text.
 Appraise findings against the declared delivery unit: a full packet is not a
 detached excerpt. Preserve necessary bindings if text will travel alone, but do
 not mistake explicit patch/base metadata for a missing new-version approval.
@@ -300,6 +303,10 @@ Before subtracting reviewed items from an aggregate, establish matching units,
 population and source-ID mapping. Unknown membership permits neither a remainder
 count nor an "all remaining items" verdict. Check plans and inquiry wording too;
 an unknowns note does not repair an assumed relationship elsewhere.
+Keep derived denominators in their source units: entity counts are not event
+counts, and group sums do not prove distinct membership. Unknown source identity
+must stay separate in operative tables and holds, not merge through a slash label.
+Unverified past action is not proven non-action; scope that claim to actor and phase.
 Use actual source files and, for an existing runtime mission, its actual order;
 never fill gaps with demo IDs or fixed dates. Preserve original requirements and
 quoted source claims, then reconcile

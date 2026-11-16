@@ -796,6 +796,7 @@ Completed:
 - `skill-first-product-scope.md`: USER-directed core scope, deferred platform work and separate acceptance criteria.
 - Skill distribution maintenance: `skill-installation-inspector.js` and both client-operation/routing guides diagnose changed copies and corpus bindings locally, without installed-code execution or automatic repair. Native discovery and use remain separate evidence.
 - Skill authoring evaluation: `skill-authoring-evaluation.js` prepares exact baseline development inputs and byte-range manifests; `run-skill-evaluation-fixtures.js` checks original-task preservation, answer exclusion and non-authorizing accounting. Actual delivery, source appraisal and cross-client receiving remain separate obligations in `evaluation-metrics.md`.
+- Native baseline appraisal: four development tasks in each client now have source-appraised responses. Candidate repairs in both skills preserve derived units, uncertain source identities/history and exact next-review dependencies; `docs/document-authoring-workflow.md` and `docs/handoff-packet-template.md` carry the procedure. Candidate comparison and actual cross-client recovery remain open.
 - `document-authoring-workflow.md`: Format selection, source discipline, revision and handoff through client skills without a dashboard.
 - `implementation-candidate-registry.md`: Source-bound requirements, mapped implementations, executable checks, and explicit remaining work.
 - `completion-backlog.md`: Cross-cutting roadmap and operational closure criteria, including external dependencies.

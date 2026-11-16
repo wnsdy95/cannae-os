@@ -75,7 +75,7 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR05 | R2 | On a frozen six-task ordinary-work subset, reduce median loaded instruction/reference bytes by at least 20%, counting every delivered section and entrypoint. Preserve all assigned source content; report document counts and bytes separately from tokens, cost or quality. | In progress |
 | SR06 | R2 | Verify both providers still find conditional procedures for actual runtime maintenance, explicit inputs and sensitive handoffs; ordinary work need not load retained platform history. Selection is not read authority or an automatic access-profile grant. | In progress |
 | SR07 | R3 | Freeze eight source-grounded tasks and a rubric covering omitted obligations, invented facts/approvals, false findings, locators, unknowns and complete/compressed output consistency; record both-client baseline and candidate artifacts separately. | In progress |
-| SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | Planned |
+| SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | In progress |
 | SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | Planned |
 | SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | In progress |
 | SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Verified (bounded) |
@@ -98,10 +98,11 @@ RD-03/04 retained execution and platform guides; RD-05 missed Korean authoring
 coverage; RD-06 hid a compound capability gap. These are measured defects, not
 reasons to lower expectations or call the baseline a product pass.
 
-The eight authoring tasks and seven-dimensional source-bound rubric are also
-frozen, but SR07 remains in progress: neither client's native baseline/candidate
-artifacts exist for this evaluation. Context cases are RD-01/02/03/04/08/09;
-all actual loaded-instruction counts remain null. The local reports cannot close
+The eight authoring tasks and seven-dimensional source-bound rubric were also
+frozen at this checkpoint, before either client's native baseline/candidate
+artifacts existed. The later native baseline checkpoint below records development
+responses; SR07 still requires candidate and reserved evidence. Context cases are
+RD-01/02/03/04/08/09; their actual loaded-instruction counts remain null. The local reports cannot close
 SR02-SR06 or establish comprehension, instruction savings or authoring quality.
 
 Private evidence root: `.cannae/maintenance/skill-reliability-evaluation-20261115/bundle/`.
@@ -565,6 +566,103 @@ credential contents. Approval alone establishes no received output or quality;
 actual native results and source appraisals require a later checkpoint. No candidate,
 withheld or cross-client-chain call is included. SR05/SR07-SR09/SR13-SR15 remain open,
 and the verified inventory remains 4/18. Dashboards and servers remain deferred.
+
+#### Native Authoring Baseline And Repair (2026-11-16)
+
+All eight approved baseline processes completed: four frozen development tasks
+in each client, not eight different authoring tasks. The inputs retain baseline
+`9331ff5`; no current installed guides were substituted. Codex CLI 0.162.1 used
+the explicitly pinned configured default `gpt-6-astra`; Claude Code 2.1.322
+reported `claude-opus-5-5` in its initialization events. Each process stayed within
+ten minutes; combined observed runtime was 473,815 ms. There were no task-tool
+events, automatic relaunches or reference answers supplied to the models.
+The new eight-process approval is fully consumed, not reusable for candidate or
+cross-client calls. No withheld task was executed.
+
+The source-appraised report is
+`.cannae/maintenance/skill-authoring-baseline-20261116/appraisal-57a18241-190c-4cf8-9a1b-9d0bd1b094b7.json`
+(SHA-256 `72fcc7fa5582d94ff3b1e59bdea6f85e8ee18b8e8d90f482bd4d0c8ce49f0244`).
+It binds every response, all 58 frozen check decisions, all 42 required outputs,
+source bodies, exact evidence quotes/byte locations and the selected detached
+unit. This is the working operator's appraisal of author-aware development cases,
+not an independent or blind assessment. Original prompts and responses are unchanged.
+
+| Observation | Result and limit |
+| --- | --- |
+| Native response collection | 8/8 completed; this is not quality acceptance |
+| Frozen rubric checks | 57/58 pass; Claude AD-04 C8 fails because uncertainty is promoted into operative assertions |
+| Required outputs | 42/42 present; 34 pass source appraisal and 8 need corrections. Shared defects affect multiple outputs; these are not eight independent error families |
+| Additional source-appraised findings | Five records: one critical mandatory-deliverable failure, three major content defects and one minor boundary ambiguity; some overlap the failed frozen check |
+| Prior-draft defect review | No missed seeded family or unsupported review finding identified under the recorded operator grouping; new assertions in generated documents are assessed separately |
+| Candidate comparison / native cross-client chain | Neither executed; no improvement or non-regression claim |
+
+The core findings are not hidden by the high frozen-check count:
+
+- **Claude AD-02:** the original counts invited accounts, but the added pooled
+  calculation calls the sum "106 invitations." The arithmetic sum does not
+  establish invitation events or distinct cross-group membership. Requested
+  per-group rates and noncausal interpretation remain supported.
+- **Claude AD-03:** section 6 declares itself standalone, yet its next action asks
+  a successor to review the exact W2, FRAGO and status tables located in sections
+  2-4. It also names E1-E4 without their definitions. Operative summary bullets
+  do not supply those exact artifacts. This is a critical acceptance blocker for
+  the required receiving unit, not observed unauthorized tool execution.
+- **Claude AD-04:** the text acknowledges that appendix/ledger identity is
+  unknown but merges them in its source list, holds and receiving unit. Its
+  phase report also states that listed actions were not done in any phase,
+  although historical non-occurrence is not established. An uncertainty note
+  does not repair those operative assertions.
+- **Claude AD-01:** "whole response" and a sections 1-5 range disagree because
+  a self-review section 6 follows. No required output is lost by that range;
+  retain this as a minor selection ambiguity, not a missing-task finding.
+
+The G3 pending-acknowledgement interpretations differ between clients, but both
+assess it as not Supported and preserve its fields. The frozen rubric does not
+require one pending-status label; that difference is not scored as an error.
+The baseline is **not accepted**. There is no candidate yet against which a
+new regression could be assessed.
+
+The repair changes the authoring workflow, handoff template and both skill
+entrypoints: keep derived units faithful, preserve unknown source identities in
+operative clauses, scope non-execution to its actual phase, and simulate the
+successor's next review using only the declared receiving unit. Entry size is
+now 25,765/25,779 bytes and 398 lines, about 21.7% below the frozen baseline.
+The earlier 23.4% reduction remains historical; the 20% criterion is unchanged.
+Two new instruction-coverage cases pass within 76 authoring-packet fixtures, and
+the 15 progressive-disclosure checks pass. These check delivery of the repair
+instructions, not a demonstrated native cure.
+
+Four operator-repaired derivatives preserve the original responses and all task
+source bodies while changing fifteen exact, appraised spans. The AD-03 derivative
+declares the complete document as its receiving unit instead of detaching the
+incomplete summary. The others correct the unit description, unsupported pooled
+event claim and merged identity/historical non-action assertions. They are not
+model-authored improvements, adopted policy or received handoffs. Their report is
+`.cannae/maintenance/skill-authoring-baseline-20261116/operator-repairs-28216164-0166-445c-a09d-dbe31da226a5/repair-report.json`
+(SHA-256 `5f28cfd7a938c1491bf12980db1ddeb4812a2e824a29b8b595daa1b25e1014c2`).
+
+The repaired instruction set passed twenty focused commands with all sixteen
+bound source files unchanged. Evidence:
+`.cannae/maintenance/skill-authoring-baseline-20261116/repair-d85aba3e-781a-4d8b-a922-e421bc4ec8df/verification.json`
+(SHA-256 `eb96b43882cc06392f73f4f7254cabd70a200ff8f6306948c35dd1ce5ccc999b`).
+This includes authoring/evaluation/instruction, installation/preflight, handoff,
+access/release, source-index and English checks. Final evidence-index edits receive
+their own closure checks. Full-repository integration before merge is still due;
+no merge or push is claimed. The local session retest below predates this final
+guide-text repair; its runtime and fixture code were not changed.
+
+The earlier 300-second document-session timeout remains in the failed report.
+A separate unchanged-fixture run completed all sixteen local routing/stdio cases
+for both providers. Its captured result is
+`.cannae/maintenance/skill-authoring-baseline-20261116/session-retest-result.json`
+(SHA-256 `ab0f1f0242102c570a71fe617e10fe1659671e30d71add07082487e9ba6a9451`).
+It is not a model-mediated sender/receiver chain. All actual response context
+counts above measure supplied stdin bodies plus completed output, not server
+attestation, comprehension, token equivalence or R2's six-task context savings.
+
+SR07/SR08 are in progress; native candidate/withheld comparison and both complete
+R5 chains remain open. The verified inventory stays **4/18**, with no inherited
+baseline pass or goal completion. Dashboards and servers remain deferred.
 
 #### Execution Order And Boundaries
 

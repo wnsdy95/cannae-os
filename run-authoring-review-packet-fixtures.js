@@ -108,6 +108,31 @@ try {
     assert(rubric.includes("assign a status to an invented remainder in the plan or follow-up question."));
     assert.equal(packet.manifest.semantic_acceptance_established, false);
   });
+  fixture("derived units and uncertain identities reach both skills and prepared review context", () => {
+    for (const phrase of ["Entity counts do not establish event", "A valid\ncalculation cannot validate a renamed denominator.",
+      "Shared status or a shared restriction does not prove that two named", "an unverified historical action is not\na verified non-action."]) {
+      assert(packet.prompt.includes(phrase), `Missing source-fidelity instruction: ${phrase}`);
+    }
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("Keep derived denominators in their source units"));
+      assert(skill.includes("must stay separate in operative tables and holds"));
+      assert(skill.includes("Unverified past action is not proven non-action"));
+    }
+    assert.equal(packet.manifest.semantic_acceptance_established, false);
+  });
+  fixture("detached receiving instructions require the actual next-review dependencies", () => {
+    for (const phrase of ["Check the successor's stated next action using only that unit.",
+      "Operative summary bullets are not the exact candidate", "undefined\nquestion IDs or references to omitted outputs.",
+      'Reconcile "whole packet" labels']) assert(packet.prompt.includes(phrase), phrase);
+    for (const provider of ["codex-skills", ".claude/skills"]) {
+      const skill = fs.readFileSync(path.join(__dirname, provider, "controls-doctrine-operator/SKILL.md"), "utf8");
+      assert(skill.includes("Simulate the next review using only the selected unit"));
+      assert(skill.includes("A summary is not the exact draft"));
+      assert(skill.includes("Reconcile whole-packet labels with section ranges and trailing text."));
+    }
+    assert.equal(packet.manifest.semantic_acceptance_established, false);
+  });
   fixture("compound-output coverage and actual approval scope reach both skills and review input", () => {
     for (const phrase of ["enumerate every requested output in the review matrix,",
       "including the FRAGO situation, SITREP summary, decision-question heading",

@@ -315,6 +315,19 @@ population and source-ID mapping. Without that relationship, report the observed
 items and aggregate separately; do not assign a remainder count or an "all
 remaining items" status. Check the revised plan and inquiry wording as well as
 the result table: a correct unknowns note does not repair an assumed membership.
+When adding a derived rate or pooled total, preserve the source's measurement
+unit in its table, prose and questions. Entity counts do not establish event
+counts. A sum of group denominators does not establish distinct participants or
+invitation events; retain group-membership units and unresolved overlap. A valid
+calculation cannot validate a renamed denominator. Omit an unnecessary pooled
+claim when its unit cannot be stated faithfully; keep supported group comparisons.
+An explicitly uncertain identity remains uncertain in operative tables and
+holds. Shared status or a shared restriction does not prove that two named
+sources are the same item. Keep their IDs and decision scopes separate until
+equivalence is established; a slash-joined label and an uncertainty footnote do
+not preserve that separation. Likewise, an unverified historical action is not
+a verified non-action. Attribute observed non-execution to its actual actor and
+phase instead of asserting that it never happened in any phase.
 For compound deliverables, enumerate every requested output in the review matrix,
 including the FRAGO situation, SITREP summary, decision-question heading and
 handoff next action. Derive repeated counts and relationships from the same

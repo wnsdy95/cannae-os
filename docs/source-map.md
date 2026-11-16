@@ -228,6 +228,16 @@ in `docs/evaluation-metrics.md` and mirrored client-operation guidance prevent m
 into historical input. Preparation is not actual reading, discovery, routing,
 quality acceptance or cross-client receiving. No external doctrinal claim is added.
 
+The [native development baseline](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
+now records eight actual responses, exact delivered input bodies and a separate
+source appraisal. Its findings concern unsupported event units, incomplete
+detached review units and uncertain source identities/history promoted into
+operative claims. `docs/document-authoring-workflow.md`,
+`docs/handoff-packet-template.md` and both skill entrypoints now teach the bounded
+repair. These are local engineering lessons, not new military claims, independent
+blinding or demonstrated candidate improvement. The actual cross-client chains
+and withheld/candidate evaluation remain open.
+
 The [English intake development](completion-backlog.md#english-intake-development-2026-11-15)
 binds paired local comparisons of heading/exclusion views and inferred task
 clauses. Original constraints, explicit sources, technical review and declared

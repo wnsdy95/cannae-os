@@ -6,6 +6,9 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record all eight newly approved native development-baseline responses and source appraisal, retaining a failed uncertainty check, unsupported added claims and an incomplete detached receiving unit. Repair derived-unit, source-identity/history and next-review dependency guidance in both skills and canonical workflows. Keep original outputs, reserved cases and prior timeout evidence unchanged; instruction tests do not establish a native cure, actual cross-client receiving or goal completion.
+  Retain four operator-repaired derivatives with fifteen exact changes and unchanged task-source bodies; do not relabel them as native model improvements or actual receiving.
+
 - Add private, exclusive baseline authoring input preparation with exact full-body instruction/task spans, separate evaluator references and explicit byte accounting. Reject altered/missing/unsafe inputs without claiming native delivery or quality. Mirror revision-specific context and no-tool reporting guidance in both clients; preserve candidate, withheld and cross-client acceptance as separate work.
 
 - Add a trusted-checkout, read-only installed-skill inspector. Compare current bundle bytes, executable modes and default corpus binding before invoking a possibly stale copy; report missing/unsafe/unexpected entries without reading unknown bodies, changing settings or reinstalling. Mirror appraisal guidance in both skills and retain native discovery/body delivery as separate evidence.

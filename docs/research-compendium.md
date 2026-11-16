@@ -58,6 +58,21 @@ not call a model. It is not the six-task context-saving measurement or the two
 cross-client recovery chains. See `docs/evaluation-metrics.md` and its
 [procedure](evaluation-metrics.md#explicitly-prepared-authoring-inputs).
 
+Eight separately authorized [native baseline responses](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
+now expose why a nearly complete fixed checklist is insufficient: 57/58 frozen
+checks pass, yet source appraisal finds unsupported added units and a detached
+handoff that cannot support its own next review. Shared identity uncertainty and
+historical non-action claims also change across operative summaries. Keep the
+exact original outputs; repair the process, not the historical evidence.
+`docs/document-authoring-workflow.md`, `docs/handoff-packet-template.md` and both
+skills now preserve measurement units and unknown identities across outputs and
+test next-action dependencies against the actual receiving unit. This is a local
+candidate instruction change, not a native cure or actual cross-client receipt.
+Four separate operator derivatives then repair fifteen exact spans, retaining
+the original responses and task-source bodies. A repaired extraction or coherent
+operator draft remains distinct from an independently checked model revision or
+observed cold-start use. The checkpoint records both artifacts and their limits.
+
 The [first English intake change](completion-backlog.md#english-intake-development-2026-11-15)
 addresses four observed wording/compound defects without replacing original task
 text. It also exposes a decomposition risk: source-policy review and a draft's

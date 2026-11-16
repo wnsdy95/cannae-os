@@ -95,10 +95,15 @@ The [bounded Korean intake follow-up](docs/completion-backlog.md#korean-intake-d
 resolves the remaining development request in both providers while preserving
 original wording and explicit limits. Reserved and native evaluation remain open.
 
-The [conditional instruction split](docs/completion-backlog.md#conditional-instruction-delivery-2026-11-15)
-reduces both entrypoints by 23.4% while retaining linked content/reporting, client,
+The initial [conditional instruction split](docs/completion-backlog.md#conditional-instruction-delivery-2026-11-15)
+reduced both entrypoints by 23.4% while retaining linked content/reporting, client,
 terminology and delegated-wave procedures. Protected contexts bind all moved
 guides. Local emission is not native reading or measured end-to-end context savings.
+The [native authoring baseline](docs/completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
+now contains eight actual responses and source-appraised defects in derived units,
+detached receiving context and unresolved source identity/history. Both skills
+contain candidate repairs; their entry reduction remains 21.7%. Candidate quality,
+reserved evaluation and complete cross-client recovery chains remain unverified.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">
