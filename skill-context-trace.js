@@ -48,6 +48,14 @@ function createNativeTrace({ provider, server, call_limit }) {
         }
         requireThat(initialized, "INITIALIZATION");
         if (e.type === "turn.started") { requireThat(!running, "MULTIPLE_TURNS"); running = true; return; }
+        if (!running && e.type === "item.completed" && e.item?.type === "error") {
+          // Codex can report startup diagnostics between thread and turn creation.
+          // They neither complete the turn nor authorize tools or missing sources.
+          requireThat(same(Object.keys(e).sort(), ["item", "type"]) &&
+            same(Object.keys(e.item).sort(), ["id", "message", "type"]) &&
+            typeof e.item.id === "string" && e.item.id && typeof e.item.message === "string" && e.item.message.trim(), "STARTUP_DIAGNOSTIC");
+          diagnostics++; return;
+        }
         requireThat(running, "TURN_NOT_STARTED");
         const item = e.item;
         if (item?.type === "mcp_tool_call") {

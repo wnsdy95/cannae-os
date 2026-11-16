@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Preserve the first failed R2 native attempt and repair its observer's startup ordering: schema-shaped completed diagnostics may precede turn creation, but tools, malformed records and incomplete turns remain rejected. Add captured-sequence replay and mirrored retry discipline without suppressing warnings, weakening isolation, reusing consent or claiming a successful native comparison.
+
 - Recognize approval-proposal drafting without granting approval or uncovered-domain expertise. Preserve independently stated action clauses after a colon and maintenance verbs during bounded intake, while retaining quoted-source/time handling and guarded multi-objective rejection. Mirror per-objective failure diagnosis in both skills and preserve the earlier misdiagnosis and fixed native-evaluation snapshot.
 
 - Add bounded context-trace reconciliation for exact source responses, native call completion and full client-bound framing/repeat/error accounting. Reject incomplete or duplicate traces without inferring backend context, semantic quality or savings. Mirror complete-trace appraisal and non-renewable attempt/deadline guidance in both skills; actual six-task native measurement remains open.

@@ -242,6 +242,12 @@ Synthetic event fixtures and a transient local stdio exercise are engineering
 evidence only, not native delivery, backend attestation or external doctrine.
 Both client-operation guides require complete matched traces and source appraisal.
 
+The [native startup failure](completion-backlog.md#native-context-startup-failure-2026-11-16)
+is direct local CLI evidence of diagnostic items preceding turn creation. The
+trace observer's ordering repair and captured-event replay retain the failed
+attempt and fresh-consent boundary. This is not external doctrine, a native
+quality improvement, proof of backend delivery or successful retry evidence.
+
 The [own-skill maintenance intake case](completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
 records a local R1 counterexample and both-router correction, not new military
 doctrine or semantic coverage. `run-skill-maintenance-routing-fixtures.js` checks

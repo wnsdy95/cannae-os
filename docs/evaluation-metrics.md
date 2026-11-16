@@ -325,6 +325,15 @@ contract unchanged, omit expensive failed cases, equate no reads with sufficienc
 or let a consistent trace certify quality. Native delivery, semantic appraisal,
 20% acceptance and R5 receiving remain separate claims.
 
+Startup event order is part of the observer contract. Codex can emit completed
+diagnostic items after `thread.started` and before `turn.started`. Accept only
+their diagnostic shape in that interval, retain the records, and still require
+a complete turn and matched tool/source trace. A denied live global guide can
+be expected in an explicitly supplied-input experiment; it does not waive a
+missing assigned source. Replay the actual captured startup sequence locally
+before proposing a retry. A parser repair does not retroactively complete an
+interrupted run or renew its stopped batch's consent.
+
 #### Explicitly Prepared Authoring Inputs
 
 `skill-authoring-evaluation.js prepare-baseline` prepares the four development

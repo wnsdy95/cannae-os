@@ -127,6 +127,24 @@ check("Codex diagnostics remain diagnostics while tool failures and builtins sto
     const changed = structuredClone(events("codex")); edit(changed); assert.throws(() => observe("codex", changed));
   }
 });
+check("Codex startup diagnostics can precede turn.started but cannot substitute for a turn", () => {
+  const startup = [
+    { type: "item.completed", item: { id: "startup-0", type: "error", message: "Under-development features enabled: skip_host_skill_discovery." } },
+    { type: "item.completed", item: { id: "startup-1", type: "error", message: "Failed to read global AGENTS.md instructions: Operation not permitted (os error 1)" } }
+  ];
+  const full = events("codex"); full.splice(1, 0, ...startup);
+  assert.equal(observe("codex", full).diagnostics, 2);
+  assert.throws(() => observe("codex", full.slice(0, 4)), /INCOMPLETE/);
+  assert.throws(() => observe("codex", [startup[0], ...events("codex")]), /INITIALIZATION/);
+  const extra = structuredClone(full); extra[1].item.command = "hidden execution";
+  assert.throws(() => observe("codex", extra), /STARTUP_DIAGNOSTIC/);
+  const empty = structuredClone(full); empty[1].item.message = "";
+  assert.throws(() => observe("codex", empty), /STARTUP_DIAGNOSTIC/);
+  const earlyTool = events("codex"); earlyTool.splice(1, 0, earlyTool[2]);
+  assert.throws(() => observe("codex", earlyTool), /TURN_NOT_STARTED/);
+  const failed = events("codex"); failed.splice(1, 0, { type: "error", message: "startup failed" });
+  assert.throws(() => observe("codex", failed));
+});
 check("Claude checks the exact session, advertised tool, final status and unfiltered result blocks", () => {
   for (const edit of [e => { e[0].tools.push("Bash"); }, e => { e[0].permissionMode = "default"; },
     e => { e[1].session_id = "other"; }, e => { e[1].message.content[0].name = "Bash"; },

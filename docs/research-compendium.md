@@ -144,6 +144,14 @@ inheriting maintenance coverage; explicit action clauses now keep their separate
 assessments. Original evidence and unresolved semantic limits remain, and the
 pending native-context snapshot is not silently replaced with these later changes.
 
+The first [native context attempt](completion-backlog.md#native-context-startup-failure-2026-11-16)
+exposed an observer regression: a stricter turn-state gate rejected startup
+diagnostics before the existing classifier could recognize them. Real event
+ordering, not only synthetic post-start warnings, must be replayed locally.
+The repair preserves explicit-input isolation and still rejects incomplete work;
+it cannot retroactively validate the stopped attempt or renew its approval.
+No complete model response or context-saving claim follows from that local fix.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

@@ -62,3 +62,13 @@ context. A zero-read or shorter trace still needs source-based output appraisal.
 Record one absolute process deadline and attempt limit outside the tool process;
 reconnecting a helper must not renew either. Stop the batch on an incomplete
 attempt, preserve it, and obtain any required fresh approval before retrying.
+
+Before a native retry, replay the captured startup/turn/tool/result ordering
+against the observer locally. Codex can emit completed diagnostic items after
+thread creation but before `turn.started`; they are not tool execution or a
+completed review. Retain the diagnostics and require an actual complete turn.
+In explicitly supplied-context comparisons, a denied live global instruction
+file may reflect the intended isolation profile; check the bound input instead
+of enabling discovery or suppressing warnings. A failed assigned-source read
+still holds dependent work. A repaired parser never changes the failed attempt
+or renews the stopped batch's transfer consent.

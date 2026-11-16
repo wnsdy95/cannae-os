@@ -969,6 +969,77 @@ The USER subsequently approved the exact R2 proposal for at most 24 sequential
 processes; that approval is recorded locally against its original plan/proposal
 digests. Approval is not a native result, successful reading or criterion closure.
 
+#### Native Context Startup Failure (2026-11-16)
+
+The newly approved R2 batch started `baseline-codex-RD-01` once. The observer
+terminated it after 816 ms with `SKILL_CONTEXT_TRACE_TURN_NOT_STARTED`: two
+completed diagnostic items appeared after `thread.started` but before
+`turn.started`. One described the under-development discovery flag; the other
+described the intentionally denied live global AGENTS.md. This was an observer
+ordering defect, not evidence of a failed document response or provider change.
+The existing classifier already regarded such items as diagnostics, but the new
+state check rejected them before that classification. No warning suppression,
+profile relaxation or instruction-discovery change is used as a repair.
+
+The batch stopped on its first failed attempt; the other 23 cases were not
+started. Stdin completed, but there is no complete response, proven backend
+delivery/usage, source appraisal or accepted byte measurement. All three recorded
+process PIDs were later observed gone. The original result remains unchanged at
+`.cannae/maintenance/skill-context-r2-20261116/native-plan-v1/baseline-codex-RD-01/execution-result.json`,
+SHA-256 `d69c09153bdee0d642cc7c943719d9f344e5ad43a1809e1b738896dd194b561e`.
+Raw stdout SHA-256 is
+`6b0725e34783f9a3af2bcdc339dc2818ea339d8b9c83b06e8fa7a20538ca6097`;
+transport SHA-256 is
+`41f3a3d2a459e171305065ae47bd22c9e34f6b1c4e71c7c16a3f31f00244d46d`.
+The exact prior observer/trace source bodies are archived alongside the failure.
+
+The local repair admits only correctly shaped completed diagnostic items in
+that startup interval; missing threads/turns, early tools, malformed diagnostics,
+failed turns and incomplete work still reject. Fourteen synthetic trace groups
+pass. A replay of the four actual captured events no longer raises the ordering
+error but still rejects completion, preserving the original failed result:
+`.cannae/maintenance/skill-context-r2-20261116/startup-replay-02c8787b-1296-4418-95a6-dfbb541796d5.json`,
+SHA-256 `d0475d3b9d706c437edef1f202cbbf12a791ec02e8fe72de0d67564b63cd9319`.
+Both client-operation guides require real startup-order replay, bound-source
+checks and fresh retry consent rather than weakening the isolation profile.
+
+A separate one-process recovery proposal preserves the exact 40,716-byte input
+and baseline source catalog. Its plan at
+`.cannae/maintenance/skill-context-r2-20261116/native-startup-recovery-v1/execution-plan.json`
+has SHA-256 `e0640150a87201a6be52b69457381207d5b3a242c076954bfd6ec7e370a0b218`.
+It is not approved or executed at this checkpoint, and does not include the
+prior 23 unstarted cases. SR05/SR06 remain open and the inventory stays **4/18**.
+
+The broader local follow-up is **not green**: nine commands passed, then
+`run-context-document-integrity-fixtures.js` failed with an expired artifact
+lease after 512,719 ms. The seven-command suffix was not executed by that gate.
+Source and unrelated-file hashes stayed stable. Preserve the failed run at
+`.cannae/maintenance/skill-context-r2-20261116/trace-gate-d8688708-4d77-4cd7-bb04-df7d445a45e1/verification.json`,
+SHA-256 `9021f4b894a8b345937b4dc039f143586ef286888afc1d4cf424ada60351c68b`.
+Read-only `pmset` evidence records sleep from 18:58:09 to 19:06:25 +0900,
+overlapping that fixture. This explains a timing condition to investigate, not
+permission to relabel the fixture as passed or change its lease/deadline.
+Evidence: `.cannae/maintenance/skill-context-r2-20261116/startup-gate-sleep-31d7b4b7-3333-4656-aedc-cebcb24ff678.json`,
+SHA-256 `88fd35fdbfd1f2bc32aa8c1ffc86c81a5f58db5fc81709969fbe201f60df2e72`.
+Remaining context-integrity/preflight checks need a new bounded local run while
+awake; no power setting or approval expiry is changed. The prepared retry is
+conditional on those remaining checks and its own new user decision. Its missing
+decision was locally verified to reject before creating any retry attempt.
+
+A second bounded local gate also failed, rather than clearing that hold: eight
+commands passed, then installation ended with `ETIMEDOUT`/`SIGTERM` and a nested
+`null !== 0` status assertion. Its eight-command suffix was not executed:
+`.cannae/maintenance/skill-context-r2-20261116/trace-gate-a064df4b-58d0-4474-8824-b456cbad9b8c/verification.json`,
+SHA-256 `9234dcf5f0ca9b30665d69a5cad4240491429744aeac8560c7c6bf60862d1afd`.
+The read-only power log records 942 seconds of sleep from 20:21:41 +0900 during
+that run; this is timing evidence, not proof excluding other causes:
+`.cannae/maintenance/skill-context-r2-20261116/startup-second-gate-power-c1244842-a361-46d5-accb-0af98dc3ddb7.json`,
+SHA-256 `8072533d8ae5ee4fd3c980fcb2a17f741e7886a0485ae3d1c030be71f1640c10`.
+The startup repair has focused trace/replay evidence only, not a green related
+integration gate. Installation, context integrity, preflight and enforcement
+still require a completed local check before the proposed native retry. No
+further long-running gate or model attempt was launched at this checkpoint.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
