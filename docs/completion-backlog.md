@@ -1831,6 +1831,32 @@ proposals still require actual applicable decisions. No model call, consumer
 acceptance, skill behavior change or new criterion closure occurred here; **6/18**
 remains the bounded inventory. This is verification/status maintenance only.
 
+#### Complete Validator Result
+
+At `c6ffd523f922d572daeaa2a0fb37a4b3e4459422`, a separate complete validator
+attempt passed **617/617** cases in 160,309 ms under a five-minute parent
+observation budget. The earlier 60-second attempt and its unexecuted suffix remain
+unchanged. No fixture, expected issue code, product deadline, power setting or
+model-transfer condition was changed. The full CLI result is now available;
+it does not retroactively complete the interrupted prerequisite batch.
+
+The source-stable report is
+`.cannae/maintenance/skill-consumer-checks-20261117/complete-validator-ba2ae21a-fb78-4882-94bb-bd0b71375577/verification.json`,
+SHA-256 `1609669543f1fcdaabcd273ed6c5b23e838871ebdbe5da652ac381079ff5f03c`.
+`complete-validator-appraisal.json` binds its complete output and the prior
+interruption. `evidence-index-v12.json` retains all 42 earlier entries and adds
+this pass, for 43 entries. Index SHA-256:
+`d7ea248d2bf0d7e985eff070391906198a36d068589075f946814217162db391`;
+inspection SHA-256:
+`08f11c466689dd709a5cfe4b48e06fb6bb41f63fae95dfa1077d317f195dcbc8`.
+Declared-file inspection remains distinct from dependency completeness.
+
+The document-consumer failures, unavailable Docker runtime, complete aggregate
+and unified proof gate remain unresolved. Native proposal decisions and real
+R2/R3/R5 behavior are separate requirements. No new criterion closes; the bounded
+inventory stays **6/18**. This is verification/status maintenance, not a new
+skill behavior, a model-quality claim or a full-integration pass.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

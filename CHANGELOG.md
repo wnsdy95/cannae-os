@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Complete the unchanged validator CLI suite with 617/617 passing cases under a separate five-minute observation budget. Preserve the earlier interrupted run and add the source-bound result to the evidence index; consumer, live OCI, native-model and full-integration acceptance remain separate.
+
 - Record the current document-session metadata timeout, incomplete parent-bounded validator run and required-live-OCI refusal with their exact evidence. Preserve twelve passing checks across separate scopes without merging them into a full gate, changing product limits, restarting a daemon or invoking models; keep native consent and stable-host prerequisites explicit.
 
 - Refresh stale R2/R3/R5 native evaluation proposals against the committed metadata repair: preserve the original R2 input, reproduce paired R3 task hashes and prepare current R5 brief-only inputs. Record eleven passing metadata-only preflights and a new evidence-index version without reusing approvals, invoking models, closing criteria or changing skill behavior.
