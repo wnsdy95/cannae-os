@@ -125,6 +125,8 @@ receipts retain their full selected skill-operations context. See Document Routi
 Keep reading scope separate from execution controls. Conditional specialist
 manuals need not be read for an unrelated task, but their omission never waives
 an issued validation command, approval or stop condition.
+For large optional references, use Document Routing's version-bound range reader;
+retain full assigned sources and count navigation, rereads and framing as context.
 Use `--explain-reading` for direct selection review when a recommendation is unclear.
 Its origins explain selection, not access or required reading; see Document Routing.
 Use the declared department and actual task to select technical context, not a

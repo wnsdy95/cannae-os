@@ -102,8 +102,13 @@ guides. Local emission is not native reading or measured end-to-end context savi
 The [native authoring baseline](docs/completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
 now contains eight actual responses and source-appraised defects in derived units,
 detached receiving context and unresolved source identity/history. Both skills
-contain candidate repairs; their entry reduction remains 21.7%. Candidate quality,
+contain candidate repairs; their current entry reduction remains 21.2%. Candidate quality,
 reserved evaluation and complete cross-client recovery chains remain unverified.
+
+The [version-bound reference reader](docs/evaluation-metrics.md#version-bound-reference-measurement)
+adds navigation and exact source-bound ranges through both skills. It preserves
+full assigned inputs and separates emitted bytes from observed client delivery;
+actual six-task context savings remain unverified.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">

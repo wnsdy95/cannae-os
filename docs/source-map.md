@@ -220,6 +220,14 @@ development cases; no withheld/native execution or loaded-byte claim is added.
 The templates are author-aware, not independently blind. SR01 closes only the
 freeze/baseline criterion; the source-bound authoring evaluation remains open.
 
+The [version-bound reference reader](evaluation-metrics.md#version-bound-reference-measurement)
+in `skill-reference-reader.js` and both `read_controls_reference.js` wrappers
+supports optional corpus navigation and exact digest-bound line selections.
+`run-skill-reference-reader-fixtures.js` checks local byte fidelity, stale/unsafe
+sources and cross-project link/copy operation. These are local engineering
+observations, not new external doctrine, native delivery or semantic sufficiency.
+See `docs/evaluation-metrics.md`; full recommendation size is not a reading trace.
+
 `skill-authoring-evaluation.js` now prepares the four development writing tasks
 for both clients from that exact baseline. Its full-body manifests bind original
 tasks and instruction spans without evaluator answers or native dispatch. The

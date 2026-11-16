@@ -45,7 +45,8 @@ function validateSkill(target) {
   if (!body.trim()) throw new Error("SKILL.md instruction body is empty.");
   const lineCount = content.split("\n").length;
   if (lineCount > 500) throw new Error(`SKILL.md exceeds the 500-line progressive-disclosure limit (${lineCount}).`);
-  for (const requiredPath of ["scripts/route_controls_docs.js", "scripts/read_controls_instructions.js", "references/document-routing.md"]) {
+  for (const requiredPath of ["scripts/route_controls_docs.js", "scripts/read_controls_instructions.js",
+    "scripts/read_controls_reference.js", "references/document-routing.md"]) {
     let candidate = skillRoot;
     for (const segment of requiredPath.split("/")) {
       candidate = path.join(candidate, segment);

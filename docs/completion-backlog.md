@@ -664,6 +664,51 @@ SR07/SR08 are in progress; native candidate/withheld comparison and both complet
 R5 chains remain open. The verified inventory stays **4/18**, with no inherited
 baseline pass or goal completion. Dashboards and servers remain deferred.
 
+#### Version-Bound Reference Reading (2026-11-16)
+
+R2 now has a local optional-reference reader in `skill-reference-reader.js` and
+both bundled `read_controls_reference.js` wrappers. Navigation emits literal
+heading-shaped lines; exact inclusive physical-line or full-body reads bind the
+complete current source digest. UTF-8, CRLF and final-newline state are preserved.
+An unread-tail change rejects an old selection. Only tracked corpus Markdown is
+eligible; project/private inputs, unsafe files and execution options are rejected.
+This is not read authorization or a replacement for manifest-governed/guarded work.
+
+Both entrypoints and routing references require complete assigned inputs and
+version-aware selection of optional guidance. Index navigation, framing, repeated
+reads, overlap and later dependencies remain part of actual recipient context.
+The source catalog must not become an inflated baseline: a diagnostic of all
+recommended bodies is neither a competent operator's actual reading nor native
+delivery. The helper cannot establish semantic sufficiency or waive controls.
+
+Current entrypoints are 25,930/25,944 UTF-8 bytes and 401 validator lines, 21.19%/
+21.18% below the frozen baseline. SR04 remains within its original bounds; no
+required-source, role/authority, route recommendation or issued control is removed.
+The focused gate passed **18/18 commands** with sixteen source bindings stable:
+`.cannae/maintenance/skill-reference-r2-20261116/gate-79b0be10-0300-43b4-8d3a-1869523f5781/verification.json`,
+SHA-256 `634827786cf53f77b0f0cc9ecc24216293d220c1d8c1012d3aecd968f8767598`.
+It covers thirteen new reader cases, fifteen progressive-disclosure cases,
+twenty-two evaluation cases, seventy-six authoring checks, fifty-seven install
+cases, eighteen inspector cases, twenty-two preflight cases, sixteen context
+integrity cases, 1,776 routing queries, fifty-six Korean cases, six control
+enforcement cases and metadata/index/link checks. This is focused local evidence,
+not the full integration gate or native quality. The final index/sample-command
+edits receive separate closure checks; original report bytes remain unchanged.
+
+The paired frozen-development observation remains **14/24 baseline vs 24/24
+candidate expectation matches**, with no reserved execution. Report:
+`.cannae/maintenance/skill-reference-r2-20261116/routing-4d37be9e-a1db-42f2-a540-7eb79ecd8271.json`,
+SHA-256 `ab77025271cc8a1c7e06e3b5adee19c5fb255276c8f12907f33ecf9c8f9d9940`.
+It records all original router outputs, exact source bytes and the six fixed
+catalog-size diagnostics. Those candidate catalogs span 568,383-1,065,735 bytes;
+README, source map and compendium dominate several cases. These are full
+recommendation inventories, not real baseline/candidate reading traces. Actual
+loaded instruction bytes remain null. The current native comparison still needs
+bounded authorized input preparation and an actual observation per client.
+
+SR05/SR06 stay open pending actual complete reading traces and appraisal. No new
+model call, reserved-case exposure, R5 receiving, merge or server work is claimed.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add version-bound corpus reference navigation and exact line/full reads through both skills. Preserve full assigned sources, reject stale and unsafe inputs, and count navigation, framing and rereads separately from selected body bytes. Do not treat the complete recommendation inventory as actual baseline loading or local helper output as native delivery; R2 measured savings remain open.
+
 - Record all eight newly approved native development-baseline responses and source appraisal, retaining a failed uncertainty check, unsupported added claims and an incomplete detached receiving unit. Repair derived-unit, source-identity/history and next-review dependency guidance in both skills and canonical workflows. Keep original outputs, reserved cases and prior timeout evidence unchanged; instruction tests do not establish a native cure, actual cross-client receiving or goal completion.
   Retain four operator-repaired derivatives with fifteen exact changes and unchanged task-source bodies; do not relabel them as native model improvements or actual receiving.
 

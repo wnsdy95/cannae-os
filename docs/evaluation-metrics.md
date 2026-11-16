@@ -217,6 +217,32 @@ mandatory-task regression is critical. No automatic retry, approval renewal,
 policy adoption or promotion follows from a local pass. See the
 [dated freeze checkpoint](completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15).
 
+#### Version-Bound Reference Measurement
+
+The local `skill-reference-reader.js` and both bundled
+`scripts/read_controls_reference.js` wrappers provide navigation followed by
+exact full-body or line-range reads from tracked corpus Markdown. See each
+skill's Document Routing reference for invocation and scope. Index headings are
+literal line candidates, not a Markdown parse or complete body delivery. A line
+selection must bind the complete source SHA-256; even an unread-tail change
+rejects its old digest. Project sources and guarded reading use their original
+access-controlled paths, not this helper.
+
+For the six fixed R2 requests, retain an actual reading trace per revision and
+client. Count the complete entrypoint, selected bodies, navigation, framing,
+repeated reads and any later references needed to finish. Keep every assigned
+source complete, preserve controls and appraise selection sufficiency before
+accepting savings. A smaller first read is not a smaller complete work context.
+Report full recommendation size only as a catalog diagnostic, never as the
+baseline's actual loading or a deliberately inflated comparison denominator.
+Prepared files, helper stdout and synthetic subprocesses cannot substitute for
+observed native delivery. The six-task actual-delivery criterion stays open until
+those separately authorized traces exist; this reader does not dispatch a model.
+
+`node run-skill-reference-reader-fixtures.js` checks byte fidelity, stale-source
+rejection, unsafe inputs and linked/copied wrappers from another project. These
+are local engineering checks, not native behavior or semantic acceptance.
+
 #### Explicitly Prepared Authoring Inputs
 
 `skill-authoring-evaluation.js prepare-baseline` prepares the four development

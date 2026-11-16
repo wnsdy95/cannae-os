@@ -100,6 +100,16 @@ emission, selected catalog size and observed native reading remain different
 measurements. A regression also retains generic `Draft an order...` as a known
 lexical gap; recognizing OPORD does not establish universal document intent.
 
+The next R2 probe separates another common accounting error: a router's complete
+recommendation inventory can be much larger than what a competent operator needs
+to read. It must not be counted as actual baseline loading. Both skills now use
+optional navigation and exact version-bound ranges via `skill-reference-reader.js`
+while preserving full assigned sources. Count navigation, framing, repeated reads
+and later dependencies too. The helper rejects a stale source even when its chosen
+lines did not change; a short intact excerpt is not proof of current context or
+semantic sufficiency. The [measurement procedure](evaluation-metrics.md#version-bound-reference-measurement)
+in `docs/evaluation-metrics.md` keeps actual six-task delivery and quality open.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

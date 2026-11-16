@@ -93,6 +93,50 @@ Guarded packs are not shortened to meet an ordinary-work size target.
 Run `node run-skill-progressive-disclosure-fixtures.js` for a bundle change,
 then the affected installation, routing and context-integrity checks.
 
+### Version-Bound Reference Reading
+
+For a large optional corpus reference, inspect its navigation before choosing
+the directly relevant body. Do not paste README, the source map or the research
+compendium wholesale merely because they are navigation recommendations. This
+does not remove assigned sources, applicable controls or the original task.
+Read the complete entrypoint and full explicitly assigned source bodies; use an
+excerpt only where the actual assignment permits selective reference reading.
+A navigation index is not a complete source or evidence supporting a claim.
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/read_controls_reference.js" \
+  --file docs/source-map.md --index
+node "$CONTROLS_SKILL_DIR/scripts/read_controls_reference.js" \
+  --file docs/source-map.md --sha256 "$SOURCE_SHA256" --lines "$FIRST_LINE:$LAST_LINE"
+node "$CONTROLS_SKILL_DIR/scripts/read_controls_reference.js" \
+  --file docs/source-map.md --sha256 "$SOURCE_SHA256" --full
+```
+
+Set the variables from that file's index and the intended range; never reuse a
+different file's digest. Use the full digest, not a display abbreviation. Ranges are inclusive,
+one-based physical lines and preserve exact bytes, including CRLF and a missing
+final newline. Navigation lists literal heading-shaped lines, not parsed Markdown
+sections; inspect surrounding context and complete conditions before choosing a
+range. The helper does not infer a section end, resolve links or decide sufficiency.
+A source change anywhere invalidates an old selection, including unchanged lines.
+Inspect the new version and reassess affected work instead of merely replacing
+the old digest. Keep the earlier selection and its history.
+
+This local reader accepts tracked corpus Markdown, not target-project sources,
+untracked drafts, arbitrary files or execution receipts. It uses the loaded skill's
+doctrine binding even from another repository; inspect a stale copy first.
+Read authority must already exist. Do not replace manifest-governed or guarded
+reading with this helper, use it to clear a hold, or treat a tracked file as public
+release clearance. Project content retains its separate access/preparation path.
+
+Count the entrypoint, emitted reference bodies, navigation text, JSON/tool framing
+and all follow-up reading in the actual recipient trace. Repeated reads and
+overlapping ranges still cost context; do not deduplicate them after delivery.
+The body byte count excludes metadata/framing and is not the total wire count.
+Local stdout does not prove native-client consumption, comprehension or R2 savings.
+Retain original request, source requirements, authority and issued validation
+commands alongside a prepared context; shorter guidance cannot waive them.
+
 ### Inspecting Reading Selection
 
 Direct `request_intake` records matching-only views for a recognized leading
