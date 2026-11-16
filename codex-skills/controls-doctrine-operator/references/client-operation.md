@@ -33,8 +33,13 @@ installed guide to a historical baseline. Keep original task/source bodies apart
 from evaluator answers and include applicable conditional guides for the tested
 revision. If the recipient has no tools, a preparer must supply needed bodies;
 report unsupplied dependencies and unperformed checks instead of inventing reads.
-`skill-authoring-evaluation.js prepare-baseline` prepares only the frozen
-development writing inputs; it neither sends them nor prepares the candidate.
+`skill-authoring-evaluation.js prepare-baseline` preserves the historical full-body
+selection. `prepare-candidate` needs a separate clean exact revision and adds the
+applicable project-content/reporting guide, plus project-terms for the fixed handoff
+case. Compare each candidate task hash with its baseline, and inspect actual guide
+spans; a link or unchanged task name is not body delivery. Both commands prepare
+only development inputs and send nothing. Candidate preparation is neither the
+global withheld-candidate freeze nor permission to reuse baseline transfer consent.
 Record selection, preparation, client input delivery, completed response and
 source-appraised quality separately. Explicitly supplying a skill does not test
 implicit discovery, agent-invoked routing or cold-start receiving of its output.

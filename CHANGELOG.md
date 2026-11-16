@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Add pinned candidate preparation for the fixed source-grounded authoring evaluation. Preserve baseline prompt behavior and exact task hashes while delivering applicable candidate conditional guides. Keep candidate snapshots separate from withheld freezes and fresh native-transfer consent, with mirrored client guidance and local regressions.
+
 - Add a read-only local skill-evidence index inspector and affected-surface validation map. Preserve recorded failures, missing/stale/unsafe files, source versions and unexecuted checks without executing commands or inferring semantic acceptance. Mirror evidence appraisal guidance in both skills; full integration and native acceptance remain separate.
 
 - Recognize complete mixed deferral lists and plural model transmissions/transfers in both document routers. Preserve English question marks, conditional or unknown clauses, actual technical reviews, explicit sources and existing controls. Add observed-request regressions and mirrored whole-clause appraisal guidance; local matching does not authorize transmission or establish native context savings.

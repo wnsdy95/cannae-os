@@ -58,6 +58,14 @@ not call a model. It is not the six-task context-saving measurement or the two
 cross-client recovery chains. See `docs/evaluation-metrics.md` and its
 [procedure](evaluation-metrics.md#explicitly-prepared-authoring-inputs).
 
+Candidate preparation now pins a separate clean revision and compares every
+original task hash against the baseline. A smaller entrypoint can move applicable
+instructions out of the body, so the fixed candidate writing packets include
+reporting/project-content guidance and the handoff's scoped-term guidance as
+actual bytes. Both client-operation guides require that appraisal. Baseline
+prompts remain reproducible; neither a development snapshot nor its prepared byte
+count establishes native improvement, a withheld freeze or renewed transfer consent.
+
 Eight separately authorized [native baseline responses](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
 now expose why a nearly complete fixed checklist is insufficient: 57/58 frozen
 checks pass, yet source appraisal finds unsupported added units and a detached

@@ -286,6 +286,14 @@ in `docs/evaluation-metrics.md` and mirrored client-operation guidance prevent m
 into historical input. Preparation is not actual reading, discovery, routing,
 quality acceptance or cross-client receiving. No external doctrinal claim is added.
 
+Its candidate preparation path now binds a distinct clean revision and the same
+original development task bytes, adding actual conditional reporting/content
+and handoff-term bodies. Local fixtures reject missing guides, wrong/dirty pins,
+altered phase/authority fields and reused output paths. Both client-operation
+guides distinguish this preparation from the global withheld freeze and a new
+native execution decision. These are local delivery-contract checks, not model
+quality findings or military-source evidence.
+
 The [native development baseline](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
 now records eight actual responses, exact delivered input bodies and a separate
 source appraisal. Its findings concern unsupported event units, incomplete

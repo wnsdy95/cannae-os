@@ -227,11 +227,92 @@ try {
     try { assert.throws(() => authoring.prepareBaseline(bundle, repo, path.join(root, "dirty")), /BASELINE_NOT_CLEAN_PINNED_REVISION/); }
     finally { write(path.join(repo, "docs/source.md"), "Synthetic policy.\n"); }
   });
-  check("native candidate and withheld launch options are unsupported", () => {
+  check("native and withheld launch options remain unsupported", () => {
     for (const verb of ["execute", "withheld", "candidate"]) {
       const denied = spawnSync(process.execPath, [path.join(__dirname, "skill-authoring-evaluation.js"), verb], { encoding: "utf8" });
       assert.equal(denied.status, 1); assert.equal(denied.stdout, "");
       assert.equal(denied.stderr, "SKILL_AUTHORING_EVALUATION_USAGE\n");
+    }
+  });
+  for (const provider of ["codex", "claude"]) for (const format of ["sop", "research", "order-report", "handoff"]) {
+    for (const file of authoring.instructionPaths(provider, format, "candidate")) {
+      if (!fs.existsSync(path.join(repo, file))) write(path.join(repo, file), "# Candidate Conditional Guide\nDo not invent tool execution or source access.\n");
+    }
+  }
+  git(["add", "."]); git(["commit", "-qm", "Fixture candidate with conditional guides"]);
+  const candidateCommit = git(["rev-parse", "HEAD"]);
+  const provenance = { phase: "candidate", candidate_commit: candidateCommit, baseline_commit: frozen.manifest.baseline_commit,
+    bundle_sha256: runner.hash(fs.readFileSync(path.join(bundle, "manifest.json"))) };
+  check("candidate packets retain original task bytes and include revision-specific conditional bodies", () => {
+    for (const provider of ["codex", "claude"]) for (const task of frozen.data["authoring-development.json"]) {
+      const built = authoring.buildPacket(repo, provider, task, provenance), manifest = built.manifest;
+      assert.equal(manifest.version, 2); assert.equal(manifest.phase, "candidate");
+      assert.equal(manifest.candidate_commit, candidateCommit); assert.equal(manifest.baseline_commit, frozen.manifest.baseline_commit);
+      assert.equal(authoring.verifyPacket(built.prompt, manifest).valid, true);
+      const prior = JSON.parse(fs.readFileSync(path.join(root, "prepared", provider + "-" + task.id, "manifest.json")));
+      assert.equal(manifest.task_sha256, prior.task_sha256); assert.equal(manifest.task_bytes, prior.task_bytes);
+      const paths = manifest.segments.map(row => row.path);
+      assert(paths.some(file => file.endsWith("/references/project-content.md")));
+      assert.equal(paths.some(file => file.endsWith("/references/project-terms.md")), task.format === "handoff");
+      for (const segment of manifest.segments.filter(row => row.kind === "instruction")) {
+        assert(built.prompt.subarray(segment.start_byte, segment.end_byte).equals(fs.readFileSync(path.join(repo, segment.path))));
+      }
+    }
+  });
+  check("candidate revision, phase and authorization cannot be substituted in a manifest", () => {
+    const built = authoring.buildPacket(repo, "codex", sampleTask, provenance);
+    for (const mutate of [m => m.candidate_commit = m.baseline_commit, m => m.candidate_commit = "short",
+      m => m.phase = "baseline", m => m.version = 1, m => m.bundle_sha256 = null,
+      m => m.native_transfer_authorized = true, m => m.semantic_acceptance = true, m => m.split = "withheld",
+      m => m.loaded_instruction_bytes = 1, m => m.segments.splice(-2, 1)]) {
+      const manifest = structuredClone(built.manifest); mutate(manifest);
+      assert.throws(() => authoring.verifyPacket(built.prompt, manifest), /SKILL_AUTHORING_EVALUATION_/);
+    }
+    for (const phase of ["withheld", "native", "", null]) assert.throws(() => authoring.buildPacket(repo, "codex", sampleTask, { ...provenance, phase }), /SELECTION_INVALID/);
+  });
+  check("a missing or unsafe candidate conditional guide cannot be replaced by the entrypoint link", () => {
+    const file = path.join(repo, "codex-skills/controls-doctrine-operator/references/project-content.md"), backup = path.join(root, "candidate-guide.md");
+    fs.renameSync(file, backup);
+    try {
+      assert.throws(() => authoring.buildPacket(repo, "codex", sampleTask, provenance), /MISSING/);
+      fs.symlinkSync(backup, file); assert.throws(() => authoring.buildPacket(repo, "codex", sampleTask, provenance), /PATH_INVALID/); fs.unlinkSync(file);
+    } finally { fs.renameSync(backup, file); }
+  });
+  check("candidate preparation creates eight exclusive development packets without freezing withheld evaluation", () => {
+    const output = path.join(root, "candidate-prepared"), result = authoring.prepareCandidate(bundle, repo, candidateCommit, output);
+    assert.equal(result.phase, "candidate"); assert.equal(result.candidate_commit, candidateCommit); assert.equal(result.cases.length, 8);
+    assert.equal(result.global_withheld_candidate_frozen, false); assert.equal(result.withheld_executions, 0);
+    assert.equal(result.native_transfer_authorized, false); assert.equal(result.native_model_calls, 0); assert.equal(result.semantic_acceptance, false);
+    for (const row of result.cases) {
+      const directory = path.join(output, row.name), bytes = fs.readFileSync(path.join(directory, "prompt.md"));
+      assert.equal(runner.hash(bytes), row.prompt_sha256);
+      assert.equal(authoring.verifyPacket(bytes, JSON.parse(fs.readFileSync(path.join(directory, "manifest.json")))).valid, true);
+      assert.equal(fs.statSync(path.join(directory, "prompt.md")).mode & 0o777, 0o600);
+      assert(!bytes.includes("HLD-"));
+    }
+    assert.throws(() => authoring.prepareCandidate(bundle, repo, candidateCommit, output), /EEXIST/);
+    assert.throws(() => authoring.prepareCandidate(bundle, repo, candidateCommit, path.join(repo, "out")), /DESTINATION_INVALID/);
+    assert.throws(() => authoring.prepareCandidate(bundle, repo, candidateCommit, path.join(bundle, "out")), /DESTINATION_INVALID/);
+  });
+  check("candidate preparation rejects dirty, wrong, baseline or missing revision pins", () => {
+    const output = path.join(root, "rejected-candidate");
+    for (const commit of [null, undefined, "", frozen.manifest.baseline_commit]) {
+      assert.throws(() => authoring.prepareCandidate(bundle, repo, commit, output), /CANDIDATE_BINDING_INVALID/);
+    }
+    assert.throws(() => authoring.prepareCandidate(bundle, repo, "1".repeat(40), output), /CANDIDATE_NOT_CLEAN_PINNED_REVISION/);
+    write(path.join(repo, "untracked.md"), "Uncommitted source.\n");
+    try { assert.throws(() => authoring.prepareCandidate(bundle, repo, candidateCommit, output), /CANDIDATE_NOT_CLEAN_PINNED_REVISION/); }
+    finally { fs.unlinkSync(path.join(repo, "untracked.md")); }
+    assert(!fs.existsSync(output));
+  });
+  check("candidate CLI needs an explicit revision and never treats options as execution authority", () => {
+    const script = path.join(__dirname, "skill-authoring-evaluation.js"), output = path.join(root, "candidate-cli");
+    const args = [script, "prepare-candidate", "--bundle", bundle, "--repository", repo, "--candidate-revision", candidateCommit, "--output", output];
+    const result = spawnSync(process.execPath, args, { encoding: "utf8" }); assert.equal(result.status, 0, result.stderr);
+    assert.equal(JSON.parse(result.stdout).native_transfer_authorized, false);
+    for (const tail of [["--execute", "true"], ["--candidate-revision", candidateCommit]]) {
+      const denied = spawnSync(process.execPath, [...args, ...tail], { encoding: "utf8" });
+      assert.equal(denied.status, 1); assert.equal(denied.stdout, "");
     }
   });
   console.log(JSON.stringify({ valid: true, fixtures: count, native_model_calls: 0, actual_evaluation_withheld_executions: 0 }));

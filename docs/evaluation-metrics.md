@@ -369,6 +369,32 @@ Conversely, a later candidate must actually supply its required conditional
 guides instead of assuming a link is sufficient. Completed output proves neither
 source fidelity nor receiving by the next agent; appraise those separately.
 
+`prepare-candidate` uses an explicitly pinned clean revision distinct from the
+baseline, while retaining the exact original development task/source/output bytes.
+It emits version-2 candidate manifests alongside the unchanged version-1 baseline
+format. The fixed candidate selection adds the provider's full project-content
+guide for reporting/source-access boundaries in these unsent document exercises;
+the handoff case also receives its project-terms guide for scoped and superseded
+meanings. Client launch instructions belong to the preparer, not the no-tool
+recipient. No runtime or maintenance guide is added solely to inflate reading.
+Missing required conditional bodies stop preparation; they are not silently
+replaced by links. This remains R3's fixed supplied-context comparison, not R2's
+selective-reading context measurement.
+
+```bash
+node skill-authoring-evaluation.js prepare-candidate \
+  --bundle /absolute/frozen-bundle --repository /absolute/clean-candidate \
+  --candidate-revision "$EXACT_CANDIDATE_COMMIT" \
+  --output /absolute/new-private-candidate-directory
+```
+
+Before proposing native execution, verify every candidate `task_sha256` against
+its original baseline and account for all revision-specific instruction spans.
+Preserve the original baseline packets and results. This development snapshot
+does not freeze the global candidate for withheld evaluation or authorize a model
+call; use a fresh exact execution proposal rather than migrating the consumed
+baseline approval. The helper has no launch command or automatic retry path.
+
 ## 9. Case Study Evaluation Sheet
 
 ```text

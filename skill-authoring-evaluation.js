@@ -29,7 +29,7 @@ const json = value => JSON.stringify(value, null, 2) + "\n";
 function git(root, args) {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith("GIT_")));
   const result = spawnSync("git", ["-C", root, ...args], { encoding: "utf8", env, timeout: 10000 });
-  if (result.status !== 0) fail("GIT_UNAVAILABLE");
+  if (result.status !== 0 || result.error || result.signal) fail("GIT_UNAVAILABLE");
   return result.stdout.trim();
 }
 
@@ -38,9 +38,12 @@ function assertBaseline(root, commit) {
       git(root, ["status", "--porcelain", "--untracked-files=normal"])) fail("BASELINE_NOT_CLEAN_PINNED_REVISION");
 }
 
-function instructionPaths(provider, format) {
-  if (!Object.hasOwn(PROVIDERS, provider) || !Object.hasOwn(FORMATS, format)) fail("SELECTION_INVALID");
-  return [`${PROVIDERS[provider]}/controls-doctrine-operator/SKILL.md`, ...COMMON, ...FORMATS[format]];
+function instructionPaths(provider, format, phase = "baseline") {
+  if (!Object.hasOwn(PROVIDERS, provider) || !Object.hasOwn(FORMATS, format) || !["baseline", "candidate"].includes(phase)) fail("SELECTION_INVALID");
+  const prefix = `${PROVIDERS[provider]}/controls-doctrine-operator`;
+  return [`${prefix}/SKILL.md`, ...COMMON, ...FORMATS[format],
+    ...(phase === "candidate" ? [`${prefix}/references/project-content.md`,
+      ...(format === "handoff" ? [`${prefix}/references/project-terms.md`] : [])] : [])];
 }
 
 function source(root, file) {
@@ -53,7 +56,11 @@ function buildPacket(root, provider, task, provenance) {
   if (!task || typeof task.id !== "string" || !/^[A-Z][A-Z0-9-]{2,39}$/.test(task.id) ||
       typeof task.request !== "string" || !task.request.trim() || !Array.isArray(task.sources) || !task.sources.length ||
       !Array.isArray(task.required_outputs) || !task.required_outputs.length) fail("TASK_INVALID");
-  const instructions = instructionPaths(provider, task.format).map(file => source(root, file));
+  const phase = provenance.phase === undefined ? "baseline" : provenance.phase;
+  if (phase === "candidate" && (!/^[a-f0-9]{40}$/.test(provenance.candidate_commit || "") ||
+      !/^[a-f0-9]{40}$/.test(provenance.baseline_commit || "") || provenance.candidate_commit === provenance.baseline_commit ||
+      !/^[a-f0-9]{64}$/.test(provenance.bundle_sha256 || ""))) fail("CANDIDATE_BINDING_INVALID");
+  const instructions = instructionPaths(provider, task.format, phase).map(file => source(root, file));
   // Serialize only task fields, never evaluator fields attached by a caller.
   const taskBody = Buffer.from(json({ id: task.id, format: task.format, request: task.request,
     sources: task.sources.map(({ id, version, body }) => ({ id, version, body })), required_outputs: task.required_outputs }));
@@ -70,13 +77,15 @@ function buildPacket(root, provider, task, provenance) {
     length += block.bytes.length + 2;
   }
   const prompt = Buffer.concat(parts), instructionBytes = instructions.reduce((sum, row) => sum + row.bytes.length, 0);
-  const manifest = { type: "SkillAuthoringInput", version: 1, phase: "baseline", split: "development",
+  const manifest = { type: "SkillAuthoringInput", version: phase === "baseline" ? 1 : 2, phase, split: "development",
     provider, case_id: task.id, format: task.format, baseline_commit: provenance.baseline_commit,
+    ...(phase === "candidate" ? { candidate_commit: provenance.candidate_commit } : {}),
     bundle_sha256: provenance.bundle_sha256, preparation_harness_sha256: hash(fs.readFileSync(__filename)),
     prompt_sha256: hash(prompt), prompt_bytes: prompt.length, task_sha256: hash(taskBody),
     prepared_instruction_bytes: instructionBytes, task_bytes: taskBody.length,
     framing_bytes: prompt.length - instructionBytes - taskBody.length, segments,
-    instruction_selection: "fixed full-body authoring/KM/handoff/prompt/source guides plus format-specific guide",
+    instruction_selection: "fixed full-body authoring/KM/handoff/prompt/source guides plus format-specific guide" +
+      (phase === "candidate" ? "; candidate project-content guide and handoff project-terms guide" : ""),
     implicit_skill_discovery_tested: false, model_routing_tested: false, native_transfer_authorized: false,
     loaded_instruction_bytes: null, native_model_calls: 0, semantic_acceptance: false, promotion_authorized: false };
   verifyPacket(prompt, manifest);
@@ -85,12 +94,17 @@ function buildPacket(root, provider, task, provenance) {
 }
 
 function verifyPacket(prompt, manifest) {
-  if (!Buffer.isBuffer(prompt) || manifest.type !== "SkillAuthoringInput" || manifest.version !== 1 ||
-      manifest.phase !== "baseline" || manifest.split !== "development" || manifest.native_transfer_authorized !== false ||
+  const candidate = manifest.phase === "candidate";
+  if (!Buffer.isBuffer(prompt) || manifest.type !== "SkillAuthoringInput" || manifest.version !== (candidate ? 2 : 1) ||
+      !["baseline", "candidate"].includes(manifest.phase) || manifest.split !== "development" || manifest.native_transfer_authorized !== false ||
+      (!candidate && Object.hasOwn(manifest, "candidate_commit")) ||
+      (candidate && (!/^[a-f0-9]{40}$/.test(manifest.candidate_commit || "") ||
+        !/^[a-f0-9]{40}$/.test(manifest.baseline_commit || "") || manifest.candidate_commit === manifest.baseline_commit ||
+        !/^[a-f0-9]{64}$/.test(manifest.bundle_sha256 || ""))) ||
       manifest.loaded_instruction_bytes !== null || manifest.native_model_calls !== 0 || manifest.semantic_acceptance !== false ||
       manifest.promotion_authorized !== false || manifest.prompt_sha256 !== hash(prompt) || manifest.prompt_bytes !== prompt.length ||
       !Array.isArray(manifest.segments)) fail("PACKET_INVALID");
-  const expected = instructionPaths(manifest.provider, manifest.format);
+  const expected = instructionPaths(manifest.provider, manifest.format, manifest.phase);
   if (manifest.segments.length !== expected.length + 1) fail("SEGMENTS_INVALID");
   let offset = Buffer.byteLength(INTRO), instructionBytes = 0;
   if (!prompt.subarray(0, offset).equals(Buffer.from(INTRO))) fail("FRAMING_CHANGED");
@@ -116,9 +130,16 @@ function verifyPacket(prompt, manifest) {
     native_transfer_authorized: false, semantic_acceptance: false };
 }
 
-function prepareBaseline(bundlePath, repository, destination) {
+function prepare(bundlePath, repository, destination, candidateCommit = null) {
   const bundle = inspectBundle(bundlePath), root = fs.realpathSync(repository);
-  assertBaseline(root, bundle.manifest.baseline_commit);
+  const phase = candidateCommit === null ? "baseline" : "candidate";
+  const assertRevision = () => {
+    if (phase === "baseline") return assertBaseline(root, bundle.manifest.baseline_commit);
+    if (!/^[a-f0-9]{40}$/.test(candidateCommit) || candidateCommit === bundle.manifest.baseline_commit) fail("CANDIDATE_BINDING_INVALID");
+    if (git(root, ["rev-parse", "--show-toplevel"]) !== root || git(root, ["rev-parse", "HEAD"]) !== candidateCommit ||
+        git(root, ["status", "--porcelain", "--untracked-files=normal"])) fail("CANDIDATE_NOT_CLEAN_PINNED_REVISION");
+  };
+  assertRevision();
   if (!path.isAbsolute(destination)) fail("DESTINATION_INVALID");
   const parent = fs.realpathSync(path.dirname(destination)), output = path.join(parent, path.basename(destination));
   if (output === root || output.startsWith(root + path.sep) || output === bundle.root || output.startsWith(bundle.root + path.sep)) {
@@ -127,10 +148,10 @@ function prepareBaseline(bundlePath, repository, destination) {
   const packets = [];
   for (const provider of Object.keys(PROVIDERS)) for (const task of bundle.authoring) {
     const packet = buildPacket(root, provider, task, { baseline_commit: bundle.manifest.baseline_commit,
-      bundle_sha256: bundle.manifest_sha256 });
+      bundle_sha256: bundle.manifest_sha256, phase, candidate_commit: candidateCommit });
     packets.push({ name: `${provider}-${task.id}`, ...packet });
   }
-  assertBaseline(root, bundle.manifest.baseline_commit);
+  assertRevision();
   if (inspectBundle(bundlePath).manifest_sha256 !== bundle.manifest_sha256) fail("BUNDLE_CHANGED");
   fs.mkdirSync(output, { mode: 0o700 });
   for (const packet of packets) {
@@ -139,8 +160,9 @@ function prepareBaseline(bundlePath, repository, destination) {
     fs.writeFileSync(path.join(directory, "prompt.md"), packet.prompt, { flag: "wx", mode: 0o600 });
     fs.writeFileSync(path.join(directory, "manifest.json"), json(packet.manifest), { flag: "wx", mode: 0o600 });
   }
-  const index = { type: "SkillAuthoringPreparation", version: 1, phase: "baseline", split: "development",
+  const index = { type: "SkillAuthoringPreparation", version: phase === "baseline" ? 1 : 2, phase, split: "development",
     baseline_commit: bundle.manifest.baseline_commit, bundle_sha256: bundle.manifest_sha256,
+    ...(phase === "candidate" ? { candidate_commit: candidateCommit, global_withheld_candidate_frozen: false } : {}),
     preparation_harness_sha256: hash(fs.readFileSync(__filename)), output,
     cases: packets.map(({ name, prompt, manifest }) => ({ name, provider: manifest.provider, case_id: manifest.case_id,
       prompt_bytes: prompt.length, prompt_sha256: hash(prompt), manifest_sha256: hash(json(manifest)),
@@ -151,16 +173,29 @@ function prepareBaseline(bundlePath, repository, destination) {
   return index;
 }
 
+function prepareBaseline(bundlePath, repository, destination) {
+  return prepare(bundlePath, repository, destination);
+}
+
+function prepareCandidate(bundlePath, repository, candidateCommit, destination) {
+  if (typeof candidateCommit !== "string") fail("CANDIDATE_BINDING_INVALID");
+  return prepare(bundlePath, repository, destination, candidateCommit);
+}
+
 function main(argv = process.argv.slice(2)) {
   try {
     const [command, ...args] = argv, options = {};
-    if (command !== "prepare-baseline" || args.length !== 6) fail("USAGE");
+    const candidate = command === "prepare-candidate";
+    if (!["prepare-baseline", "prepare-candidate"].includes(command) || args.length !== (candidate ? 8 : 6)) fail("USAGE");
+    const names = ["--bundle", "--repository", "--output", ...(candidate ? ["--candidate-revision"] : [])];
     for (let index = 0; index < args.length; index += 2) {
-      if (!["--bundle", "--repository", "--output"].includes(args[index]) || Object.hasOwn(options, args[index]) ||
+      if (!names.includes(args[index]) || Object.hasOwn(options, args[index]) ||
           !args[index + 1] || args[index + 1].startsWith("--")) fail("USAGE");
       options[args[index]] = args[index + 1];
     }
-    console.log(json(prepareBaseline(options["--bundle"], options["--repository"], options["--output"])));
+    console.log(json(candidate
+      ? prepareCandidate(options["--bundle"], options["--repository"], options["--candidate-revision"], options["--output"])
+      : prepareBaseline(options["--bundle"], options["--repository"], options["--output"])));
   } catch (error) {
     console.error(/^SKILL_AUTHORING_EVALUATION_[A-Z_]+$/.test(error.message) ? error.message : "SKILL_AUTHORING_EVALUATION_UNAVAILABLE");
     process.exitCode = 1;
@@ -168,4 +203,4 @@ function main(argv = process.argv.slice(2)) {
 }
 
 if (require.main === module) main();
-module.exports = { instructionPaths, buildPacket, verifyPacket, prepareBaseline, main };
+module.exports = { instructionPaths, buildPacket, verifyPacket, prepareBaseline, prepareCandidate, main };

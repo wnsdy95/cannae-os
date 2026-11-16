@@ -128,6 +128,9 @@ development deferred", retaining questions, technical prerequisites and controls
 The first [native context attempt](docs/completion-backlog.md#native-context-startup-failure-2026-11-16)
 stopped on an observer startup-order defect. Its failure is retained; local
 parser replay is not a successful native comparison or measured context saving.
+The [authoring candidate preparation](docs/evaluation-metrics.md#explicitly-prepared-authoring-inputs)
+pins a separate revision, preserves original task hashes and supplies applicable
+conditional guide bodies. Preparation is not native improvement or transfer consent.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">

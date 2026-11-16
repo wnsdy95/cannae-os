@@ -1345,6 +1345,64 @@ but full integration, broader cycle indexing and final source/acceptance apprais
 remain open. SR18 also remains open. The accepted inventory stays **6/18**; no
 withheld evaluation, native model transfer, dashboard or server work occurred.
 
+#### Authoring Candidate Preparation (2026-11-17)
+
+`skill-authoring-evaluation.js prepare-candidate` now prepares the four exposed
+development writing tasks for both clients from a separate clean exact revision.
+The baseline version-1 format remains supported; candidate version-2 manifests
+bind both revisions and the unchanged original task/source/output bytes. Full
+candidate project-content/reporting bodies and the handoff's project-terms body
+are included, not only entrypoint links. Both client-operation guides require
+checking these bodies and original task hashes before a new native proposal.
+
+The local candidate snapshot is `d46827b9d0a0115a24aa4ca08905fb52c290a5cc`.
+All eight historical baseline prompts were reproduced byte-for-byte from clean
+`9331ff5`; their stored inputs were not rewritten. Eight candidate inputs total
+1,185,418 bytes, with identical task hashes to the corresponding baseline inputs.
+This fixed supplied-context R3 experiment is not R2's six-task selective-reading
+measurement; the larger prepared input is neither a saving nor a quality result.
+
+Evidence root: `.cannae/maintenance/skill-authoring-candidate-20261117/`.
+`prepared-d46827b/index.json` has SHA-256
+`507e72db5c5005802af9f421a20ee748a2bcbb9567dabc8ce669510f24816754`;
+`preparation-appraisal.json` has SHA-256
+`77d91af34a05167f28884fa9ddbae7e85c235faa1da52077269d637c51b7b247`.
+Eight metadata-only observer preflights checked exact input/source/binary/profile
+bindings without a model call or attempt record. Their report is
+`preflight-0a83c641-67cf-4ad6-a8b5-14d2cd58a837.json`, SHA-256
+`6f41fb156889f485b73564a2e478c9466fcdb92d5b79904877b5c3060ab17100`.
+
+The new exact eight-process candidate proposal is awaiting USER decision. Its
+plan has SHA-256 `04cfdff148ffe69ef1ac44afd457da6facfe320a1255edde48cfce537af4e3ba`
+and `proposal.md` has SHA-256
+`47d5167642b7ab1526d6d8117109833844a20698b7d90613de7253c1100ba579`.
+It allows only one sequential process per input, at most ten minutes each and
+within a fresh 24-hour consent window; first failure stops the batch. The consumed
+baseline approval and the separate pending R2 retry do not authorize these calls.
+No native candidate call, withheld execution or R5 receiving has occurred.
+
+This snapshot is not the global withheld-candidate freeze, and preparation is not
+an accepted candidate. SR07-SR09 remain open; the verified inventory stays **6/18**.
+
+The focused candidate-preparation gate completed all twelve commands, including
+28 evaluation fixture groups, authoring-input and review-packet regressions,
+progressive disclosure, both skill validators and routing coverage, source-map,
+Markdown links, English-only and diff checks. No native or withheld task ran.
+`gate-3116a89b-94c3-4953-b0f4-53758acd1ad0/verification.json` has SHA-256
+`efa0823b01081e3f227f1769b5227d849d2fe96bc71b623ee119c2c82d3ba9e2`.
+Its pre/post source hashes match. This is a focused pass, not full integration;
+later status-document updates do not change the original validation snapshot.
+
+The private `evidence-index-v2.json` retains all eleven earlier R1/R6 entries
+unchanged and adds preparation, metadata preflight and the focused gate. Its
+SHA-256 is `3edc775aa24f61ff21b126241f1e9e3944d2bb06e43ff512c4e0844e90bc517d`;
+`evidence-inspection-v2.json` has SHA-256
+`d756c347195a84c51e756bdb967ca379f0b1edd36dcfbbc4f30cc8e4376b705c`.
+All three new result sets are retained. Five older checks remain unexecuted,
+and the gate's old backlog hash differs after this status update, as expected.
+The inspector reports these states rather than converting them into fresh passes;
+its matching declared subset does not establish complete dependency coverage.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
