@@ -243,6 +243,57 @@ those separately authorized traces exist; this reader does not dispatch a model.
 rejection, unsafe inputs and linked/copied wrappers from another project. These
 are local engineering checks, not native behavior or semantic acceptance.
 
+#### Paired Context Inputs
+
+`skill-context-evaluation.js` prepares the six fixed R2 requests for both providers
+at two clean, exact Git revisions. This is a controlled, explicitly supplied-context
+experiment, not implicit skill discovery or agent-invoked routing. It does not
+launch a client or add a service. The original frozen requests mention supplied
+policies/records but contain no task-source bodies. Bind a separate supplement
+before execution, selecting unchanged sources from the development authoring
+tasks; use exactly the same supplement on both sides. Preserve the original
+bundle and requests. Do not compare a missing-input question on one side with a
+finished draft on the other or silently add answers as task evidence.
+
+The supplement has `version: 1`, the original `bundle_sha256`, and one row per
+fixed context case: `case_id`, `source_task_id`, `source_ids`. Every referenced
+source must belong to the development task, not the withheld split or reference
+answers. This preparation path rejects guarded tasks and declared corpus inputs
+it cannot faithfully represent; it is not a general source-access fallback.
+
+```bash
+node skill-context-evaluation.js prepare \
+  --bundle /absolute/frozen-bundle --supplement /absolute/context-sources.json \
+  --baseline /absolute/clean-baseline --candidate /absolute/clean-candidate \
+  --candidate-revision "$CANDIDATE_COMMIT" --output /absolute/new-private-preparation
+node skill-context-evaluation.js inspect \
+  --directory /absolute/new-private-preparation --index-sha256 "$INDEX_SHA256"
+node run-skill-context-evaluation-fixtures.js
+```
+
+Use the exact forty-character candidate commit and returned index digest. The
+exclusive private output retains full entrypoints, original requests, complete
+assigned source strings, actual preparer routing and exact byte spans. The input
+projection preserves role, objectives, gaps and validation commands but omits
+private repository locations and unneeded supporting-inventory metadata. Original
+router output remains local for comparison. Every route recommendation must exist
+in its revision's bounded Markdown corpus snapshot; no silent omission is allowed.
+
+Corpus snapshots are eligible reference inputs, not delivered context, reviewed
+read profiles or public-release grants. Preparing a versioned candidate for R2
+does not freeze the global candidate for withheld evaluation. This snapshot can
+become a superseded preparation without having consumed a native attempt; keep
+its original index and distinguish it from a later exact execution proposal.
+
+Both revisions retain selective reading. Freeze the common reading interface,
+client/model settings, tools, limits and accounting before the native comparison.
+Count initial instructions, navigation, response framing, repeats and follow-up
+reads in a complete trace, with task-source bytes reported separately. Inspect
+source completeness and required outputs before accepting any savings. Initial
+prompt shrinkage, a snapshot-size difference or prepared-file inspection cannot
+close SR05. The transport/observer and applicable transfer consent remain separate
+prerequisites; a preparation manifest always has null loaded bytes and no authority.
+
 #### Explicitly Prepared Authoring Inputs
 
 `skill-authoring-evaluation.js prepare-baseline` prepares the four development

@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Prepare and inspect paired six-task context inputs at clean baseline/candidate revisions for both clients. Preserve original requests, bind identical development-source supplements, exclude evaluator answers and withheld inputs, and retain private source snapshots and exact prompt accounting. Mirror fair selective-reading and full-trace appraisal guidance; preparation does not dispatch a model, freeze the withheld candidate or prove context savings.
+
 - Add version-bound corpus reference navigation and exact line/full reads through both skills. Preserve full assigned sources, reject stale and unsafe inputs, and count navigation, framing and rereads separately from selected body bytes. Do not treat the complete recommendation inventory as actual baseline loading or local helper output as native delivery; R2 measured savings remain open.
 
 - Record all eight newly approved native development-baseline responses and source appraisal, retaining a failed uncertainty check, unsupported added claims and an incomplete detached receiving unit. Repair derived-unit, source-identity/history and next-review dependency guidance in both skills and canonical workflows. Keep original outputs, reserved cases and prior timeout evidence unchanged; instruction tests do not establish a native cure, actual cross-client receiving or goal completion.

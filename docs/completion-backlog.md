@@ -709,6 +709,64 @@ bounded authorized input preparation and an actual observation per client.
 SR05/SR06 stay open pending actual complete reading traces and appraisal. No new
 model call, reserved-case exposure, R5 receiving, merge or server work is claimed.
 
+#### Paired Context Preparation (2026-11-16)
+
+The fixed R2 requests name supplied policies/records but do not contain task-source
+bodies. A separate source supplement now reuses unchanged development inputs:
+AD-01 rule/support for RD-01/02/03/04, AD-04 rule/old-current meanings/status for
+RD-08, and AD-02 rule/observations for RD-09. It neither changes the original
+requests/bundle nor includes prior flawed drafts, reference answers or withheld
+inputs. The supplement SHA-256 is
+`3e799481410bd9c03b9cfa99a76b9ee06136434b841a820c92351b50daa0e44e`.
+
+`skill-context-evaluation.js` prepares both providers from clean baseline
+`9331ff5c613f60cb30bd61e853c78d3d0e9440fb` and R2 snapshot
+`7f64600562e735b6e4218ff3641a2e9772c738ee`. This is an R2 preparation version,
+not the global candidate freeze for withheld evaluation. Both sides retain
+selective reading and receive identical complete assigned source strings.
+The preparer route preserves original requests, roles, objectives, gaps and
+validation commands; it is not a route executed by the receiving model.
+
+The 24 prepared inputs total 907,182 UTF-8 bytes: 494,576 baseline and 412,606
+candidate. These are initial prompts, not complete native context or savings.
+The eligible snapshots retain 146/154 Markdown bodies totaling 3,487,983/3,625,732
+bytes; catalog size is not loading. Private preparation:
+`.cannae/maintenance/skill-context-r2-20261116/prepared/index.json`, SHA-256
+`6fed86485888e819ba2e645db33f95da6b18b7fc93169bdf23e46b36a13cba05`.
+Fresh inspection checks every snapshot, input span, task source, role/control
+projection and case combination. Producer SHA-256:
+`1c7a81e6b24c6e4090221c28355bdda0e2f761eae843ff7ba6b99c621108324d`.
+
+Thirteen focused preparation fixtures cover exact source strings, answer/withheld
+exclusion, complete pairing, changed/unsafe inputs, exact byte accounting,
+non-authorizing flags and interrupted output preservation. Both client-operation
+guides now require comparable supplements and complete reading traces rather than
+comparing a missing-input reply with a completed document. Native transport,
+observer/accounting, output appraisal and a new applicable execution approval are
+still required. No native attempt has been started or consumed by preparation;
+loaded bytes remain null, and SR05/SR06 and the **4/18** inventory are unchanged.
+
+The focused closure passed 17/17 commands, including context preparation (13),
+evaluation (22), reference reading (13), progressive delivery (15), authoring
+packet (76), installation (57), copy inspection (18), preflight (22), document
+integrity (16), enforcement (6), both skill validators and the index/link/language
+checks. Source and unrelated-file hashes were unchanged during the gate. Evidence:
+`.cannae/maintenance/skill-context-r2-20261116/gate-f4ba8715-c752-4b19-ae5f-e8b2911521d0/verification.json`,
+SHA-256 `f1794567f687ac96532b81b14a0a1d94c28ebebf12a5d02a48eda11d5ba73242`.
+This is a focused local gate, not the full pre-merge integration or native execution.
+
+A separate real maintenance-query counterexample remains open for R1: both
+routers infer `Maintain the Controls skills` as an objective but report
+`NO_CAPABILITY_ROUTE`; the paired context-evaluation objective is also a gap.
+The returned `CELL-E7720114AC7B` retains analysis/reversible drafting only, with
+no authority expansion or standing activation. Preserve this provisional routing
+instead of treating the assignment as unowned general work. Exact two-provider
+observation: `.cannae/maintenance/skill-context-r2-20261116/maintenance-route-10e7376b-2393-46b5-8450-801aa779aa34.json`,
+SHA-256 `5227f4953115b0c03ae364dbabb9a25955088e1219f96b16fd3c9fe4e2a9f9f3`.
+This is an additional exposed counterexample, not a changed frozen expectation
+or a withheld success. Fix ordinary own-skill maintenance recognition without
+letting a supporting skill method clear a genuinely uncovered domain objective.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

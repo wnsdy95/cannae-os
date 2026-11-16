@@ -228,6 +228,13 @@ sources and cross-project link/copy operation. These are local engineering
 observations, not new external doctrine, native delivery or semantic sufficiency.
 See `docs/evaluation-metrics.md`; full recommendation size is not a reading trace.
 
+`skill-context-evaluation.js` and `run-skill-context-evaluation-fixtures.js` add
+[paired context preparation](evaluation-metrics.md#paired-context-inputs): unchanged
+fixed requests, identical development-source supplements, clean revision snapshots
+and exact initial-input accounting. Both client-operation guides preserve fair
+selective reading and distinguish preparation from complete native traces. No
+new military-source claim, transfer authority or context-saving acceptance follows.
+
 `skill-authoring-evaluation.js` now prepares the four development writing tasks
 for both clients from that exact baseline. Its full-body manifests bind original
 tasks and instruction spans without evaluator answers or native dispatch. The

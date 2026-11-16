@@ -38,3 +38,16 @@ development writing inputs; it neither sends them nor prepares the candidate.
 Record selection, preparation, client input delivery, completed response and
 source-appraised quality separately. Explicitly supplying a skill does not test
 implicit discovery, agent-invoked routing or cold-start receiving of its output.
+
+For a paired context experiment, first check whether the fixed requests actually
+include their promised task sources. Freeze a separate source supplement if needed;
+preserve the original requests and give both revisions identical complete bodies.
+Do not substitute a missing-input reply for finished work on only one side.
+`skill-context-evaluation.js prepare` and `inspect` bind the six R2 cases to clean
+revisions and private snapshots without client execution. Both sides may choose
+selective reading; never inflate the baseline by forcing its whole catalog.
+Keep the reading interface and accounting comparable, count later reads and
+framing, and appraise the finished work before reporting savings. A smaller
+initial prompt or inspected snapshot is not a complete native trace. An R2 input
+snapshot is not the global withheld-candidate freeze or a transfer decision;
+superseding it must not rewrite its original evidence or consume an unstarted call.

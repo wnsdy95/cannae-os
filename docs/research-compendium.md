@@ -110,6 +110,14 @@ lines did not change; a short intact excerpt is not proof of current context or
 semantic sufficiency. The [measurement procedure](evaluation-metrics.md#version-bound-reference-measurement)
 in `docs/evaluation-metrics.md` keeps actual six-task delivery and quality open.
 
+Those six routing requests name supplied policies/records without containing
+their bodies. A fair writing-context comparison therefore needs a separately
+bound, identical source supplement on both sides, not a silent task rewrite or
+a missing-source reply compared with completed work. The [paired preparation](evaluation-metrics.md#paired-context-inputs)
+in `docs/evaluation-metrics.md` keeps original requests, reused development-source
+bodies, reference snapshots and native delivery separate. Both skills retain
+selective reading; neither catalog size nor initial prompt size proves savings.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
