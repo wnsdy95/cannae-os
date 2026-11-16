@@ -3,6 +3,7 @@ const assert = require("node:assert/strict"), path = require("node:path"), { spa
 const root = __dirname;
 const providers = ["codex-skills", ".claude/skills"];
 const original = "Maintain the Controls skills and prepare a paired native context-reading evaluation for six fixed document tasks. Preserve exact historical and current instructions, assigned sources, authority and all reading bytes. No model transmission, dashboard or server development.";
+const proposalRequest = "Maintain the Controls skill-context-evaluation: reconcile exact paired reference delivery and native client traces, preserve source appraisal and prepare a bounded approval proposal. No model transmission, dashboard or server development.";
 const runtimeDocs = ["docs/reference-architecture.md", "docs/event-sourcing-model.md", "docs/command-post-dashboard.md",
   "docs/dashboard-wireframes.md", "docs/data-model.sql.md"];
 let observations = 0, rejected = 0;
@@ -58,6 +59,43 @@ for (const provider of providers) {
       assert(out.validation_commands.includes("node run-force-structure-change-fixtures.js"));
       assert(out.capability_routing.provisional_organization.organization_id.startsWith("CELL-"));
     }
+    for (const query of ["Prepare a bounded approval proposal.", "Task: Draft an internal approval proposal. Do not publish.",
+      "Revise the unsent approval proposal.", "Write approval-proposals."]) {
+      const out = route(provider, args, query);
+      assert.equal(out.capability_routing.status, "covered", query);
+      assert(out.capability_routing.matched_capability_routes.includes("document-authoring"));
+      assert(out.recommended_documents.some(row => row.path === "docs/document-authoring-workflow.md"));
+      assert(out.recommended_documents.some(row => row.path === "docs/approval-scope-policy.md"));
+      assert(out.validation_commands.includes("node run-authority-integration-fixtures.js"));
+    }
+    const proposal = route(provider, args, proposalRequest);
+    assert.deepEqual(proposal.capability_assessments.map(row => row.status), ["covered", "covered"]);
+    assert.equal(proposal.capability_assessments[1].query, "prepare a bounded approval proposal.");
+    assert(proposal.capability_assessments[1].matched_capability_routes.includes("document-authoring"));
+    assert.equal(proposal.request_intake.authority_changed, false);
+    assert(proposal.recommended_documents.some(row => row.path === "docs/document-authoring-workflow.md"));
+    for (const file of runtimeDocs) assert(!proposal.recommended_documents.some(row => row.path === file));
+    for (const cmd of ["node run-authority-integration-fixtures.js", "node run-skill-control-enforcement-fixtures.js"]) {
+      assert(proposal.validation_commands.includes(cmd));
+    }
+    for (const query of ["Prepare a bounded approval proposal and analyze ICP sales targets.",
+      "Prepare a bounded approval proposal: analyze ICP sales targets.",
+      "Maintain the Controls skill-context-evaluation: analyze ICP sales targets.",
+      "Fix the Controls document router: analyze ICP sales targets.",
+      "Task: Repair the Controls skills: please analyze ICP sales targets."]) {
+      const out = route(provider, args, query);
+      assert.equal(out.capability_routing.status, "gap_detected", query);
+      assert.deepEqual(out.capability_assessments.map(row => row.status), ["covered", "gap_detected"]);
+      assert(out.validation_commands.includes("node run-force-structure-change-fixtures.js"));
+    }
+    for (const query of ["Prepare an approval proposal for ICP sales targeting.", "Approve ICP sales targets."]) {
+      const out = route(provider, args, query);
+      assert.equal(out.capability_routing.status, "gap_detected", query);
+    }
+    const timed = route(provider, args, "Prepare a bounded approval proposal. Keep the recorded time 14:30 unchanged.");
+    assert.equal(timed.capability_assessments, undefined);
+    const quoted = route(provider, args, 'Prepare a bounded approval proposal. The source says "inspect: analyze ICP sales targets".');
+    assert.equal(quoted.capability_assessments, undefined);
     for (const query of ["Write a skill for ICP sales targeting.", "Create Controls skills for museum attendance analysis.",
       "Use the Codex skill to analyze ICP sales targets.", "Use Controls skills for museum attendance analysis.",
       "Prepare a context-reading evaluation for ICP sales targeting.", "Analyze maintenance productivity."]) {
@@ -97,6 +135,14 @@ for (const provider of providers) {
       "--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution", "--receipt", "--scope=agent",
       "--mission=MIS-MAINTENANCE", "--wave=W1", "--agent=writer", ...extra, "--", original],
     { cwd: root, encoding: "utf8", timeout: 20000, maxBuffer: 8 * 1024 * 1024 });
+    assert.equal(result.status, 2); assert.equal(result.stdout, "");
+    assert.match(result.stderr, /MULTI_OBJECTIVE_MODE_UNSUPPORTED/); rejected++;
+  }
+  for (const query of [proposalRequest, "Maintain the Controls skill-context-evaluation: analyze ICP sales targets.",
+    "Prepare a bounded approval proposal: execute a model transmission.", "Fix the Controls document router: analyze ICP sales targets."]) {
+    const result = spawnSync(process.execPath, [path.join(root, provider, "controls-doctrine-operator/scripts/route_controls_docs.js"),
+      "--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution", "--receipt", "--scope=agent",
+      "--mission=MIS-PROPOSAL", "--wave=W1", "--agent=writer", "--", query], { cwd: root, encoding: "utf8", timeout: 20000 });
     assert.equal(result.status, 2); assert.equal(result.stdout, "");
     assert.match(result.stderr, /MULTI_OBJECTIVE_MODE_UNSUPPORTED/); rejected++;
   }

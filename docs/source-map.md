@@ -249,6 +249,14 @@ specific maintenance/evaluation routes, independent domain gaps, full constraint
 conditional technical reading and retained guarded-input rejection. Both routing
 guides require per-objective assessment rather than a manual-selection shortcut.
 
+The [proposal/compound intake follow-up](completion-backlog.md#proposal-drafting-and-compound-intake-2026-11-16)
+corrects the original symptom diagnosis using separate capability rows: proposal
+drafting was unsupported, while the maintenance clause was already covered.
+It also retains explicit colon-separated tasks and their independent gaps.
+`run-skill-maintenance-routing-fixtures.js` tests both providers, original text,
+quoted/time counterexamples and guarded rejection. This is local engineering
+evidence, not new military doctrine or approval authority.
+
 `skill-authoring-evaluation.js` now prepares the four development writing tasks
 for both clients from that exact baseline. Its full-body manifests bind original
 tasks and instruction spans without evaluator answers or native dispatch. The

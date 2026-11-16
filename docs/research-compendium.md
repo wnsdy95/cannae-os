@@ -135,6 +135,15 @@ using a skill is not itself subject expertise. Both skill guides preserve this
 distinction and existing receipt/transfer limits. This is local engineering
 evidence, not universal intent understanding or an unseen evaluation result.
 
+The [proposal/compound intake follow-up](completion-backlog.md#proposal-drafting-and-compound-intake-2026-11-16)
+demonstrates why overall gap labels are insufficient for diagnosis. The original
+maintenance clause was covered; the extracted approval-proposal drafting clause
+was not. Both skills now distinguish that document workflow from granting an
+approval. A second local counterexample exposed colon-separated domain work
+inheriting maintenance coverage; explicit action clauses now keep their separate
+assessments. Original evidence and unresolved semantic limits remain, and the
+pending native-context snapshot is not silently replaced with these later changes.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

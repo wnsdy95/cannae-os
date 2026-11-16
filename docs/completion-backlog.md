@@ -917,6 +917,58 @@ was not used to alter the frozen six tasks or their R2 input preparation.
 Observation: `.cannae/maintenance/skill-context-r2-20261116/maintenance-hyphen-gap-d6960b6b-2dfe-434a-847c-3c63e2663976.json`,
 SHA-256 `67ab0b7b43a120af98cff13045590d3f62962363be940cd32ad27dc1dd1b149f`.
 
+#### Proposal Drafting And Compound Intake (2026-11-16)
+
+The preceding hyphenated-request observation is preserved, but its initial
+diagnosis was incomplete. Per-objective inspection shows the maintenance clause
+was already covered; `prepare a bounded approval proposal.` caused the combined
+gap. Isolated probes confirm both hyphenated and spaced maintenance requests
+were covered before this repair. Separately, a colon followed by an explicit
+`analyze ICP sales targets` task was incorrectly covered by its maintenance
+prefix. Before-state evidence:
+`.cannae/maintenance/skill-context-r2-20261116/proposal-intake-before-6057daad-9738-4ba2-8360-12b232c76e40.json`,
+SHA-256 `866e17698a8481459c28d5e000d857cb0de6441c4ee5dfd1c39e2ce0d8a22145`.
+
+Both routers now recognize the bounded approval-proposal document format without
+interpreting drafting as approval, publication or subject-domain expertise.
+Explicit action clauses after a colon receive separate assessments; supported
+maintenance prefixes cannot clear an uncovered downstream objective. The bounded
+action vocabulary also retains maintenance verbs when extracting these clauses.
+Quoted source text and time punctuation do not become new task declarations.
+Original requests, source references, prohibitions and all non-gap controls remain.
+Both skill routing guides require per-objective diagnosis and explicit declarations
+for unresolved extraction rather than deleting a difficult task or changing a
+guarded request into direct work.
+
+The focused maintenance fixture now passes 168 local routed observations and 12
+guarded rejections across both providers and human/delegated modes. It covers the
+original request, standalone drafting, genuine domain gaps, colon-separated
+tasks, quoted/time counterexamples and unsupported execution receipts. These are
+development regressions, not reserved-case or native semantic acceptance.
+SR02/SR03 stay open and the accepted inventory remains **4/18**. The pending R2
+native proposal still refers to its unchanged `4e02c09` snapshot, not this later
+working-tree repair; neither the frozen inputs nor its execution authority changed.
+
+The original request now has two covered objective rows in both providers with
+unchanged operator metadata and all previously selected non-gap validation
+commands. Exact after-state observation:
+`.cannae/maintenance/skill-context-r2-20261116/proposal-intake-after-5398a414-2986-4da9-98c7-530e515137ef.json`,
+SHA-256 `1050eb81bfbac07c1f8374cdaa4d0630a5afa87869cb40343db4a9df5aa38c87`.
+The frozen development comparison remains 14/24 baseline vs 24/24 current
+matches with no reserved/native execution:
+`.cannae/maintenance/skill-reference-r2-20261116/routing-33981088-01d3-44f2-b951-6d6e1d1a892d.json`,
+SHA-256 `07da44ce62ee78d243153ed123dcf1cf72f8ad81bf21a52ecbb81a9b599927c6`.
+
+All 19 focused commands passed, including the 1,776-query existing routing suite,
+Korean intake, installation/copy diagnostics, context integrity, preflight and
+enforcement. The gate retained source and unrelated-file hashes; it is not the
+full merge-time integration gate. Evidence:
+`.cannae/maintenance/skill-context-r2-20261116/proposal-intake-gate-6a43de80-bd3c-47e0-af9b-29294f584a13/verification.json`,
+SHA-256 `db8c83dfccebb13fbff08a4dd5142034ad45fcc4f7f3b0675245493560dc8d28`.
+The USER subsequently approved the exact R2 proposal for at most 24 sequential
+processes; that approval is recorded locally against its original plan/proposal
+digests. Approval is not a native result, successful reading or criterion closure.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

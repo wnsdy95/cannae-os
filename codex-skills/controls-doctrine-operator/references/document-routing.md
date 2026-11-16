@@ -278,6 +278,17 @@ narrows platform reading only: the full prohibition, explicit/parent inputs and
 selected controls remain. A fresh corrected route does not amend an issued receipt
 or authorize the evaluation's model calls. See the [maintenance intake case](../../../docs/completion-backlog.md#own-skill-maintenance-intake-2026-11-16).
 
+Diagnose a compound gap from each `capability_assessments` row, not the request's
+first word or punctuation. A supported maintenance clause can coexist with an
+unrecognized document format. Preparing an approval proposal routes its drafting
+workflow; it does not approve the proposal or authorize transmission. A named
+uncovered subject still needs its own assessment. Review explicit action clauses
+after a colon as well as `and`/`then`; the prefix cannot supply another task's
+domain coverage. Original wording, source inputs and prohibitions remain binding.
+If extraction is uncertain, declare each actual objective with `--capability-query`
+instead of deleting the difficult clause. Guarded multi-objective rejection stays
+in force; direct draft routing cannot be reused as an execution receipt.
+
 For ordinary direct work, a mention of Codex, Claude, CLI, skill, routing,
 operator, inventory or coverage alone does not require installation and corpus
 maintenance manuals. The selected skill-operations route keeps the product-scope,

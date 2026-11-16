@@ -119,6 +119,9 @@ source appraisal and authorized actual comparison remain required.
 The [maintenance intake correction](docs/completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
 recognizes own-skill upkeep and bounded context evaluation while preserving
 uncovered domain objectives, full prohibitions and guarded-input rejection.
+The [proposal/compound intake follow-up](docs/completion-backlog.md#proposal-drafting-and-compound-intake-2026-11-16)
+distinguishes preparing an approval document from granting approval, and retains
+independent tasks introduced after a colon instead of inheriting prefix coverage.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">

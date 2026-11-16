@@ -850,9 +850,11 @@ function isDocumentAuthoringRequest(query) {
   const selfReview = new RegExp("\\bself[- ]reviews?\\s+(?:of\\s+)?" + determiner +
     "(?:(?:actual|own)\\s+)?(?:drafts?|documents?|v[0-9]+(?:\\.[0-9]+)*\\s+and\\s+findings?)" +
     "(?=$|[.,;:!?]|\\s+(?:and|before|after|against|with|for|without|using)\\b)", "i");
+  // Preparing an unsent proposal is a document task, not approval or domain coverage.
+  const approvalProposal = /^(?:please\s+)?(?:prepare|draft|write|revise|edit|update)\s+(?:(?:a|an|the|our|bounded|internal|unsent)\s+)*approval[- ]proposals?(?=$|[.;!?]|\s+(?:and|then|without)\b)/i;
   return new RegExp(`\\b${verb}\\s+(?:(?:or|and)\\s+${verb}\\s+)?${determiner}(?:documents?|documentation)\\b`, "i")
     .test(text) || isOrderDocumentRequest(text) || report.test(text) || draftReview.test(text) || findings.test(text) || selfReview.test(text) ||
-    documentReadinessView(text) !== text;
+    approvalProposal.test(taskHeadingView(text).trim()) || documentReadinessView(text) !== text;
 }
 
 function isOrderDocumentRequest(query) {
@@ -1605,10 +1607,12 @@ function inferredObjectives(query) {
   const text = taskHeadingView(query);
   // Do not interpret quoted source text as top-level tasking.
   if (/["`\u201c\u201d]|(?:^|\s)'/.test(text)) return [];
-  const action = "(?:compare|analyze|analyse|assess|research|draft|write|revise|edit|update|review|check|appraise|prepare|evaluate|maintain|record|summarize|inspect|read|design|build|create|implement|audit|verify|execute|run|deploy|launch|start|operate|invoke|delete)";
+  const action = "(?:compare|analyze|analyse|assess|research|draft|write|revise|edit|update|review|check|appraise|prepare|evaluate|maintain|fix|repair|improve|optimize|optimise|validate|test|freeze|measure|record|summarize|inspect|read|design|build|create|implement|audit|verify|execute|run|deploy|launch|start|operate|invoke|delete)";
   const start = new RegExp("^(?:please\\s+)?" + action + "\\s+\\S", "i");
   const coordination = new RegExp("\\s+(?:and(?:\\s+then)?|then|also)\\s+(?=" + action + "\\s+\\S)", "i");
-  const clauses = taskClauses(text);
+  // A colon can introduce another explicit task, not permission from its prefix.
+  const colonAction = new RegExp(":\\s+(?=(?:please\\s+)?" + action + "\\s+\\S)", "i");
+  const clauses = taskClauses(text).flatMap(clause => clause.split(colonAction));
   const objectives = clauses.flatMap(clause => {
     const task = clause.trim().replace(/^(?:also|then)\s+/i, "");
     if (!start.test(koreanMatchingView(task))) return [];
