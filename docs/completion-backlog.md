@@ -16,12 +16,13 @@ Decision: USER, 2026-11-15. Investigate and improve remaining skill limitations;
 keep dashboards, servers and production infrastructure deferred. R1-R6 in the
 [scope](skill-first-product-scope.md#active-objectives) are the new active goal.
 The completed G1-G5/A01-A20 baseline below remains intact. New status:
-**4/18 required criteria verified**; this is a work inventory, not an accuracy
+**5/18 required criteria verified**; this is a work inventory, not an accuracy
 or product-completion percentage. Registration and the initial probes closed none;
 the frozen evaluation closes SR01 and the conditional-instruction checkpoint
 below closes SR04. Registered local dependency impact closes SR11 at its bounded
 scope, and the installation/diagnostic compatibility matrix closes SR16 for its
-tested configurations. Actual context savings and native quality remain open.
+tested configurations. The requirement-level local terminology boundary appraisal
+closes SR12; operational capture, actual context savings and native quality remain open.
 
 #### Observed Skill Limits
 
@@ -79,7 +80,7 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | Planned |
 | SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | In progress |
 | SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Verified (bounded) |
-| SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | In progress |
+| SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | Verified (bounded) |
 | SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | Planned |
 | SR14 | R5 | Include a changed-source/term or unavailable-source interruption in those chains; observe dependent work held, permitted independent work retained, a truthful notice and separately authorized fresh continuation without invented receipts or retry permission. | Planned |
 | SR15 | R5 | Validate the final receiving unit and actual next-agent use against original objectives, current sources, unresolved decisions and recipient scope. A prepared packet or final self-claim alone cannot close this criterion. | Planned |
@@ -1105,6 +1106,84 @@ inside the proposal, writer and dependency suites. The writer completed in about
 edits receive a separate short closure check. This is not the full repository
 integration gate, native term appraisal or actual cross-client receiving; earlier
 R2 failures remain separate and the accepted inventory is still **4/18**.
+
+#### Startup Remaining Checks (2026-11-16)
+
+A new source-bound run completed all four previously outstanding R2 local
+commands: installation, context-document integrity, routing preflight and control
+enforcement. It binds the unchanged tracked tree at `55c1f46`, including the
+preserved user `.gitignore`, and does not rewrite either earlier failed gate:
+`.cannae/maintenance/skill-context-r2-20261116/remaining-gate-11ed1e4d-0654-4f22-aefc-0287362c0099/verification.json`,
+SHA-256 `f10dfb0098fca6f4f928867dc486b923441c59cc466f8e0a96565d521dab085b`.
+The exact one-process recovery plan also passes its source precheck with
+`model_invoked: false`. Its new consent remains absent; neither these local
+passes nor later R4 edits restart the native batch or authorize the other 23 cases.
+This checkpoint is not the full repository integration gate or native acceptance.
+
+#### Terminology Field Provenance (2026-11-16)
+
+R4 source appraisal found a limitation not exposed by schema validity. The change
+sample's source says ICP means company-level fit, not a contact role; its
+`not_meaning` additionally claimed "execution approval". That independent control
+was not part of the quoted definition. Some writer fixtures also changed the
+concept to reporting cadence or a support procedure while retaining the old
+concept's exclusions. These were development-data defects, not observed native
+model failures. Earlier structural passes remain valid for their original scope.
+
+The current samples now retain only the quoted exclusion. Request, proposal,
+review and transaction bindings are recomputed coherently; invalid counterparts
+still target inference promotion, entry binding, review validity and transaction
+identity. The quote, source byte binding, authority flags and old committed history
+are unchanged. New-concept fixtures leave unstated exclusions empty and assert
+the resulting ledger/selection, rather than borrowing unrelated meanings.
+
+Both project-terms guides and the workflow now require a field-level appraisal
+of term, aliases, meaning, exclusions and scope. Known predecessor meaning may
+survive a correction, but a different concept/scope is not an implicit copy.
+A user question is not an explicit definition. Removing an unsupported semantic
+claim never removes an actual authority, disclosure or stop control. This is
+operator guidance, not an automatic semantic/authentication gate.
+
+The 22-case proposal suite checks the source-appraised sample family, all exact
+derived bindings and the original negative-rule codes. Remaining consumer checks
+and the SR12 requirement appraisal are recorded separately. SR10 still needs a
+source-appraised operational capture progression; do not infer it from these
+sample assertions or silently count old/native evidence toward the new goal.
+
+All thirteen affected-surface commands passed against eighteen unchanged public
+source files and the preserved user `.gitignore`:
+`.cannae/maintenance/terminology-appraisal-r4e-20261116/gate-42ac0e76-4318-43fe-a79e-cc0b95ecfc40/verification.json`,
+SHA-256 `675b851f21ae3716a60dfd25c1986df007e9d832cd4f8f59874d1e9751733cc1`.
+This includes 617 validator, 22 proposal, 31 writer, 16 terminology, 34 handoff
+and 25 dependency cases plus both skills and document/index checks. It is not
+the full repository integration gate. Final status/index edits receive a separate
+closure check rather than being relabeled as those earlier source bytes.
+
+SR12 is now **Verified (bounded)** based on the reviewed behavior, not the count:
+
+| Required boundary | Observed evidence |
+| --- | --- |
+| Repository and scope separation | Distinct Git-root ledgers retain different meanings; copied/replaced origins reject. Actual scoped writer appends preserve domain selection and expose overlapping confirmed meanings as conflicts. |
+| Candidate, retirement and denied recipients | Candidate revisions do not displace confirmed meanings; retirement retains history but stops current reuse. Wrong role/department and current restrictions prevent disclosure or historical fallback. |
+| Single writer and pending decisions | Real competing processes reject a second writer; live owners cannot be recovered. Exit-bound recovery observes without reapplying, divergent states stay held, and pending proposal bytes survive. Missing/defer/reject/expired reviews cannot append. |
+| Stale delivery and output limits | Actual reviewed append invalidates an old handoff; a fresh scoped successor preserves the original bytes. Credential-shaped values fail without echo/publication, benign names need no exception, and tracked/exposed outputs reject without editing ignore rules. Access and transfer authority never follow from these operations. |
+
+The criterion appraisal is retained at
+`.cannae/maintenance/terminology-appraisal-r4e-20261116/sr12-appraisal.md`, SHA-256
+`a1315fb2c9cc9c37466098fe19953096a57255e4978464007b2e9ad6e0fe4f25`.
+It is implementing-operator source review, not independent/native evaluation.
+Trust remains local/cooperative: caller read authority, actual USER authorship,
+semantic correctness and complete secret detection are not authenticated by labels
+or hashes. Actual recipient use is still SR13-SR15. The accepted inventory is
+**5/18**, with SR10 operational capture and the native criteria still open.
+
+A separate development routing observation retains another R1 limit: trailing
+"Keep model transfers and dashboard development deferred" still selects dashboard
+context in both routers. The original task is preserved and no dashboard work
+was authorized or performed. Evidence:
+`.cannae/maintenance/terminology-appraisal-r4e-20261116/deferred-wording-observation-3d333b46-d5fd-4afd-9f90-7f8fd9289a96.json`,
+SHA-256 `2d96296733b95ac5c5876b7e426f037b0d24564e9454ebf7076612ba5b8abefb`.
+That case is development-visible, not withheld, and is not fixed by this appraisal.
 
 #### Execution Order And Boundaries
 

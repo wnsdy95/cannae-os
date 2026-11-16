@@ -41,6 +41,29 @@ function cli(script, args, status = 0) {
 try {
   const a = project("first project"), b = project("second project");
   let prepared, proposal;
+  check("source-appraised sample exclusions and derived bindings remain coherent without granting authority", () => {
+    const load = name => JSON.parse(fs.readFileSync(path.join(ROOT, "sample-payloads", name)));
+    const p = load("valid-project-terminology-change-proposal.json");
+    const review = load("valid-project-terminology-change-review.json"), transaction = load("valid-project-terminology-change-transaction.json");
+    assert.equal(sample.change.basis.excerpt, "For this project, ICP means company-level fit, not a contact role.");
+    assert.equal(sample.change.not_meaning, "A contact role.");
+    assert.deepEqual(p.request, sample); assert.deepEqual(p.entry, changes.compile(sample, a.root).entry);
+    assert.equal(p.request_sha256, hash(JSON.stringify(sample)));
+    assert.equal(review.proposal_sha256, hash(fs.readFileSync(path.join(ROOT, "sample-payloads/valid-project-terminology-change-proposal.json"))));
+    assert.equal(transaction.proposal_sha256, review.proposal_sha256);
+    assert.equal(transaction.review_sha256, hash(fs.readFileSync(path.join(ROOT, "sample-payloads/valid-project-terminology-change-review.json"))));
+    assert.equal(transaction.id, hash(transaction.proposal_sha256 + "\n" + transaction.review_sha256));
+    assert.equal(transaction.entry_id, p.entry.id);
+    assert.equal(transaction.after_ledger_sha256, hash(JSON.stringify({ schema_version: "0.1", type: "ProjectTerminology", repository: p.repository, entries: [p.entry] }, null, 2) + "\n"));
+    for (const suffix of ["request", "proposal", "review", "transaction"]) {
+      const type = "project-terminology-change-" + suffix, value = load("valid-" + type + ".json");
+      const result = validatePayload(value, type); assert.equal(result.valid, true); assert.equal(result.can_execute, false);
+    }
+    for (const [suffix, code] of [["request", "TERMINOLOGY_CHANGE_INFERRED_DECISION"],
+      ["proposal", "TERMINOLOGY_CHANGE_ENTRY_BINDING_MISMATCH"], ["review", "TERMINOLOGY_WRITER_VALIDITY_INVALID"],
+      ["transaction", "TERMINOLOGY_WRITER_TRANSACTION_ID_MISMATCH"]])
+      invalid(load("invalid-project-terminology-change-" + suffix + ".json"), "project-terminology-change-" + suffix, code);
+  });
   check("explicit user capture creates only a private pending proposal, not a ledger", () => {
     prepared = changes.prepare(a.request, a.root);
     proposal = JSON.parse(fs.readFileSync(path.join(a.root, prepared.proposal_path)));

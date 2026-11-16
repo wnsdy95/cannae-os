@@ -576,6 +576,12 @@ status, before writing and on inspection; reviewed adoption inherits that refusa
 Canonical writer outputs also retain the actual Git index when checking privacy.
 This is local output hygiene, not transmission, protected storage or USER approval.
 
+The [field-provenance appraisal](completion-backlog.md#terminology-field-provenance-2026-11-16)
+compares the sample's quoted definition with its excluded meanings. Its repair
+removes an unsupported field value without changing the quote or authority rules.
+This is an author/source review of development samples, not native semantic
+acceptance or a general automatic meaning validator.
+
 The later [reviewed canonical append](project-terminology-workflow.md#reviewed-canonical-append)
 implements explicit local single-writer updates and exited-process reconciliation.
 It retains exact before/after snapshots, distinguishes current observations from

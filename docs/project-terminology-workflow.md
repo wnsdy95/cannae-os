@@ -195,7 +195,23 @@ does not authenticate the operator or prevent a filesystem owner from editing
 files directly. It coordinates cooperating local processes, not a protected host.
 
 Before writing, inspect the exact proposal and compare its meaning with the
-actual source. Record that appraisal in `review.json` beside `proposal.json`,
+actual source. Review the preferred term, aliases, definition, excluded meanings
+and scope separately. Exact byte binding proves which text was supplied, not
+that every populated field follows from it. A user's question or suggestion is
+not necessarily an explicit definition; keep uncertainty in a candidate or
+clarify only when it affects the task or boundary.
+
+Do not turn general execution policy into a claimed user definition. For example,
+the sample source excludes a contact role, not "execution approval"; the corrected
+`not_meaning` retains only that sourced exclusion. An unstated exclusion can be
+empty. Reusing a sample for a different concept must not carry its old exclusions
+or aliases automatically. Corrections may retain still-applicable predecessor
+meaning with its lineage; a different concept/scope needs its own appraisal.
+Authority, disclosure and stop controls remain independently applicable even
+when the vocabulary record has no excluded meaning. This is a review procedure,
+not an automatic semantic validator or an extra approval for each unambiguous word.
+
+Record that appraisal in `review.json` beside `proposal.json`,
 using [ProjectTerminologyChangeReview](../schema-files/project-terminology-change-review.schema.json).
 The [synthetic example](../sample-payloads/valid-project-terminology-change-review.json)
 is not a real appraisal, USER decision, source-access grant or reusable consent.

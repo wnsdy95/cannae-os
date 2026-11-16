@@ -54,8 +54,16 @@ Before an authorized writer reviews a proposed append, use `inspect-change` with
 its exact proposal hash. Changed sources, changed ledgers or repository identity
 require a fresh proposal and appraisal, not patched retained hashes. Compare the
 proposed meaning with the actual user statement; local validity does not prove
-that the text was written by USER or that the interpretation is correct. Preserve
-the canonical ledger and other pending proposals. Use the registered-dependency
+that the text was written by USER or that the interpretation is correct. Review
+each field's basis: preferred term, aliases, definition, excluded meanings and
+scope can require different evidence. A user-authored question is not an explicit
+definition. Do not fill `not_meaning` with general execution policy or carry an
+unrelated concept's exclusions/aliases from a sample; an unstated exclusion may
+remain empty. Preserve still-applicable predecessor meaning on a correction,
+but appraise a different concept or scope separately. Authority controls remain
+independent of these vocabulary fields, including when an exclusion is empty.
+
+Preserve the canonical ledger and other pending proposals. Use the registered-dependency
 procedure below for affected-document reconciliation; do not infer unlisted uses.
 Do not route or hand off a pending proposal as the current confirmed glossary.
 Do not transmit its private source path or excerpt merely because local checks

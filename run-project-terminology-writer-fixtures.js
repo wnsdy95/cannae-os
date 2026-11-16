@@ -135,11 +135,13 @@ async function main() {
       p.request.expected_ledger_sha256 = terms.read(p.root).digest;
       p.request.change.concept_id = "CONCEPT-OTHER"; p.request.change.term = "Other";
       p.request.change.aliases = []; p.request.change.definition = "Monthly reporting cadence.";
+      p.request.change.not_meaning = "";
       observe(p, "In this project, Other means monthly reporting cadence.");
       const second = adopt(prepare(p));
       assert.equal(inspect(p.root, first).current_state, "extends_after");
       assert.equal(inspect(p.root, second).current_state, "matches_after");
       assert.deepEqual(fs.readFileSync(path.join(p.root, first.transaction_path)), saved);
+      assert.equal(terms.read(p.root).value.entries[1].not_meaning, "");
     });
     await check("candidate correction retains confirmed meaning scope access and append-only lineage", () => {
       const p = project(), original = changes.compile(p.request, p.root).entry;
@@ -335,9 +337,11 @@ async function main() {
       p.request.expected_ledger_sha256 = terms.read(p.root).digest;
       p.request.change.concept_id = "CONCEPT-SUPPORT"; p.request.change.scope.domain = "support";
       p.request.change.definition = "The initial contact procedure.";
+      p.request.change.aliases = []; p.request.change.not_meaning = "";
       observe(p, "In support, I use ICP to mean the initial contact procedure.");
       adopt(prepare(p));
       assert.equal(terms.projectSelection(p.root, { actor: "user", domain: "support", terms: ["ICP"] }).confirmed.length, 1);
+      assert.equal(terms.projectSelection(p.root, { actor: "user", domain: "support", terms: ["ICP"] }).confirmed[0].not_meaning, "");
       assert.equal(terms.projectSelection(p.root, { actor: "user", domain: "sales", terms: ["ICP"] }).confirmed.length, 1);
       p.request.expected_ledger_sha256 = terms.read(p.root).digest;
       p.request.change.concept_id = "CONCEPT-OVERLAP"; p.request.change.scope.domain = "sales";

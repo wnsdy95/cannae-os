@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Remove an unsourced execution-approval exclusion from the terminology change samples, rebind the sample family, and stop unrelated-concept fixtures inheriting old exclusions. Mirror field-by-field source appraisal in both skills while preserving all independent authority controls and negative-contract cases.
+
 - Check exact terminology proposal destinations before writing and during inspection, rejecting Git ignore exceptions and already tracked files without altering user ignore rules or deleting retained evidence. Apply the same index-aware checks to canonical writer outputs, cover late tracking before publication, and mirror private-storage troubleshooting in both skills.
 
 - Preserve the first failed R2 native attempt and repair its observer's startup ordering: schema-shaped completed diagnostics may precede turn creation, but tools, malformed records and incomplete turns remain rejected. Add captured-sequence replay and mirrored retry discipline without suppressing warnings, weakening isolation, reusing consent or claiming a successful native comparison.

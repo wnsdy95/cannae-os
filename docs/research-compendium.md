@@ -1102,6 +1102,13 @@ changes to its owner rather than automatically editing ignores or untracking.
 Canonical ledger writes use the same index-aware boundary, not `--no-index`.
 The local checks cannot prevent a non-cooperating concurrent policy edit.
 
+The later [field-level appraisal](completion-backlog.md#terminology-field-provenance-2026-11-16)
+found an unsourced exclusion in a structurally valid sample and stale exclusions
+copied into different concepts. Review aliases, definitions and exclusions as
+separate source claims; keep general permission rules outside the quoted meaning.
+Empty unsourced fields do not remove execution or disclosure controls. This
+development-sample repair is not evidence of native semantic compliance.
+
 The subsequent [reviewed-append procedure](project-terminology-workflow.md#reviewed-canonical-append)
 adds cooperative single-writer serialization and immutable transaction snapshots.
 Its distinction is operational: recording an appraisal and applying a definition

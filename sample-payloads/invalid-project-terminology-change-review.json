@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "type": "ProjectTerminologyChangeReview",
-  "proposal_sha256": "87f6f8302a1f3406edac6c7bc78a05e18858f8776d7abb0cd97e493f602b51b5",
+  "proposal_sha256": "16402f26fdef6301551de1c510a41efd882066a0d3ca9e52aae328c3e7f44bf7",
   "writer_id": "WRITER-S3-SALES",
   "decision": "append",
   "source_assessment": "explicit_user_definition",

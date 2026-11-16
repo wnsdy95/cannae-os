@@ -11,7 +11,7 @@
     "term": "ICP",
     "aliases": [],
     "definition": "Company-level fit, not a contact role.",
-    "not_meaning": "A contact role or execution approval.",
+    "not_meaning": "A contact role.",
     "status": "confirmed",
     "basis": {
       "kind": "user_statement",

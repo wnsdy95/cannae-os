@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "type": "ProjectTerminologyChangeTransaction",
-  "id": "90812e6dfc1a8043ca155582e57156d9d5d6c92ab1d3be7821577b002136f7e7",
+  "id": "2c3a9ef40a4455c383da240a5f0844b28b8dd04f662ec3f7b14bffb81a45f9ef",
   "repository": {
     "root": "/synthetic/project",
     "git_directory": "/synthetic/project/.git",
@@ -10,11 +10,11 @@
     "git_device": "1",
     "git_inode": "3"
   },
-  "proposal_sha256": "87f6f8302a1f3406edac6c7bc78a05e18858f8776d7abb0cd97e493f602b51b5",
-  "review_sha256": "d2571d5cd8fb3fcf6d8a0dc1563730e2f4c10320840851208d507397ec62defb",
+  "proposal_sha256": "16402f26fdef6301551de1c510a41efd882066a0d3ca9e52aae328c3e7f44bf7",
+  "review_sha256": "5efd108fe419984c1683985e121313f7b049d99513b5b26139c54a2f227d9d53",
   "before_ledger_sha256": null,
-  "after_ledger_sha256": "0d62b825ede45fe6f8a0c542490feb53b1312496250251a485ee850d46c23d5d",
-  "entry_id": "TERM-31d8b41e6a03ad5a87d6edff4ca39a66",
+  "after_ledger_sha256": "093e53d5b94ce90ab0015a646cb5b96ea5a30988700ff22556a6ebf6b4b97228",
+  "entry_id": "TERM-6a44c53ad7ac5de24097869905716d17",
   "authorization_verified": false,
   "transfer_authorized": false,
   "policy_adoption_authorized": false
