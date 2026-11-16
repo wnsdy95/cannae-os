@@ -1196,6 +1196,16 @@ task, recipient, canonical local repository/Git identity, source digests and
 delivered content, using existing role/duty/authority decisions plus explicit
 department selection. Outputs stay in the project; no model or service is used.
 
+A local fault injection later reproduced acceptance of a Git result containing
+both usable output/status zero and an `ETIMEDOUT` process error. Packet metadata
+checks now reject process errors, termination signals and missing terminal status
+before interpreting the output. The distinct unavailable result preserves the
+difference between failed observation and an actual source exclusion. Both skills
+hold dependent work without clearing source, deadline or retry controls. This
+does not prove why every historical sleep-related session failed; full session
+and native receiving verification remain separate. The local regression runner
+is `run-project-document-git-fixtures.js`.
+
 Raw delivery is public/internal only. Summaries must already exist, with exact
 original and summary digests and an asserted review reference. The source owner
 must be authorized to hash the original; the summary-only recipient gets no

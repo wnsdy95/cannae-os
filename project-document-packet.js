@@ -191,7 +191,9 @@ function assertCurrentTerminology(request, documents, repository) {
 
 function git(root, args) {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith("GIT_")));
-  return spawnSync("git", ["-C", root, ...args], { env, encoding: "utf8", timeout: 5000, maxBuffer: 1024 * 1024 });
+  const result = spawnSync("git", ["-C", root, ...args], { env, encoding: "utf8", timeout: 5000, maxBuffer: 1024 * 1024 });
+  if (result.error || result.signal || !Number.isInteger(result.status)) fail("PROJECT_PACKET_GIT_UNAVAILABLE");
+  return result;
 }
 
 function repositoryIdentity(repository) {
@@ -208,7 +210,10 @@ function repositoryIdentity(repository) {
     const gitDir = fs.realpathSync(dir.stdout.trim()), gitStat = fs.statSync(gitDir, { bigint: true });
     return { root, device: String(stat.dev), inode: String(stat.ino), git_directory: gitDir,
       git_device: String(gitStat.dev), git_inode: String(gitStat.ino), head: head.stdout.trim() };
-  } catch { fail("PROJECT_PACKET_ROOT_INVALID"); }
+  } catch (error) {
+    if (error.message === "PROJECT_PACKET_GIT_UNAVAILABLE") throw error;
+    fail("PROJECT_PACKET_ROOT_INVALID");
+  }
 }
 
 function sourcePath(root, relative, internal = false) {

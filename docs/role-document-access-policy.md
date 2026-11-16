@@ -289,6 +289,16 @@ digest. Raw/summary payloads are limited to 64 KiB per delivered file and 256 Ki
 combined; hashing an original for a summary is bounded at 64 MiB. At most 16
 sources may be selected. Oversized/binary delivery fails; it is never truncated.
 
+Git metadata process errors, termination signals or missing terminal statuses
+stop packet preparation/inspection with `PROJECT_PACKET_GIT_UNAVAILABLE`, even
+when the result also contains status zero or plausible output. The code never
+substitutes cached origin or ignore results. This failure leaves repository or
+source freshness unverified; it is not proof of exclusion, another repository or
+a missing source. Preserve the failed attempt and existing holds; diagnose the
+host before any separately permitted new attempt. Product timeouts, approval
+expiry and retry authority do not change. Ordinary completed Git results retain
+their existing root, source-exclusion and ignored-output checks.
+
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/prepare_controls_documents.js \
   prepare --repository /absolute/project --request /absolute/request.json

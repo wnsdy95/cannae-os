@@ -1403,6 +1403,66 @@ and the gate's old backlog hash differs after this status update, as expected.
 The inspector reports these states rather than converting them into fresh passes;
 its matching declared subset does not establish complete dependency coverage.
 
+#### Packet Metadata Process Failures (2026-11-17)
+
+The longer routing-consumer checks remain pending: fresh power-log observation
+still showed repeated maintenance sleep/dark wake, so no long suite or model call
+was restarted. A short source-level investigation found an independent concrete
+defect in `project-document-packet.js`: its Git wrapper consumed a result's status
+and output without checking process errors or signals. An injected `ETIMEDOUT`
+with the otherwise successful root lookup was accepted, rather than held.
+
+The wrapper now rejects process errors, signals and absent terminal status before
+root, source or output checks consume the result. `PROJECT_PACKET_GIT_UNAVAILABLE`
+survives root-validation error handling and exposes no raw stderr or location.
+Both project-content guides require treating this as unverified metadata, not as
+proof of source exclusion or another repository. Existing ignore/root rules,
+five-second Git deadlines and separate retry/transfer decisions are unchanged.
+
+Evidence root: `.cannae/maintenance/project-packet-git-20261117/`. The initial
+failure, original source bodies and report remain in
+`before-905d5cc3-95bd-46d4-99fd-dc3b270806e4/`; its `verification.json` SHA-256 is
+`069110ec5c40d3b66b29a46dc3a671704bd978b90f04920c206502172ef25a5e`.
+After the repair, 39 local cases passed across both provider recipient records:
+root/Git-directory/HEAD, source ignore/root and output ignore checks under three
+process-failure forms, ordinary success/exclusion/alias behavior, and sanitized
+CLI refusal with no packet output. The report in
+`after-b184a7b1-c6ea-48f4-8090-c6505d393f35/verification.json` has SHA-256
+`2032aeeb5c2ac13c10023b8bc94cdff84c9a80eeb7aeb878886a00e150548aef`.
+These injected failures establish the wrapper defect and repair, not the cause
+of every historical session failure or recovery from host sleep. Longer consumer
+checks, actual receiving and full integration remain unverified; the goal stays
+**6/18**. Frozen native-input worktrees and pending proposal bytes are unchanged.
+
+The subsequent broader packet suite did not pass: after 53.8 seconds it encountered
+`PROJECT_PACKET_GIT_UNAVAILABLE` where the disclosure fixture required its exact
+disclosure-rejection code. The gate stopped, preserving the twelve-command
+unexecuted suffix in `gate-d080548a-e327-48bf-82b6-30643468eae6/verification.json`,
+SHA-256 `13a645b92333139f9ff4c1e56501170ddc3a2dab5bc01caa0491f285abd2fe35`.
+A contemporaneous maintenance sleep/wake interval was observed, but the failure
+code alone does not identify the underlying Git process error. The fixture is
+not weakened to accept any refusal as proof of the intended disclosure check.
+No source or timeout was changed after this failure; packet, review and reader
+consumer completion remains pending for a stable awake interval.
+
+The separate short gate passed ten commands, including the 39 Git-failure cases,
+progressive disclosure, both provider skill validators and corpus coverage,
+source-map, links, English-only and diff checks. Its report is
+`short-adea0fa5-b28f-45b5-8a0a-4344d341501a/verification.json`, SHA-256
+`64eb10ad039c82ec3f1d49ec03716e523a6c18b1b79ae5df54fd8073dd87df85`.
+This does not replace the failed consumer gate or its unexecuted suffix.
+
+Private `evidence-index-v3.json` retains the previous fourteen records and adds
+the reproduced failure, repaired local cases, failed consumer gate and short
+gate separately. Its SHA-256 is
+`76c8e4dbe107cccfa7cfdbdf64c10957b144a7122b866a06334097cf97b4eb8b`;
+`evidence-inspection-v3.json` has SHA-256
+`b55fd5d08bbec82967e859b2c30aa80e69fc11838c5a56a5d1f9a693f5c1f286`.
+All four result sets are retained, including failures; historical source drift
+and the earlier missing checks stay visible. Eighteen evidence entries are not
+eighteen completed acceptance criteria, complete dependency coverage or merge
+authorization.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

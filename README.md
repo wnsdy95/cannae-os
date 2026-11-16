@@ -131,6 +131,11 @@ parser replay is not a successful native comparison or measured context saving.
 The [authoring candidate preparation](docs/evaluation-metrics.md#explicitly-prepared-authoring-inputs)
 pins a separate revision, preserves original task hashes and supplies applicable
 conditional guide bodies. Preparation is not native improvement or transfer consent.
+Project packet [source checks](docs/role-document-access-policy.md) also reject
+errored or interrupted Git calls even when their exit status appears successful;
+unverified metadata must not be reported as a source-exclusion decision.
+The [Git process regressions](run-project-document-git-fixtures.js) exercise this
+boundary without model calls or simulated recovery claims.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">

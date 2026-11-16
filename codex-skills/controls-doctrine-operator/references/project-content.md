@@ -31,6 +31,14 @@ the exact proposal, recipient and purpose. Policy-design or standing test consen
 is not that decision. Preserve original internal drafts and their distinct
 source-ID representations; never relabel them as exact raw copies or summaries.
 
+On `PROJECT_PACKET_GIT_UNAVAILABLE`, hold dependent preparation or reads: the
+metadata command did not complete reliably, even if it returned usable text or
+status zero. This does not establish that a source is excluded, moved to another
+repository or missing. Preserve the failure, report unverified origin/freshness
+and diagnose the host separately. Do not relax ignore/root checks, extend a live
+deadline or infer retry permission; any permitted new attempt rechecks current
+sources and retains the original task, recipient and authority boundaries.
+
 For delegated document access, require a ready manifest projection and its
 profile-selected list; a role match alone is insufficient. Preserve summary and
 reference-only modes. A ready projection does not authenticate authority or

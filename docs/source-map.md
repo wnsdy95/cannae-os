@@ -639,6 +639,11 @@ byte checks, non-reading of reference-only files and provider-wrapper parity are
 local engineering evidence, not military claims or authenticated consent/native
 receiver acceptance. Both skill entrypoints and routing references carry the
 source-owner preparation versus recipient-delivery boundary.
+`run-project-document-git-fixtures.js` reproduces a completed-looking Git result
+with a process error and checks fail-closed root, source and output handling.
+Both project-content guides distinguish unavailable metadata from an exclusion
+decision. These injected local failures do not establish the cause of a prior
+host-sleep incident or constitute native receiving/recovery evidence.
 The same helper now rejects literal withheld-source and repository locations
 across recipient-facing strings, not just document metadata. The reproduction
 and limits are local engineering evidence; this is neither semantic secrecy
