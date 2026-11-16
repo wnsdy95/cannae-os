@@ -1226,6 +1226,18 @@ does not prove why every historical sleep-related session failed; full session
 and native receiving verification remain separate. The local regression runner
 is `run-project-document-git-fixtures.js`.
 
+A later local reader trace observed `ETIMEDOUT` with status zero on an actual
+Git metadata call. The packet consumer correctly refused it; the call overlapped
+a logged sleep interval, which is correlation rather than proof of causation.
+Separate injected cases found the terminology identity and dependency helpers
+still accepting the same result shape, including four synthetic record writes.
+They now reject process errors/signals/missing status before identity, origin or
+ignore interpretation. The same regression runner checks initial and late refusal,
+required-source holds, unchanged history and sanitized CLI errors. Both project-terms
+guides prohibit replacement state or policy changes as a workaround. This is a
+local metadata-integrity repair, not native receiving, automatic retry or complete
+dependency discovery; existing bound model proposals must be rechecked after it.
+
 Raw delivery is public/internal only. Summaries must already exist, with exact
 original and summary digests and an asserted review reference. The source owner
 must be authorized to hash the original; the summary-only recipient gets no

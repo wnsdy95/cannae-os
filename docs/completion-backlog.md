@@ -24,8 +24,8 @@ scope, and the installation/diagnostic compatibility matrix closes SR16 for its
 tested configurations. The requirement-level local terminology boundary appraisal
 closes SR12. The source-appraised local capture progression closes SR10; actual
 context savings, native quality and cross-client receiving remain open.
-The [latest focused consumer check](#focused-consumer-verification-2026-11-17)
-retains a failed review gate separately from six passing suites.
+The [latest metadata-integrity repair](#knowledge-metadata-integrity-2026-11-17)
+retains its focused passes, writer failure and changed native-proposal bindings.
 
 #### Observed Skill Limits
 
@@ -1701,6 +1701,52 @@ skill behavior was introduced; this is verification maintenance, not an accepted
 improvement cycle. SR17 remains in progress and the verified inventory is **6/18**.
 Existing native proposals still require their own applicable decisions; the
 stopped R2 batch cannot resume using its original approval.
+
+#### Knowledge Metadata Integrity (2026-11-17)
+
+A separate review diagnostic passed 16/16 at the preceding source, with no errors
+among 2,078 observed Git calls. It does not explain the earlier failed review.
+The next reader attempt failed its exact-rule assertion: call 2,171 returned
+`ETIMEDOUT` with status zero after 7,463 ms against the unchanged 5,000 ms Git
+limit. The packet consumer correctly refused that result instead of reaching
+`PROJECT_READER_SOURCE_NOT_READABLE`. Session was not launched. The call overlapped
+a logged sleep interval, but this does not establish causation for every failure.
+Only instrumented processes were observed, not every possible SDK child.
+
+Separate injected knowledge probes reproduced a real consumer gap: eight
+error/signal cases were accepted and four wrote synthetic dependency records.
+Missing status was refused but misclassified. The repair checks process validity
+before terminology root/Git-directory identity, dependency source ownership and
+output-ignore decisions. All twelve probe cases now stop on their first failed
+metadata call without writing a record. Prior records remain unchanged; a failure
+after publication can still leave the new version present and requires state
+inspection, not replay. Both project-terms guides encode that operator behavior.
+
+The repaired regression runner passed 55 cases, including initial/late failures,
+post-publication history and sanitized CLIs. The focused gate also passed
+terminology 16, evidence-index 13, installation-inspector 18, dependency 25 and
+change-proposal 22 cases. Writer then failed on `TERMINOLOGY_GIT_UNAVAILABLE`
+instead of its intended `REVIEW_NOT_APPEND` rule; handoff was not run. That gate
+remains failed, SHA-256
+`7ca68c7bf7999735ebcb94a8e9539000112be1025417a07c5640e3e8cc753fd4`.
+These passes do not refresh earlier consumers for changed sources or replace
+writer/handoff, packet/review/reader/session and full integration verification.
+
+Evidence remains under `.cannae/maintenance/skill-consumer-checks-20261117/`.
+`knowledge-git-appraisal.json` locates the before/after probes, diagnostics and
+consumer report. `evidence-index-v9.json` retains all earlier 33 entries and adds
+five distinct attempted scopes; its SHA-256 is
+`a23bdf6b5ecdc04fb7f1fcb68a80a2c7083d95183580525196907b5933ee31af`.
+The inspection SHA-256 is
+`b2b06aaeba6a7a43677ccd519d73b86505b524abefdc9a32ac9e5d97a0ecd2d0`.
+Declared-file inspection is not full dependency coverage or acceptance.
+
+`knowledge-plan-drift.json` binds the unchanged R2 startup-recovery, R3 candidate
+and R5 brief proposals to their now-changed source dependencies. None was launched.
+Those envelopes require fresh source-bound preparation/appraisal and applicable
+consent, not an edited hash or reuse of a pending/old approval. Historical prompts,
+decisions and failures remain unchanged. No new SR criterion is closed; the
+bounded inventory remains **6/18**, with broader consumer validation still open.
 
 #### Execution Order And Boundaries
 

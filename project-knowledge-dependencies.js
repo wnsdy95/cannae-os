@@ -90,6 +90,7 @@ function directory(root, relative, create = false) {
 function ignored(root, relative) {
   const result = spawnSync("git", ["-C", root, "check-ignore", "--quiet", "--", relative],
     { env: env(), encoding: "utf8", timeout: 5000 });
+  if (result.error || result.signal || !Number.isInteger(result.status)) fail("GIT_UNAVAILABLE");
   if (result.status !== 0) fail("OUTPUT_NOT_IGNORED");
 }
 function sourceDigest(root, relative) {
@@ -97,6 +98,7 @@ function sourceDigest(root, relative) {
   const belongs = () => {
     const result = spawnSync("git", ["-C", path.dirname(path.join(root, relative)), "rev-parse", "--show-toplevel"],
       { env: env(), encoding: "utf8", timeout: 5000 });
+    if (result.error || result.signal || !Number.isInteger(result.status)) fail("GIT_UNAVAILABLE");
     if (result.status !== 0 || fs.realpathSync(result.stdout.trim()) !== root) fail("SOURCE_REPOSITORY_MISMATCH");
   };
   belongs();

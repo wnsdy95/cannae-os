@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Reject errored, signaled and incomplete Git results in terminology identity and dependency registration/refresh, including status-zero results. Add initial/late failure, history-preservation and CLI regressions; mirror metadata-failure handling in both project-terms guides without changing deadlines or retry authority. Preserve the real reader timeout and pre-repair synthetic record writes separately.
+
 - Record focused skill-consumer verification at the current source: six suites passed, while review failed on unavailable Git metadata and reader remained unexecuted. Retain the earlier observation-budget interruptions and rejected index draft without weakening controls, changing skill behavior or claiming native/full-integration acceptance.
 
 - Prepare exact, fresh-consent R5 brief-only launch envelopes with native/helper trace reconciliation and bounded one-shot process observation. Replay prior event formats and local fake-child failures without invoking models; mirror trace-appraisal behavior in both skills while keeping response quality, notice delivery and later-phase authority separate.

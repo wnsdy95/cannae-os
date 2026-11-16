@@ -135,7 +135,10 @@ Project packet [source checks](docs/role-document-access-policy.md) also reject
 errored or interrupted Git calls even when their exit status appears successful;
 unverified metadata must not be reported as a source-exclusion decision.
 The [Git process regressions](run-project-document-git-fixtures.js) exercise this
-boundary without model calls or simulated recovery claims.
+boundary in packets, terminology identity and dependency registration/refresh,
+including late failures, retained history and sanitized CLI errors. Failed metadata
+does not justify a replacement ledger or changed ignore policy. These checks make
+no model-call or host-recovery claim.
 The [cross-client workflow protocol](docs/evaluation-metrics.md#cross-client-workflow-evidence)
 keeps preparation, actual notices, changed-source holds, bounded resumption and
 cold receiving separate within each observed chain.

@@ -110,6 +110,17 @@ Neither a reader label nor a locally recorded review reference grants that acces
 Record actual appraisal against the original request; an agent-generated reference
 is not evidence that someone reviewed the sources or approved the result.
 
+Treat failed Git metadata as an unverified observation, even when stdout and
+exit status look successful. Hold dependent term selection, registration or
+refresh; do not initialize a replacement ledger, relabel a source as foreign or
+change ignore rules to clear the failure. Preserve existing records and diagnose
+the failed process separately. A source-unavailable finding keeps required work
+held and optional work explicit; any permitted new attempt rechecks current
+bindings without renewing a deadline, consent or retry allowance.
+Failure after publication can leave a new record present. Inspect retained state
+when metadata is available; do not infer no write, delete it or replay initial
+registration to hide the failed observation.
+
 At a phase change, source/term update or handoff, run `inspect-dependencies`.
 Hold only work with a changed/unavailable required dependency; preserve unrelated
 permitted work. Optional issues need explicit review, not an invented global stop.

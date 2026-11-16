@@ -663,7 +663,12 @@ with a process error and checks fail-closed root, source and output handling.
 Both project-content guides distinguish unavailable metadata from an exclusion
 decision. These injected local failures do not establish the cause of a prior
 host-sleep incident or constitute native receiving/recovery evidence.
-The same helper now rejects literal withheld-source and repository locations
+The same runner now covers terminology root/Git-directory identity and dependency
+source/output checks. A separate reproduction accepted errored status-zero metadata
+and wrote synthetic dependency records; the repaired consumers stop on the process
+failure and preserve prior history. Both project-terms guides distinguish an
+unverified observation from a missing ledger, foreign source or ignore-policy change.
+The project-packet helper also rejects literal withheld-source and repository locations
 across recipient-facing strings, not just document metadata. The reproduction
 and limits are local engineering evidence; this is neither semantic secrecy
 detection nor a new source-read/disclosure grant.

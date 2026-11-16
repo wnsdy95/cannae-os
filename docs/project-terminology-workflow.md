@@ -459,6 +459,23 @@ The exact output must already be ignored and untracked. The
 retains the request, local repository identity, version and term observations.
 No definition bodies or source contents are copied into the registry.
 
+Repository identity, source-origin and output-ignore checks reject Git process
+errors, termination signals and missing terminal status before using stdout or
+status zero. `TERMINOLOGY_GIT_UNAVAILABLE` and
+`KNOWLEDGE_DEPENDENCY_GIT_UNAVAILABLE` mean the metadata observation failed, not
+that a ledger is absent, a source belongs elsewhere or an ignore rule is wrong.
+The dependency CLI may report its sanitized `INPUT_UNAVAILABLE` for an identity
+failure. Preserve the original failure and existing ledger/records; do not
+initialize replacement state, change ignore rules or silently reuse old metadata.
+Failures before publication stop creation of the record or refresh request.
+A failed post-publication reinspection can leave the new record present: retain
+it and inspect the actual state once metadata is available rather than assuming
+the failed call wrote nothing or replaying initial registration. Reinspection
+reports an unavailable source with its original required
+flag, so dependent work is held without inventing a global stop for optional work.
+Any permitted fresh attempt must recheck current inputs without extending the
+original process deadline or inheriting retry/transfer permission.
+
 `inspect-dependencies` optionally takes `--work-id`. It reports only registered
 work, not a scan of project prose. Recheck before dependent work and handoff:
 

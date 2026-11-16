@@ -49,14 +49,21 @@ function identity(repository) {
     if (!path.isAbsolute(repository)) fail("ROOT_INVALID");
     const root = fs.realpathSync(repository);
     const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith("GIT_")));
-    const git = args => spawnSync("git", ["-C", root, ...args], { env, encoding: "utf8", timeout: 5000, maxBuffer: 65536 });
+    const git = args => {
+      const result = spawnSync("git", ["-C", root, ...args], { env, encoding: "utf8", timeout: 5000, maxBuffer: 65536 });
+      if (result.error || result.signal || !Number.isInteger(result.status)) fail("GIT_UNAVAILABLE");
+      return result;
+    };
     const top = git(["rev-parse", "--show-toplevel"]), directory = git(["rev-parse", "--absolute-git-dir"]);
     if (top.status !== 0 || directory.status !== 0 || fs.realpathSync(top.stdout.trim()) !== root) fail("ROOT_INVALID");
     const gitDirectory = fs.realpathSync(directory.stdout.trim());
     const rootStat = fs.statSync(root, { bigint: true }), gitStat = fs.statSync(gitDirectory, { bigint: true });
     return { root, git_directory: gitDirectory, device: String(rootStat.dev), inode: String(rootStat.ino),
       git_device: String(gitStat.dev), git_inode: String(gitStat.ino) };
-  } catch { fail("ROOT_INVALID"); }
+  } catch (error) {
+    if (error.message === "TERMINOLOGY_GIT_UNAVAILABLE") throw error;
+    fail("ROOT_INVALID");
+  }
 }
 
 function readBoundFile(root, relative, maximum = 4 * 1024 * 1024) {
