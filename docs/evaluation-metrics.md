@@ -454,6 +454,16 @@ trace, and parsed-message records are not exact wire-byte accounting. Complete
 the native observer and exact transfer proposal before treating preflight as a
 dispatch-ready envelope; no preparer success supplies the missing consent.
 
+For an observed brief phase, retain both the native event stream and the local
+helper transcript. Match completed route arguments and exact result text, check
+any structured result agrees, and bind phase, original assignment, recipient,
+authority and held source catalog to the prepared input. Reject an unmatched or
+incomplete call, reused preparer token, extra tool or missing terminal record.
+Replay historical event formats and local fake-child failures before dispatch,
+but label those as parser/process checks, not new native phase evidence. Successful
+process completion and trace reconciliation remain separate from source-appraised
+brief quality, actual parent delivery and authorization of later work.
+
 After a source changes, an old packet can become wholly stale even when some
 work is independent. Preserve already supplied, still-current independent
 material and inspect its separately registered dependencies; do not pretend the

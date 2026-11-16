@@ -80,6 +80,11 @@ connection closure from timeout; both skills retain this diagnostic discipline.
 Client allowlists and actual SDK catalogs are checked separately, while helper
 corpus reads remain available. These are local checks, not native phase evidence,
 exact wire accounting, protected-host isolation or renewed transfer approval.
+The prepared native observer now matches client route events to the exact local
+helper response, preserving phase identity, original assignment, held catalog and
+authority. Earlier real event logs and fake-child failure tests exercise the
+parser and process boundaries only. Even after a future successful native call,
+brief quality, actual parent delivery and the next phase's consent stay separate.
 
 Eight separately authorized [native baseline responses](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
 now expose why a nearly complete fixed checklist is insufficient: 57/58 frozen

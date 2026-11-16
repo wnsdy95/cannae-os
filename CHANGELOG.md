@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Prepare exact, fresh-consent R5 brief-only launch envelopes with native/helper trace reconciliation and bounded one-shot process observation. Replay prior event formats and local fake-child failures without invoking models; mirror trace-appraisal behavior in both skills while keeping response quality, notice delivery and later-phase authority separate.
+
 - Add brief-phase native-preflight guidance to both skills: inspect client and adapter tool exposure, preserve required helper reads, and verify process exit independently of audit closure. Retain the local adapter-exit failure and SDK assertion mismatch alongside the repaired checks; native observers, exact consent and actual chain behavior remain outstanding.
 
 - Define the skill-only paired cross-client workflow evidence protocol and mirror phase-lineage guidance in both client skills. Prepare two separate synthetic brief-only inputs through existing packet, dependency and session helpers; distinguish local preparation from actual notice, authorized resumption and native receiving. No native model or acceptance criterion is completed by this preparation.

@@ -141,6 +141,8 @@ keeps preparation, actual notices, changed-source holds, bounded resumption and
 cold receiving separate within each observed chain.
 Its local brief-phase preflight checks tool exposure and actual helper exit;
 these checks are not native-agent behavior or permission to send prepared inputs.
+Native phase evidence must also reconcile client events with exact local route
+results; a completed response does not by itself establish notice delivery.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">

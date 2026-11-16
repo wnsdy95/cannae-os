@@ -307,6 +307,11 @@ SDK catalog/route behavior, audit closure and actual helper exit. Both skills no
 require phase-specific tool inspection and precise negative-test failure classes.
 This is a local engineering lesson; model behavior and execution consent remain
 separate, with no new external source claim.
+The brief execution observer adds exact native/helper route reconciliation and
+one-shot, bounded-process checks. Historical event replay and fake-child tests
+are explicitly separate from a new native phase. Both client guides require
+checking original assignment, recipient, held catalog and authority across those
+records before appraising the actual response; this remains engineering evidence.
 
 The [native development baseline](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
 now records eight actual responses, exact delivered input bodies and a separate

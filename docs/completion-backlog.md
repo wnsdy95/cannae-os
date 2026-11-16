@@ -1592,6 +1592,73 @@ The index covers declared local helper snapshots/results; external project roots
 and binaries remain separately bound in the preflight report. Historical failures,
 source drift and missing checks remain visible; 25 entries are not 25 acceptances.
 
+#### Brief Native Observer And Proposal (2026-11-17)
+
+Private `brief-trace.js` now validates the native Codex/Claude lifecycle for this
+phase, including current-phase routing, unchanged recipient/authority, the original
+assignment, four held required sources and a final response. Its receipt matches
+completed native arguments and exact response text to the local parsed-message
+audit, checking structured/text agreement and complete protocol closure. It does
+not turn route metadata into a body read, source truth or a delivered notice.
+
+Thirty-three checks passed using retained earlier native brief logs as event-format
+examples and synthetic lifecycle events around the current local SDK responses.
+They cover extra tools, missing/incomplete lifecycle, foreign recipient, missing
+catalog entries, preparer-token reuse, changed sessions, inconsistent results,
+failed/truncated audits and unmatched native results. The report is
+`brief-trace-check-1bb5aae2-e511-419e-bffb-11d9ddd7d5ba/report.json`, SHA-256
+`7f2b381e0663c9a83475f4c207d1258d2bb30ceb59de1eef1563cc35f017317f`.
+The historical logs are not new R5 work or independently reappraised source quality.
+
+Private `brief-execution.js` admits only the exact two-case proposal with a fresh
+matching USER decision, bounded validity and no automatic relaunch. It preserves
+one-use input-attempt records, requires an exact successful predecessor before the
+second case, enforces the absolute deadline and output cap, and stops the process
+group on disallowed events or incomplete execution. Thirty local checks passed
+for decision scope/time/binding, failed predecessors, actual fake-child termination,
+output limits, invalid UTF-8, nonzero exit and missing completion. Their report is
+`brief-execution-check-f9597170-e764-4efa-90c5-72f1f42a363a/report.json`, SHA-256
+`3ee193267347843598b16e68e5659bfc8e038b0c713778e636d7cb52df27818e`.
+These used in-memory synthetic decisions and fake processes, not model invocations.
+
+`native-brief-v1/execution-plan.json` binds both unchanged inputs (164,932 bytes),
+CLI binaries/configurations, source files and contract/dependency versions.
+Its SHA-256 is
+`0768ab8b279fde95ea50772b97b9b3b8a501972b8243ab7abf3871f46891e150`.
+`native-brief-v1/proposal.md` has SHA-256
+`ff87c9e7832f309948d03ed7a2bb83d1ec07ec5027ede685536b217b844668c5`.
+The requested scope is one initial brief per client, sequentially, at most ten
+minutes and two route calls each, within 24 hours of approval, with the entire
+batch stopped on an incomplete/failed attempt. Fixed guide bodies and bounded
+route metadata are included; task-source bodies, revisions, evaluator answers,
+customer data, publication, actual parent delivery and all later phases are not.
+Codex uses its pinned current default; Claude's actual default remains a native
+initialization observation, not an inferred identity.
+
+Both metadata-only launch checks passed without creating attempt records. An
+exact two-call approval was requested; no decision, model attempt or new native
+response is recorded at this checkpoint. All paths above are under
+`.cannae/maintenance/skill-workflow-r5-20261117/`. R2's stopped batch and pending
+R3 candidate proposal are independent and cannot authorize these calls. Both
+skills now require exact cross-trace identity/result appraisal before reviewing
+brief quality. SR13 remains in progress, SR14/SR15 planned, and the accepted
+inventory remains **6/18**. No platform scope or prior approval was expanded.
+
+The retained two-launch metadata check is
+`brief-plan-check-fc14f227-1135-41b0-849d-0c56aefb097f.json`, SHA-256
+`2562552e7db82ce38d8525dba00062b2ba4b4da9a93824bcbe8a518ca25e9d03`.
+Ten focused input/guidance checks passed in
+`gate-2ff3a442-c330-46f3-bc18-84590195f551/verification.json`, SHA-256
+`b8dd2740e34c3000cb386fea6fe6e9847879de81a46a5f9f799444154735059e`.
+The local evidence index retains all previous 25 entries and adds these four
+distinct scopes: `evidence-index-v6.json`, SHA-256
+`e7d4b28f655e881c49c30c07f754a75afc685bb1911a20fc3ee9c51eff309973`,
+and `evidence-inspection-v6.json`, SHA-256
+`ef9396e6e0df93d082c255896d01a38d8d25cae80063773aedf2efcf2d263bff`.
+Twenty-nine entries are not acceptance criteria or native calls. Declared file
+integrity, historical event replay, fake-process checks and full integration
+remain separate; earlier failures and unexecuted gates are still retained.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

@@ -102,3 +102,12 @@ On denial or timeout, check the child process actually exited: a `closed` audit
 entry can precede process termination. Negative tests must distinguish connection
 closure from request timeout; a generic rejected promise is not proof of the
 intended stop. Retain failed preflights and obtain any required new model consent.
+
+When appraising a native phase, reconcile the client's completed route calls with
+the local helper's exact arguments and returned text/structured result. A route
+present in only one trace is not observed worker routing. Check phase, recipient,
+original assignment, held source catalog and unchanged authority against the bound
+input; reject a preparer's token, extra advertised tools or an incomplete call.
+Keep the final response separate from actual parent notice delivery. A successful
+exit and reconciled trace still require source-based review of the brief and plan;
+they do not authorize the next phase or clear a stopped batch's unstarted suffix.
