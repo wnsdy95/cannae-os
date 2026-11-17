@@ -1857,6 +1857,47 @@ R2/R3/R5 behavior are separate requirements. No new criterion closes; the bounde
 inventory stays **6/18**. This is verification/status maintenance, not a new
 skill behavior, a model-quality claim or a full-integration pass.
 
+#### Awake-Window Consumer Results
+
+At `e70506d`, the USER's awake-window reply was used only to schedule local
+checks, not as model-transfer consent. One six-suite attempt passed the packet
+(37 groups), review (16), reader (10), terminology writer (31) and terminology
+handoff (34) suites on unchanged source. This supplies current results for those
+consumers without replacing their earlier failed attempts.
+
+The document-session suite completed 14 of 16 groups before its parent deadline
+terminated it. Both Codex's direct and stdio groups completed; Claude's final
+alias and stdio groups did not complete. No final session summary exists, so
+neither that suite nor the six-suite attempt passed. All six commands were
+attempted; an empty unexecuted suffix does not mean all six completed.
+
+The fixed local window ended at 09:38:57 KST on 2026-11-17. Read-only power-log
+inspection recorded Clamshell Sleep at 09:37:54 and Maintenance Sleep from
+09:38:41 to 09:40:21. Reported termination was 09:40:21.398, **84,398 ms late**,
+on the recorded wake second. This is not proof of exact ten-minute termination
+during host suspension. The session child and scoped observer/session processes
+were subsequently observed absent. No power setting, product deadline, approval
+expiry or expected assertion was changed, and no model was called.
+
+The retained report is
+`.cannae/maintenance/skill-consumer-checks-20261117/gate-bbd41e62-793d-40b9-9881-11fb2b7e8ee2/verification.json`,
+SHA-256 `cd00328cc376c1798cea0ca27883a2d67d149e51b2372bc0ea2be3030a3612c7`.
+`awake-window-appraisal.json` binds the outputs, observation and power-log
+appraisal. `evidence-index-v13.json` preserves all 43 previous entries and adds
+this failed aggregate attempt, for 44 entries. Index SHA-256:
+`95d878962eb51d15fba1eb0c4cf5b0321b22b2628a0460e128f57233fb1328e8`;
+inspection SHA-256:
+`278f6512942bdc74a7be96976442c920e10935b90e8944163995601a51789949`.
+Declared-file inspection completed; nested source maps and individual Git logs
+are bound by retained reports, not recursively inspected by that index.
+
+A separately bounded session-only attempt still needs an awake interval. Live
+OCI and full integration remain unverified, and fresh native proposal decisions
+are still required for R2/R3/R5. These local passes do not establish native
+receiving, comprehension or authenticated approval. The inventory remains
+**6/18**; this is evidence/status maintenance, not a new skill behavior.
+Dashboards and servers remain deferred.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

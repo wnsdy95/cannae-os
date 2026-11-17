@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record five complete current-source document/terminology consumer suites and an incomplete 14/16 document-session result from one fixed awake-window attempt. Preserve the failed aggregate, prior failures and observed 84,398 ms termination delay across host sleep; do not claim exact wall-time enforcement, native receiving, new criterion closure or full integration.
+
 - Complete the unchanged validator CLI suite with 617/617 passing cases under a separate five-minute observation budget. Preserve the earlier interrupted run and add the source-bound result to the evidence index; consumer, live OCI, native-model and full-integration acceptance remain separate.
 
 - Record the current document-session metadata timeout, incomplete parent-bounded validator run and required-live-OCI refusal with their exact evidence. Preserve twelve passing checks across separate scopes without merging them into a full gate, changing product limits, restarting a daemon or invoking models; keep native consent and stable-host prerequisites explicit.
