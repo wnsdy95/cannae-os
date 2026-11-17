@@ -94,6 +94,10 @@ evaluation remain open. This is local routing evidence, not native model quality
 The [bounded Korean intake follow-up](docs/completion-backlog.md#korean-intake-development-2026-11-15)
 resolves the remaining development request in both providers while preserving
 original wording and explicit limits. Reserved and native evaluation remain open.
+The [frozen routing comparison](docs/evaluation-metrics.md#frozen-routing-comparison)
+pins an exact candidate before reserved execution and retains all 24 requests
+across both revisions and clients. Its local measurement and failure journal
+are not native quality, actual context savings or automatic acceptance.
 
 The initial [conditional instruction split](docs/completion-backlog.md#conditional-instruction-delivery-2026-11-15)
 reduced both entrypoints by 23.4% while retaining linked content/reporting, client,

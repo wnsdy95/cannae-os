@@ -135,6 +135,15 @@ bodies during tuning or call author-aware templates independently blind. Never
 refresh expected results silently to fit a candidate. Native comparison still
 needs its own applicable consent and source-appraised artifacts.
 
+For reserved routing comparisons, follow the evaluation guide's frozen-routing
+procedure: pin the whole clean candidate before exposing reserved requests and
+keep the original bundle and evaluator versions. Use its one-attempt record;
+preserve partial journals and unexecuted cases instead of restarting a batch.
+A copied freeze is not a new experiment. Later candidates retain prior exposure
+and failures; do not call those cases unseen again. Appraise source/authority
+boundaries as well as matched counts. This local comparison grants no native-call
+consent and cannot prove actual delivered-context savings or authoring quality.
+
 Use `docs/evaluation-fixtures.md`'s skill-maintenance map to select additive
 focused checks, then retain the full current CI gates before merge. Record an
 unexecuted suffix after a failed command; do not borrow an older pass for changed

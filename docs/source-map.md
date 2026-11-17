@@ -223,6 +223,11 @@ completed measurement from product acceptance. Both providers retain five failin
 development cases; no withheld/native execution or loaded-byte claim is added.
 The templates are author-aware, not independently blind. SR01 closes only the
 freeze/baseline criterion; the source-bound authoring evaluation remains open.
+The [frozen routing comparison](evaluation-metrics.md#frozen-routing-comparison)
+adds `skill-routing-evaluation.js` and extends `run-skill-evaluation-fixtures.js`
+with one-attempt, exact-pin, failure-retention and boundary checks. This is a local
+engineering protocol for reserved evaluation, not external doctrine, protected
+execution, native-call approval or criterion closure from a count alone.
 
 The [version-bound reference reader](evaluation-metrics.md#version-bound-reference-measurement)
 in `skill-reference-reader.js` and both `read_controls_reference.js` wrappers

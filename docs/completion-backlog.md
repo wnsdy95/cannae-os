@@ -1993,6 +1993,17 @@ merge. No new SR criterion closes: the bounded inventory stays **6/18**.
 Dashboards, servers and the separately deferred dependency PRs stay outside this
 change. The user's `.gitignore` is preserved.
 
+#### Frozen Routing Evaluation Path
+
+`skill-routing-evaluation.js` supplies the previously missing path to pin a
+complete clean candidate and run the unchanged 24-request inventory across both
+revisions/providers. Its [protocol](evaluation-metrics.md#frozen-routing-comparison)
+retains one attempt, raw results, mismatches and incomplete suffixes, with no
+native execution or change to the original bundle. Both skills require explicit
+reserved-case exposure accounting and source/authority appraisal, not acceptance
+from a matched count. Implementing this path does not close SR02/SR03; actual
+fixed-candidate results and appraisal must be recorded separately.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

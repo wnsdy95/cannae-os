@@ -30,6 +30,12 @@ Keep packet/review/Git/terminology/session consumers in the affected set; a lowe
 call count alone cannot prove freshness or full integration. Historical proposal
 bindings must stay unchanged when screening implementation bytes change.
 
+For a routing-evaluation harness change, also run `run-skill-evaluation-fixtures.js`:
+its synthetic bundle checks all 96 local invocations, changed pins/bundles, one-use
+records, malformed outputs, retained process failures and mid-run checkout drift.
+These fixture cases are not the actual reserved evaluation. Keep original criteria
+and inspect the real pinned comparison separately after candidate freeze.
+
 Before merge, run the current complete gates from `.github/workflows/validate.yml`,
 including validator fixtures, `run-all-fixtures.js`, the unified proof gate and
 the declared live OCI requirement. A smaller passing group is not that full run.

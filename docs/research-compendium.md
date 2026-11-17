@@ -48,6 +48,14 @@ keeps selection, actual delivery and semantic quality separate. Withheld templat
 are operator-authored, not independently blind; no withheld execution, native
 transfer or operational authority is inferred from these local engineering checks.
 
+The [frozen routing comparison](evaluation-metrics.md#frozen-routing-comparison)
+adds the missing reserved-execution path without changing the original bundle.
+Pin the complete candidate and evaluator before opening reserved requests, retain
+all attempts and distinguish collection completion from actual matches. A process
+or assessment failure must not erase the invocation that exposed it. Copied
+records, fresh filenames and later candidates do not restore unseen status.
+This local procedure is neither independent blinding nor native quality evidence.
+
 The next authoring preparation step uses `skill-authoring-evaluation.js` to bind
 each baseline instruction/source body to its exact prompt span. A selected path
 or a link is not delivered content; neither an emitted packet nor a completed

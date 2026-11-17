@@ -4,6 +4,7 @@ const assert = require("node:assert/strict"), fs = require("node:fs"), os = requ
 const { spawnSync } = require("node:child_process");
 const runner = require("./skill-evaluation-runner");
 const authoring = require("./skill-authoring-evaluation");
+const routing = require("./skill-routing-evaluation");
 const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "skill-evaluation-")));
 let count = 0;
 const check = (name, fn) => { fn(); count++; console.log(`PASS ${name}`); };
@@ -313,6 +314,135 @@ try {
     for (const tail of [["--execute", "true"], ["--candidate-revision", candidateCommit]]) {
       const denied = spawnSync(process.execPath, [...args, ...tail], { encoding: "utf8" });
       assert.equal(denied.status, 1); assert.equal(denied.stdout, "");
+    }
+  });
+  const baselineRoot = path.join(root, "baseline"), freezeRoot = path.join(root, "routing-freeze");
+  git(["worktree", "add", "--quiet", "--detach", baselineRoot, frozen.manifest.baseline_commit]);
+  let sealed;
+  check("routing freeze pins the clean full candidate and both providers without executing withheld inputs", () => {
+    sealed = routing.freezeCandidate(bundle, baselineRoot, repo, candidateCommit, freezeRoot);
+    const freeze = routing.inspectFreeze(sealed.freeze_path, sealed.freeze_sha256).freeze;
+    assert.equal(freeze.candidate.revision, candidateCommit); assert.equal(freeze.baseline.revision, frozen.manifest.baseline_commit);
+    assert.equal(Object.keys(freeze.candidate.source_bindings).length, 4); assert.equal(freeze.process_count, 96);
+    assert.equal(sealed.withheld_executions, 0); assert.equal(freeze.authoring_execution_authorized, false);
+    assert(!fs.existsSync(path.join(freezeRoot, "attempt.json")));
+    assert.throws(() => routing.freezeCandidate(bundle, baselineRoot, repo, candidateCommit, freezeRoot), /EEXIST/);
+    assert.throws(() => routing.freezeCandidate(bundle, baselineRoot, repo, frozen.manifest.baseline_commit, path.join(root, "same")), /CANDIDATE_EQUALS_BASELINE/);
+    for (const base of [repo, baselineRoot, bundle]) {
+      assert.throws(() => routing.freezeCandidate(bundle, baselineRoot, repo, candidateCommit, path.join(base, "outputs")), /DESTINATION_INVALID/);
+    }
+  });
+  check("changed pins, harness, bundle, digest and execution flags reject before a batch is reserved", () => {
+    const original = fs.readFileSync(sealed.freeze_path), freeze = JSON.parse(original);
+    assert.throws(() => routing.inspectFreeze(sealed.freeze_path, "0".repeat(64)), /FREEZE_DIGEST_MISMATCH/);
+    for (const mutate of [x => x.native_transfer_authorized = true, x => x.process_count--,
+      x => x.total_timeout_ms++, x => x.harness_sources["skill-routing-evaluation.js"] = "0".repeat(64),
+      x => x.candidate.source_bindings["codex-skills/controls-doctrine-operator/SKILL.md"] = "0".repeat(64)]) {
+      const changed = structuredClone(freeze); mutate(changed); const bytes = json(changed); write(sealed.freeze_path, bytes);
+      assert.throws(() => routing.evaluateFrozen(sealed.freeze_path, runner.hash(bytes)), /SKILL_ROUTING_EVALUATION_/);
+      assert(!fs.existsSync(path.join(freezeRoot, "attempt.json")));
+    }
+    write(sealed.freeze_path, original);
+    const nodeOptions = process.env.NODE_OPTIONS;
+    process.env.NODE_OPTIONS = [nodeOptions, "--no-warnings"].filter(Boolean).join(" ");
+    try { assert.throws(() => routing.evaluateFrozen(sealed.freeze_path, sealed.freeze_sha256), /RUNTIME_CHANGED/); }
+    finally { if (nodeOptions === undefined) delete process.env.NODE_OPTIONS; else process.env.NODE_OPTIONS = nodeOptions; }
+    const source = path.join(repo, "docs/source.md"); write(source, "Changed\n");
+    try { assert.throws(() => routing.evaluateFrozen(sealed.freeze_path, sealed.freeze_sha256), /REVISION_NOT_CLEAN_PINNED/); }
+    finally { write(source, "Synthetic policy.\n"); }
+    fs.appendFileSync(path.join(bundle, "routing-withheld.json"), " ");
+    try { assert.throws(() => routing.evaluateFrozen(sealed.freeze_path, sealed.freeze_sha256), /MEMBER_CHANGED/); }
+    finally { publish(); }
+    const copy = path.join(root, "copied-freeze"); fs.mkdirSync(copy); write(path.join(copy, "freeze.json"), original);
+    assert.throws(() => routing.evaluateFrozen(path.join(copy, "freeze.json"), sealed.freeze_sha256), /FREEZE_INVALID/);
+    assert(!fs.existsSync(path.join(freezeRoot, "attempt.json")));
+  });
+  check("one frozen routing batch covers 24 cases in both revisions and clients with raw failures retained", () => {
+    const result = routing.evaluateFrozen(sealed.freeze_path, sealed.freeze_sha256);
+    assert.equal(result.measurement_completed, true); assert.equal(result.candidate_matches_all, true);
+    assert.deepEqual(result.counts, { baseline: { observed: 48, matched: 48 }, candidate: { observed: 48, matched: 48 } });
+    const report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(report.results.length, 96); assert.equal(report.withheld_executions, 48);
+    assert.equal(report.native_model_calls, 0); assert.equal(report.semantic_acceptance, false);
+    assert.equal(report.loaded_instruction_bytes, null); assert.equal(report.unexecuted_processes, 0);
+    assert(report.results.every(row => row.selection_completed && row.argv.at(-2) === "--"));
+    assert.equal(fs.readFileSync(path.join(freezeRoot, "results.jsonl"), "utf8").trimEnd().split("\n").map(line => JSON.parse(line)).length, 96);
+    assert.equal(fs.statSync(result.report_path).mode & 0o777, 0o600);
+    assert.throws(() => routing.evaluateFrozen(sealed.freeze_path, sealed.freeze_sha256), /ALREADY_ATTEMPTED/);
+  });
+  check("Git errors and signals cannot freeze a completed-looking checkout", () => {
+    for (const injected of ['error:Object.assign(new Error("timeout"),{code:"ETIMEDOUT"})', 'signal:"SIGTERM"', 'status:null']) {
+      const code = `const cp=require('node:child_process'),spawn=cp.spawnSync;cp.spawnSync=(...a)=>{const r=spawn(...a);return a[0]==='git'?{...r,${injected}}:r;};try{require(${JSON.stringify(path.join(__dirname, "skill-routing-evaluation.js"))}).freezeCandidate(...${JSON.stringify([bundle, baselineRoot, repo, candidateCommit, path.join(root, "git-failed")])});process.exitCode=2;}catch(e){console.log(e.message);}`;
+      const observed = spawnSync(process.execPath, ["-e", code], { encoding: "utf8", timeout: 20000 });
+      assert.equal(observed.status, 0); assert.equal(observed.stdout.trim(), "SKILL_ROUTING_EVALUATION_GIT_UNAVAILABLE");
+    }
+    assert(!fs.existsSync(path.join(root, "git-failed")));
+  });
+  const routerPath = path.join(repo, "codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js");
+  const safeRouter = fs.readFileSync(routerPath, "utf8");
+  check("a batch deadline leaves an attempted record and does not start the remaining processes", () => {
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, candidateCommit, path.join(root, "deadline"));
+    const now = Date.now; let calls = 0, result;
+    Date.now = () => now() + calls++ * 600001;
+    try { result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256); }
+    finally { Date.now = now; }
+    const report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(result.failure, "SKILL_ROUTING_EVALUATION_BATCH_DEADLINE");
+    assert.equal(report.results.length, 0); assert.equal(report.unexecuted_processes, 96);
+    assert.throws(() => routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), /ALREADY_ATTEMPTED/);
+  });
+  check("semantic mismatches remain complete measurements but never candidate passes", () => {
+    fs.appendFileSync(routerPath, 'console.log("Unexpected extra output");\n');
+    git(["add", "."]); git(["commit", "-qm", "Fixture routing mismatch"]);
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, git(["rev-parse", "HEAD"]), path.join(root, "mismatch"));
+    const result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256);
+    assert.equal(result.measurement_completed, true); assert.equal(result.candidate_matches_all, false);
+    assert.equal(result.counts.candidate.matched, 24);
+    const report = JSON.parse(fs.readFileSync(result.report_path));
+    assert(report.results.filter(row => row.phase === "candidate" && row.provider === "codex-skills").every(row => row.issues.includes("JSON_OUTPUT")));
+  });
+  check("a process interruption preserves the attempted result, stops the suffix and cannot be retried", () => {
+    write(routerPath, 'process.kill(process.pid,"SIGTERM");\n');
+    git(["add", "."]); git(["commit", "-qm", "Fixture routing interruption"]);
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, git(["rev-parse", "HEAD"]), path.join(root, "interrupted"));
+    const result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(result.measurement_completed, false); assert.equal(result.failure, "SKILL_ROUTING_EVALUATION_PROCESS_INCOMPLETE");
+    assert.equal(report.results.length, 49); assert.equal(report.results.at(-1).signal, "SIGTERM");
+    assert.equal(report.unexecuted_processes, 47);
+    assert.throws(() => routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), /ALREADY_ATTEMPTED/);
+  });
+  check("unsafe selected paths preserve process evidence rather than losing the completed invocation", () => {
+    write(routerPath, 'console.log(JSON.stringify({query:process.argv.at(-1),recommended_documents:[{path:"../outside.md"}],operating_mode:{actor:"user",role:null,department:null,authority:null},capability_routing:{status:"covered"}}));\n');
+    git(["add", "."]); git(["commit", "-qm", "Fixture unsafe selection"]);
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, git(["rev-parse", "HEAD"]), path.join(root, "unsafe"));
+    const result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(result.measurement_completed, false); assert.equal(result.failure, "SKILL_EVALUATION_PATH_INVALID");
+    assert.equal(report.results.length, 49); assert.equal(report.results.at(-1).exit_code, 0);
+    assert.equal(report.results.at(-1).selection_completed, false); assert(report.results.at(-1).stdout.includes("outside.md"));
+  });
+  check("malformed route members retain raw output even when assessment cannot complete", () => {
+    write(routerPath, 'console.log(JSON.stringify({query:process.argv.at(-1),recommended_documents:[null],operating_mode:{actor:"user"},capability_routing:{status:"covered"}}));\n');
+    git(["add", "."]); git(["commit", "-qm", "Fixture malformed route members"]);
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, git(["rev-parse", "HEAD"]), path.join(root, "malformed"));
+    const result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(result.failure, "SKILL_ROUTING_EVALUATION_ROUTE_ASSESSMENT_FAILED");
+    assert.equal(report.results.length, 49); assert(report.results.at(-1).stdout.includes("[null]"));
+    assert.equal(report.results.at(-1).selection_completed, false);
+  });
+  check("a checkout changed during successful-looking routing cannot pass the final pin check", () => {
+    write(routerPath, 'require("fs").appendFileSync("docs/source.md","Changed during execution.\\n");\n' + safeRouter);
+    git(["add", "."]); git(["commit", "-qm", "Fixture changes checkout during routing"]);
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, git(["rev-parse", "HEAD"]), path.join(root, "drift"));
+    const result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(result.failure, "SKILL_ROUTING_EVALUATION_REVISION_NOT_CLEAN_PINNED");
+    assert.equal(report.results.length, 96); assert.equal(report.counts.candidate.matched, 48);
+    assert.equal(result.measurement_completed, false); assert.equal(result.candidate_matches_all, false);
+  });
+  check("routing CLI refuses omitted freeze digests and unrelated execution options", () => {
+    for (const args of [["evaluate", "--freeze", sealed.freeze_path], ["execute"],
+      ["evaluate", "--freeze", sealed.freeze_path, "--freeze-sha256", sealed.freeze_sha256, "--native", "true"]]) {
+      const denied = spawnSync(process.execPath, [path.join(__dirname, "skill-routing-evaluation.js"), ...args], { encoding: "utf8" });
+      assert.equal(denied.status, 1); assert.equal(denied.stdout, ""); assert.equal(denied.stderr, "SKILL_ROUTING_EVALUATION_USAGE\n");
     }
   });
   console.log(JSON.stringify({ valid: true, fixtures: count, native_model_calls: 0, actual_evaluation_withheld_executions: 0 }));

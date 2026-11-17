@@ -217,6 +217,57 @@ mandatory-task regression is critical. No automatic retry, approval renewal,
 policy adoption or promotion follows from a local pass. See the
 [dated freeze checkpoint](completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15).
 
+#### Frozen Routing Comparison
+
+`skill-routing-evaluation.js` adds a separate local comparison path. It pins the
+complete clean candidate commit/tree, the original baseline, both providers'
+entrypoints/routers, the unchanged bundle and both evaluator modules before
+executing reserved routing inputs. It does not modify the original protocol's
+historical `candidate_frozen: false` field. It does not execute authoring tasks,
+call a model or approve any pending transfer.
+The Node version/executable and `NODE_OPTIONS` digest are bound too. Existing
+preload options remain in both child environments; no claimed host attestation
+or complete dependency closure follows from those recorded values.
+
+Use trusted, separate clean checkouts and an existing private output parent
+outside both checkouts and the bundle. Keep the target project's outputs local:
+
+```bash
+node "$DOCTRINE_ROOT/skill-routing-evaluation.js" freeze-candidate \
+  --bundle /absolute/frozen-bundle --baseline /absolute/clean-baseline \
+  --candidate /absolute/clean-candidate --candidate-revision "$EXACT_COMMIT" \
+  --output /absolute/target/.cannae/maintenance/routing-comparison
+node "$DOCTRINE_ROOT/skill-routing-evaluation.js" evaluate \
+  --freeze /absolute/target/.cannae/maintenance/routing-comparison/freeze.json \
+  --freeze-sha256 "$RETURNED_FREEZE_DIGEST"
+```
+
+One batch covers all 24 unchanged requests in both revisions and both provider
+routers: 96 local processes, including 48 reserved-case executions. It uses the
+existing assessment rules and records exact argv, raw stdout/stderr, selected
+file hashes/bytes, discrepancies and an unexecuted count. Selected bytes are not
+loaded model context. Expected guarded failures remain failures at the router
+boundary; do not drop arguments to obtain a route.
+
+An exclusive attempt marker is written before reading reserved requests for
+execution. Process errors, signals, unsafe selections, assessment failure or a
+changed checkout stop the comparison and retain attempted results. A semantic
+mismatch remains a recorded mismatch rather than triggering a retry. Each router
+has a 20-second limit; the batch has a ten-minute observation budget, checked
+again after final pin validation. Host suspension can delay termination. Reusing
+the freeze or copying it to another directory does not start another batch.
+Preserve an interrupted marker/journal without inventing a completed report.
+
+These are cooperative local controls, not protected storage, isolated execution
+or a globally enforced attempt registry. Do not delete markers, edit digests or
+create another freeze to disguise a repeat as unseen evaluation. Any later
+candidate keeps prior results and identifies exposed cases. Appraise the original
+requests, required/parent inputs, role/authority and guarded rejections before
+closing SR02/SR03; `candidate_matches_all` alone is not semantic acceptance.
+The original templates remain author-aware, not independently blind. Native R2,
+R3 and R5 work still requires its own exact source-bound inputs and applicable
+consent; this full-commit snapshot grants neither execution nor adoption there.
+
 #### Version-Bound Reference Measurement
 
 The local `skill-reference-reader.js` and both bundled
