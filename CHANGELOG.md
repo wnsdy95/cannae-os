@@ -6,6 +6,13 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Align the release-integrity upload-pin fixture with the upstream-verified
+  v7.0.2 commit already selected by the dependency update. Preserve the failed
+  combined CI (153/155 suites) and its mandatory-control cascade; regress old,
+  floating, partial and extra upload references. Both skills now require the
+  focused workflow check before its mission consumer and full integration gate.
+  No workflow permission, release authority or historical evidence is changed.
+
 - Adapt the retained SQLite session store to the pinned session plugin's atomic
   generation contract. Preserve public-generation approval hashes through a
   stable-key mapping, reject stale/expired/deleted saves, and retain legacy row

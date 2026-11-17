@@ -736,6 +736,12 @@ shared lock. Review the final combined lock, preserve the accepted predecessor
 and regenerate only the separate current sample; component-PR checks do not
 verify the combined dependency set. Exercise the actual changed consumers too.
 
+For action updates, resolve the reviewed upstream tag to its full commit and
+update every workflow-pin assertion in the same change. Regress stale, floating,
+partially replaced and extra action references. Run the focused workflow check
+before the mission controller that consumes it and before the full aggregate;
+a mandatory-control failure must remain blocking, not be bypassed as test drift.
+
 Equal schema and package versions do not establish equal producer identity.
 Before replacing a transitive dependency, freeze a byte-identical former-producer
 sample from the reviewed baseline and record its source commit and file hash.

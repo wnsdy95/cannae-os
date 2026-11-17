@@ -951,6 +951,11 @@ function runFixtures() {
       ),
       "utf8"
     );
+    const uploadPin = "cf430e030ddbb5b0abf93d22962f4752f3646cd9";
+    const uploadsPinned = text => {
+      const refs = [...text.matchAll(/actions\/upload-artifact@([^\s#]+)/g)].map(match => match[1]);
+      return refs.length === 2 && refs.every(ref => ref === uploadPin);
+    };
     results.push({
       name: "release workflow pins immutable default-branch code and runs every main push",
       ok: workflow.includes("actions: read") &&
@@ -973,9 +978,7 @@ function runFixtures() {
         (workflow.match(
           /actions\/setup-node@820762786026740c76f36085b0efc47a31fe5020/g
         ) || []).length === 2 &&
-        (workflow.match(
-          /actions\/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/g
-        ) || []).length === 2 &&
+        uploadsPinned(workflow) &&
         !workflow.includes("@v7") &&
         (workflow.match(
           /github\.workflow_ref == format\('\{0\}\/\.github\/workflows\/release-integrity\.yml@refs\/heads\/main', github\.repository\)/g
@@ -992,6 +995,12 @@ function runFixtures() {
         ) &&
         !/\b(?:actions|contents|attestations): write\b/.test(workflow)
     });
+    for (const [name, changed] of [
+      ["old upload pin", workflow.replaceAll(uploadPin, "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a")],
+      ["floating upload tag", workflow.replaceAll(uploadPin, "v7")],
+      ["one substituted upload job", workflow.replace(uploadPin, "0".repeat(40))],
+      ["additional unreviewed upload job", `${workflow}\nuses: actions/upload-artifact@v7\n`]
+    ]) results.push({ name: `release workflow rejects ${name}`, ok: !uploadsPinned(changed) });
   }
 
   {

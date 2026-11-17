@@ -1,5 +1,11 @@
 # Source Map
 
+The [release-integrity pin regression](github-release-integrity-monitoring.md)
+uses the [official v7.0.2 tag reference](https://api.github.com/repos/actions/upload-artifact/git/ref/tags/v7.0.2),
+resolved on 2026-11-17 to `cf430e030ddbb5b0abf93d22962f4752f3646cd9`.
+The workflow and its fixtures require that complete commit in both upload jobs.
+This is local dependency maintenance, not a new military claim or release grant.
+
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)
 uses a new synthetic assignment, actual Claude tool/client records and separate
 operator source appraisal. It establishes bounded changed-role continuity and

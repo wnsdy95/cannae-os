@@ -20,6 +20,17 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Reviewed Action Pins (2026-11-17)
+
+The combined PR CI passed 153/155 runner suites but rejected the release-integrity
+workflow's new upload pin against an obsolete fixture expectation; its dependent
+mission-control suite also failed closed. The official upload-artifact v7.0.2
+tag resolves to `cf430e030ddbb5b0abf93d22962f4752f3646cd9`. Align the exact
+assertion, reject stale/floating/partial/extra references, and rerun both the
+focused check and its consumer before the full gate. Keep the failed CI as
+history. See [Release Integrity Monitoring](github-release-integrity-monitoring.md)
+and [Source Map](source-map.md); this does not authorize a release or deployment.
+
 ## Optional Reading And Temporal Source Claims (2026-11-13)
 
 The [OR72 native exercise](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)

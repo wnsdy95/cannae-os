@@ -27,6 +27,8 @@ adapter. It performs no network mutation. It covers:
 - stale default-branch and parent-symlink output rejection;
 - read-only workflow permissions, immutable workflow/action source, all-main
   push acquisition, and shell-expression injection rejection;
+- exact upload-artifact v7.0.2 pins in both jobs, with stale, floating,
+  partially substituted and additional upload references rejected;
 - immutable-policy drift;
 - missing Administration read credentials;
 - mutable post-activation releases;
