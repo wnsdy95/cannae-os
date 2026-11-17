@@ -1788,6 +1788,15 @@ route dependency/lockfile requests here and require the two-sample migration
 check. Dependency classification tests do not prove application-wide SSRF
 protection, authenticated historical execution or repaired monitor continuity.
 
+The 2026-11-17 client-refresh integration follows the same two-sample procedure
+for accepted main `21a90d8`. The failure in dependency PR 112 establishes that
+even a cookie-only lock change invalidates current-sample equality; it does not
+show a cookie or cryptographic implementation defect. Preserve that failure and
+the exact prior producer while testing the final combined dependency set. Both
+provider skills now distinguish component-PR checks from combined-lock replay
+and require the changed transport/session consumers separately. No model,
+historical protected execution or release authority is established by this work.
+
 ## Exact Successor Admission (2026-09-29)
 
 Local integration review found a digest cycle in naive restart designs: the

@@ -658,6 +658,11 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "frozen client-refresh producer remains non-authorizing and structurally readable",
+    file: "sample-payloads/valid-github-release-independent-verification-pre-client-refresh-v0.2.json",
+    type: "github-release-independent-verification", exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  },
+  {
     name: "legacy independent evidence remains structurally readable",
     file: "sample-payloads/valid-github-release-independent-verification-legacy.json",
     type: "github-release-independent-verification",
@@ -665,7 +670,7 @@ const fixtures = [
     requiredCodes: []
   },
   { name: "both validator APIs keep current and historical independent evidence non-executable", check() {
-    for (const name of ["v0.2", "pre-zone-v0.2", "legacy"]) {
+    for (const name of ["v0.2", "pre-zone-v0.2", "pre-client-refresh-v0.2", "legacy"]) {
       const payload = JSON.parse(fs.readFileSync(path.join(ROOT, `sample-payloads/valid-github-release-independent-verification-${name}.json`)));
       for (const api of [validateSchemaPayload, validatePayload]) {
         const result = api(payload, "github-release-independent-verification"); assert.equal(result.valid, true); assert.equal(result.can_execute, false);

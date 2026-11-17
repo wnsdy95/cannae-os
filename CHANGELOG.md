@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Integrate pending cookie/session, MCP client/server, icon and artifact-upload updates against accepted main. Preserve the exact prior verifier sample and recognize only its source-audited producer tuple; generate current evidence separately and extend historical non-execution checks. Both skills distinguish combined-lock verification from component-PR checks. No trust policy, release authority or operational evidence is rewritten.
+
 - Integrate the skill-first branch with retained mainline controls without replacing either history. Preserve document-context integrity together with readiness revocation, combine non-executing validator types and both routing inventories, and retain captured-request, workload and registry procedures in both conditional skill references. Prior native acceptance remains bound to its recorded revisions; merge validation is not a new model review or permission grant.
   Keep the installation refresh fixture within the source's existing line count and explicitly reject oversized skill replacements without modifying either installation. The 500-line limit is unchanged.
 

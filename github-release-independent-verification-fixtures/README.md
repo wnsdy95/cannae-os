@@ -66,6 +66,14 @@ package, plus normal expansion/minimatch controls. A child timeout is a failed
 test, not proof that the parser completed safely. These cases do not resolve the
 separate disputed HTTP-cache advisory or prove an application-wide security claim.
 
+The client-refresh baseline freezes accepted `21a90d8` in the separate
+pre-client-refresh v0.2 sample. `freeze-client-refresh-baseline.js` checks the
+original Git bytes, file digest and module/lock tuple and refuses replacement.
+The real retained record must replay unchanged, while the current sample equals
+a fresh result. Schema/API checks keep both non-executable; the existing profile
+matrix also rejects hybrid producer identities and altered signed claims for
+this added generation. Transport/session behavior is checked separately.
+
 ```bash
 node run-github-release-independent-verification-fixtures.js
 ```
