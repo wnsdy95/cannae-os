@@ -10,10 +10,10 @@ const { validOperatorSignature } = require("./operator-consent-contract");
 const { VERSION, assertSelection } = require("./codex-model-selection-contract");
 function requireThat(value, code) { if (!value) throw new Error(code); }
 
-const DISABLED = ["shell_tool", "hooks", "apps", "plugins", "remote_plugin", "multi_agent", "goals", "browser_use",
+const DISABLED = Object.freeze(["shell_tool", "hooks", "apps", "plugins", "remote_plugin", "multi_agent", "goals", "browser_use",
   "browser_use_external", "computer_use", "in_app_browser", "skill_mcp_dependency_install", "skill_search", "memories",
   "image_generation", "code_mode", "code_mode_host", "daemon_auto_start", "unbounded_connection_retries",
-  "view_image", "workspace_dependencies", "sleep_tool", "unified_exec", "stable_environment_tools"];
+  "view_image", "workspace_dependencies", "sleep_tool", "unified_exec", "stable_environment_tools"]);
 const DIAGNOSTIC = "Code Mode is unavailable because code-mode host is disabled. Code mode will fail closed; enable `features.code_mode_host` and install `codex-code-mode-host`.";
 function createCollector(adapter) {
 adapter = Object.freeze({ ...adapter });
@@ -29,8 +29,7 @@ function executableDigest(file) {
   requireThat(stat.isFile() && stat.size > 0 && stat.size <= 536870912, "SEMANTIC_EXECUTABLE_INVALID");
   return sha256(fs.readFileSync(file));
 }
-function prepareInvocation(preview, options) {
-  revalidatePreview(preview);
+function prepareProfile(options) {
   requireThat(process.platform !== "win32", "SEMANTIC_PLATFORM_UNSUPPORTED");
   requireThat(typeof options.executable === "string" && path.isAbsolute(options.executable), "SEMANTIC_EXECUTABLE_REQUIRED");
   const executable = fs.realpathSync(options.executable);
@@ -47,11 +46,15 @@ function prepareInvocation(preview, options) {
   const timeout = options.timeoutMs ?? 240000, maxBytes = options.maxOutputBytes ?? 1048576;
   requireThat(Number.isSafeInteger(timeout) && timeout >= 100 && timeout <= 240000 && Number.isSafeInteger(maxBytes) &&
     maxBytes >= 1024 && maxBytes <= 1048576, "SEMANTIC_LIMITS_INVALID");
-  const invocation = { schema_version: "0.1", type: adapter.invocationType, preview,
-    profile: { executable, executable_sha256: executableDigest(executable), cli_version: VERSION,
-      requested_model: options.model, ...(selection ? { model_selection: selection } : {}), reasoning_effort: "medium", disabled_features: DISABLED, enabled_features: [], host_skill_discovery_attested: false,
+  return { executable, executable_sha256: executableDigest(executable), cli_version: VERSION,
+      requested_model: options.model, ...(selection ? { model_selection: selection } : {}), reasoning_effort: "medium", disabled_features: [...DISABLED], enabled_features: [], host_skill_discovery_attested: false,
       timeout_ms: timeout, max_output_bytes: maxBytes, maximum_invocations: 1,
-      sandbox: "read-only", upstream_cost_cap_enforced: false, native_context_attested: false, model_snapshot_attested: false }, ...AUTHORITY };
+      sandbox: "read-only", upstream_cost_cap_enforced: false, native_context_attested: false, model_snapshot_attested: false };
+}
+function prepareInvocation(preview, options) {
+  revalidatePreview(preview);
+  const profile = prepareProfile(options); adapter.verifyProfile?.(profile, preview);
+  const invocation = { schema_version: "0.1", type: adapter.invocationType, preview, profile, ...AUTHORITY };
   return { ...invocation, invocation_sha256: digest(invocation) };
 }
 function assertInvocationIntegrity(invocation) {
@@ -114,7 +117,18 @@ function signalGroup(pid, signal) {
 async function collectEvaluation(invocation, consent, configuration) {
   verifyInvocation(invocation);
   verifyTransferConsent(consent, invocation, configuration.trustedPublicKey);
+  adapter.verifyScope?.(invocation.preview, configuration);
   const root = privateRoot(configuration.stateRoot, invocation.preview), directory = path.join(root, consent.id);
+  const identity = adapter.collectionIdentity?.(invocation.preview);
+  if (identity) {
+    requireThat(z.uuid().safeParse(identity.collection_id).success, "SEMANTIC_COLLECTION_IDENTITY_INVALID");
+    const identityDirectory = path.join(root, `collection-${identity.collection_id}`);
+    try { fs.mkdirSync(identityDirectory, { mode: 0o700 }); }
+    catch (error) { if (error.code === "EEXIST") throw new Error("SEMANTIC_COLLECTION_IDENTITY_ALREADY_RESERVED"); throw error; }
+    durable(path.join(identityDirectory, "reservation.json"), { ...identity, consent_id: consent.id,
+      invocation_sha256: invocation.invocation_sha256, consent_sha256: digest(consent), reserved_at: new Date().toISOString() }, true);
+    syncDirectory(identityDirectory); syncDirectory(root);
+  }
   try { fs.mkdirSync(directory, { mode: 0o700 }); }
   catch (error) { if (error.code === "EEXIST") throw new Error("SEMANTIC_TRANSFER_ALREADY_RESERVED"); throw error; }
   syncDirectory(root);
@@ -128,8 +142,12 @@ async function collectEvaluation(invocation, consent, configuration) {
     started_at: new Date().toISOString(), failure_reasons: [], actual_model_invocation_started: false,
     completed_turns: 0, event_counts: {}, process_exit_confirmed: false, process_group_absent: false,
     semantic_completeness_proven: false, calibrated_for_admission: false, ...AUTHORITY };
+  if (identity) Object.assign(record, { collection_identity: identity, native_thread_id: null, native_account_identity_attested: false,
+    pre_inference_native_identity_attested: false });
   const save = () => durable(path.join(directory, "result.json"), record);
   save(); syncDirectory(directory);
+  const nativeEventsPath = identity ? path.join(directory, "native-events.jsonl") : null;
+  const nativeEventsFd = identity ? fs.openSync(nativeEventsPath, "wx", 0o600) : null;
   const profile = invocation.profile;
   const argv = ["exec", "--ignore-user-config", "--strict-config", "--skip-git-repo-check", "--ephemeral", "--sandbox", "read-only", "--cd", workspace,
     "--model", profile.requested_model, "-c", 'model_reasoning_effort="medium"', "-c", 'approval_policy="never"', "-c", 'web_search="disabled"',
@@ -137,7 +155,7 @@ async function collectEvaluation(invocation, consent, configuration) {
     ...DISABLED.flatMap(feature => ["--disable", feature]),
     "--output-schema", schemaFile, "--output-last-message", responseFile, "--color", "never", "--json", "-"];
   record.argv_sha256 = digest(argv); save();
-  let child, exitPromise, timer, killTimer, journalSha256 = null, pending = "", finalMessage = null, totalBytes = 0;
+  let child, exitPromise, timer, killTimer, scopeTimer, journalSha256 = null, pending = "", finalMessage = null, totalBytes = 0;
   const decoder = new TextDecoder("utf-8", { fatal: true }), stdoutHash = crypto.createHash("sha256"), stderrHash = crypto.createHash("sha256");
   function terminate(signal) {
     if (!signalGroup(child.pid, signal)) {
@@ -160,9 +178,21 @@ async function collectEvaluation(invocation, consent, configuration) {
     const allowed = ["thread.started", "turn.started", "turn.completed", "turn.failed", "error", "item.started", "item.updated", "item.completed"];
     if (!allowed.includes(value.type)) { stop("SEMANTIC_EVENT_UNKNOWN"); return; }
     record.event_counts[value.type] = (record.event_counts[value.type] || 0) + 1;
+    if (identity && value.type === "thread.started") {
+      if (record.native_thread_id || record.actual_model_invocation_started || !z.uuid().safeParse(value.thread_id).success) {
+        stop("SEMANTIC_NATIVE_THREAD_INVALID"); return;
+      }
+      record.native_thread_id = value.thread_id;
+      try { save(); } catch { stop("SEMANTIC_NATIVE_THREAD_JOURNAL_FAILED"); }
+    }
     if (value.type === "turn.started") {
       if (record.actual_model_invocation_started) stop("SEMANTIC_MULTIPLE_TURNS");
       record.actual_model_invocation_started = true;
+      if (identity && !record.native_thread_id) stop("SEMANTIC_NATIVE_THREAD_MISSING_BEFORE_TURN");
+    }
+    if (identity && (value.type === "turn.completed" || value.type.startsWith("item.")) &&
+        (!record.native_thread_id || !record.actual_model_invocation_started || record.completed_turns)) {
+      stop("SEMANTIC_NATIVE_EVENT_ORDER_INVALID"); return;
     }
     if (value.type === "turn.completed") { record.completed_turns++; record.usage = value.usage; }
     if (["turn.failed", "error"].includes(value.type)) stop("SEMANTIC_PROVIDER_FAILED");
@@ -183,6 +213,7 @@ async function collectEvaluation(invocation, consent, configuration) {
   const abort = () => stop("SEMANTIC_CANCELLED");
   try {
     verifyInvocation(invocation); verifyTransferConsent(consent, invocation, configuration.trustedPublicKey);
+    adapter.verifyScope?.(invocation.preview, configuration);
     requireThat(!configuration.signal?.aborted, "SEMANTIC_CANCELLED");
     child = spawn(profile.executable, argv, { cwd: workspace, shell: false, detached: true,
       env: { HOME: os.homedir(), USER: os.userInfo().username, PATH: process.env.PATH || "/usr/bin:/bin", TMPDIR: os.tmpdir() },
@@ -194,9 +225,16 @@ async function collectEvaluation(invocation, consent, configuration) {
     }));
     record.pid = child.pid || null; record.status = "running"; save();
     configuration.signal?.addEventListener("abort", abort, { once: true });
+    if (adapter.verifyScope) scopeTimer = setInterval(() => {
+      try { adapter.verifyScope(invocation.preview, configuration); }
+      catch { stop("SEMANTIC_TRAINING_SCOPE_CHANGED"); }
+    }, 1000);
     child.stdout.on("data", bytes => {
       stdoutHash.update(bytes); totalBytes += bytes.length;
       if (totalBytes > profile.max_output_bytes) { stop("SEMANTIC_OUTPUT_LIMIT"); return; }
+      if (nativeEventsFd !== null) {
+        try { fs.writeSync(nativeEventsFd, bytes); } catch { stop("SEMANTIC_NATIVE_EVENTS_WRITE_FAILED"); return; }
+      }
       try { pending += decoder.decode(bytes, { stream: true }); }
       catch { stop("SEMANTIC_EVENT_UTF8_INVALID"); return; }
       const lines = pending.split("\n"); pending = lines.pop(); lines.forEach(event);
@@ -212,11 +250,13 @@ async function collectEvaluation(invocation, consent, configuration) {
     requireThat(exit.code === 0 && !exit.signal && record.failure_reasons.length === 0 &&
       record.actual_model_invocation_started && record.completed_turns === 1, "SEMANTIC_RESPONSE_UNAVAILABLE");
     verifyInvocation(invocation);
+    adapter.verifyScope?.(invocation.preview, configuration);
     requireThat(fs.readdirSync(workspace).length === 0, "SEMANTIC_WORKSPACE_CHANGED");
     const fd = fs.openSync(responseFile, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW);
     let bytes;
     try {
       const stat = fs.fstatSync(fd); requireThat(stat.isFile() && stat.size > 0 && stat.size <= profile.max_output_bytes, "SEMANTIC_RESPONSE_SIZE_INVALID");
+      if (identity) { requireThat(stat.nlink === 1 && stat.uid === process.getuid(), "SEMANTIC_RESPONSE_FILE_UNSAFE"); fs.fchmodSync(fd, 0o600); }
       const buffer = Buffer.alloc(stat.size + 1), length = fs.readSync(fd, buffer, 0, buffer.length, 0);
       requireThat(length === stat.size, "SEMANTIC_RESPONSE_SIZE_CHANGED"); bytes = buffer.subarray(0, length);
     }
@@ -230,7 +270,7 @@ async function collectEvaluation(invocation, consent, configuration) {
     stop(/^SEMANTIC_[A-Z_]+$/.test(error.message) ? error.message : "SEMANTIC_COLLECTION_FAILED");
     record.status = "not_evaluated";
   } finally {
-    clearTimeout(timer); configuration.signal?.removeEventListener("abort", abort);
+    clearTimeout(timer); clearInterval(scopeTimer); configuration.signal?.removeEventListener("abort", abort);
     if (child?.pid && groupExists(child.pid)) {
       terminate("SIGKILL");
       for (let count = 0; count < 100 && groupExists(child.pid); count++) await new Promise(resolve => setTimeout(resolve, 20));
@@ -241,6 +281,15 @@ async function collectEvaluation(invocation, consent, configuration) {
     if (!record.process_group_absent) { record.status = "not_evaluated"; record.failure_reasons.push("SEMANTIC_PROCESS_GROUP_REMAINS"); }
     if (record.status !== "evaluated") delete record.assessment;
     record.stdout_sha256 = stdoutHash.digest("hex"); record.stderr_sha256 = stderrHash.digest("hex");
+    if (nativeEventsFd !== null) {
+      try {
+        fs.fsyncSync(nativeEventsFd); record.native_events_sha256 = sha256(fs.readFileSync(nativeEventsPath));
+        if (record.status === "evaluated" && record.native_events_sha256 !== record.stdout_sha256) {
+          record.status = "not_evaluated"; record.failure_reasons.push("SEMANTIC_NATIVE_EVENTS_CHANGED"); delete record.assessment;
+        }
+      } catch { record.status = "not_evaluated"; record.failure_reasons.push("SEMANTIC_NATIVE_EVENTS_WRITE_FAILED"); delete record.assessment; }
+      finally { fs.closeSync(nativeEventsFd); }
+    }
     record.ended_at = new Date().toISOString();
     record.result_persisted = true;
     try { journalSha256 = save(); }
@@ -249,6 +298,6 @@ async function collectEvaluation(invocation, consent, configuration) {
   }
   return { ...record, journal_sha256: journalSha256, directory };
 }
-return { VERSION, prepareInvocation, verifyTransferConsent, collectEvaluation };
+return { VERSION, prepareProfile, prepareInvocation, verifyTransferConsent, collectEvaluation };
 }
 module.exports = { VERSION, createCollector };

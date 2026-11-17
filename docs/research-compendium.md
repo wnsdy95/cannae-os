@@ -1208,6 +1208,108 @@ Both skill entrypoints prioritize the core and disclose detailed runtime
 procedures only when applicable. These are local engineering decisions; no
 new military-source claim, semantic accuracy guarantee, plugin-package
 acceptance or revised completion percentage follows from this change.
+
+## Failed Native Evidence Must Not Become Synthetic Success (2026-10-26)
+
+Retained training integration paths: `docs/task-training-evidence.md`,
+`docs/training-session-consent.md`, `docs/native-training-products.md`,
+`docs/native-training-owner-consent.md`, `docs/native-training-producer-history.md`
+and `docs/native-training-failure-reconciliation.md`. Integrating these prior
+candidates preserves their limits; it does not reopen deferred platform work.
+
+The [native failure appraiser](native-training-failure-reconciliation.md) checks
+actual original signed scope, raw native-event commitments and exact canonical
+publication prefixes. A missing response-file commitment stays null; a current
+file observation and canonical equality cannot manufacture original byte proof.
+Inspect all deterministic publication IDs, not only the failed row's nullable
+references. Even a complete candidate publication is not a grade or hold
+discharge. The dedicated owner ceremony now binds displayed subject, password,
+session/epoch/nonce and separate provider/publication/response-proof acknowledgments
+to a durable one-use receipt. Its private-history consumer reappraises original
+evidence and restores the hold on drift; it never rewrites failure, admits output,
+settles artifacts or grades a performer. Offline signature validity is not that
+consumer. Model-disabled history remains readable without enabling new execution.
+Missing/unknown/orphan classes and actual-model/owner acceptance remain open.
+This is local synthesis, not protected process or provider attestation.
+
+A command accepted by the router is not automatically valid for the stricter
+candidate registry. Preserve the failed registry audit, use dedicated
+argument-free suites for all five registry groups, verify their exact mapping and reject
+extra arguments before runtime loading. Keep the original compiler and deadlines;
+the root aggregate honestly repeats coverage of both entry surfaces.
+Split a near-deadline receipt suite rather than extending its five-minute
+registry limit; the four routed controls retain their ten-minute watchdog.
+Record bounded first-guard HTTP context before fixture cleanup. A later passing
+instrumented replay leaves an earlier unrecorded setup refusal unexplained,
+not fixed; never remove that uncertainty or the original failed source/log.
+
+## Preserve Actual Producers Before Upgrading Consumers (2026-10-26)
+
+The [native producer-history foundation](native-training-producer-history.md)
+replays a genuine prior producer's signed failures and collected products through
+the current owner API. Relabeled new records would not establish compatibility.
+Exact commit/tree restoration and unchanged rows remain distinct from execution,
+trust admission and hold discharge. A dependency directory-to-symlink change
+altered the fixture source digest; preserve its shape instead of weakening the
+check. A later producer snapshot references already retained archives by exact
+path/size/hash, then restores and verifies the complete original tree. Do not
+embed recursive historical copies or call a partial tree the original source.
+Freeze actual signed failures before method edits. When an assessment throws
+before the collector records a response hash, a later file hash cannot repair
+the missing original commitment. Preserve that evidence distinction and the
+hold; this is local synthesis, not a new provider or military claim.
+
+## Consent, Data Handling And Collection Are Separate (2026-10-25)
+
+The [native owner-transfer candidate](native-training-owner-consent.md) binds
+the exact original prompt and source labels to authenticated human consent.
+An explicit external-tool review cannot be replaced by an internal handoff.
+The runtime can reject existing adverse labels and literal mission matches;
+it cannot prove a human inventory semantically complete. Signed bytes are not
+a grade, and a canonical publication is not independently attested finality.
+Retain unknown/partial outcomes and inspect deterministic artifacts rather than
+rerunning the task to manufacture an apparently complete history.
+
+## Collection Identity Is Not Native Identity (2026-10-25)
+
+The [native task-product candidate](native-training-products.md) separates a
+reviewed pre-start collection UUID from the later observed provider thread.
+The official [Codex JSONL documentation](https://learn.chatgpt.com/docs/non-interactive-mode#make-output-machine-readable)
+describes streamed thread/turn events and final-message output; it does not claim
+that upstream inference waits for an external enrollment ceremony. Original
+private events, exact returned bytes and measured profile commitments improve
+local evidence, not account/weight attestation, authenticated grading or grants.
+The separate owner purpose, complete failure inventory and all full outcomes
+remain required. Local byte-count minima and distinct-case thresholds are
+engineering policy, not measured accuracy or a numerical military requirement.
+
+## A Session Mapping Needs Its Own Original Consent (2026-10-25)
+
+The [owner-session ceremony candidate](training-session-consent.md) separates
+definition enrollment from a pre-call, exact standard/case/lease review. Its
+current binding references the original purpose-bound signed authorization;
+historical mappings cannot acquire that assurance through a later label. Actual
+task-result appraisal still proves no model quality, qualification or new grant.
+Uncertain publication remains held rather than replaying consent. Deployment,
+whole-trial evaluation, qualification and actual grant reconciliation stay open.
+
+The first development run passed its positive real-ceremony/dispatch group,
+then stopped because the worker queue discarded the new `TRAINING_*` denial code.
+Its unexecuted suffix was not a pass. A separately retained controlled transport
+probe reproduced that loss; the correction permits the bounded code namespace
+at both boundaries while still filtering private details. This is an engineering
+lesson, not broader completion evidence.
+
+## Training Observations Precede Qualification (2026-10-25)
+
+The [in-progress intake](task-training-evidence.md) binds actual admitted-call
+results and retained bytes to pre-existing enrolled definitions and a separately
+signed session mapping. Stable performer identity is not an ephemeral session ID.
+Evidence intake cannot turn a model/configuration declaration into attestation
+or a step observation into a qualification/grant. The initial routing rejection
+correctly exposed unregistered new source; inventory must be registered, not
+waived. Owner-session verification/rollout, step assessment, positive qualification and
+actual new-grant/freshness/regression consumers remain required under goal 5.
 ## Green Does Not Remove Explicit Approval (2026-10-25)
 
 A further schema-valid reference probe on `c91cae6` declared approval required

@@ -557,6 +557,57 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+Retained training integration paths: `docs/task-training-evidence.md`,
+`docs/training-session-consent.md`, `docs/native-training-products.md`,
+`docs/native-training-owner-consent.md`, `docs/native-training-producer-history.md`
+and `docs/native-training-failure-reconciliation.md`. These local engineering
+candidates do not establish new military-source claims or authorize operation.
+
+The [native failure-recovery candidate](native-training-failure-reconciliation.md)
+appraises original local journal/JSONL/process/publication evidence without
+re-execution. Its purpose-specific contracts and missing-original-hash distinction
+and its dedicated owner ceremony/receipt consumer are local engineering policy,
+not new military sources, native identity, independent time/process attestation,
+task admission or completed training. Read-only receipt history is separate from
+fresh model execution; unknown evidence/process/orphan classes remain held.
+Its documented argument-free registry suites and bounded routed controls execute
+the same complete matrix through separately checked partitions. Those are
+separate command contracts, not a reason
+to weaken either compiler, skip cases or extend the existing watchdog.
+
+The [native producer-history foundation](native-training-producer-history.md)
+applies the existing exact-producer compatibility pattern to original native
+owner evidence. Current-engine replay, the pinned prior-source regression and
+current-only admission are local engineering policy, not new military sources,
+a human trust decision or protected execution attestation.
+The second producer's flattened source snapshot retains the complete original
+tree through exact external-blob commitments. This is fixture preservation, not
+an independently attested runtime or a newly accepted trust root.
+
+The [native owner-transfer candidate](native-training-owner-consent.md) rechecks
+the existing official Codex JSONL source on 2026-10-25. Exact human handling
+review, original signed authorization, publication progression and orphan
+inventory are local synthesis, not native identity or protected-host attestation.
+
+The [native task-product candidate](native-training-products.md) uses the official
+[Codex JSONL/final-message documentation](https://learn.chatgpt.com/docs/non-interactive-mode#make-output-machine-readable)
+(retrieved 2026-10-25). Its collection-ID reservation, profile binding, private
+raw-event replay and purpose boundaries are local engineering policy. Observed
+thread/turn events do not attest an account, immutable model weights or a
+pre-inference identity gate. No new military-source claim is introduced.
+
+The [training session ceremony](training-session-consent.md) is local engineering
+synthesis of existing owner consent, pinned signatures, immutable artifact prefixes
+and dispatch locks. Its exact display/nonce and partial-write boundaries are not
+new military-source claims or evidence of model proficiency or a protected host.
+
+The [training evidence foundation](task-training-evidence.md) applies existing
+registry, artifact, dispatch and owner-trust contracts. Its engineering constraints
+separate observed results from qualification and grants. The dated
+[Army training-management explanation](https://www.army.mil/article-amp/293526/met_assessment_initiates_the_training_management_cycle)
+supports the observation/assessment distinction, not these JSON fields, local
+trial thresholds or LLM attestation. Full referenced TC PDFs were not retrieved.
+
 The [readiness intersection correction](readiness-authority-intersection.md)
 is local engineering synthesis of existing authority-ceiling rules after actual
 synthetic reference-consumer counterexamples. Exact scope, restriction

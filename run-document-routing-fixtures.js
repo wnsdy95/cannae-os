@@ -1369,6 +1369,51 @@ for (const router of ROUTERS) {
     assert.deepEqual(limited.capability_routing, mixed.capability_routing);
     assert.equal(limited.supporting_artifacts.length, 1);
   }
+  for (const query of ["native training recovery", "native failure appraisal", "NativeTrainingFailureAppraisal", "OperatorNativeTrainingReconciliationAuthorization",
+    "OperatorNativeTrainingReconciliationRecord", "operator-native-training-failure.js", "native-training-failure-appraisal.schema.json", "native training reconciliation fresh owner ceremony durable one-use receipt history UI publication adversaries",
+    "run-native-training-reconciliation-fixtures.js", "run-native-training-reconciliation-crash-fixtures.js", "native-training-reconciliation-fixtures/browser-check.js", "run-native-training-reconciliation-source-fixtures.js"])
+    for (const actor of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {
+      const result = route(router, actor, query); assertRoutes(result, ["native-training-reconciliation"]); assert.equal(result.capability_routing.status, "covered");
+      assert(result.recommended_documents.some(value => value.path === "docs/native-training-failure-reconciliation.md"));
+      for (const command of ["node run-native-training-reconciliation-contract-fixtures.js", "node run-native-training-failure-fixtures.js", "node run-native-training-reconciliation-crash-fixtures.js", "node run-native-training-reconciliation-source-fixtures.js",
+        ...["prefixes", "authority", "receipts", "publication"].map(group => `node native-training-reconciliation-fixtures/control-group.js ${group}`)]) assert(result.validation_commands.includes(command));
+    }
+  for (const query of ["native producer history", "NativeTrainingProducerInspection", "NativeTrainingHistoricalProducerSnapshot", "inspect_controls_training_producer",
+    "deduplicated producer snapshots", "run-native-training-snapshot-fixtures.js"])
+    for (const actor of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {
+      const result = route(router, actor, query); assertRoutes(result, ["native-producer-history"]); assert.equal(result.capability_routing.status, "covered");
+      assert(result.recommended_documents.some(value => value.path === "docs/native-training-producer-history.md"));
+      for (const command of ["node run-native-training-producer-contract-fixtures.js", "node run-native-training-snapshot-fixtures.js", "node run-native-training-producer-fixtures.js"]) assert(result.validation_commands.includes(command));
+    }
+  for (const query of ["native training owner consent", "training transfer review", "NativeTrainingTransferReviewRequest", "NativeTrainingTransferAuthorization", "OperatorNativeTrainingProduct", "operator-native-training.js", "propose-review native training"])
+    for (const actor of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {
+      const result = route(router, actor, query); assertRoutes(result, ["task-training"]); assert.equal(result.capability_routing.status, "covered");
+      assert(result.recommended_documents.some(value => value.path === "docs/native-training-owner-consent.md"));
+      for (const command of ["node run-native-training-transfer-contract-fixtures.js", "node run-native-training-transfer-fixtures.js", "node run-native-training-transfer-adversarial-fixtures.js"]) assert(result.validation_commands.includes(command));
+    }
+  for (const query of ["native training product", "training product", "native-training-product-controller", "prepare_controls_training_product",
+    ...require("./native-training-product-contract").NON_WORK_TYPES]) for (const actor of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {
+    const result = route(router, actor, query); assertRoutes(result, ["task-training"]);
+    assert.equal(result.capability_routing.status, "covered"); assert.equal(result.capability_routing.provisional_organization.required, false);
+    assert(result.recommended_documents.some(value => value.path === "docs/native-training-products.md"));
+    assert(result.validation_commands.includes("node run-native-training-product-contract-fixtures.js"));
+    assert(result.validation_commands.includes("node run-native-training-product-fixtures.js"));
+  }
+  for (const query of ["training session consent", "training session enrollment", "prepare_controls_training_session", "training-session-contract",
+    "training session contract", "TaskTrainingSessionProposal", "TaskTrainingSessionAuthorization", "schema-files/training-session-authorization.schema.json",
+    "operator-training-session-executor.js"]) for (const actor of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {
+    const result = route(router, actor, query); assertRoutes(result, ["task-training"]);
+    assert.equal(result.capability_routing.status, "covered");
+    assert.equal(result.capability_routing.provisional_organization.required, false);
+    assert(result.validation_commands.includes("node run-training-session-contract-fixtures.js"));
+    assert(result.validation_commands.includes("node run-training-session-fixtures.js"));
+    assert(result.recommended_documents.some(item => item.path === "docs/training-session-consent.md"));
+  }
+  for (const query of ["task training", "training evidence", "training qualification", "TaskTrainingSessionBinding", "TaskTrainingTrialAppraisal"]) {
+    const result = route(router, ["--actor=user"], query); assertRoutes(result, ["task-training"]);
+    assert.equal(result.capability_routing.status, "covered"); assert(result.validation_commands.includes("node run-task-training-contract-fixtures.js"));
+    assert(result.recommended_documents.some(item => item.path === "docs/task-training-evidence.md"));
+  }
   for (const query of ["minimum readiness", "readiness authority intersection", "readiness-authority-intersection", "approval cannot replace readiness"]) {
     const result = route(router, ["--actor=user"], query); assertRoutes(result, ["readiness-intersection"]);
     assert.equal(result.capability_routing.status, "covered"); assert(result.validation_commands.includes("node run-authority-integration-fixtures.js"));

@@ -39,6 +39,8 @@ convert it into unguarded work or clear retained state.
 
 Read these only when needed:
 
+- Before native training consumer upgrades, read `docs/native-training-producer-history.md` and use `scripts/inspect_controls_training_producer.js inspect <method-sha256>`. Preserve the genuine prior producer and exercise its actual retained records under the current engine. Inspection grants no trust, hold discharge or new execution; fresh transfers remain current-only. Source integration does not authorize a native call, owner ceremony or server startup.
+
 - For local owner login, evidence or decisions, read `docs/local-operator-console.md`, `docs/operator-consent-and-adoption.md` and, for exact hold discharge, `docs/operator-terminal-reconciliation.md`; use `scripts/serve_controls_operator.js`. Leave real setup/password decisions to the human. Inspect first, then require fresh terminal consent; never replay an old nonce, delete a hold or regenerate missing decisions. Preserve failure/expiry; terminal records are not tool/release authority or campaign/gateway settlement.
 
 - `references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.

@@ -84,6 +84,13 @@ try {
   assert.strictEqual(fileCliResult.status, 0, fileCliResult.stdout || fileCliResult.stderr);
   assert(JSON.parse(fileCliResult.stdout).artifact_path.endsWith("REPORT-CLI.md"));
   assert.strictEqual(readJson(fileArtifact.manifest_path).artifact_count, 3);
+  const beforePinned = fs.readFileSync(fileArtifact.manifest_path), expectedSha256 = require("crypto").createHash("sha256").update(fs.readFileSync(markdownSource)).digest("hex");
+  for (const [expected, code] of [["0".repeat(64), "ARTIFACT_SOURCE_DIGEST_MISMATCH"], [true, "ARTIFACT_SOURCE_DIGEST_INVALID"]]) {
+    assert.throws(() => writeRepositoryFileArtifact({ ...common, repositoryPath: repositoryB, kind: "reports", artifactId: "REPORT-PINNED", sourcePath: markdownSource, expectedSha256: expected }), new RegExp(code));
+    assert(fs.readFileSync(fileArtifact.manifest_path).equals(beforePinned));
+  }
+  const pinned = writeRepositoryFileArtifact({ ...common, repositoryPath: repositoryB, kind: "reports", artifactId: "REPORT-PINNED", sourcePath: markdownSource, expectedSha256 });
+  assert.strictEqual(pinned.sha256, expectedSha256); assert.strictEqual(readJson(fileArtifact.manifest_path).artifact_count, 4);
 
   assert.throws(() => writeRepositoryArtifact({
     ...common,

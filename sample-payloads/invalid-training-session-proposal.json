@@ -1,0 +1,34 @@
+{
+  "schema_version": "0.1",
+  "type": "TaskTrainingSessionProposal",
+  "purpose": "task_training_session_enrollment",
+  "request": {
+    "mission_id": "MIS-ENFORCED-DISPATCH",
+    "wave_id": "W1",
+    "capability_id": "CAP-TRAINING",
+    "performer_id": "PERF-TRAINING",
+    "expected_registry_head_ref": {
+      "artifact_id": "FRE-HEAD",
+      "relative_path": "synthetic/FRE-HEAD.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "lease_ref": {
+      "artifact_id": "ADL-7e5dbfb8-8bf0-42d8-b3c8-fdc22db3f03f",
+      "relative_path": "synthetic/ADL-7e5dbfb8-8bf0-42d8-b3c8-fdc22db3f03f.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "stage": "crawl",
+    "case_ids": [
+      "CASE-crawl-0"
+    ],
+    "expires_at": "2026-07-23T04:50:00Z"
+  },
+  "created_at": "2026-07-23T04:35:00Z",
+  "expires_at": "2026-07-23T04:45:00.000Z",
+  "execution_authorized": true,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false,
+  "id": "TSP-6a99dc5c5b9f7e45b35d3e6085397897d9d23639"
+}

@@ -19,6 +19,13 @@ not bypass closed objects, and inherited JavaScript API values do not satisfy
 required fields. See [the CLI contract](../validator-cli-prototype/README.md)
 for the supported subset and current limits.
 
+Each synchronous invocation loads the selected root's file-reference closure,
+including unselected branches, once. Nested types share only that invocation's
+snapshot. Missing roots fail closed; unresolved references block validation.
+Return and exception both discard the snapshot. Unrelated files belong to the
+separate corpus JSON audit, not every artifact's validation hot path. This does
+not cache authority, historical artifact appraisals or publication guards.
+
 ## 1. Input and Output
 
 ### Input

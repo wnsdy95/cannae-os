@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "NativeTrainingTransferAuthorization"
+    },
+    "id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "purpose": {
+      "type": "string",
+      "const": "authorize_one_reviewed_native_training_transfer"
+    },
+    "action_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "request_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "transfer_review_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "invocation_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "preview_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "displayed_invocation_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "principal_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "principal_epoch": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "authentication_method": {
+      "type": "string",
+      "const": "local_owner_password_reauthentication"
+    },
+    "session_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nonce_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "rationale_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "mission_handling_acknowledged": {
+      "type": "boolean",
+      "const": true
+    },
+    "handling_completeness_independently_attested": {
+      "type": "boolean",
+      "const": false
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    },
+    "qualification_granted": {
+      "type": "boolean",
+      "const": false
+    },
+    "grant_restoration_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "signature": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "const": "Ed25519"
+        },
+        "key_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/]{86}==$"
+        }
+      },
+      "required": [
+        "algorithm",
+        "key_sha256",
+        "value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "purpose",
+    "action_id",
+    "request_ref",
+    "transfer_review_ref",
+    "invocation_sha256",
+    "preview_sha256",
+    "displayed_invocation_sha256",
+    "principal_id",
+    "principal_epoch",
+    "authentication_method",
+    "session_sha256",
+    "nonce_sha256",
+    "rationale_sha256",
+    "mission_handling_acknowledged",
+    "handling_completeness_independently_attested",
+    "created_at",
+    "expires_at",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority",
+    "qualification_granted",
+    "grant_restoration_authorized",
+    "signature"
+  ],
+  "additionalProperties": false,
+  "$id": "https://controls.local/schema-files/native-training-transfer-authorization.schema.json"
+}

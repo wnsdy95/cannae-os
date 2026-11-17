@@ -8,6 +8,23 @@ maintenance, routing and bounded agent workflows in existing clients.
 The active queue below takes precedence over the retained platform program.
 Deferral is not completion, deletion or permission to bypass existing controls.
 
+### Existing PR Integration
+
+On 2026-11-17 the USER requested integration of existing open PRs after checking
+their actual state. The retained training stack from PRs 97-107 is reconciled
+with accepted main's skill-first authoring, terminology, source-access and
+non-execution controls. Both sets of routes, semantic checks and regression
+cases remain required; a one-sided conflict resolution is not acceptance.
+Native producer-upgrade guidance stays in conditional runtime references rather
+than returning removed platform detail to the ordinary skill entrypoint.
+
+This source-maintenance request does not reopen dashboard/server development,
+authorize a model transfer or owner ceremony, install a candidate, start a
+service, or prove training qualification. Existing failed PR runs and producer
+archives remain historical; the reconciled candidate requires fresh checks.
+The separate Skill Reliability And Efficiency cycle retains its own SR01-SR18
+evidence and cannot inherit acceptance from this integration.
+
 ## Active Core Work
 
 Current audit: 2026-11-15 (Asia/Seoul), after
@@ -1679,6 +1696,69 @@ requires a new policy or external deployment decision, return that decision to
 the USER and continue independent in-scope work.
 
 ## Closure Discipline
+
+The [native failure appraiser/contracts](native-training-failure-reconciliation.md)
+now distinguish actual rejected responses, originally bound task products and
+four canonical publication prefixes without replaying a model or publishing.
+The native-only fresh owner ceremony, durable one-use receipt consumer and Model
+Actions UI now cover those appraisable failures without rewriting the original
+row or replaying a model. Full hosted/browser/actual-owner acceptance and controlled
+rollout remain separate; this does not complete native recovery. Missing evidence, unknown
+processes and orphans remain explicit separate obligations, not waived cases.
+
+The [native producer-history foundation](native-training-producer-history.md)
+preserves exact original owner evidence across method-hash upgrades. Inspection
+and historical readability cannot authorize new execution or clear a failure.
+Two captured source generations and a deduplicated snapshot format now preserve
+the complete original tree without recursive archive copies. Restoration and
+inspection checks are separate from each producer's actual prior-code replay
+and hosted acceptance. Missing original response hashes cannot be filled in by
+a later file observation. This prerequisite is not native recovery completion.
+Its prior-code regression does not complete native uncertainty discharge,
+orphan/unknown-process recovery, grading, qualification, live grant consumers,
+actual-model acceptance or any full program outcome.
+
+An ancestry-preserving source integration does not close any full outcome.
+Retain the original reviewed stack and squash/tree evidence, revalidate the new
+HEAD's source-bound flows and require its full hosted checks before ordinary
+merge. Current-source installation, real user/model acceptance and deployed
+independence remain separate; never import an old green status or clear a hold
+because the files appear on a main-based candidate.
+
+Retain interrupted local validation separately from new-head acceptance. Host
+sleep observations and a USER-approved finite validation-only idle assertion
+do not repair missing original state, discharge unknown operations, renew old
+approvals or establish protected deployment. Any passing awake run must preserve
+the earlier failed runs and the exact scope of the temporary resource approval.
+
+The one-use awake integration ladder also failed at native consent validation;
+17 gates passed and eight later gates were not executed. A separate advancing
+clock reproduces a 120001ms synthetic consent. The fixture now derives both times
+from one sample and exercises unchanged verifier boundaries. This correction is
+not new-head integration acceptance or reconstruction of the original discarded
+signed record; full current-head checks and normal hosted validation remain due.
+
+The [native owner-transfer candidate](native-training-owner-consent.md) connects
+exact handling review, authenticated consent, original-byte publication and a
+managed local attempt/orphan inventory. Acceptance and rollout, complete
+cross-runtime history, uncertainty discharge, evaluation, qualification and
+actual grant consumers remain open. No full outcome is closed by this candidate.
+
+The [native task-product candidate](native-training-products.md) adds native
+standards and a purpose-separated bounded collector API with preauthorized
+collection IDs, original JSONL and returned bytes. Verify its separate owner
+UI/producer and signed publication candidate; complete cross-runtime inventory,
+reconciliation, authenticated grading, qualification and mandatory grant consumers
+under goals 3/5/7.
+This is not acceptance of real-model quality or completion of any full outcome.
+
+The [in-progress training evidence intake](task-training-evidence.md) starts the
+actual-result/standard/session binding needed by row 7. The separate
+[owner session ceremony candidate](training-session-consent.md) adds exact
+authenticated pre-call review and historical verification, not step evaluation,
+positive qualification or operational grants. Current-source acceptance, uncertain
+session reconciliation and controlled rollout remain open alongside the remaining
+training stages and actual grant reconciliation. All eight outcomes remain open.
 
 The [reference readiness intersection correction](readiness-authority-intersection.md)
 repairs actual allow-below-minimum and softened-prohibition probes, exact subject
