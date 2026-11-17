@@ -74,6 +74,8 @@ async function openAuthStore(directory, binding) {
     CREATE TABLE IF NOT EXISTS invites (digest TEXT PRIMARY KEY, missions TEXT NOT NULL,
       expires INTEGER NOT NULL, issued_by TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS sessions (digest TEXT PRIMARY KEY, value TEXT NOT NULL, expires INTEGER NOT NULL);
+    CREATE TABLE IF NOT EXISTS session_store_keys (store_digest TEXT PRIMARY KEY,
+      session_digest TEXT UNIQUE NOT NULL REFERENCES sessions(digest) ON DELETE CASCADE);
     CREATE TABLE IF NOT EXISTS audit (sequence INTEGER PRIMARY KEY, at TEXT NOT NULL,
       actor TEXT NOT NULL, action TEXT NOT NULL, subject TEXT NOT NULL);
   `);
@@ -124,6 +126,18 @@ async function openAuthStore(directory, binding) {
     const row = liveUser(session.userId);
     requireThat(row.epoch === session.epoch, "CONSOLE_SESSION_REVOKED", 401);
     return publicUser(row);
+  }
+  function storedSession(id) {
+    const key = hash(id), mapping = db.prepare("SELECT session_digest FROM session_store_keys WHERE store_digest=?").get(key);
+    return db.prepare("SELECT * FROM sessions WHERE digest=?").get(mapping ? mapping.session_digest : key);
+  }
+  function persistSession(id, value, previous) {
+    const serialized = JSON.stringify(value), generation = JSON.parse(serialized).__fastifySessionMetadata?.generation ?? id;
+    const expiry = Math.min(Date.now() + SESSION_MS, value.startedAt ? value.startedAt + SESSION_MS : Date.now() + 30 * 60 * 1000);
+    // Keep approval lookups bound to the public generation, not the stable store key.
+    if (previous) db.prepare("DELETE FROM sessions WHERE digest=?").run(previous.digest);
+    db.prepare("INSERT INTO sessions VALUES (?,?,?)").run(hash(generation), serialized, expiry);
+    db.prepare("INSERT OR REPLACE INTO session_store_keys VALUES (?,?)").run(hash(id), hash(generation));
   }
   return {
     root, db, secret: metadata("session-secret"), hasOwner,
@@ -209,21 +223,44 @@ async function openAuthStore(directory, binding) {
     sessionStore: {
       get(id, done) {
         try {
-          const row = db.prepare("SELECT value FROM sessions WHERE digest=? AND expires>?").get(hash(id), Date.now());
-          done(null, row ? JSON.parse(row.value) : null);
+          const row = storedSession(id);
+          done(null, row && row.expires > Date.now() ? JSON.parse(row.value) : null);
         } catch (error) { done(error); }
       },
       set(id, value, done) {
         try {
-          db.prepare("DELETE FROM sessions WHERE expires<=?").run(Date.now());
-          requireThat(db.prepare("SELECT COUNT(*) AS n FROM sessions").get().n < 2000 ||
-            db.prepare("SELECT digest FROM sessions WHERE digest=?").get(hash(id)), "CONSOLE_SESSION_LIMIT", 429);
-          const expiry = Math.min(Date.now() + SESSION_MS, value.startedAt ? value.startedAt + SESSION_MS : Date.now() + 30 * 60 * 1000);
-          db.prepare("INSERT OR REPLACE INTO sessions VALUES (?,?,?)").run(hash(id), JSON.stringify(value), expiry);
+          transaction(() => {
+            db.prepare("DELETE FROM sessions WHERE expires<=?").run(Date.now());
+            const previous = storedSession(id);
+            requireThat(db.prepare("SELECT COUNT(*) AS n FROM sessions").get().n < 2000 || previous, "CONSOLE_SESSION_LIMIT", 429);
+            persistSession(id, value, previous);
+          });
           done();
         } catch (error) { done(error); }
       },
-      destroy(id, done) { try { db.prepare("DELETE FROM sessions WHERE digest=?").run(hash(id)); done(); } catch (error) { done(error); } }
+      compareAndSet(id, expectedGeneration, value, done) {
+        try {
+          transaction(() => {
+            const previous = storedSession(id);
+            if (!previous || previous.expires <= Date.now() ||
+                (JSON.parse(previous.value).__fastifySessionMetadata?.generation ?? id) !== expectedGeneration) {
+              throw Object.assign(new Error("The session does not exist or has changed"), { code: "ENOENT" });
+            }
+            persistSession(id, value, previous);
+          });
+          done();
+        } catch (error) { done(error); }
+      },
+      destroy(id, done) {
+        try {
+          transaction(() => {
+            const previous = storedSession(id);
+            if (previous) db.prepare("DELETE FROM sessions WHERE digest=?").run(previous.digest);
+            db.prepare("DELETE FROM session_store_keys WHERE store_digest=?").run(hash(id));
+          });
+          done();
+        } catch (error) { done(error); }
+      }
     },
     close() { db.close(); }
   };

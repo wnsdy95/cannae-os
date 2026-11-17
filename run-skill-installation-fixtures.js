@@ -423,7 +423,8 @@ function receiptDependencyFailures(env) {
   const init = spawnSync("git", ["init", "-q", target], { encoding: "utf8" });
   assert.equal(init.status, 0, init.stderr);
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
-  for (const dependency of ["validator-cli-prototype", "node_modules", "schema-files/routing-receipt.schema.json"]) {
+  for (const dependency of ["validator-cli-prototype", "node_modules", "schema-files/routing-receipt.schema.json",
+    "native-training-producer-fixtures", "native-training-producer-fixtures/legacy-cab6d09.json"]) {
     const original = path.join(source, dependency);
     const backup = path.join(target, "withheld-dependency");
     fs.renameSync(original, backup);
@@ -630,7 +631,9 @@ try {
   write(path.join(unrelated, "README.md"), "# Target project, not doctrine\nKeep this source unchanged.\n");
   fs.mkdirSync(bin);
   for (const file of ["install-ai-cli-skills.sh", "validate-controls-skill.js", "README.md", "SUPPORT.md",
-    "docs", "schema-files", "sample-payloads/README.md", "validator-cli-prototype", `codex-skills/${NAME}`, `.claude/skills/${NAME}`]) {
+    "docs", "schema-files", "sample-payloads/README.md", "validator-cli-prototype",
+    "native-training-producer-fixtures/legacy-cab6d09.json", "native-training-producer-fixtures/legacy-bcb79dd.json",
+    `codex-skills/${NAME}`, `.claude/skills/${NAME}`]) {
     fs.cpSync(path.join(ROOT, file), path.join(source, file), { recursive: true });
   }
   // Receipt validation uses the bound checkout's real runtime, not a validator stub.

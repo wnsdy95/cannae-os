@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Reconcile skill reliability work with approved main in an isolated integration candidate. Preserve both document and training non-execution lists and add valid-example checks through both APIs. Narrow an overbroad native-failure route so ordinary CLI diagnostics do not inherit training procedures; preserve explicit subjects, parent tasks and required inputs, and mirror the lesson in both skills. Retain focused checks, dependency warnings and the unavailable live-OCI prerequisite without renewing native consent or reopening deferred PR/platform scope.
+
 - Record one frozen 24-request routing comparison across both revisions/providers and source-appraise intake, objectives, sources, authority and guarded refusals. Close SR02/SR03 at bounded scope (8/18 criteria), preserving the baseline's 22 mismatches, prior harness failure, incomplete initial helper binding and reserved-case exposure. Native quality, actual context savings and full integration remain open; revised #110 and new #115 remain deferred by USER.
 
 - Add a one-attempt frozen routing comparison for all 24 fixed requests across baseline/candidate and both providers. Bind complete clean revisions, unchanged evaluation inputs and evaluator code; retain raw attempted results, semantic mismatches and unexecuted suffixes on failure. Mirror reserved-case exposure and source-appraisal guidance in both skills without approving native transfers or claiming acceptance from fixture counts.
@@ -80,6 +82,42 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 - Freeze the skill-only routing/authoring evaluation before behavior changes. Add a non-authorizing local inspection/baseline helper with split/hash/path checks and thirteen synthetic regressions. Preserve all clean-baseline reports, including ten failing routing observations; close SR01 only and keep native authoring, withheld execution and loaded-context savings open. Mirror measurement-versus-acceptance guidance in both skills and index the exact checkpoint without renewing consent or reopening platform work.
 
 - Define the USER-requested skill reliability successor goal from current routing probes and retained limits. Separate six objectives and eighteen planned criteria from the completed twenty-row baseline; preserve deferred dashboard/server/plugin work and exact pending decisions. Mirror cycle-specific evidence, withheld-case and consent guidance in both skills. Goal registration and local probes are not implementation or new native acceptance.
+- Align the release-integrity upload-pin fixture with the upstream-verified
+  v7.0.2 commit already selected by the dependency update. Preserve the failed
+  combined CI (153/155 suites) and its mandatory-control cascade; regress old,
+  floating, partial and extra upload references. Both skills now require the
+  focused workflow check before its mission consumer and full integration gate.
+  No workflow permission, release authority or historical evidence is changed.
+
+- Adapt the retained SQLite session store to the pinned session plugin's atomic
+  generation contract. Preserve public-generation approval hashes through a
+  stable-key mapping, reject stale/expired/deleted saves, and retain legacy row
+  readability. Test concurrent SQLite writers, rollback on generation collision,
+  real cookie rotation and existing console controls. This fixes an observed
+  startup refusal during dependency integration; it does not relax the plugin,
+  operate a real service or restart deferred application development.
+
+- Preserve exact historical producer dependencies when the current consumer lock
+  changes. The combined candidate exposed `NATIVE_SNAPSHOT_DEPENDENCY_LOCK_CHANGED`
+  before prior-producer replay. Restore its original locked dependencies with
+  bounded script-disabled `npm ci` in the temporary fixture, verify unchanged
+  source/method bytes and fail on installation errors. Regress same-lock sharing,
+  different-lock selection and substituted-original rejection; do not rewrite
+  archives, grant historical production execution or treat selection mocks as
+  actual original-record replay.
+
+- The training integration initially passed 655 schema/semantic fixtures but
+  failed exact synthetic session-sample equality: the shared issuance runtime
+  digest changed with current main. Refresh only dependent current synthetic
+  examples through their original builders. Its reduced installation fixture
+  also lacked the validator's two pinned producer catalogs; include those real
+  dependencies and check missing/changed catalog refusal in both providers.
+  Preserve both failures and original producer archives; require fresh checks
+  without weakening validation, replacing the validator or rewriting history.
+
+- Reconcile the existing training PR stack with accepted skill-first main. Preserve both document and training routing/validation families, keep all non-executable type exclusions, and retain the historical producer archives. Move the native-upgrade entry guidance into both conditional runtime references instead of restoring removed platform prose to ordinary skill onboarding. Integration requires fresh checks and grants no native operation or deferred-platform rollout.
+
+- Integrate pending cookie/session, MCP client/server, icon and artifact-upload updates against accepted main. Preserve the exact prior verifier sample and recognize only its source-audited producer tuple; generate current evidence separately and extend historical non-execution checks. Both skills distinguish combined-lock verification from component-PR checks. No trust policy, release authority or operational evidence is rewritten.
 
 - Integrate the skill-first branch with retained mainline controls without replacing either history. Preserve document-context integrity together with readiness revocation, combine non-executing validator types and both routing inventories, and retain captured-request, workload and registry procedures in both conditional skill references. Prior native acceptance remains bound to its recorded revisions; merge validation is not a new model review or permission grant.
   Keep the installation refresh fixture within the source's existing line count and explicitly reject oversized skill replacements without modifying either installation. The 500-line limit is unchanged.
@@ -263,6 +301,201 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 - Replace the active eight-outcome platform goal with five explicit skill-first objectives (G1-G5), each with behavioral acceptance and remaining evidence. Separate completed scope/entrypoint groundwork from goal completion; both skills now bind continuation tasks and evidence to the selected active objective. Retain deferred platform requirements and existing controls unchanged.
 
 - Refocus the active product on document authoring, role-bounded routing, handoffs and corpus maintenance through Codex/Claude skills. Defer dashboard, operator application and production-platform development without deleting evidence or weakening existing guards. Add an authoring workflow and route, preserve detailed runtime procedures in conditional references, and mirror the core-first continuation rule in both skills. Keep local historical archives out of current-document link checks while retaining hidden provider-skill validation. The broader implementation inventory is retained, not reclassified as core completion; separate plugin packaging and end-to-end semantic acceptance remain unproven.
+
+- Add native-only authenticated failed-transfer acknowledgment to the existing
+  owner service: fresh displayed-subject/password/session/epoch/nonce review,
+  independent provider/publication/response-proof acknowledgments, durable
+  reservation/receipt consumption and private-history reappraisal. Preserve
+  original failure, publications and all task/settlement/qualification limits.
+  Keep history readable with model execution disabled. Add actual API, process
+  death, publication adversary and desktop/mobile browser fixtures; both skills
+  route and require the dedicated procedure. Unknown/missing/orphan classes,
+  actual-model/owner acceptance, controlled rollout and full outcomes remain open.
+  Preserve browser Origin and parser-boundary failures before correcting test
+  clients/inputs. Exercise actual copied runtime source drift rather than mutating
+  a worker projection. Partition all 25 API cases into four required controls
+  without increasing the ten-minute control watchdog or weakening a denial.
+  Preserve the registry-audit failure and use five argument-free suite wrappers
+  for its unchanged compiler; verify their complete mapping and reject caller
+  arguments. Keep router controls separate and correct stale recovery guidance.
+  Split near-deadline registry receipt coverage without increasing its limit.
+  Preserve an unexplained setup refusal and subsequent passing diagnostic probes;
+  record bounded first-guard HTTP context before cleanup without logging bodies.
+
+- Bound validator schema loading to each input's file-reference closure, with
+  nested single reads and fresh snapshots after return or exception. Missing
+  roots and unresolved references fail closed; malformed referenced branches
+  still reject. Keep runtime/authority/publication checks and SDK deadlines
+  unchanged. Both skills route plain method control diagnostics to the channel
+  and require child-side measurement plus uninstrumented continuation acceptance.
+
+- Add a dedicated native failure appraiser and three strict recovery contracts.
+  Replay original authorization/consent/reservation/journal/native events,
+  observe child/group absence and inspect all four exact canonical publication
+  prefixes without rerunning or repairing output. Keep missing original
+  response-file commitments distinct from current observations. Add actual
+  rejection/partial-publication fixtures, generic non-executable validation,
+  offline signature audit and measured native/channel/issuance bindings.
+  Both skills route and enforce the new appraisal checks. Fresh owner approval,
+  durable receipt consumption, UI and native hold discharge remain unimplemented.
+
+- Preserve the actual `bcb79dd` native owner producer before method-bound edits.
+  Add exact second-generation inspection and flattened fixture snapshots that
+  reference existing source archives by path/size/hash, verify buffers before
+  extraction and reconstruct the complete original Git identity. Regress source
+  substitution, cached catalog drift and both historical owner consumers; keep
+  fresh execution current-only. Both skills now require freeze-before-edit and
+  distinguish missing original response commitments from later observations.
+  This is a recovery prerequisite, not hold discharge, qualification or full
+  program acceptance.
+
+- Add bounded method-channel fixture phase telemetry for actual SDK requests,
+  native-hook pre/postflight and owned transport cleanup. Preserve result/error
+  identity, existing deadlines and privacy; distinguish local-parent CPU from
+  elapsed time and keep both skill procedures aligned. This improves diagnosis,
+  not the unresolved hosted continuation timeout or full transport acceptance.
+  Preserve a direct telemetry counterexample: inspecting a plain value's `then`
+  getter could replace its result. Observe native Promises only and regress the
+  untouched plain value without probing it; no SDK deadline or denial is relaxed.
+
+- Add exact native producer-history inspection and current-engine replay for
+  the frozen `cab6d09` owner producer. Preserve original failures/collected bytes
+  without executing old code in production or downgrading fresh transfer. Add a
+  pinned prior-source regression, strict inspection contract, inspect-only
+  wrappers and both skill adaptations. Native uncertainty discharge stays open.
+  Preserve the first broad regression failure and separate the newly earlier
+  preview-integrity denial from the unsigned manifest-history counterexample;
+  neither production guard nor expected denial codes are relaxed.
+  Correct an unqualified historical-replay description: a verified held row
+  checks its signed failure and original-scope bindings, not process termination
+  or raw journal/task bytes. Only collected replay adds original raw-product,
+  profile and canonical-publication checks. Both skills now require this status
+  distinction before using `result_verified`; no runtime behavior or authority
+  changes with this clarification.
+
+- Fix a synthetic native-training consent clock race: derive both timestamps
+  from one sample, not separate reads that can produce 120001ms against the
+  unchanged 120000ms production limit. Add an advancing-clock regression covering
+  valid, future, expired and over-limit consent, and adapt both skill references.
+  Preserve the earlier failed awake ladder; this fixture correction does not
+  establish its missing original signed state or complete integration acceptance.
+
+- Add bounded awake-validation discipline to both skills after retained local
+  lease and enrollment failures overlapped host sleep. Correlate filtered power
+  events without claiming missing original state, and use only a USER-approved
+  one-attempt, finite, PID-bound idle assertion. Never renew old authority, weaken
+  deadlines, change persistent power policy or call this host attestation.
+
+- Reconcile the reviewed training stack with the actual published main ancestry
+  on a separate candidate branch. Require complete tree preservation before the
+  four-file documentation follow-up, preserve original PR/CI subjects and primary
+  user changes, and revalidate the new head. Both skills now require exact squash
+  evidence and an early failure journal rather than blanket conflict preference
+  or treating an API timeout as a terminal run. Full CI, ordinary merge, rollout
+  and every complete program outcome remain separate.
+
+- Start the native owner-transfer integration: exact classification/mission
+  handling and external-tool review, authenticated one-use transfer, original
+  byte/signature publication and managed-attempt/orphan inventory through the
+  existing console. Preserve partial/restart/logout uncertainty and refuse
+  cross-purpose recovery. Evaluation, qualification, grants, full acceptance and
+  rollout remain open. Both skills require reviewed v0.2 packets and original
+  evidence rather than fixture signing or control wrappers relabeled as work.
+  Preserve the initial sample-equality failure: its enclosing review had a fixed
+  clock while its referenced request used the current clock. Pin the same clock
+  through the synthetic dependency; do not weaken exact equality.
+  Preserve the next pre-transfer refusal too: the fixture passed an already
+  identified review to a raw-recipe proposer. Pass only its raw body; preserve
+  the content-derived ID guard and separate read/verification boundaries.
+  Preserve the following preview refusal and boolean-only diagnostics: the
+  invocation/profile/repository/identity matched but macOS artifact-root aliases
+  differed as strings. Pin the physical training root at startup and recheck it;
+  accept aliases only for that root, reject retargeting, and keep original
+  authorization-before-execution timestamp checks.
+  Preserve two subsequently reproduced pre-transfer defects: an adverse shared
+  standard label was omitted when its original mission differed, and a reservation
+  tied only to a pending unsigned preview was treated as authorized. Inherit exact
+  source-mission labels and bind reservations to signed original authorization,
+  consent, request and timestamps. Unexpected fixture status failures now withhold
+  response bodies; the original private failure contained only a temporary synthetic
+  challenge, no real credentials, and remains preserved rather than rewritten.
+  Preserve the staged-file substitution failure as well: the signed success
+  result was denied, but invalid bytes had already reached the canonical output
+  kind. Add an optional source-buffer digest precondition to file publication
+  and require it for native task bytes before any canonical write. Regress the
+  shared store's unchanged-on-refusal, successful pinning, recovery and isolation.
+  Retain the exact-type routing failure and register full new type names without
+  weakening word boundaries. The next runtime ladder passed ten groups, then
+  force-enrollment setup timed out before the last two groups. Preserve that
+  observation and unexecuted suffix; cause remains unresolved and deadlines
+  remain unchanged. A later passing ladder must not be described as its repair.
+
+- Start the native training task-product path with a distinct native standard,
+  exact enrolled profile/context/case, purpose-specific bounded collector API,
+  pre-start one-use collection identity and original private JSONL/response replay.
+  Keep account/weight/pre-inference attestation, owner UI/producer, full inventory,
+  grading, qualification, operational grants and rollout explicitly unfinished.
+  Both skills prohibit post-hoc native identity labels and unrelated consent.
+  Preserve initial contract fixture failures (stale reconstructed ID and an
+  earlier shared Unicode guard) and the unmapped-inventory setup failure rather
+  than changing expected boundaries or waiving actual routing preflight.
+  Preserve the subsequent pre-transfer OPSEC failure and its scoped diagnostic:
+  unused sibling cases were scanned although absent from the outbound prompt.
+  Check the exact minimized prompt, exclude sibling cases, and regress that
+  forbidden selected content and returned content still block without changing
+  detector patterns.
+  Preserve the next successful-collection/immediate-appraisal failure: the shared
+  historical reader accepts strict ancestors, not the current exact snapshot.
+  Select the already verified current store only on an exact revision/digest
+  match, otherwise use the unchanged historical guard; regress later-history
+  replay and altered hashes. Regenerate only synthetic measured-runtime samples.
+  Keep proposal parser/filesystem diagnostics code-only and exercise a malformed
+  input canary through the actual CLI and both skill wrappers without exporting
+  rejected input or real credentials.
+  Preserve the canary assertion failure caused by eager SQLite initialization;
+  parse malformed input before runtime loading without suppressing warnings or
+  loosening the expected diagnostic.
+  Preserve the first frozen ladder failure (16 gates passed, session sample
+  equality failed, 18 later gates unexecuted). Refresh the transitive current
+  synthetic session authorization/binding after issuance measurement changes;
+  keep exact equality, signatures and retained operational history unchanged.
+
+- Add a distinct local owner training-session consent candidate through the real
+  authenticated console and worker, full display commitment, password/session/
+  nonce checks, pre-call lease lock and immutable authorization/binding chain.
+  Reject post-hoc/duplicate enrollment, preserve partial-write/restart holds and
+  read historical mappings without retroactive assurance. Keep task quality,
+  qualification, actual grants, uncertain-outcome discharge and rollout open.
+  Adapt both skills and preserve the initial development failure: new denial
+  codes were removed by the second worker transport filter. Add an exact-code
+  regression without weakening private-detail filtering or the refusal itself.
+  Preserve the subsequent 594/595 CLI development failure too: nested validation
+  saw incomplete exports only through the real CLI entrypoint. Export before
+  entering main and regress that exact path, rather than relying on library tests.
+  Preserve the first frozen ladder's logout-test failure: its fixture called an
+  audit-only helper, not actual logout. Coordinate a worker at the publication
+  boundary, call HTTP logout, prove session removal and then assert the original
+  guard/hold. Do not weaken the expected denial or claim that an audit event revokes.
+  Preserve the later frozen ladder's route failure: a training-session filename
+  had inventory hints but no matching query keyword. Route filename/type/prose
+  forms in both providers and human/AI modes without changing gap policy or the
+  expected training control. Zero-unrouted inventory alone is not query coverage.
+  Preserve a later original positive-challenge refusal and its unexecuted suffix.
+  A bounded same-source predicate diagnostic passed but does not explain that
+  failure. Isolate independent rejection cases from the positive ceremony, assert
+  exact errors, and retain sanitized timing/predicate observations before cleanup.
+  Do not lengthen the real challenge window or automatically retry consent.
+
+- Start task-training evidence intake over owner-enrolled definitions, pre-call
+  signed stage/case session mappings and actual dispatch completion/result bytes.
+  Add non-executable contracts, owner-only evidence reads and both skill routes.
+  Keep the real session ceremony, step assessment, qualification, supervision and
+  operational grant/reconciliation consumers explicitly in progress; no actor
+  is promoted and no real model, owner or installed service is operated here.
+  Correct the synthetic standard producer to use the dispatcher's input digest,
+  not the distinct artifact digest domain, after the first clean-head intake
+  gate failed. Add a producer-boundary regression and both skill recovery rules;
+  preserve the original failure and its unexecuted verification suffix.
 - Preserve readiness minimums and prohibitions through reference approval/release
   composition after actual synthetic allow counterexamples. Validate exact
   matrix/request scope, overlap and expiry; reject missing ratings/unknown risk

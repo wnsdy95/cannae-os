@@ -43,6 +43,12 @@ Record environment limitations, failed commands and unexecuted suffixes. Do not
 set skip modes, relax product deadlines or infer native-model consent to make a
 gate pass. CI completion and a local inspection are separate evidence.
 
+When integrating independently extended validator exclusion lists, run the CLI
+fixtures and inspect their both-API non-execution matrix. It covers valid local
+terminology/dependency records and retained training/reconciliation records
+together. Keep both exclusions; a schema-invalid denial or a pass from either
+unmerged branch does not prove the integrated authority boundary.
+
 ### Read-Only Evidence Index
 
 Keep the cycle's private index under its target repository's `.cannae/maintenance/`.

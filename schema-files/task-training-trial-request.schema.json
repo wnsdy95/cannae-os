@@ -1,0 +1,235 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "TaskTrainingTrialRequest"
+    },
+    "id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "mission_id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "wave_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "capability_id": {
+      "type": "string",
+      "pattern": "^CAP-[A-Za-z0-9_-]+$"
+    },
+    "performer_id": {
+      "type": "string",
+      "pattern": "^PERF-[A-Za-z0-9_-]+$"
+    },
+    "registry_head_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "case_id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "session_binding_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "lease_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "completion_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "completion_input_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "observed_output_ref": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "relative_path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    },
+    "qualification_granted": {
+      "type": "boolean",
+      "const": false
+    },
+    "grant_restoration_authorized": {
+      "type": "boolean",
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "mission_id",
+    "wave_id",
+    "capability_id",
+    "performer_id",
+    "registry_head_ref",
+    "case_id",
+    "session_binding_ref",
+    "lease_ref",
+    "completion_ref",
+    "completion_input_ref",
+    "observed_output_ref",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority",
+    "qualification_granted",
+    "grant_restoration_authorized"
+  ],
+  "additionalProperties": false,
+  "$id": "https://controls.local/schema-files/task-training-trial-request.schema.json"
+}

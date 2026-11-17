@@ -1,0 +1,474 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "OperatorNativeTrainingProduct"
+    },
+    "id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "action_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "collected",
+        "held"
+      ]
+    },
+    "invocation_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "consent_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "authorization_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "rationale_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "collection": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "evaluated",
+                "not_evaluated"
+              ]
+            },
+            "journal_sha256": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "process_exit_confirmed": {
+              "type": "boolean"
+            },
+            "process_group_absent": {
+              "type": "boolean"
+            },
+            "stdout_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "stderr_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "response_sha256": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "failure_reasons": {
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^(?:CONSOLE|SEMANTIC)_[A-Z0-9_]+$"
+              }
+            }
+          },
+          "required": [
+            "status",
+            "journal_sha256",
+            "process_exit_confirmed",
+            "process_group_absent",
+            "stdout_sha256",
+            "stderr_sha256",
+            "response_sha256",
+            "failure_reasons"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "appraisal": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schema_version": {
+              "type": "string",
+              "const": "0.1"
+            },
+            "type": {
+              "type": "string",
+              "const": "NativeTrainingProductAppraisal"
+            },
+            "id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "collection_id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "request_ref": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+                },
+                "relative_path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifact_id",
+                "relative_path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "invocation_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "consent_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "journal_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "native_thread_id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "observed_output_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "observed_output_bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65536
+            },
+            "status": {
+              "type": "string",
+              "const": "native_task_bytes_bound"
+            },
+            "native_account_identity_attested": {
+              "type": "boolean",
+              "const": false
+            },
+            "pre_inference_native_identity_attested": {
+              "type": "boolean",
+              "const": false
+            },
+            "model_snapshot_attested": {
+              "type": "boolean",
+              "const": false
+            },
+            "actual_model_execution_attested": {
+              "type": "boolean",
+              "const": false
+            },
+            "conditions_observed": {
+              "type": "boolean",
+              "const": false
+            },
+            "task_standard_evaluated": {
+              "type": "boolean",
+              "const": false
+            },
+            "evaluator_authenticated": {
+              "type": "boolean",
+              "const": false
+            },
+            "execution_authorized": {
+              "type": "boolean",
+              "const": false
+            },
+            "release_authorized": {
+              "type": "boolean",
+              "const": false
+            },
+            "human_final_decision_authority": {
+              "type": "string",
+              "const": "USER"
+            },
+            "qualification_granted": {
+              "type": "boolean",
+              "const": false
+            },
+            "grant_restoration_authorized": {
+              "type": "boolean",
+              "const": false
+            }
+          },
+          "required": [
+            "schema_version",
+            "type",
+            "id",
+            "collection_id",
+            "request_ref",
+            "invocation_sha256",
+            "consent_sha256",
+            "journal_sha256",
+            "native_thread_id",
+            "observed_output_sha256",
+            "observed_output_bytes",
+            "status",
+            "native_account_identity_attested",
+            "pre_inference_native_identity_attested",
+            "model_snapshot_attested",
+            "actual_model_execution_attested",
+            "conditions_observed",
+            "task_standard_evaluated",
+            "evaluator_authenticated",
+            "execution_authorized",
+            "release_authorized",
+            "human_final_decision_authority",
+            "qualification_granted",
+            "grant_restoration_authorized"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "output_ref": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "authorization_ref": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "artifact_id": {
+              "type": "string",
+              "maxLength": 128,
+              "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+            },
+            "relative_path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "relative_path",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "retained_artifact_refs": {
+      "maxItems": 3,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+          },
+          "relative_path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "artifact_id",
+          "relative_path",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "error": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^(?:CONSOLE|SEMANTIC)_[A-Z0-9_]+$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "task_standard_evaluated": {
+      "type": "boolean",
+      "const": false
+    },
+    "evaluator_authenticated": {
+      "type": "boolean",
+      "const": false
+    },
+    "publication_finality_independently_attested": {
+      "type": "boolean",
+      "const": false
+    },
+    "execution_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "release_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "human_final_decision_authority": {
+      "type": "string",
+      "const": "USER"
+    },
+    "qualification_granted": {
+      "type": "boolean",
+      "const": false
+    },
+    "grant_restoration_authorized": {
+      "type": "boolean",
+      "const": false
+    },
+    "signature": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "const": "Ed25519"
+        },
+        "key_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/]{86}==$"
+        }
+      },
+      "required": [
+        "algorithm",
+        "key_sha256",
+        "value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "action_id",
+    "status",
+    "invocation_sha256",
+    "consent_sha256",
+    "authorization_sha256",
+    "rationale_sha256",
+    "ended_at",
+    "collection",
+    "appraisal",
+    "output_ref",
+    "authorization_ref",
+    "retained_artifact_refs",
+    "error",
+    "task_standard_evaluated",
+    "evaluator_authenticated",
+    "publication_finality_independently_attested",
+    "execution_authorized",
+    "release_authorized",
+    "human_final_decision_authority",
+    "qualification_granted",
+    "grant_restoration_authorized",
+    "signature"
+  ],
+  "additionalProperties": false,
+  "$id": "https://controls.local/schema-files/operator-native-training-product.schema.json"
+}

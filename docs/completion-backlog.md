@@ -8,6 +8,35 @@ maintenance, routing and bounded agent workflows in existing clients.
 The active queue below takes precedence over the retained platform program.
 Deferral is not completion, deletion or permission to bypass existing controls.
 
+### Existing PR Integration
+
+On 2026-11-17 the USER requested integration of existing open PRs after checking
+their actual state. The retained training stack from PRs 97-107 is reconciled
+with accepted main's skill-first authoring, terminology, source-access and
+non-execution controls. Both sets of routes, semantic checks and regression
+cases remain required; a one-sided conflict resolution is not acceptance.
+Native producer-upgrade guidance stays in conditional runtime references rather
+than returning removed platform detail to the ordinary skill entrypoint.
+
+This source-maintenance request does not reopen dashboard/server development,
+authorize a model transfer or owner ceremony, install a candidate, start a
+service, or prove training qualification. Existing failed PR runs and producer
+archives remain historical; the reconciled candidate requires fresh checks.
+The separate Skill Reliability And Efficiency cycle retains its own SR01-SR18
+evidence and cannot inherit acceptance from this integration.
+
+The final integration also includes the exact dependency versions proposed in
+PRs 73 and 108-112. Validate the combined source and lockfile rather than treating
+component checks as final acceptance. The accepted main verifier sample remains
+byte-identical historical evidence; only current synthetic examples are refreshed
+for the new measured runtime. Superseded PRs close only after the combined
+candidate passes required hosted checks and reaches main through ordinary merge.
+
+That approved set reached main through #114 at `4c4ab32`. Its original #110
+change selected lucide-static 1.66.0. The later replacement #110 (1.73.0) and
+new #115 (glob/cacache) remain deferred by USER; their PR numbers do not extend
+the approved content of the earlier integration.
+
 ## Active Core Work
 
 ### Skill Reliability And Efficiency
@@ -2075,6 +2104,63 @@ rules from `1b19ae1`; this checkpoint changes no behavior or approval. The USER
 left revised #110 and new #115 for follow-up; neither is included in this work.
 Dashboard/server work stays deferred and the user-owned `.gitignore` is unchanged.
 
+#### Mainline Integration Checks (2026-11-17)
+
+The isolated `codex/skill-reliability-main-sync-20261117` candidate combines goal
+parent `ec277f4` with approved main `4c4ab32`. It does not modify the original
+loaded skill checkout, frozen evaluations or pending native proposal bytes.
+Retained training/platform code stays available without reopening its development
+or starting an application. Revised #110 and new #115 are not imported.
+
+The shared validator conflict required the union of both branches' non-executing
+types. Valid terminology/dependency records must remain non-authorizing alongside
+training, transfer and failure-reconciliation records. A regression checks 23
+valid record types through both validator APIs; an invalid payload's denial is
+not evidence of that boundary. Both maintenance guides now state this distinction.
+
+Existing merged routing tests passed, but a separate current-task probe exposed
+another overlap: the unqualified `failed native` keyword selected training
+recovery/owner/history guides for ordinary CLI document-review and context
+diagnostics. Three requests across both providers produced six excess selections.
+Narrowing that phrase to `failed native training` removes the six observed excesses.
+New counterexamples preserve explicit training requests, declared parent capability,
+assigned sources, original query and read-only authority. Both routing guides
+distinguish ordinary client failures from enrolled training without clearing any
+issued hold or renewing consent. These are exposed integration regressions, not
+new withheld cases, a change to the fixed R1 expectations or native behavior.
+
+Separate source-bound focused checks completed:
+
+| Surface | Observed result |
+| --- | --- |
+| Merged validator exclusion list | 669/669 CLI fixtures, including the 46 both-API assertions |
+| Repaired document routing | 2,078 queries; required-source/objective refusals and declared-reference checks retained |
+| Korean, maintenance and preflight consumers | Three complete passing suites after the repair |
+| Progressive instructions / installation / installation inspector | 15/15, 57/57 and 18/18; real home/settings unchanged |
+| Knowledge dependencies / terminology changes / writer | 25/25, 22/22 and 31/31 |
+| Document session / selected reading / trace | 16/16, 32/32 and 14/14; local stdio tested, native models not invoked |
+
+Private evidence root: `.cannae/maintenance/skill-main-sync-20261117/`.
+Reports retain merge parents, complete tracked working-tree source hashes before
+and after each run, exact harness/log hashes and unexecuted suffixes. The first
+green routing gate predates the new counterexample and is not proof that the
+counterexample was covered. The before/after probe hashes are
+`919c76368487f6fee41a363201d0e957a42edce83754d5530126e37d64529081`
+and `685472407d458687350938bc10b72d090ab20c0908c02dd942923bb3a4ee4fbd`.
+The repaired routing report is
+`bc389dcd8a0819790c56bc6a774d76916ac23fbdd82dea56362c9ee95e6701da`;
+the complete session/reading/trace report is
+`6a552cd4a336ae89dcb136a67e569465476268022892fc81ec2f8a138f82f604`.
+
+These checks are not a full integration gate. The local Docker daemon was
+unavailable; no daemon was started and no OCI requirement was skipped. Pinned
+`npm ci --ignore-scripts` succeeded but reported seven moderate vulnerabilities;
+their causes were not appraised here and no automatic audit fix was applied.
+The existing Linux CI, unified proof gate and later native acceptance remain
+required. SR17/SR18 stay open and the verified inventory stays **8/18**. R2's
+unchanged one-attempt recovery proposal passed source/CLI precheck but still
+needs its own current USER decision; this integration does not supply one.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
@@ -3769,6 +3855,69 @@ requires a new policy or external deployment decision, return that decision to
 the USER and continue independent in-scope work.
 
 ## Closure Discipline
+
+The [native failure appraiser/contracts](native-training-failure-reconciliation.md)
+now distinguish actual rejected responses, originally bound task products and
+four canonical publication prefixes without replaying a model or publishing.
+The native-only fresh owner ceremony, durable one-use receipt consumer and Model
+Actions UI now cover those appraisable failures without rewriting the original
+row or replaying a model. Full hosted/browser/actual-owner acceptance and controlled
+rollout remain separate; this does not complete native recovery. Missing evidence, unknown
+processes and orphans remain explicit separate obligations, not waived cases.
+
+The [native producer-history foundation](native-training-producer-history.md)
+preserves exact original owner evidence across method-hash upgrades. Inspection
+and historical readability cannot authorize new execution or clear a failure.
+Two captured source generations and a deduplicated snapshot format now preserve
+the complete original tree without recursive archive copies. Restoration and
+inspection checks are separate from each producer's actual prior-code replay
+and hosted acceptance. Missing original response hashes cannot be filled in by
+a later file observation. This prerequisite is not native recovery completion.
+Its prior-code regression does not complete native uncertainty discharge,
+orphan/unknown-process recovery, grading, qualification, live grant consumers,
+actual-model acceptance or any full program outcome.
+
+An ancestry-preserving source integration does not close any full outcome.
+Retain the original reviewed stack and squash/tree evidence, revalidate the new
+HEAD's source-bound flows and require its full hosted checks before ordinary
+merge. Current-source installation, real user/model acceptance and deployed
+independence remain separate; never import an old green status or clear a hold
+because the files appear on a main-based candidate.
+
+Retain interrupted local validation separately from new-head acceptance. Host
+sleep observations and a USER-approved finite validation-only idle assertion
+do not repair missing original state, discharge unknown operations, renew old
+approvals or establish protected deployment. Any passing awake run must preserve
+the earlier failed runs and the exact scope of the temporary resource approval.
+
+The one-use awake integration ladder also failed at native consent validation;
+17 gates passed and eight later gates were not executed. A separate advancing
+clock reproduces a 120001ms synthetic consent. The fixture now derives both times
+from one sample and exercises unchanged verifier boundaries. This correction is
+not new-head integration acceptance or reconstruction of the original discarded
+signed record; full current-head checks and normal hosted validation remain due.
+
+The [native owner-transfer candidate](native-training-owner-consent.md) connects
+exact handling review, authenticated consent, original-byte publication and a
+managed local attempt/orphan inventory. Acceptance and rollout, complete
+cross-runtime history, uncertainty discharge, evaluation, qualification and
+actual grant consumers remain open. No full outcome is closed by this candidate.
+
+The [native task-product candidate](native-training-products.md) adds native
+standards and a purpose-separated bounded collector API with preauthorized
+collection IDs, original JSONL and returned bytes. Verify its separate owner
+UI/producer and signed publication candidate; complete cross-runtime inventory,
+reconciliation, authenticated grading, qualification and mandatory grant consumers
+under goals 3/5/7.
+This is not acceptance of real-model quality or completion of any full outcome.
+
+The [in-progress training evidence intake](task-training-evidence.md) starts the
+actual-result/standard/session binding needed by row 7. The separate
+[owner session ceremony candidate](training-session-consent.md) adds exact
+authenticated pre-call review and historical verification, not step evaluation,
+positive qualification or operational grants. Current-source acceptance, uncertain
+session reconciliation and controlled rollout remain open alongside the remaining
+training stages and actual grant reconciliation. All eight outcomes remain open.
 
 The [reference readiness intersection correction](readiness-authority-intersection.md)
 repairs actual allow-below-minimum and softened-prohibition probes, exact subject

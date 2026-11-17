@@ -276,6 +276,14 @@ third-party action is pinned to a full commit SHA. The workflow has no narrow
 push path filter, so every merged change produces a monitor run and a newly
 introduced runtime input cannot silently escape checkpoint acquisition.
 
+The 2026-11-17 dependency integration pins both upload steps to
+`actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9`, the
+[upstream v7.0.2 commit](https://github.com/actions/upload-artifact/commit/cf430e030ddbb5b0abf93d22962f4752f3646cd9).
+Update exact-pin fixtures together with the workflow. The original combined CI
+failed because its assertion retained the previous pin; the mandatory mission
+control correctly blocked. Regress old/floating/partial/extra upload references
+without weakening that control or granting release authority.
+
 The full monitor first tries `CANNAE_IMMUTABILITY_MONITOR_TOKEN` and otherwise
 uses the job token. If the active token cannot read repository Administration,
 the observation records `credential_unavailable` and the job fails.

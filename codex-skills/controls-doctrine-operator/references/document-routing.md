@@ -1002,6 +1002,52 @@ or infer full qualification from the absence of a drop. Match the actual receive
 role/task and inspect retained introduction history, not path-sorted manifests.
 Literal task matching is not a stable cross-mission capability/performer registry.
 
+## Native Producer History
+
+For native consumer upgrades, route to `docs/native-training-producer-history.md`
+and use `scripts/inspect_controls_training_producer.js inspect <method-sha256>`.
+Run the producer contract, snapshot and actual prior-producer runners before
+accepting a new consumer. Preserve the
+real old producer, exact source/ignored directory shape and original records;
+inspection never signs, executes, settles, qualifies or clears a native hold.
+Freeze the actual current producer and its signed attempts before changing
+method-bound files. For later snapshots, reference already retained archives by
+exact path/size/hash instead of embedding recursive copies; hydrate and verify
+the complete original tree and source digest before any fixture execution.
+Keep runtime authentication databases and private keys out of source snapshots.
+For a failed collection, inspect which hashes the original journal actually
+contains. A later response-file hash is a new observation, not an original byte
+commitment; missing original evidence must not become a fabricated success or
+automatic hold discharge.
+
+## Native Failure Evidence
+
+For failed native training transfers, read `docs/native-training-failure-reconciliation.md`.
+An ordinary CLI document-review or context-measurement failure is not a training
+trial. Use [Client Operation](client-operation.md) for its exact failed attempt
+and consent boundary; do not invent training enrollment or an operator application.
+Declared training parent tasks, assigned sources and existing guarded operations
+still retain their applicable training controls. A wording change cannot clear
+an issued hold or renew transfer consent.
+Run the dedicated contracts, actual failure/reconciliation and process-death
+matrices, not just a signature audit. Use only the native owner UI or native API
+for fresh displayed-subject/password/session/epoch/nonce approval; never script
+the older omission/analysis endpoint or sign owner consent from an agent.
+Keep provider uncertainty, publication state and response-proof limits as separate
+acknowledgments. Inspect the actual persisted receipt after delivery loss rather
+than reposting it. A failed/ignored receipt write requires fresh consent. History
+must reappraise private original evidence even with model execution disabled;
+drift restores the hold. Acknowledgment admits no work, grade, settlement or grant.
+Run all four routed control groups (`prefixes`, `authority`, `receipts`,
+`publication`); they partition the complete matrix to fit the unchanged
+ten-minute per-control watchdog. A passing group alone is not a full matrix.
+Distinguish rejected responses from accepted task bytes and inspect all three
+deterministic publication IDs even when the failed row has null references.
+Do not regenerate missing output. A later hash of an originally unbound response
+is a current observation; freeze it in any future review and reject review-time
+drift without claiming an original byte commitment. Keep missing evidence,
+reused/unobservable PIDs and orphan ownership held separately.
+
 ## Manual Receipt Procedure
 
 Use only for diagnosis/lower-level integration, not default dispatch. Give the

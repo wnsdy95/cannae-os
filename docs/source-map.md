@@ -1,5 +1,11 @@
 # Source Map
 
+The [release-integrity pin regression](github-release-integrity-monitoring.md)
+uses the [official v7.0.2 tag reference](https://api.github.com/repos/actions/upload-artifact/git/ref/tags/v7.0.2),
+resolved on 2026-11-17 to `cf430e030ddbb5b0abf93d22962f4752f3646cd9`.
+The workflow and its fixtures require that complete commit in both upload jobs.
+This is local dependency maintenance, not a new military claim or release grant.
+
 The [native cross-role case](document-authoring-case-study.md#native-cross-role-continuation)
 uses a new synthetic assignment, actual Claude tool/client records and separate
 operator source appraisal. It establishes bounded changed-role continuity and
@@ -234,6 +240,11 @@ both-provider boundary checks and separate unchanged-router counterexamples.
 SR02/SR03 close at that bounded scope; the private report and 58-entry evidence
 index retain failures and version limits. This is local engineering evidence,
 not a new military-source claim, native quality result or unseen reusable set.
+The [mainline integration checkpoint](completion-backlog.md#mainline-integration-checks-2026-11-17)
+records both-API non-execution regressions in `validator-cli-prototype/run-fixtures.js`
+and ordinary-CLI-versus-training cases in `run-document-routing-fixtures.js`.
+Both skill guides retain explicit parent/input boundaries. These are local
+engineering observations; full integration and native acceptance remain separate.
 
 The [version-bound reference reader](evaluation-metrics.md#version-bound-reference-measurement)
 in `skill-reference-reader.js` and both `read_controls_reference.js` wrappers
@@ -774,6 +785,60 @@ wrappers implement reference reconciliation without a new military-source claim.
 
 ## Implementation Traceability
 
+Retained training integration paths: `docs/task-training-evidence.md`,
+`docs/training-session-consent.md`, `docs/native-training-products.md`,
+`docs/native-training-owner-consent.md`, `docs/native-training-producer-history.md`
+and `docs/native-training-failure-reconciliation.md`. These local engineering
+candidates do not establish new military-source claims or authorize operation.
+
+The [native failure-recovery candidate](native-training-failure-reconciliation.md)
+appraises original local journal/JSONL/process/publication evidence without
+re-execution. Its purpose-specific contracts and missing-original-hash distinction
+and its dedicated owner ceremony/receipt consumer are local engineering policy,
+not new military sources, native identity, independent time/process attestation,
+task admission or completed training. Read-only receipt history is separate from
+fresh model execution; unknown evidence/process/orphan classes remain held.
+Its documented argument-free registry suites and bounded routed controls execute
+the same complete matrix through separately checked partitions. Those are
+separate command contracts, not a reason
+to weaken either compiler, skip cases or extend the existing watchdog.
+
+The [native producer-history foundation](native-training-producer-history.md)
+applies the existing exact-producer compatibility pattern to original native
+owner evidence. Current-engine replay, the pinned prior-source regression and
+current-only admission are local engineering policy, not new military sources,
+a human trust decision or protected execution attestation.
+The second producer's flattened source snapshot retains the complete original
+tree through exact external-blob commitments. This is fixture preservation, not
+an independently attested runtime or a newly accepted trust root.
+After a consumer dependency update, fixture replay restores the exact original
+lock in the temporary source with lifecycle scripts disabled; it does not change
+the captured lock, borrow newer modules or authorize historical production use.
+
+The [native owner-transfer candidate](native-training-owner-consent.md) rechecks
+the existing official Codex JSONL source on 2026-10-25. Exact human handling
+review, original signed authorization, publication progression and orphan
+inventory are local synthesis, not native identity or protected-host attestation.
+
+The [native task-product candidate](native-training-products.md) uses the official
+[Codex JSONL/final-message documentation](https://learn.chatgpt.com/docs/non-interactive-mode#make-output-machine-readable)
+(retrieved 2026-10-25). Its collection-ID reservation, profile binding, private
+raw-event replay and purpose boundaries are local engineering policy. Observed
+thread/turn events do not attest an account, immutable model weights or a
+pre-inference identity gate. No new military-source claim is introduced.
+
+The [training session ceremony](training-session-consent.md) is local engineering
+synthesis of existing owner consent, pinned signatures, immutable artifact prefixes
+and dispatch locks. Its exact display/nonce and partial-write boundaries are not
+new military-source claims or evidence of model proficiency or a protected host.
+
+The [training evidence foundation](task-training-evidence.md) applies existing
+registry, artifact, dispatch and owner-trust contracts. Its engineering constraints
+separate observed results from qualification and grants. The dated
+[Army training-management explanation](https://www.army.mil/article-amp/293526/met_assessment_initiates_the_training_management_cycle)
+supports the observation/assessment distinction, not these JSON fields, local
+trial thresholds or LLM attestation. Full referenced TC PDFs were not retrieved.
+
 The [readiness intersection correction](readiness-authority-intersection.md)
 is local engineering synthesis of existing authority-ceiling rules after actual
 synthetic reference-consumer counterexamples. Exact scope, restriction
@@ -1075,6 +1140,14 @@ not historical protected-execution or application-wide reachability claims.
 The separate [HTTP-cache maintainer discussion](https://github.com/kornelski/http-cache-semantics/issues/56)
 disputes the reported max-stale advisory. Preserve that disagreement alongside
 the still-open provider alert; neither dismiss it nor call this patch its fix.
+
+The client-refresh compatibility change is local integration work. The retained
+failure in [dependency PR 112](https://github.com/wnsdy95/cannae-os/pull/112)
+rejects current-sample equality after the complete lock changes. Accepted main
+`21a90d8` supplies the exact frozen predecessor; the
+[producer compatibility procedure](github-release-independent-verification.md#producer-compatibility)
+separates unchanged historical replay from new producer evidence. This is not an
+upstream security-remediation claim or proof of native model behavior.
 
 The earlier dependency replay design
 uses primary Sigstore changes [e66d99f](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)
@@ -1386,6 +1459,7 @@ Usage:
 | Primary source | Topic | Source-supported behavior | Application | Local artifact |
 | --- | --- | --- | --- | --- |
 | Fastify sessions: https://github.com/fastify/session | Server-side sessions | Cookie-backed identifiers use a configured server-side store; regenerate replaces the old session | Store hashed session keys in private SQLite; rotate on login and invalidation | `local-operator-console.md`, `operator-console-auth.js`, `operator-console-server.js` |
+| Fastify sessions v11.1.6: https://github.com/fastify/session/blob/v11.1.6/README.md#store | Store generation contract | Atomic comparison prevents stale requests from restoring replaced or deleted sessions | Keep stable storage keys separate from public generation-bound approvals; test real concurrent SQLite writers | `local-operator-console.md`, `operator-console-auth.js`, `run-operator-session-store-fixtures.js` |
 | Fastify CSRF: https://github.com/fastify/csrf-protection | Session-bound CSRF | The plugin supports `@fastify/session` and explicit token extraction | Require a CSRF header plus exact Host/Origin; never infer complete protection from the plugin alone | `local-operator-console.md`, `operator-console-server.js` |
 | OWASP password storage: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html | Password derivation | Native scrypt is an alternative when Argon2id is unavailable; one recommended parameter set is N=2^17, r=8, p=1 | Bound expensive hash concurrency, use separate random salts and never retain plaintext passwords | `local-operator-console.md`, `operator-console-auth.js` |
 | Node.js 22.22.3 SQLite source documentation: https://github.com/nodejs/node/blob/v22.22.3/doc/api/sqlite.md | Local state | DatabaseSync supports prepared statements and local transactional persistence | Private repository-bound authentication state; experimental runtime, not external protected custody | `local-operator-console.md`, `operator-console-auth.js` |

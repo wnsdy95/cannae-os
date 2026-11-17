@@ -1,10 +1,10 @@
 {
   "report_type": "source-map-url-coverage",
-  "as_of": "2026-11-15",
+  "as_of": "2026-11-17",
   "source_map": "docs/source-map.md",
   "valid": true,
   "checked_hosts": 56,
-  "indexed_doctrine_outputs": 21,
+  "indexed_doctrine_outputs": 27,
   "document_navigation": {
     "registry": "docs/source-map-navigation.json",
     "registry_sha256": "0ab5fac77375d01deda1a35a4b3d78547fafcda903f0b4bd50de52961931fe23",
@@ -304,6 +304,8 @@
         "docs/enforced-dispatch-and-resume.md",
         "docs/method-control-channel.md",
         "docs/native-order-analysis.md",
+        "docs/native-training-owner-consent.md",
+        "docs/native-training-products.md",
         "docs/research-compendium.md",
         "docs/source-map.md"
       ]
@@ -400,7 +402,9 @@
     {
       "host": "www.army.mil",
       "files": [
-        "docs/research-compendium.md"
+        "docs/research-compendium.md",
+        "docs/source-map.md",
+        "docs/task-training-evidence.md"
       ]
     },
     {
