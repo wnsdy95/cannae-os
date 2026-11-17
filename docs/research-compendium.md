@@ -1254,6 +1254,11 @@ altered the fixture source digest; preserve its shape instead of weakening the
 check. A later producer snapshot references already retained archives by exact
 path/size/hash, then restores and verifies the complete original tree. Do not
 embed recursive historical copies or call a partial tree the original source.
+The 2026-11-17 dependency integration exposed a same-lock-only fixture assumption.
+When the consumer lock differs, restore dependencies using the original snapshot
+lock with bounded script-disabled installation and recheck unchanged source/method
+bytes. Installation failure or substituted locks stop replay; current modules
+cannot be relabeled as the old producer. Keep the failed combined-head observation.
 Freeze actual signed failures before method edits. When an assessment throws
 before the collector records a response hash, a later file hash cannot repair
 the missing original commitment. Preserve that evidence distinction and the
@@ -7425,6 +7430,13 @@ permission or repository selection.
   19E must never be generalized into that reset path.
 
 ## Local Operator Authentication And Evidence Queries
+
+The 2026-11-17 dependency integration found that the existing custom store could
+not start under the pinned session update. Its atomic SQLite adapter now retains
+public-generation approval bindings separately from stable storage keys. Tests
+cover stale, expired, legacy and colliding generations, concurrent writers and
+actual plugin cookies. This is compatibility maintenance of retained source,
+not resumed dashboard development or production acceptance.
 
 The [local operator console](local-operator-console.md) replaces static sample
 data only for its evidence and proposal-inspection surfaces. Actual owner login,

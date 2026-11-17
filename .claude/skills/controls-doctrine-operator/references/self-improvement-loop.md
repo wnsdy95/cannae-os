@@ -56,6 +56,16 @@ and training non-execution regressions after resolving their shared validator.
 When a reduced installation fixture fails loading that validator, include its
 real pinned data dependencies and regress missing/changed dependency refusal in
 both providers. Do not stub validation or silently make a required catalog optional.
+For historical producer replay after a dependency update, preserve the original
+lock and restore its dependencies in the isolated fixture with lifecycle scripts
+disabled. A different consumer lock cannot supply the old producer's modules.
+Stop on installation failure; do not relabel current modules as historical or
+rewrite a captured producer. Run actual old-record/current-consumer replay too.
+When a session dependency changes its store contract, check real consumers rather
+than assuming a patch version is interface-compatible. Preserve public-generation
+approval bindings separately from stable store keys; prove stale-save rejection,
+logout, rotation and concurrent-writer behavior without disabling atomic checks.
+Compatibility tests use temporary users and do not authorize operating a service.
 
 For a browser fixture listening on an ephemeral port, switch from a pre-listen
 injection client to the actual origin and browser cookie/CSRF session. Preserve

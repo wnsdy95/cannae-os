@@ -2,6 +2,49 @@
 const fs = require("node:fs"), path = require("node:path"), cp = require("node:child_process"), assert = require("node:assert/strict");
 const c = require("./native-training-producer"), s = require("./native-training-producer-fixtures/snapshots"), { sha256 } = require("./order-intake-contract");
 let passed = 0; const test = (name, run) => { run(); passed++; console.log(`PASS ${name}`); };
+test("snapshot dependencies retain same-lock sharing and install only the exact different historical lock", () => {
+  const temporary = fs.realpathSync(fs.mkdtempSync(path.join(require("node:os").tmpdir(), "snapshot-dependencies-")));
+  const source = path.join(temporary, "source"), root = path.join(temporary, "baseline"), exec = cp.execFileSync;
+  try {
+    for (const directory of [source, root, path.join(source, "node_modules")]) fs.mkdirSync(directory);
+    fs.mkdirSync(path.join(source, "node_modules", "synthetic-package"));
+    const originalLock = Buffer.from("synthetic-historical-lock"), expected = sha256(originalLock);
+    for (const directory of [source, root]) fs.writeFileSync(path.join(directory, "package-lock.json"), originalLock);
+    let calls = 0;
+    cp.execFileSync = () => { calls++; throw new Error("unexpected installation"); };
+    s.restoreDependencies(root, source, expected);
+    assert.equal(calls, 0);
+    assert.equal(fs.realpathSync(path.join(root, "node_modules", "synthetic-package")), path.join(source, "node_modules", "synthetic-package"));
+    fs.rmSync(path.join(root, "node_modules"), { recursive: true });
+    fs.writeFileSync(path.join(source, "package-lock.json"), "different-current-lock");
+    cp.execFileSync = (command, args, options) => {
+      calls++;
+      assert.equal(command, "npm");
+      assert.deepEqual(args, ["ci", "--ignore-scripts", "--no-audit", "--no-fund", "--prefer-offline"]);
+      assert.equal(options.cwd, root); assert.equal(options.timeout, 120000);
+      assert.deepEqual(fs.readFileSync(path.join(root, "package-lock.json")), originalLock);
+      fs.mkdirSync(path.join(root, "node_modules"));
+    };
+    s.restoreDependencies(root, source, expected);
+    assert.equal(calls, 1);
+    assert.deepEqual(fs.readFileSync(path.join(root, "package-lock.json")), originalLock);
+    fs.rmSync(path.join(root, "node_modules"), { recursive: true });
+    cp.execFileSync = () => { calls++; throw new Error("synthetic install failure"); };
+    assert.throws(() => s.restoreDependencies(root, source, expected), /NATIVE_SNAPSHOT_DEPENDENCY_INSTALL_FAILED/);
+    assert.equal(calls, 2); assert(!fs.existsSync(path.join(root, "node_modules")));
+    fs.writeFileSync(path.join(root, "package-lock.json"), "substituted-original-lock");
+    assert.throws(() => s.restoreDependencies(root, source, expected), /NATIVE_SNAPSHOT_DEPENDENCY_LOCK_CHANGED/);
+    assert.equal(calls, 2, "a changed original lock must fail before installation");
+    fs.writeFileSync(path.join(root, "package-lock.json"), originalLock);
+    cp.execFileSync = () => { calls++; fs.writeFileSync(path.join(root, "package-lock.json"), "changed-during-install"); };
+    assert.throws(() => s.restoreDependencies(root, source, expected), /NATIVE_SNAPSHOT_DEPENDENCY_LOCK_CHANGED/);
+    assert.equal(calls, 3);
+    fs.writeFileSync(path.join(root, "package-lock.json"), originalLock);
+    cp.execFileSync = () => { calls++; fs.symlinkSync(path.join(source, "node_modules"), path.join(root, "node_modules"), "dir"); };
+    assert.throws(() => s.restoreDependencies(root, source, expected), /NATIVE_SNAPSHOT_DEPENDENCY_ROOT_UNSAFE/);
+    assert.equal(calls, 4);
+  } finally { cp.execFileSync = exec; fs.rmSync(temporary, { recursive: true, force: true }); }
+});
 for (const name of c.snapshotNames()) test(`${name} restores the exact complete tree, commit, source and method without nested archive copies`, () => {
   const restored = s.restoreSnapshot(name, { loadSupport: false });
   try {

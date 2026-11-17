@@ -29,6 +29,22 @@ function readPinned(file, expected, maximum, size) {
     const bytes = fs.readFileSync(fd); need(bytes.length === stat.size && sha256(bytes) === expected, "NATIVE_SNAPSHOT_BYTES_CHANGED"); return bytes;
   } finally { fs.closeSync(fd); }
 }
+function restoreDependencies(root, source, expectedLock) {
+  const lock = path.join(root, "package-lock.json"), dependencies = path.join(root, "node_modules");
+  need(sha256(fs.readFileSync(lock)) === expectedLock, "NATIVE_SNAPSHOT_DEPENDENCY_LOCK_CHANGED");
+  if (sha256(fs.readFileSync(path.join(source, "package-lock.json"))) === expectedLock) {
+    const installed = path.join(source, "node_modules"); fs.mkdirSync(dependencies);
+    for (const file of fs.readdirSync(installed)) fs.symlinkSync(path.join(installed, file), path.join(dependencies, file), "dir");
+  } else {
+    // A new consumer lock cannot stand in for the original producer's dependencies.
+    try {
+      cp.execFileSync("npm", ["ci", "--ignore-scripts", "--no-audit", "--no-fund", "--prefer-offline"],
+        { cwd: root, encoding: "utf8", timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
+    } catch (cause) { throw new Error("NATIVE_SNAPSHOT_DEPENDENCY_INSTALL_FAILED", { cause }); }
+  }
+  need(sha256(fs.readFileSync(lock)) === expectedLock, "NATIVE_SNAPSHOT_DEPENDENCY_LOCK_CHANGED");
+  need(fs.lstatSync(dependencies).isDirectory() && !fs.lstatSync(dependencies).isSymbolicLink(), "NATIVE_SNAPSHOT_DEPENDENCY_ROOT_UNSAFE");
+}
 function restoreSnapshot(name = "cab6d09", options = {}) {
   const snapshot = checkedSnapshot(producer.legacySnapshot(name)), source = fs.realpathSync(path.resolve(__dirname, ".."));
   const bytes = readPinned(path.join(source, "native-training-producer-fixtures", snapshot.archive_file), snapshot.archive_sha256, 268435456);
@@ -47,13 +63,11 @@ function restoreSnapshot(name = "cab6d09", options = {}) {
     need(git(["write-tree"]) === snapshot.source_tree, "NATIVE_SNAPSHOT_TREE_CHANGED");
     need(git(["hash-object", "-t", "commit", "-w", "--stdin"], { input: Buffer.from(snapshot.commit_object_base64, "base64") }) === snapshot.source_revision, "NATIVE_SNAPSHOT_COMMIT_CHANGED");
     git(["update-ref", "refs/heads/frozen-producer", snapshot.source_revision]); git(["symbolic-ref", "HEAD", "refs/heads/frozen-producer"]);
-    need(sha256(fs.readFileSync(path.join(source, "package-lock.json"))) === snapshot.dependency_lock_sha256, "NATIVE_SNAPSHOT_DEPENDENCY_LOCK_CHANGED");
-    const dependencies = path.join(root, "node_modules"), installed = path.join(source, "node_modules"); fs.mkdirSync(dependencies);
-    for (const file of fs.readdirSync(installed)) fs.symlinkSync(path.join(installed, file), path.join(dependencies, file), "dir");
+    restoreDependencies(root, source, snapshot.dependency_lock_sha256);
     need(require(path.join(root, "skill-mission-controller")).repositoryStateDigest(root) === snapshot.source_state_sha256, "NATIVE_SNAPSHOT_SOURCE_CHANGED");
     need(require(path.join(root, "native-training-product-contract")).methodBinding() === snapshot.method_sha256, "NATIVE_SNAPSHOT_METHOD_CHANGED");
     for (const file of snapshot.method_files) need(sha256(fs.readFileSync(path.join(root, file.file))) === file.sha256, "NATIVE_SNAPSHOT_METHOD_CHANGED");
     return { temporary, root, snapshot, ...(options.loadSupport === false ? {} : { support: require(path.join(root, "native-training-transfer-fixtures/support")) }) };
   } catch (error) { fs.rmSync(temporary, { recursive: true, force: true }); throw error; }
 }
-module.exports = { checkedSnapshot, restoreSnapshot };
+module.exports = { checkedSnapshot, restoreDependencies, restoreSnapshot };

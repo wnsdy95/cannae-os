@@ -29,7 +29,7 @@ function client(service) {
     async session() { const data = await this.get("/api/session"); csrf = data.csrf_token; return data; },
     storedSession() {
       const unsigned = cookie.unsign(jar.get("cannae_operator"), service.auth.secret);
-      assert(unsigned.valid); const sid = unsigned.value;
+      assert(unsigned.valid); const sid = require("@fastify/session/lib/session").decodeSessionId(unsigned.value).sessionId;
       const row = service.auth.db.prepare("SELECT value FROM sessions WHERE digest=?").get(crypto.createHash("sha256").update(sid).digest("hex"));
       return { ...JSON.parse(row.value), sessionId: sid };
     }

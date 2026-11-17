@@ -6,6 +6,23 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Adapt the retained SQLite session store to the pinned session plugin's atomic
+  generation contract. Preserve public-generation approval hashes through a
+  stable-key mapping, reject stale/expired/deleted saves, and retain legacy row
+  readability. Test concurrent SQLite writers, rollback on generation collision,
+  real cookie rotation and existing console controls. This fixes an observed
+  startup refusal during dependency integration; it does not relax the plugin,
+  operate a real service or restart deferred application development.
+
+- Preserve exact historical producer dependencies when the current consumer lock
+  changes. The combined candidate exposed `NATIVE_SNAPSHOT_DEPENDENCY_LOCK_CHANGED`
+  before prior-producer replay. Restore its original locked dependencies with
+  bounded script-disabled `npm ci` in the temporary fixture, verify unchanged
+  source/method bytes and fail on installation errors. Regress same-lock sharing,
+  different-lock selection and substituted-original rejection; do not rewrite
+  archives, grant historical production execution or treat selection mocks as
+  actual original-record replay.
+
 - The training integration initially passed 655 schema/semantic fixtures but
   failed exact synthetic session-sample equality: the shared issuance runtime
   digest changed with current main. Refresh only dependent current synthetic

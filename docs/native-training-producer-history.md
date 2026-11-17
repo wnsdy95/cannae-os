@@ -78,7 +78,13 @@ still fail. Relabeling a new producer's record as legacy is not this test.
 Keep an actual ignored `node_modules/` directory when restoring the fixture.
 A top-level symlink is an untracked source change; preserve the original shape
 rather than loosening the expected digest or ignore rules. Installed same-lock
-dependencies are shared, not independently byte-attested or sandboxed.
+dependencies may be shared. When the current consumer lock differs, the fixture
+uses bounded `npm ci --ignore-scripts --no-audit --no-fund --prefer-offline` inside
+the isolated restored source with its original lock, and rechecks that lock and
+the complete source/method afterward. Installation failure stops replay; it does
+not fall back to current dependencies. The archives/catalogs stay byte-identical.
+This is fixture-only restoration, not independently attested dependency bytes,
+a protected sandbox or permission to execute historical producers in production.
 
 ```bash
 node run-native-training-producer-contract-fixtures.js

@@ -95,6 +95,14 @@ existing sessions. Long evidence reads recheck the account before response.
 Logout destroys the session. Rate limits, strict JSON bodies, exact Host/Origin,
 session-bound CSRF, SameSite/HttpOnly cookies and restrictive CSP are mandatory.
 
+The pinned [Fastify session v11.1.6 store contract](https://github.com/fastify/session/blob/v11.1.6/README.md#store)
+requires atomic generation checks. A SQLite transaction maps the stable store
+key to the current public generation; approval rows remain bound to that public
+generation. Rotation removes the old generation lookup, and deleted, expired or
+changed sessions reject late saves. Existing pre-metadata rows remain readable
+but cannot bypass rotation. This compatibility maintenance does not authorize
+deployment or change a real owner's session during repository validation.
+
 Browser responses also bind the current session epoch, authenticated principal,
 view and per-surface request sequence. Logout/session replacement clears hidden
 tables, details, approval previews and invitation links before further display.
@@ -167,11 +175,15 @@ Goal 7 still needs broader tool approvals, integrated COP and complete workflows
 
 ## Validation And Sources
 
-Run `node run-operator-console-fixtures.js`, both skill wrappers, routing/static
+Run `node run-operator-session-store-fixtures.js`,
+`node run-operator-console-fixtures.js`, both skill wrappers, routing/static
 checks and browser flows on desktop/mobile. Authentication fixtures use actual
 temporary repositories and no real owner's identity. The dependency change also
 requires current/historical verifier, monitor, checkpoint, publisher and workload
 identity regressions; see [producer compatibility](github-release-independent-verification.md).
+Session-store checks include two concurrent SQLite writers and real plugin
+cookie rotation, not only a mock callback. Old generation approval lookups must
+disappear; failed generation checks cannot recreate a session.
 
 Implementation uses official [Fastify sessions](https://github.com/fastify/session),
 [CSRF protection](https://github.com/fastify/csrf-protection),

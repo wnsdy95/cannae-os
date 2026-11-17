@@ -121,7 +121,7 @@ const RULES = [
     id: "local-operator-console",
     keywords: ["operator consent", "operator-consent", "operator-reconciliation", "operator terminal", "terminal order reconciliation", "terminal review", "review terminal outcome", "cancel interrupted order", "decision outcome", "inspect outcome", "authenticated order review", "operator console", "local-operator-console", "operator worker", "worker exit", "interrupted owner decision", "evidence api", "viewer invitation", "serve_controls_operator"],
     docs: ["docs/local-operator-console.md", "docs/operator-consent-and-adoption.md", "docs/operator-terminal-reconciliation.md", "docs/order-adoption-and-plan-binding.md", "docs/completion-backlog.md"],
-    commands: ["node run-operator-console-fixtures.js", "node run-operator-consent-fixtures.js", "node run-operator-console-worker-fixtures.js", "node run-operator-consent-outcome-fixtures.js", "node run-operator-reconciliation-fixtures.js"]
+    commands: ["node run-operator-session-store-fixtures.js", "node run-operator-console-fixtures.js", "node run-operator-consent-fixtures.js", "node run-operator-console-worker-fixtures.js", "node run-operator-consent-outcome-fixtures.js", "node run-operator-reconciliation-fixtures.js"]
   },
   {
     id: "orientation",
@@ -671,7 +671,7 @@ const ROUTE_HINTS = [
   { id: "semantic-omission", keywords: ["semantic-omission", "semantic-evaluation", "codex-semantic", "evaluate_controls_request", "operator-semantic", "semantic-control", "model-transfer-consent", "model-reconciliation", "model-transfer-reconciliation"] },
   { id: "method-control-channel", keywords: ["method-control", "operate_controls_channel", "serve_controls_methods"] },
   { id: "operational-cop", keywords: ["operational-cop"] },
-  { id: "local-operator-console", keywords: ["operator-console", "operator-consent", "operator-reconciliation", "operator-terminal-reconciliation", "serve_controls_operator"] },
+  { id: "local-operator-console", keywords: ["operator-console", "operator-session-store", "operator-consent", "operator-reconciliation", "operator-terminal-reconciliation", "serve_controls_operator"] },
   { id: "intent-initiative", keywords: ["intent-continuity", "intent-delegation", "commander-intent", "mission-command", "disciplined-initiative", "method-control-baseline", "method-deviation", "initiative-deviation", "degeneration-incident", "check_controls_intent"] },
   {
     id: "gateway-effect-review",

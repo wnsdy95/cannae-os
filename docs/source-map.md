@@ -583,6 +583,9 @@ a human trust decision or protected execution attestation.
 The second producer's flattened source snapshot retains the complete original
 tree through exact external-blob commitments. This is fixture preservation, not
 an independently attested runtime or a newly accepted trust root.
+After a consumer dependency update, fixture replay restores the exact original
+lock in the temporary source with lifecycle scripts disabled; it does not change
+the captured lock, borrow newer modules or authorize historical production use.
 
 The [native owner-transfer candidate](native-training-owner-consent.md) rechecks
 the existing official Codex JSONL source on 2026-10-25. Exact human handling
@@ -1228,6 +1231,7 @@ Usage:
 | Primary source | Topic | Source-supported behavior | Application | Local artifact |
 | --- | --- | --- | --- | --- |
 | Fastify sessions: https://github.com/fastify/session | Server-side sessions | Cookie-backed identifiers use a configured server-side store; regenerate replaces the old session | Store hashed session keys in private SQLite; rotate on login and invalidation | `local-operator-console.md`, `operator-console-auth.js`, `operator-console-server.js` |
+| Fastify sessions v11.1.6: https://github.com/fastify/session/blob/v11.1.6/README.md#store | Store generation contract | Atomic comparison prevents stale requests from restoring replaced or deleted sessions | Keep stable storage keys separate from public generation-bound approvals; test real concurrent SQLite writers | `local-operator-console.md`, `operator-console-auth.js`, `run-operator-session-store-fixtures.js` |
 | Fastify CSRF: https://github.com/fastify/csrf-protection | Session-bound CSRF | The plugin supports `@fastify/session` and explicit token extraction | Require a CSRF header plus exact Host/Origin; never infer complete protection from the plugin alone | `local-operator-console.md`, `operator-console-server.js` |
 | OWASP password storage: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html | Password derivation | Native scrypt is an alternative when Argon2id is unavailable; one recommended parameter set is N=2^17, r=8, p=1 | Bound expensive hash concurrency, use separate random salts and never retain plaintext passwords | `local-operator-console.md`, `operator-console-auth.js` |
 | Node.js 22.22.3 SQLite source documentation: https://github.com/nodejs/node/blob/v22.22.3/doc/api/sqlite.md | Local state | DatabaseSync supports prepared statements and local transactional persistence | Private repository-bound authentication state; experimental runtime, not external protected custody | `local-operator-console.md`, `operator-console-auth.js` |
