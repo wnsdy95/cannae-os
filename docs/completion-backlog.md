@@ -25,6 +25,13 @@ archives remain historical; the reconciled candidate requires fresh checks.
 The separate Skill Reliability And Efficiency cycle retains its own SR01-SR18
 evidence and cannot inherit acceptance from this integration.
 
+The final integration also includes the exact dependency versions proposed in
+PRs 73 and 108-112. Validate the combined source and lockfile rather than treating
+component checks as final acceptance. The accepted main verifier sample remains
+byte-identical historical evidence; only current synthetic examples are refreshed
+for the new measured runtime. Superseded PRs close only after the combined
+candidate passes required hosted checks and reaches main through ordinary merge.
+
 ## Active Core Work
 
 Current audit: 2026-11-15 (Asia/Seoul), after

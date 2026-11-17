@@ -720,6 +720,12 @@ Before editing a verifier or dependency lockfile, inspect the producer metadata
 in retained evidence. A lockfile-only update changes that identity too. Preserve
 original artifacts; never edit their hashes or version fields to fit new code.
 
+If a dependency PR fails current-sample equality, compare the complete producer
+tuple before rerunning CI. Cookie, transport and icon updates also change the
+shared lock. Review the final combined lock, preserve the accepted predecessor
+and regenerate only the separate current sample; component-PR checks do not
+verify the combined dependency set. Exercise the actual changed consumers too.
+
 Equal schema and package versions do not establish equal producer identity.
 Before replacing a transitive dependency, freeze a byte-identical former-producer
 sample from the reviewed baseline and record its source commit and file hash.

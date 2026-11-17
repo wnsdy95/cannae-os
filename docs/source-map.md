@@ -910,6 +910,14 @@ The separate [HTTP-cache maintainer discussion](https://github.com/kornelski/htt
 disputes the reported max-stale advisory. Preserve that disagreement alongside
 the still-open provider alert; neither dismiss it nor call this patch its fix.
 
+The client-refresh compatibility change is local integration work. The retained
+failure in [dependency PR 112](https://github.com/wnsdy95/cannae-os/pull/112)
+rejects current-sample equality after the complete lock changes. Accepted main
+`21a90d8` supplies the exact frozen predecessor; the
+[producer compatibility procedure](github-release-independent-verification.md#producer-compatibility)
+separates unchanged historical replay from new producer evidence. This is not an
+upstream security-remediation claim or proof of native model behavior.
+
 The earlier dependency replay design
 uses primary Sigstore changes [e66d99f](https://github.com/sigstore/sigstore-js/commit/e66d99f0d79ddc28266ef71c8dfbcb9863c682e8)
 (checkpoint parsing) and [adbe253](https://github.com/sigstore/sigstore-js/commit/adbe2535c5702364e9c958ae3d67fbdefe068edd)
