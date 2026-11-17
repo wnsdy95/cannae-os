@@ -689,7 +689,9 @@ function testPlatformExclusionLists(router) {
   const conditional = Object.values(TOPICS).flatMap(file =>
     ["codex-skills", ".claude/skills"].map(directory => directory + "/controls-doctrine-operator/" + file));
   assert.deepEqual(receipt.recommended_documents.map(row => row.path).sort(),
-    [...new Set([...direct.recommended_documents.map(row => row.path), ...conditional])].sort());
+    [...new Set([...direct.recommended_documents.map(row => row.path), ...conditional,
+      "docs/model-force-assignment-policy.md", "docs/model-force-v0.2-operations.md", "docs/agent-metl.md",
+      "docs/agent-readiness-ledger.md", "docs/evaluation-metrics.md", "docs/ai-special-operations-tf.md"])].sort());
   const compoundTask = "Analyze museum attendance and draft a handoff document. " + deferred;
   const rejected = spawnSync(process.execPath, [path.join(ROOT, router), "--actor=ai", "--role=S3",
     "--department=operations", "--authority=scoped-execution", "--receipt", "--scope=agent",

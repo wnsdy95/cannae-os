@@ -211,6 +211,13 @@ value for the combined outcome, not one reason's `selected` flag. Route
 declared or inferred clauses, not verified semantic coverage.
 An omitted route recommendation is neither missing doctrine nor denied access.
 
+In direct document work, a supported model-transmission exclusion is not a model
+allocation assignment. Check `model_specialist` when the only model mention is
+inside that exclusion. Actual model subjects, parent tasks, assigned sources and
+model-specific department duties still retain that context. Questions, exceptions
+and dependent review stay conservative. Guarded routing keeps its selected model
+references; no recommendation change removes validation commands or clears consent.
+
 `source_argument` means an actual `--source` argument, potentially supplied by
 an adapter from its assigned profile, not necessarily a direct USER instruction.
 An inline `task_reference` can still need input/output clarification. Project

@@ -2161,6 +2161,71 @@ required. SR17/SR18 stay open and the verified inventory stays **8/18**. R2's
 unchanged one-attempt recovery proposal passed source/CLI precheck but still
 needs its own current USER decision; this integration does not supply one.
 
+#### Model-Exclusion Reading (2026-11-17)
+
+A current maintenance task exposed another local reading excess: a complete
+`No model transmission, dashboard or server development` exclusion still selected
+model-allocation manuals. Three ordinary requests across both providers and
+user/S6 knowledge read-only modes produced twelve such selections. After narrowing
+only direct specialist reading, the same twelve observations retain exact query,
+capability result, authority and validation commands without that excess.
+
+The selector reuses the existing bounded exclusion view. Actual model subjects,
+declared parents, assigned sources and model-specific departments keep their
+reading. Questions, exceptions, quotations and dependent review remain conservative.
+Guarded routing retains the full selected model references. Both routing guides
+explain `model_specialist`; the regression cases check those boundaries rather
+than treating fewer documents as a semantic or authority pass. The ordinary
+route is not a replacement for a guarded receipt or an issued context.
+
+This follow-up is on `codex/skill-model-exclusions-20261117`, based on `2d89896`.
+The exact candidate proposed for remote CI, loaded primary checkout and frozen
+native inputs remain unchanged. Neither #110 nor #115 is included. The probe is
+development-visible, not a new withheld evaluation or actual loaded-context result.
+Local probe evidence is under `.cannae/maintenance/skill-model-exclusions-20261117/`;
+affected-surface results and whole-integration acceptance remain separate.
+The first focused gate stopped at the new guarded test: its fixture omitted the
+required separate `--capability-query` argument and correctly received
+`ROUTING_RECEIPT_CAPABILITY_QUERY_NOT_REPLAYABLE`. The fixture now supplies the
+unchanged task as that explicit argument; the validator and replayability rule
+are unchanged. The initial failed gate and its unexecuted suffix are retained.
+
+After that fixture repair, focused checks passed 240 maintenance routing
+observations with 12 guarded refusals, 56 Korean intake cases and 15 instruction
+disclosure cases. The complete document-routing suite passed 2,078 queries,
+58 direct-task identity checks, 32 required-source refusals, 38 objective refusals,
+50 declared-reference checks and three inventory checks. Consumer checks passed
+23 preflight, 16 context-integrity, six mandatory-control and 57 installation cases.
+These local checks retain original raw logs/source hashes, do not run native
+models and are not a full Linux/OCI integration result for this follow-up.
+The first documentation gate stopped before skill validation because the default
+Python lacked PyYAML. A project-private virtual environment with pinned PyYAML
+6.0.3 supplies that external validator dependency; system Python and client
+settings remain unchanged. Retain the initial failure and its unexecuted suffix
+separately from the subsequent document/index checks.
+
+A separate read-only retention audit adds six appraisals for SR01/SR04/SR10/SR11/
+SR12/SR16 to the earlier SR02/SR03 and recent-check evidence. It confirms 151
+original artifact bindings, including 123 capture artifacts and the original
+eight native discovery metadata observations. No native client or indexed command
+is rerun. The current `2d89896` entrypoints remain 400 lines and 25,930/25,944 bytes,
+21.190%/21.181% below the frozen 32,902/32,916-byte baseline. This remeasurement
+does not supply actual delivered-context savings or reprove every historical
+source dependency. The retained reports keep their original versions and failures.
+
+Private audit root:
+`.cannae/maintenance/skill-acceptance-retention-20261117/audit-5989b84a-d456-47f5-ad83-e3d82e09d08a/`.
+The report SHA-256 is
+`3680e5804d54454f0a8bf94854efc2ddca8a5198f105c14ebdf43815760762c8`;
+the 66-entry `evidence-index-v20.json` SHA-256 is
+`9afab2cb867af8ae1e43d968972760ddd6c8df492c4a55b4688c1593fd0adfb2`.
+Its overall inspection remains false: 34 historical source sets differ or are
+unavailable, and five original not-run rows remain not-recorded. All 61 attempted
+entry evidence sets are retained, including the six added appraisals. Do not
+overwrite old rows to remove those limits or mistake retention for fresh success.
+The accepted inventory stays **8/18**; model decisions, actual R2/R3/R5 evidence,
+full integration and final SR17/SR18 acceptance remain open.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

@@ -245,6 +245,10 @@ records both-API non-execution regressions in `validator-cli-prototype/run-fixtu
 and ordinary-CLI-versus-training cases in `run-document-routing-fixtures.js`.
 Both skill guides retain explicit parent/input boundaries. These are local
 engineering observations; full integration and native acceptance remain separate.
+The [model-exclusion reading follow-up](completion-backlog.md#model-exclusion-reading-2026-11-17)
+records a local direct-routing counterexample and both-provider conditional-reading
+regressions. Its separate retained-evidence audit verifies original file bindings,
+not military doctrine, actual model behavior or fresh acceptance of old runs.
 
 The [version-bound reference reader](evaluation-metrics.md#version-bound-reference-measurement)
 in `skill-reference-reader.js` and both `read_controls_reference.js` wrappers

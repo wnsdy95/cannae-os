@@ -1864,6 +1864,9 @@ function route(query, repoRoot, options) {
   const githubReleaseReading = needsGithubReleaseReading(readingContext);
   const improvementReading = needsImprovementSpecialistReading(readingContext, sourcePaths);
   const runtimeReading = needsRuntimeSpecialistReading(readingContext, sourcePaths);
+  const modelRule = RULES.find(rule => rule.id === "model-force-assignment");
+  const modelReading = guardedRouting(options) || sourcePaths.some(file => modelRule.docs.includes(file)) ||
+    countMatches(normalizeText(runtimeWorkContext([readingContext, mode.actor === "ai" ? mode.department : ""].join("\n"))), modelRule.keywords) > 0;
   const sourceReading = sourceSpecialistReading([readingContext, mode.actor === "ai" ? mode.department : ""].join("\n"), sourcePaths);
   const skillOperationsReading = needsSkillOperationsReading(
     [readingContext, mode.actor === "ai" ? mode.department : ""].join("\n"), sourcePaths, options.receipt);
@@ -1877,6 +1880,7 @@ function route(query, repoRoot, options) {
       if (rule.id === "sources-research" && KOREAN_SOURCE_DOCS.has(file) && !sourceReading.korean) excludedBy.push("korean_subject");
       if (rule.id === "sources-research" && file === MULTINATIONAL_SOURCE_DOC && !sourceReading.multinational) excludedBy.push("multinational_subject");
       if (rule.id === "skill-operations" && !SKILL_GENERAL_DOCS.has(file) && !skillOperationsReading) excludedBy.push("skill_maintenance");
+      if (rule.id === "model-force-assignment" && !modelReading) excludedBy.push("model_specialist");
       if (!excludedBy.length) docs.push(file);
       noteDocument(file, { kind: "route", route_id: rule.id, selected: excludedBy.length === 0,
         task_match: scoredRules.some(item => item.id === rule.id),

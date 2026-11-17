@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Keep model-allocation reading out of ordinary document tasks when the only model mention is a supported transmission exclusion. Preserve parent/source/department requirements, conservative ambiguous clauses, all selected validation commands and guarded model references; mirror the reading distinction in both skills. Extend private acceptance-evidence indexing without changing prior verdicts or authorizing native calls.
+
 - Reconcile skill reliability work with approved main in an isolated integration candidate. Preserve both document and training non-execution lists and add valid-example checks through both APIs. Narrow an overbroad native-failure route so ordinary CLI diagnostics do not inherit training procedures; preserve explicit subjects, parent tasks and required inputs, and mirror the lesson in both skills. Retain focused checks, dependency warnings and the unavailable live-OCI prerequisite without renewing native consent or reopening deferred PR/platform scope.
 
 - Record one frozen 24-request routing comparison across both revisions/providers and source-appraise intake, objectives, sources, authority and guarded refusals. Close SR02/SR03 at bounded scope (8/18 criteria), preserving the baseline's 22 mismatches, prior harness failure, incomplete initial helper binding and reserved-case exposure. Native quality, actual context savings and full integration remain open; revised #110 and new #115 remain deferred by USER.

@@ -107,6 +107,10 @@ The [mainline integration checks](docs/completion-backlog.md#mainline-integratio
 preserve document and retained training non-execution boundaries together, and
 separate ordinary CLI failure diagnostics from training recovery. Focused local
 passes are not full CI, native acceptance or resumed dashboard/server work.
+The [model-exclusion follow-up](docs/completion-backlog.md#model-exclusion-reading-2026-11-17)
+distinguishes a transmission prohibition from a model-allocation task while
+retaining guarded references and commands. Its acceptance-retention audit also
+indexes earlier evidence without treating historical results as current execution.
 
 The initial [conditional instruction split](docs/completion-backlog.md#conditional-instruction-delivery-2026-11-15)
 reduced both entrypoints by 23.4% while retaining linked content/reporting, client,

@@ -6,13 +6,15 @@ const original = "Maintain the Controls skills and prepare a paired native conte
 const proposalRequest = "Maintain the Controls skill-context-evaluation: reconcile exact paired reference delivery and native client traces, preserve source appraisal and prepare a bounded approval proposal. No model transmission, dashboard or server development.";
 const runtimeDocs = ["docs/reference-architecture.md", "docs/event-sourcing-model.md", "docs/command-post-dashboard.md",
   "docs/dashboard-wireframes.md", "docs/data-model.sql.md"];
+const modelDocs = ["docs/model-force-assignment-policy.md", "docs/model-force-v0.2-operations.md",
+  "docs/agent-metl.md", "docs/agent-readiness-ledger.md", "docs/evaluation-metrics.md", "docs/ai-special-operations-tf.md"];
 let observations = 0, rejected = 0;
 function route(provider, args, query) {
   const result = spawnSync(process.execPath, [path.join(root, provider, "controls-doctrine-operator/scripts/route_controls_docs.js"),
     ...args, "--", query], { cwd: root, encoding: "utf8", timeout: 20000, maxBuffer: 8 * 1024 * 1024 });
   assert.equal(result.status, 0, result.stderr);
   const out = JSON.parse(result.stdout); observations++;
-  assert.equal(out.query, query);
+  assert.equal(out.type === "RoutingReceipt" ? out.router_query : out.query, query);
   assert.equal(out.capability_routing.provisional_organization.authority_expansion_authorized, false);
   assert.equal(out.capability_routing.provisional_organization.standing_department_activation_authorized, false);
   return out;
@@ -129,7 +131,40 @@ for (const provider of providers) {
     }
     const partial = route(provider, args, "Draft an SOP. No model transmission, dashboard or server development except a review panel.");
     for (const file of runtimeDocs) assert(partial.recommended_documents.some(row => row.path === file));
+    for (const clause of ["No model transmission, dashboard or server development.",
+      "Keep model transfers and dashboard development deferred.", "Model transmissions remain deferred.",
+      "Exclude model transfers, dashboard and server work."]) {
+      const query = "Draft a support SOP. " + clause;
+      const out = route(provider, [...args, "--explain-reading"], query);
+      assert(!out.recommended_documents.some(row => row.path === modelDocs[0]));
+      assert(out.recommended_documents.some(row => row.path === "docs/document-authoring-workflow.md"));
+      assert(out.validation_commands.includes("node run-model-force-assignment-fixtures.js"));
+      assert(out.validation_commands.includes("node run-model-force-v0.2-fixtures.js"));
+      assert(!out.capability_routing.matched_capability_routes.includes("model-force-assignment"));
+      assert.equal(out.request_intake.authority_changed, false);
+      const explanation = out.reading_selection.documents.find(row => row.path === modelDocs[0]);
+      assert(explanation.reasons.some(reason => reason.excluded_by?.includes("model_specialist")));
+      for (const extra of [["--source=" + modelDocs[0]], ["--capability-query=Review model allocation."]]) {
+        const retained = route(provider, [...args, ...extra], query);
+        for (const file of modelDocs) assert(retained.recommended_documents.some(row => row.path === file), file);
+      }
+    }
+    for (const query of ["Review model allocation. No model transmission, dashboard or server development.",
+      "Draft a support SOP. No model transmissions unless the review needs them.",
+      "Draft a support SOP. Model transmissions remain deferred?",
+      'Draft a support SOP. The source says "No model transmissions".',
+      "Draft a support SOP. No model transmissions. Review its design."]) {
+      const retained = route(provider, args, query);
+      assert(retained.recommended_documents.some(row => row.path === modelDocs[0]), query);
+    }
   }
+  const task = "Draft a support SOP. No model transmission, dashboard or server development.";
+  const department = route(provider, ["--actor=ai", "--role=S6", "--department=model allocation", "--authority=read-only"], task);
+  assert(department.recommended_documents.some(row => row.path === modelDocs[0]));
+  const guarded = route(provider, ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution",
+    "--receipt", "--scope=agent", "--mission=MIS-MODEL-EXCLUSION", "--wave=W1", "--agent=writer",
+    "--capability-query=" + task], task);
+  for (const file of modelDocs) assert(guarded.recommended_documents.some(row => row.path === file));
   for (const extra of [[], ["--capability-query=Maintain the Controls skills", "--capability-query=Analyze ICP sales targets"]]) {
     const result = spawnSync(process.execPath, [path.join(root, provider, "controls-doctrine-operator/scripts/route_controls_docs.js"),
       "--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution", "--receipt", "--scope=agent",

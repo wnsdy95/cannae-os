@@ -72,6 +72,11 @@ overselected training procedures for ordinary client diagnostics; narrow the
 demonstrated trigger while retaining explicit training subjects, parents and
 inputs. Preserve the earlier green gate and separate before/after observations;
 neither local transport checks nor fewer recommendations prove native quality.
+The [model-exclusion follow-up](completion-backlog.md#model-exclusion-reading-2026-11-17)
+applies the same distinction to supported transmission exclusions: a prohibited
+activity need not supply specialist reading for an unrelated document task.
+Keep parent tasks, explicit inputs, department duties and guarded context intact;
+less reading alone is neither correct understanding nor permission to skip controls.
 
 The next authoring preparation step uses `skill-authoring-evaluation.js` to bind
 each baseline instruction/source body to its exact prompt span. A selected path
