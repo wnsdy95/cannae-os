@@ -1,0 +1,31 @@
+{
+  "schema_version": "0.1",
+  "type": "OperatorNativeTrainingProduct",
+  "id": "NTOR-00000000-0000-4000-8000-000000000001",
+  "action_id": "00000000-0000-4000-8000-000000000001",
+  "status": "held",
+  "invocation_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "consent_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+  "authorization_sha256": "5ff393d51f618ba58afa1182c0569741691fb936b5017306a1edf99c7a9b4f76",
+  "rationale_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "ended_at": "2026-10-25T00:00:01.000Z",
+  "collection": null,
+  "appraisal": null,
+  "output_ref": null,
+  "authorization_ref": null,
+  "retained_artifact_refs": [],
+  "error": "CONSOLE_TRAINING_COLLECTION_HELD",
+  "task_standard_evaluated": false,
+  "evaluator_authenticated": false,
+  "publication_finality_independently_attested": false,
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false,
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_sha256": "0c2257b80ac5364995b9897596a8f881f5efd58792dd828ba8bcc31d17ac1849",
+    "value": "PgBzmxf+Sd8Vn5qEwGr6wwHYlBI0Q8/DD9WFbZUM4Vu8Nz+YpdrAegXX5hZSKg1SAb9qn5vby2xqQTZRAMCrBA=="
+  }
+}

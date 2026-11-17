@@ -118,7 +118,7 @@ async function resolveDefaultModel({ executable, cwd, home = os.homedir(), signa
 }
 async function resolveHostProfiles(profiles, cwd, options = {}) {
   const selected = {};
-  for (const key of ["semantic", "analysis"]) {
+  for (const key of ["semantic", "analysis", "training"]) {
     const profile = profiles[key]; if (!profile) { selected[key] = null; continue; }
     need(!Object.hasOwn(profile, "modelSelection"), "SEMANTIC_MODEL_SELECTION_HOST_ONLY");
     if (profile.model !== SELECTOR) { selected[key] = profile; continue; }

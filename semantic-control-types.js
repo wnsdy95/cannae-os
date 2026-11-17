@@ -1,4 +1,4 @@
-const NON_WORK_TYPES = new Set(["CodexModelSelection", "SemanticEvaluationPreview", "CodexSemanticInvocation", "SemanticEvaluationTransferConsent",
+const NON_WORK_TYPES = new Set(["NativeTrainingProducerInspection", "NativeTrainingHistoricalProducerSnapshot", "CodexModelSelection", "SemanticEvaluationPreview", "CodexSemanticInvocation", "SemanticEvaluationTransferConsent",
   "CodexSemanticCollection", "OperatorSemanticEvaluation", "OperatorModelReconciliationAuthorization", "OperatorModelReconciliationRecord",
   "RequirementInventory", "SemanticCoverageProposal", "SemanticReviewAssignment", "BoundedPlanningRequest", "BoundedPlanningProposal", "BoundedPlanningOperation",
   "OrderAnalysisPreview", "CodexOrderAnalysisInvocation", "CodexOrderAnalysisCollection", "OrderAnalysisTransferConsent", "OperatorOrderAnalysis",
@@ -6,6 +6,11 @@ const NON_WORK_TYPES = new Set(["CodexModelSelection", "SemanticEvaluationPrevie
   "OperatorAnalysisReconciliationAuthorization", "OperatorAnalysisReconciliationRecord", "READINESS_EVENT",
   "ReadinessDropInspection", "ReadinessDropReconciliation", "WorkloadControlInput", "WorkloadPolicyAssessment", "WorkloadControlReceipt", "WorkloadControlFailure",
   "ForceRegistryEntity", "ForceRegistryRequest", "ForceRegistryProposal", "ForceRegistryAuthorization", "ForceRegistryEvent", "ForceRegistryInspection"]);
+for (const type of require("./task-training-contract").NON_WORK_TYPES) NON_WORK_TYPES.add(type);
+for (const type of require("./training-session-contract").NON_WORK_TYPES) NON_WORK_TYPES.add(type);
+for (const type of require("./native-training-product-contract").NON_WORK_TYPES) NON_WORK_TYPES.add(type);
+for (const type of ["NativeTrainingTransferReviewRequest", "NativeTrainingTransferAuthorization", "OperatorNativeTrainingProduct", "NativeTrainingFailureAppraisal",
+  "OperatorNativeTrainingReconciliationAuthorization", "OperatorNativeTrainingReconciliationRecord"]) NON_WORK_TYPES.add(type);
 function isNonWorkPayload(value) {
   const pending = [value], seen = new WeakSet();
   while (pending.length) {

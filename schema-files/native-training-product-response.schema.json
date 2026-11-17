@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "type": {
+      "type": "string",
+      "const": "NativeTrainingProductResponse"
+    },
+    "collection_id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+    },
+    "case_id": {
+      "type": "string",
+      "maxLength": 128,
+      "pattern": "^[A-Z]+-[A-Za-z0-9_-]+$"
+    },
+    "output": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536
+    }
+  },
+  "required": [
+    "schema_version",
+    "type",
+    "collection_id",
+    "case_id",
+    "output"
+  ],
+  "additionalProperties": false,
+  "$id": "https://controls.local/schema-files/native-training-product-response.schema.json"
+}

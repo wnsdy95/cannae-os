@@ -197,6 +197,30 @@ an outage.
 
 ## Evidence And Limits
 
+For an SDK timeout, retain the exact failing source/log before retrying. The
+integration fixtures emit bounded `METHOD_FIXTURE` phase lines for native-hook
+preflight, SDK connection/request/tool call, postflight and transport cleanup.
+Inspect the failed protocol method and original timeout option, plus monotonic
+elapsed and local-parent CPU time; these measurements do not include child CPU
+or independently attest host liveness. Never log raw tool arguments, enrollment
+files, credentials, passwords, nonces or arbitrary error text. A diagnostic sink
+failure cannot replace the original result or denial; missing telemetry is not
+evidence that an operation completed. Run
+`node run-method-control-diagnostic-fixtures.js` for telemetry behavior, then the
+actual transport/continuation fixtures separately. Unit success does not diagnose
+an earlier SDK failure. Correlate narrowly filtered host sleep events without
+equating a later local expiry with the original hosted timeout. Never increase
+deadlines, renew approval or clear a hold to make either run pass.
+
+Distinguish client waiting from actual server work before choosing an optimization.
+Correlate the exact request digest with server handler entry, child CPU and bounded
+file-read counts; parent event-loop delay is not child CPU. Diagnostic preloads may
+perturb timings and are not launch attestation. Revalidate without instrumentation.
+When schema loading dominates, the validator loads the selected reference closure
+within one synchronous validation only; it never caches a live channel, consent,
+repository state or runtime digest across calls. Preserve every publication and
+freshness guard, then run the original continuation matrix at unchanged deadlines.
+
 Run `node run-method-control-contract-fixtures.js`, broker transport/integration
 fixtures, dispatch/method/adoption/lifecycle regressions, historical and current
 release-verifier replay, source/routing checks and both provider skills before

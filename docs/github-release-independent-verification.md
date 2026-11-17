@@ -115,7 +115,7 @@ Retained evidence previously required byte-equivalent replay including current
 module and lockfile digests. Even a valid dependency update therefore broke
 historical replay. The runtime recognizes exact v0.1/4.1.0 producer tuples from
 source commits `786c38a`, `9635f8d`, and `d08420a`, plus the former v0.2/4.1.2
-producers from `4bad6dd`, `ad14016`, `1b51ef6`, `18b6e21` and `22c61c3`. Evidence schema, package, package version, minimum
+producers from `4bad6dd`, `ad14016`, `1b51ef6`, `18b6e21`, `22c61c3` and `21a90d8`. Evidence schema, package, package version, minimum
 version, Node minimum, module SHA-256, and lockfile SHA-256 must all match.
 Unknown tuples, extra metadata, and schema/version substitution remain errors.
 
@@ -154,6 +154,21 @@ Before future migrations, capture the exact baseline producer and an unchanged
 evidence sample. After installation, test both prior replay and exact equality
 between the current sample and a fresh result. Merely generating a new sample or
 keeping the same schema/version does not prove backward compatibility.
+
+The client dependency refresh freezes accepted main `21a90d8` as
+`valid-github-release-independent-verification-pre-client-refresh-v0.2.json`.
+Its exact file SHA-256 is
+`2d2bfb0f71660daa4d969cb9dfcd971958dd3367fa93e4e270cbe45f1a94bcf9`,
+with module `30995886290193e7cb7048fa539840a52bfbac41dc04a047716e1eaa56e6f838`
+and lock `747a43982157407b772d521935fb5a963f6388675f31d7119e9ae3124ddafb41`.
+The cookie/session, MCP client/server and icon updates change the shared lock
+even though Sigstore remains 4.1.2. Reproduce the frozen sample with
+`github-release-independent-verification-fixtures/freeze-client-refresh-baseline.js`;
+it rejects changed existing bytes. The separately current sample must match
+fresh replay of the original public bundle and trusted root. All historical
+profiles still reject unknown identities, current-lock hybrids and altered
+signed claims. No release permission, trust policy or operational history is
+changed. MCP transport behavior and full integration remain separate checks.
 
 The `brace-expansion` migration pins 5.0.12 through the existing minimatch
 dependency range; no direct package or other transitive version changes. The

@@ -787,6 +787,12 @@ Completed:
 - `doctrine-consistency-runner.js`: Projects the doctrine consistency review into source coverage, unresolved conflict, and policy update queue.
 - `run-doctrine-consistency-fixtures.js`: Valid multinational review and US-only invalid review fixtures.
 <!-- doctrine-index:start -->
+- `docs/task-training-evidence.md`: Retained task-training evidence intake; integration does not grant qualification or reactivate platform development.
+- `docs/training-session-consent.md`: Exact owner session review remains distinct from task evidence and execution authority.
+- `docs/native-training-products.md`: Purpose-bound native task products with separately authorized collection and retained failures.
+- `docs/native-training-owner-consent.md`: Exact reviewed handling and owner consent; source integration does not authorize a transfer.
+- `docs/native-training-producer-history.md`: Original producer snapshots and current-engine replay without rewriting history.
+- `docs/native-training-failure-reconciliation.md`: Bounded failure appraisal and owner acknowledgment without implicit output admission or qualification.
 - `docs/document-authoring-case-study.md`: Source-grounded SOP/revision, routing-maintenance and native handoff cases. The current authoring-family map distinguishes operative review, actual receiving, local successors and pending decisions; original failures remain historical. METHOD61's original path refusal and later unapproved proposal do not negate OR72's separately approved receiving. Neither native use nor local correction establishes adoption or universal quality.
 - `docs/project-terminology-workflow.md`: Project-local user definitions, tentative meanings, revision history, recipient selection and freshness; no automatic promotion or authority expansion.
 - `skill-first-product-scope.md`: USER-directed core scope, deferred platform work and separate acceptance criteria.

@@ -9,6 +9,7 @@ const { validatePayload, validateSchemaPayload } = require("./validate");
 
 const ROOT = path.resolve(__dirname, "..");
 const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
+const readJsonFixture = file => JSON.parse(fs.readFileSync(path.join(ROOT, file), "utf8"));
 
 const fixtures = [
   ...["valid", "invalid"].map(prefix => ({ name: `${prefix} exact-review packet binding`,
@@ -52,6 +53,50 @@ const fixtures = [
     exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,
     requiredCodes: prefix === "valid" ? [] : [type.endsWith("request") ? "PROJECT_PACKET_DELIVERY_DENIED" : "PROJECT_PACKET_BINDING_MISMATCH"]
   }))),
+  ...[["native-training-failure-appraisal", "NATIVE_RECONCILIATION_RESPONSE_COMMITMENT_INVALID"],
+    ["operator-native-training-reconciliation-authorization", "NATIVE_RECONCILIATION_DISPLAY_INVALID"],
+    ["operator-native-training-reconciliation-record", "CONST_MISMATCH"]].flatMap(([type, code]) => ["valid", "invalid"].map(prefix => ({
+      name: `${prefix} non-authorizing native failure recovery ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+      expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [code]
+    }))),
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} later historical native producer inspection`,
+    file: `sample-payloads/${prefix}-native-training-producer-inspection-bcb.json`, type: "native-training-producer-inspection", exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["NATIVE_TRAINING_PRODUCER_SUBSTITUTED"] })),
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} non-authorizing native producer inspection`,
+    file: `sample-payloads/${prefix}-native-training-producer-inspection.json`, type: "native-training-producer-inspection", exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["NATIVE_TRAINING_PRODUCER_SUBSTITUTED"] })),
+  { name: "producer inspection cannot grant hold discharge", file: "sample-payloads/valid-native-training-producer-inspection.json", type: "native-training-producer-inspection", exitCode: 1,
+    expectedCanExecute: false, requiredCodes: ["CONST_MISMATCH"], mutate(value) { value.hold_discharge_authorized = true; } },
+  ...["native-training-transfer-review-request", "native-training-transfer-authorization", "operator-native-training-product"].flatMap(type => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing native owner transfer ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["CONST_MISMATCH"]
+  }))),
+  ...["native-training-product-request", "native-training-product-response", "native-training-product-appraisal"].flatMap(type => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-executable ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type, exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [type.endsWith("response") ? "ADDITIONAL_PROPERTY" : "CONST_MISMATCH"]
+  }))),
+  ...["valid", "invalid"].map(prefix => ({ name: `${prefix} native task standard`, file: `sample-payloads/${prefix}-task-training-standard-native.json`,
+    type: "task-training-standard", exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : ["TRAINING_STANDARD_CASE_COVERAGE_INVALID"] })),
+  { name: "native request rejects substituted case without rekeying", file: "sample-payloads/valid-native-training-product-request.json", type: "native-training-product-request",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["NATIVE_TRAINING_REQUEST_ID_INVALID"], mutate(value) { value.case_id = "CASE-foreign"; } },
+  ...["training-session-proposal", "training-session-authorization", "task-training-session-binding-current"].flatMap(type => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} distinct training session consent ${type}`, file: `sample-payloads/${prefix}-${type}.json`, type: type.replace("-current", ""),
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [type.endsWith("-current") ? "ANY_OF_MISMATCH" : "CONST_MISMATCH"]
+  }))),
+  ...["standard", "trial-request", "session-binding", "completion-input", "trial-appraisal"].flatMap(suffix => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing task training ${suffix}`, file: `sample-payloads/${prefix}-task-training-${suffix}.json`, type: `task-training-${suffix}`,
+    exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] : [["standard", "session-binding", "trial-appraisal"].includes(suffix) ? "ANY_OF_MISMATCH" : "CONST_MISMATCH"]
+  }))),
+  { name: "training critical step cannot be waived as N/A", file: "sample-payloads/valid-task-training-standard.json", type: "task-training-standard",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["TRAINING_STANDARD_CRITICAL_OR_PRODUCT_MISSING"], mutate(value) { value.steps[0].not_applicable_permitted = true; } },
+  { name: "training standard needs stage-specific distinct cases", file: "sample-payloads/valid-task-training-standard.json", type: "task-training-standard",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["TRAINING_STANDARD_CASE_COVERAGE_INVALID"], mutate(value) { value.cases = value.cases.filter(item => item.stage === "crawl"); } },
+  { name: "training session rejects duplicate case IDs", file: "sample-payloads/valid-task-training-session-binding.json", type: "task-training-session-binding",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["TRAINING_SESSION_CASE_DUPLICATE"], mutate(value) { value.case_ids.push(value.case_ids[0]); } },
+  { name: "training request rejects a changed digest-derived ID", file: "sample-payloads/valid-task-training-trial-request.json", type: "task-training-trial-request",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["TRAINING_INPUT_ID_BINDING_INVALID"], mutate(value) { value.case_id = "CASE-crawl-1"; } },
+  { name: "training appraisal rejects mismatched request/output commitments", file: "sample-payloads/valid-task-training-trial-appraisal.json", type: "task-training-trial-appraisal",
+    exitCode: 1, expectedCanExecute: false, requiredCodes: ["TRAINING_APPRAISAL_SUBJECT_INVALID"], mutate(value) { value.observed_output_sha256 = "0".repeat(64); } },
   { name: "valid non-authorizing CLI model selection", file: "sample-payloads/valid-codex-model-selection.json", type: "codex-model-selection",
     exitCode: 0, expectedCanExecute: false, requiredCodes: [] },
   { name: "changed CLI model selection digest", file: "sample-payloads/invalid-codex-model-selection.json", type: "codex-model-selection",
@@ -272,6 +317,74 @@ const fixtures = [
         assert(reads.size > 0); assert([...reads.values()].every(count => count === 1));
       } finally { fs.readFileSync = original; }
     } },
+  { name: "schema snapshots read only the selected reference closure and never survive a call", check() {
+    const payload = readJsonFixture("sample-payloads/valid-mission.json");
+    const original = fs.readFileSync, root = path.join(ROOT, "schema-files") + path.sep, reads = new Map();
+    try {
+      fs.readFileSync = function(file, ...args) {
+        if (typeof file === "string" && file.startsWith(root)) reads.set(path.basename(file), (reads.get(path.basename(file)) || 0) + 1);
+        return original.call(this, file, ...args);
+      };
+      for (const validate of [validateSchemaPayload, validatePayload]) assert.equal(validate(payload, "mission").valid, true);
+      assert.deepEqual([...reads.keys()].sort(), ["common.schema.json", "mission.schema.json"]);
+      assert([...reads.values()].every(count => count === 2));
+    } finally { fs.readFileSync = original; }
+  } },
+  { name: "changed referenced schemas are reloaded and malformed unused branches fail closed", check() {
+    const payload = readJsonFixture("sample-payloads/valid-mission.json");
+    const original = fs.readFileSync, root = path.join(ROOT, "schema-files");
+    try {
+      fs.readFileSync = function(file, ...args) {
+        const raw = original.call(this, file, ...args);
+        if (file !== path.join(root, "common.schema.json")) return raw;
+        const schema = JSON.parse(raw); schema.$defs.id.const = "unmatchable-synthetic-id";
+        return JSON.stringify(schema);
+      };
+      for (const validate of [validateSchemaPayload, validatePayload]) {
+        const result = validate(payload, "mission");
+        assert.equal(result.valid, false); assert.equal(result.can_execute, false);
+        assert(result.issues.some(item => item.code === "CONST_MISMATCH" && item.path === "$.id"));
+      }
+      fs.readFileSync = function(file, ...args) {
+        if (file === path.join(root, "agent.schema.json")) return "{malformed-synthetic-schema";
+        const raw = original.call(this, file, ...args);
+        if (file !== path.join(root, "mission.schema.json")) return raw;
+        const schema = JSON.parse(raw); schema.$defs = { unused: { $ref: "agent.schema.json" } };
+        return JSON.stringify(schema);
+      };
+      for (const validate of [validateSchemaPayload, validatePayload]) assert.throws(() => validate(payload, "mission"), SyntaxError);
+    } finally { fs.readFileSync = original; }
+    assert.equal(validatePayload(payload, "mission").valid, true);
+  } },
+  { name: "missing root or referenced schemas never validate through an absent or inherited entry", check() {
+    const payload = readJsonFixture("sample-payloads/valid-mission.json");
+    const original = fs.readdirSync, read = fs.readFileSync, root = path.join(ROOT, "schema-files");
+    try {
+      for (const missing of ["mission.schema.json", "common.schema.json"]) {
+        fs.readdirSync = function(dir, ...args) {
+          const files = original.call(this, dir, ...args);
+          return dir === root ? files.filter(file => file !== missing) : files;
+        };
+        for (const validate of [validateSchemaPayload, validatePayload]) {
+          if (missing === "mission.schema.json") assert.throws(() => validate(payload, "mission"), /^Error: VALIDATOR_ROOT_SCHEMA_REQUIRED$/);
+          else {
+            const result = validate(payload, "mission");
+            assert.equal(result.valid, false); assert.equal(result.can_execute, false);
+            assert(result.issues.some(item => item.code === "UNRESOLVED_REF"));
+          }
+        }
+      }
+      fs.readdirSync = original;
+      fs.readFileSync = function(file, ...args) {
+        return file === path.join(root, "mission.schema.json") ? JSON.stringify({ $ref: "__proto__" }) : read.call(this, file, ...args);
+      };
+      for (const validate of [validateSchemaPayload, validatePayload]) {
+        const result = validate(payload, "mission");
+        assert.equal(result.valid, false); assert(result.issues.some(item => item.code === "UNRESOLVED_REF"));
+      }
+    } finally { fs.readdirSync = original; fs.readFileSync = read; }
+    assert.equal(validatePayload(payload, "mission").valid, true);
+  } },
   { name: "schema snapshot refreshes after return and exceptional validation", file: "sample-payloads/valid-mission.json",
     check() {
       const payload = JSON.parse(fs.readFileSync(path.join(ROOT, this.file), "utf8"));
@@ -658,6 +771,11 @@ const fixtures = [
     requiredCodes: []
   },
   {
+    name: "frozen client-refresh producer remains non-authorizing and structurally readable",
+    file: "sample-payloads/valid-github-release-independent-verification-pre-client-refresh-v0.2.json",
+    type: "github-release-independent-verification", exitCode: 0, expectedCanExecute: false, requiredCodes: []
+  },
+  {
     name: "legacy independent evidence remains structurally readable",
     file: "sample-payloads/valid-github-release-independent-verification-legacy.json",
     type: "github-release-independent-verification",
@@ -665,7 +783,7 @@ const fixtures = [
     requiredCodes: []
   },
   { name: "both validator APIs keep current and historical independent evidence non-executable", check() {
-    for (const name of ["v0.2", "pre-zone-v0.2", "legacy"]) {
+    for (const name of ["v0.2", "pre-zone-v0.2", "pre-client-refresh-v0.2", "legacy"]) {
       const payload = JSON.parse(fs.readFileSync(path.join(ROOT, `sample-payloads/valid-github-release-independent-verification-${name}.json`)));
       for (const api of [validateSchemaPayload, validatePayload]) {
         const result = api(payload, "github-release-independent-verification"); assert.equal(result.valid, true); assert.equal(result.can_execute, false);

@@ -1,0 +1,117 @@
+{
+  "schema_version": "0.2",
+  "type": "NativeTrainingHistoricalProducerSnapshot",
+  "source_revision": "bcb79dd9009e96d4ffd4acd5f449d218ba768846",
+  "source_tree": "f774dfe6467097a17cb61be0d8fcd41ad6c53688",
+  "source_state_sha256": "6462a81befbaf20ca3cd6cb1659594f4f76cfc9489c0dcde29c3df6b474ae51b",
+  "method_files": [
+    {
+      "file": "native-training-product-contract.js",
+      "sha256": "5f422fa6d04aedf4099b5fbca2e5d486c14d6058252a7415fd2f584196d04164"
+    },
+    {
+      "file": "native-training-product-controller.js",
+      "sha256": "9845a4a9d1d96741596ffcf7b329d453e8613174c3508bb6a79735a20ded6961"
+    },
+    {
+      "file": "codex-training-product-collector.js",
+      "sha256": "5cf43629cf2d5141de666f7d283b63ceda447d8fa18e2619b111e1a4dd97c233"
+    },
+    {
+      "file": "codex-bounded-collector.js",
+      "sha256": "552e91f2a126cf87523b7cb49b2315f1af181ba387e1e29726d486063a1b98c7"
+    },
+    {
+      "file": "task-training-contract.js",
+      "sha256": "76e4270e3f0fb01b33677e312f2403c40768dfa108b24bfbe6f28c7d632291ee"
+    },
+    {
+      "file": "native-training-transfer-contract.js",
+      "sha256": "b3691a34c576224d7d46ec69c5086c40540e99a6b1a8c0611faa9818b921f879"
+    },
+    {
+      "file": "operator-native-training.js",
+      "sha256": "12d89b97968ac6ae6bfb67b0f6a12c2977b7264ccc47d37bba108aa24b7b1a34"
+    },
+    {
+      "file": "operator-semantic-service.js",
+      "sha256": "3a9427ee671243858e9925c5c13360ee960e122b2f28af9d086c928735a5bf44"
+    },
+    {
+      "file": "repository-artifact-store.js",
+      "sha256": "c42db1b4809f5df7dc0e0452fe96f1ed467bc0dc50afdc28381dcd4bfd59e18f"
+    },
+    {
+      "file": "force-registry-controller.js",
+      "sha256": "c9e2a2c8fa72b3349c5fd5a836c1448aba553b6cf4669fbe04e4c7b0ccb75f94"
+    },
+    {
+      "file": "semantic-control-types.js",
+      "sha256": "b010d3ea1ebd74481a91f4ea36b71e87d1676c19fc00f34ac51e063275837b27"
+    },
+    {
+      "file": "package-lock.json",
+      "sha256": "747a43982157407b772d521935fb5a963f6388675f31d7119e9ae3124ddafb41"
+    },
+    {
+      "file": "order-intake-contract.js",
+      "sha256": "fa8eee14e23b001905e601c7118251fc7f43a0a622d19398c79161aa64216bb5"
+    },
+    {
+      "file": "workload-control-contract.js",
+      "sha256": "04407e6c527eac774be3bd5605ecbd1450601bf651912f3b9666dfd3d928739d"
+    },
+    {
+      "file": "opsec-linter.js",
+      "sha256": "54dd4fe99ae493d3df3913a0018d6cd88f91b607671089933e2fd4f1e717c87b"
+    },
+    {
+      "file": "eefi-detector.js",
+      "sha256": "02b6c3f03b068e02f58790740e31e58c56dd9302eeca9541548f5557d1e955b0"
+    },
+    {
+      "file": "context-filter-prototype/context-filter.js",
+      "sha256": "56c734dca80e496caf8e34aa675d957f2b8d529476089ddb392bcedcfc605e91"
+    },
+    {
+      "file": "release-review-runner.js",
+      "sha256": "5120d442b04cc670efb63282061d58ab8b85722e49391c830b5f38fadc8d63c5"
+    },
+    {
+      "file": "schema-files/classification-label.schema.json",
+      "sha256": "77d43d9ec6669b720b77aae9c2efa14ae7cd273af9daae1486410d32f1cd7eb7"
+    },
+    {
+      "file": "schema-files/releasability-review.schema.json",
+      "sha256": "f4e135cb53e62c5f7c34ccc9eb8734a52b2cbf62e8bb46d15715bf047eef8c3f"
+    },
+    {
+      "file": "schema-files/release-review.schema.json",
+      "sha256": "0f9ec7e9c01d8253dcb758e25f29ed93af208e71662f4ea4cb03072ef5b1c022"
+    },
+    {
+      "file": "native-training-producer.js",
+      "sha256": "c386c1987658342f44723744d160ae5476f0586f80dcc0d7e8484824628f6262"
+    },
+    {
+      "file": "native-training-producer-fixtures/legacy-cab6d09.json",
+      "sha256": "8d501424f8cc051240b0b533d936c5766d12f93d09eacba7d9ccb5bba93ac8bb"
+    }
+  ],
+  "method_sha256": "41bbc4bf46433f528d5e1a51aa44f5b924320c62c186273065e47eb53ff58d32",
+  "dependency_lock_sha256": "747a43982157407b772d521935fb5a963f6388675f31d7119e9ae3124ddafb41",
+  "archive_file": "legacy-bcb79dd-source.tar.gz",
+  "archive_sha256": "2667f4273ee1eec1057945b8630b55c0e4098232b795cce5fdeb826caa448b49",
+  "external_blobs": [
+    {
+      "path": "native-training-producer-fixtures/legacy-cab6d09-source.tar.gz",
+      "sha256": "29d6e2e6c1f9b832b21b32df91e4ada700de38e4f4b9ce962f080fbded0d947c",
+      "bytes": 2667734
+    }
+  ],
+  "commit_object_base64": "dHJlZSBmNzc0ZGZlNjQ2NzA5N2ExN2NiNjFiZTBkOGZjZDQxYWQ2YzUzNjg4CnBhcmVudCA4NzU0NTYxYzc0NzAxMGQ4ZTIwZTYyNGI2NGYxNjc4YmY1MTU1MDRhCmF1dGhvciB3bnNkeTk1IDx3bnNkeTk1QHVzZXJzLm5vcmVwbHkuZ2l0aHViLmNvbT4gMTc5Mjk3ODM3NCArMDkwMApjb21taXR0ZXIgd25zZHk5NSA8d25zZHk5NUB1c2Vycy5ub3JlcGx5LmdpdGh1Yi5jb20+IDE3OTI5NzgzNzQgKzA5MDAKClByZXNlcnZlIHBsYWluIGNhbGxiYWNrIHZhbHVlcyBpbiBmaXh0dXJlIHRlbGVtZXRyeQo=",
+  "fixture_only": true,
+  "original_code_executed_by_production_appraiser": false,
+  "execution_authorized": false,
+  "release_authorized": false
+}

@@ -12,7 +12,7 @@ function entryId(entry) {
   return sha256(JSON.stringify([entry.mission_id, entry.wave_id, entry.kind, entry.artifact_id, entry.relative_path, entry.sha256]));
 }
 function canRead(user, entry) {
-  if (entry.kind.startsWith("force-registry-") || entry.kind === "capability-standards") return user.role === "owner";
+  if (entry.kind.startsWith("force-registry-") || entry.kind.startsWith("task-training-") || entry.kind === "capability-standards") return user.role === "owner";
   return user.role === "owner" || user.missions.includes(entry.mission_id);
 }
 function entryMetadata(entry) {

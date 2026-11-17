@@ -313,6 +313,8 @@ independent durable archive or witness.
 
 Read these only when needed (bundled with this skill):
 
+- Before native training consumer upgrades, read `docs/native-training-producer-history.md` and use `scripts/inspect_controls_training_producer.js inspect <method-sha256>`. Preserve the genuine prior producer and exercise its actual retained records under the current engine. Inspection grants no trust, hold discharge or new execution; fresh transfers remain current-only. Source integration does not authorize a native call, owner ceremony or server startup.
+
 - `.claude/skills/controls-doctrine-operator/references/document-routing.md`: task-to-document map, validation commands, and artifact ownership.
 - `docs/intent-continuity-runtime.md`: require context v0.4 and exact root/task/delegation commitments. Deliver only the receiver's `method_assignment`. Method v0.1 uses the trusted operator CLI; newly reviewed v0.2 uses the exact enrolled MCP channel in `docs/method-control-channel.md`. Only query, propose a reviewed choice and report actual results. Never add Bash, metadata writes, USER approval or resume tools. Read `docs/method-deviation-runtime.md`; preserve stopped/legacy results and delivery holds.
 - `docs/request-order-intake.md` and `docs/order-adoption-and-plan-binding.md`: capture exact input and use `scripts/adopt_controls_order.js` for full-plan review, backbriefs and rehearsal. For an opened scope change, read `docs/order-revision-and-supersession.md` and use `scripts/revise_controls_order.js`: prepare the reviewed successor, settle old results, then supersede before tool dispatch. New adoption holds old calls; never strip bindings, reuse approval or backdate cleanup.

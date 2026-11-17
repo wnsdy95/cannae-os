@@ -419,6 +419,18 @@ function runFixtures() {
       validateIndependentVerificationEvidence(preZone, rawVerification, trustedRoot, EXPECTED).length === 0 &&
       fs.readFileSync(preZonePath).equals(preZoneBytes) });
 
+  const preClientRefreshPath = path.join(__dirname,
+    "sample-payloads/valid-github-release-independent-verification-pre-client-refresh-v0.2.json");
+  const preClientRefreshBytes = fs.readFileSync(preClientRefreshPath), preClientRefresh = JSON.parse(preClientRefreshBytes);
+  results.push({ name: "byte-identical accepted client-refresh baseline replays without rewriting evidence",
+    ok: sha256(preClientRefreshBytes) === "2d2bfb0f71660daa4d969cb9dfcd971958dd3367fa93e4e270cbe45f1a94bcf9" &&
+      preClientRefresh.verifier.module_sha256 === "30995886290193e7cb7048fa539840a52bfbac41dc04a047716e1eaa56e6f838" &&
+      preClientRefresh.verifier.dependency_lock_sha256 === "747a43982157407b772d521935fb5a963f6388675f31d7119e9ae3124ddafb41" &&
+      validatePayload(preClientRefresh, "github-release-independent-verification").valid === true &&
+      validatePayload(preClientRefresh, "github-release-independent-verification").can_execute === false &&
+      validateIndependentVerificationEvidence(preClientRefresh, rawVerification, trustedRoot, EXPECTED).length === 0 &&
+      fs.readFileSync(preClientRefreshPath).equals(preClientRefreshBytes) });
+
   const priorBytes = fs.readFileSync(path.join(__dirname,
     "sample-payloads/valid-github-release-independent-verification-prior-v0.2.json"));
   const prior = JSON.parse(priorBytes);

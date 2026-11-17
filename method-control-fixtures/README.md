@@ -32,3 +32,13 @@ leases; missing reports/delivery, unknown effects, handoff exhaustion and raw
 schema-valid branch/deadline records must block actual continuation/work.
 The dispatch controller's partial-resume issuance recovery and protected native
 startup remain separate unfinished work.
+
+`run-method-control-diagnostic-fixtures.js` checks bounded phase telemetry used
+by the actual SDK fixtures. `METHOD_FIXTURE` lines distinguish preflight, SDK
+connect/request/tool call, postflight and owned transport cleanup, with monotonic
+elapsed and local-parent CPU time. Only fixed metadata and known denials are
+printed; arguments, private files, passwords, nonces and arbitrary error text are
+excluded. Preserve plain control values without probing their properties, and
+observe native Promise outcomes only. Logging does not retry a call, change a
+deadline or replace its result.
+Telemetry unit tests are not transport acceptance or a fix for a previous timeout.

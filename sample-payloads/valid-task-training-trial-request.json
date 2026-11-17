@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1",
+  "type": "TaskTrainingTrialRequest",
+  "mission_id": "MIS-TRAINING",
+  "wave_id": "W1",
+  "capability_id": "CAP-TRAINING",
+  "performer_id": "PERF-TRAINING",
+  "registry_head_ref": {
+    "artifact_id": "FRE-SYNTHETIC",
+    "relative_path": "synthetic/FRE.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "case_id": "CASE-crawl-0",
+  "session_binding_ref": {
+    "artifact_id": "TSB-SYNTHETIC",
+    "relative_path": "synthetic/TSB.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "lease_ref": {
+    "artifact_id": "ADL-SYNTHETIC",
+    "relative_path": "synthetic/ADL.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "completion_ref": {
+    "artifact_id": "AEC-SYNTHETIC",
+    "relative_path": "synthetic/AEC.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "completion_input_ref": {
+    "artifact_id": "TCI-SYNTHETIC",
+    "relative_path": "synthetic/TCI.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "observed_output_ref": {
+    "artifact_id": "OUT-SYNTHETIC",
+    "relative_path": "synthetic/OUT.json",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "execution_authorized": false,
+  "release_authorized": false,
+  "human_final_decision_authority": "USER",
+  "qualification_granted": false,
+  "grant_restoration_authorized": false,
+  "id": "TTR-82d6dcbdc7f45ba460136635d1edc033418981d8"
+}

@@ -2,6 +2,8 @@ const fs = require("node:fs"), path = require("node:path"), assert = require("no
 const { Client } = require("@modelcontextprotocol/client"), { StdioClientTransport } = require("@modelcontextprotocol/client/stdio");
 const methods = require("../disciplined-initiative-fixtures/support"), contract = require("../method-control-contract"), broker = require("../method-control-broker");
 const { policy } = require("./contracts"), adapter = require("../dispatch-hook-adapter");
+const { createDiagnostics, instrumentClient } = require("./diagnostics"), reporters = new WeakMap();
+const diagnostics = env => { if (!reporters.has(env)) reporters.set(env, createDiagnostics()); return reporters.get(env); };
 function environment(configuration = {}) {
   const env = methods.environment(Date.now() - 90000), old = env.root;
   env.root = fs.realpathSync(env.root); env.options.repository = fs.realpathSync(env.options.repository);
@@ -39,11 +41,13 @@ function activate(env) {
 }
 async function connect(env, mode = "legacy") {
   const client = new Client({ name: "synthetic-controls-probe", version: "0.1.0" }, { versionNegotiation: { mode } });
+  const reporter = diagnostics(env), clientIndex = env.clients.length + 1;
+  instrumentClient(client, reporter, clientIndex);
   const transport = new StdioClientTransport({ command: process.execPath,
     args: [path.join(__dirname, "../method-control-server.js"), "--enrollment", env.privateFile], cwd: path.join(__dirname, ".."), stderr: "pipe" });
   let stderr = ""; transport.stderr.on("data", chunk => { stderr = (stderr + chunk.toString("utf8")).slice(-4096); });
   env.clients.push({ client, transport });
-  try { await client.connect(transport, { timeout: 15000 }); }
+  try { await reporter.run("sdk_connect", () => client.connect(transport, { timeout: 15000 }), { timeout_ms: 15000, client_index: clientIndex }); }
   catch (error) { throw new Error(`${error.message}; isolated server stderr: ${stderr}`); }
   return client;
 }
@@ -64,10 +68,12 @@ function hook(env, operation, input, event = "PreToolUse", result) {
 }
 async function call(env, client, operation, input) {
   return withEnvironment(env, async () => {
-    assert.equal(adapter.handle(env.actor.provider, hook(env, operation, input)), null);
-    const result = await client.callTool({ name: operation, arguments: input }, { timeout: 20000 });
+    const reporter = diagnostics(env);
+    assert.equal(reporter.run("tool_preflight", () => adapter.handle(env.actor.provider, hook(env, operation, input)), { tool_name: operation }), null);
+    const result = await reporter.run("sdk_tool_call", () => client.callTool({ name: operation, arguments: input }, { timeout: 20000 }),
+      { tool_name: operation, timeout_ms: 20000 });
     assert.notEqual(result.isError, true, JSON.stringify(result));
-    assert.equal(adapter.handle(env.actor.provider, hook(env, operation, input, "PostToolUse", result)), null);
+    assert.equal(reporter.run("tool_postflight", () => adapter.handle(env.actor.provider, hook(env, operation, input, "PostToolUse", result)), { tool_name: operation }), null);
     return result.structuredContent;
   });
 }
@@ -83,11 +89,13 @@ function readTask(env, input, id) {
 }
 const alive = pid => { try { process.kill(pid, 0); return true; } catch (error) { if (error.code === "ESRCH") return false; throw error; } };
 async function cleanup(env) {
-  for (const { transport } of env.clients) {
-    const pid = transport.pid; await transport.close();
-    for (let index = 0; pid && alive(pid) && index < 100; index++) await new Promise(resolve => setTimeout(resolve, 20));
-    assert(!pid || !alive(pid), "The owned MCP server must actually exit before removing its synthetic state.");
-  }
-  fs.rmSync(env.root, { recursive: true, force: true });
+  return diagnostics(env).run("cleanup", async () => {
+    for (const [clientIndex, { transport }] of env.clients.entries()) {
+      const pid = transport.pid; await diagnostics(env).run("transport_close", () => transport.close(), { client_index: clientIndex + 1 });
+      for (let index = 0; pid && alive(pid) && index < 100; index++) await new Promise(resolve => setTimeout(resolve, 20));
+      assert(!pid || !alive(pid), "The owned MCP server must actually exit before removing its synthetic state.");
+    }
+    fs.rmSync(env.root, { recursive: true, force: true });
+  });
 }
 module.exports = { ...methods, environment, activate, connect, withEnvironment, hook, call, readTask, cleanup, broker, contract };

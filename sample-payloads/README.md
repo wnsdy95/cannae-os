@@ -1,5 +1,20 @@
 # Sample Payloads
 
+The task-training, training-session, native-training-product, native-training-
+transfer and native-training-reconciliation families are retained non-authorizing
+contract examples from the integrated training stack. Current examples may be
+regenerated through their named fixture builders after reviewing transitive
+runtime bindings. Preserve the two producer-history catalogs and source archives
+byte-for-byte; do not regenerate original operational evidence, infer real owner
+consent from these fixtures, or treat a valid payload as qualification.
+
+`valid-github-release-independent-verification-pre-client-refresh-v0.2.json`
+preserves accepted main `21a90d8` byte-for-byte before the client dependency
+refresh. Freeze and verify it through
+`github-release-independent-verification-fixtures/freeze-client-refresh-baseline.js`.
+Do not replace it with freshly generated evidence or treat replay as release
+authority. The separate current sample binds the new complete producer tuple.
+
 The `order-analysis-response` and `operator-order-analysis` pairs are synthetic
 proposed/held contract examples, not real model runs, owner decisions or independent
 labels. Regenerate only these with
