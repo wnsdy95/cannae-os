@@ -1898,6 +1898,44 @@ receiving, comprehension or authenticated approval. The inventory remains
 **6/18**; this is evidence/status maintenance, not a new skill behavior.
 Dashboards and servers remain deferred.
 
+#### Session-Only Follow-Up And Storage Audit
+
+At `bc8d6ab`, a separately declared session-only attempt completed 12/16 groups
+and reached its unchanged 600,000 ms parent budget. The process was terminated
+after 600,067 ms; no complete summary or suite pass exists. All eight Codex
+groups and the first four Claude groups completed. Source bytes were unchanged,
+stderr was empty, and the child and scoped session processes were subsequently
+observed absent. No automatic rerun, model call or power-setting change followed.
+
+The report is
+`.cannae/maintenance/skill-consumer-checks-20261117/gate-fbdfa184-863c-432e-9494-cb94637cdcbd/verification.json`,
+SHA-256 `f615767b4b677897c1defd73f34a13982ff13bf69df0b99846561cb84c82ee93`.
+The bound observer recorded 24,038 completed Git calls without process errors;
+summed Git durations were 484,812 ms, but overlapping processes and unmeasured
+observer overhead prevent treating that sum as a causal wall-time breakdown.
+Do not attribute this attempt to host sleep without separate evidence. Preserve
+the original instrumentation and diagnose its workload before another attempt.
+
+`session-only-appraisal.json` binds the result and 17 observer logs.
+`evidence-index-v14.json` preserves all 44 prior entries and adds this incomplete
+attempt, for 45 entries. Index SHA-256:
+`a41b2104c9b1956f217d01610de5dcd5502da943829246013c8ad1f0f6d048e1`;
+inspection SHA-256:
+`f7598a4d473dc72f2fae3404ea521b9f0e9594dd5d54886da29ff0340b8387e6`.
+The retained earlier 14/16 attempt and this 12/16 attempt cannot be combined into
+one complete execution. The criterion inventory remains **6/18**.
+
+The USER also requested a check of project-local document storage. The audit at
+`.cannae/maintenance/storage-pr-audit-20261117/audit.json`, SHA-256
+`48ca82c2255e2b25754a3ed6f68f5fe3c0c4eb9dbda8a3310384c75331b422dc`,
+ran both installed routers in a separate temporary Git repository: neither
+created an output directory. Packet/review/terminology helpers choose subtrees
+under the target's `.cannae/`, but ordinary prose instructions name only the
+target repository, and the runtime artifact store defaults to the caller's
+working directory with a separately declared target namespace. A configurable,
+automatic common destination for every generated document is not implemented.
+This is a storage-gap audit, not a new storage policy or completed feature.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
