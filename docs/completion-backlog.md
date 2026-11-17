@@ -16,7 +16,7 @@ Decision: USER, 2026-11-15. Investigate and improve remaining skill limitations;
 keep dashboards, servers and production infrastructure deferred. R1-R6 in the
 [scope](skill-first-product-scope.md#active-objectives) are the new active goal.
 The completed G1-G5/A01-A20 baseline below remains intact. New status:
-**6/18 required criteria verified**; this is a work inventory, not an accuracy
+**8/18 required criteria verified**; this is a work inventory, not an accuracy
 or product-completion percentage. Registration and the initial probes closed none;
 the frozen evaluation closes SR01 and the conditional-instruction checkpoint
 below closes SR04. Registered local dependency impact closes SR11 at its bounded
@@ -24,6 +24,9 @@ scope, and the installation/diagnostic compatibility matrix closes SR16 for its
 tested configurations. The requirement-level local terminology boundary appraisal
 closes SR12. The source-appraised local capture progression closes SR10; actual
 context savings, native quality and cross-client receiving remain open.
+The [fixed routing source appraisal](#fixed-routing-source-appraisal-2026-11-17)
+closes SR02/SR03 for the pinned cases and reviewed counterexamples, not universal
+intent understanding. All reserved routing cases are now exposed.
 The [operation-local reader correction](#operation-local-reader-inspection-2026-11-17)
 completes the affected local session check while preserving prior failures and
 the still-open native and full-integration requirements.
@@ -74,8 +77,8 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | ID | Objective | Required evidence for closure | Status |
 | --- | --- | --- | --- |
 | SR01 | R1 | Freeze 24 original requests, expected objectives/documents, exclusions and the baseline revision; record development outputs in both providers. Label withheld cases and keep them out of tuning until the candidate is frozen. | Verified (bounded) |
-| SR02 | R1 | Fix the demonstrated heading/exclusion excess and Korean intake gap through a documented skill path. Preserve original language/text and explicit translation/normalization provenance; equivalent covered tasks receive authoring guidance. | In progress |
-| SR03 | R1 | Preserve each compound objective and genuine gap, required/parent sources, actual technical subjects and declared authority. Pass the fixed negative cases without reducing issued controls or accepting unsupported guarded inputs. | In progress |
+| SR02 | R1 | Fix the demonstrated heading/exclusion excess and Korean intake gap through a documented skill path. Preserve original language/text and explicit translation/normalization provenance; equivalent covered tasks receive authoring guidance. | Verified (bounded) |
+| SR03 | R1 | Preserve each compound objective and genuine gap, required/parent sources, actual technical subjects and declared authority. Pass the fixed negative cases without reducing issued controls or accepting unsupported guarded inputs. | Verified (bounded) |
 | SR04 | R2 | Reduce each entrypoint's UTF-8 bytes by at least 20% from the recorded baseline, remain within 500 lines and move applicable detail into discoverable task-specific references. Do not merely join lines or delete controls. | Verified (bounded) |
 | SR05 | R2 | On a frozen six-task ordinary-work subset, reduce median loaded instruction/reference bytes by at least 20%, counting every delivered section and entrypoint. Preserve all assigned source content; report document counts and bytes separately from tokens, cost or quality. | In progress |
 | SR06 | R2 | Verify both providers still find conditional procedures for actual runtime maintenance, explicit inputs and sensitive handoffs; ordinary work need not load retained platform history. Selection is not read authority or an automatic access-profile grant. | In progress |
@@ -2003,6 +2006,74 @@ native execution or change to the original bundle. Both skills require explicit
 reserved-case exposure accounting and source/authority appraisal, not acceptance
 from a matched count. Implementing this path does not close SR02/SR03; actual
 fixed-candidate results and appraisal must be recorded separately.
+
+#### Fixed Routing Source Appraisal (2026-11-17)
+
+One frozen local batch compared baseline `9331ff5` with clean candidate
+`1b19ae15e94d9294501646361069fc406d3049fa`: 24 unchanged requests, two revisions,
+two provider routers, 96 completed processes. The original bundle and assessment
+rules did not change. No native model ran and no failed batch was relaunched.
+
+| Split | Baseline matches | Candidate matches |
+| --- | --- | --- |
+| Development, both providers | 14/24 | 24/24 |
+| Reserved, both providers | 12/24 | 24/24 |
+| Total | 26/48 | 48/48 |
+
+The source appraisal, not this total alone, closes SR02/SR03 within their bounded
+scope. All 44 successful candidate routes retain exact original text, declared
+role/department/read-only authority and expected required/excluded sources.
+Heading/exclusion variants receive authoring guidance. Both Korean cases retain
+original text and explicitly partial lexical views, not claimed translations.
+Inferred and declared compounds preserve the unsupported domain separately from
+the supported writing task; provisional cells cannot expand authority. Explicit
+event/SQL inputs and actual architecture-review tasks retain technical context.
+The other four candidate observations are the expected guarded-compound denials:
+exit 2, exact unsupported-input code, empty output, no downgraded receipt.
+Both providers agree on intake, objectives, selected documents and controls.
+
+The same router and fixture hashes also passed the separate 1,864-query routing
+gate, including declared parent capabilities, mandatory corpus/project inputs,
+objective permutations, user-term workflow selection, guarded receipt context
+and empty-artifact refusals. These counterexamples supplement, not enlarge, the
+fixed score. User-term selection does not infer arbitrary glossary meaning or
+discover undeclared parent dependencies. Two false gap-review defaults disappear
+only from fresh direct Korean analysis after the false gap is corrected; no
+issued receipt or existing control list was changed. Other fixed cases remove
+no baseline validation commands.
+
+The evaluator's final 39 fixtures and twelve documentation checks passed. Retain
+the earlier deadline-test failure: its one-time clock jump occurred during Git
+preflight, before the intended batch-start observation. The fixture was repaired,
+not the product deadline. The first focused gate bound the unchanged routers and
+routing fixtures but omitted the then-untracked new evaluator from its tracked
+source inventory; it is not full-helper verification. The later fixture gate and
+actual freeze bind that helper. No historical binding is replaced by a current hash.
+
+Private root: `.cannae/maintenance/routing-evaluation-20261117/`.
+
+| Evidence | SHA-256 |
+| --- | --- |
+| `candidate-1b19ae1/freeze.json` | `31f6402cc431e2b9773bf5ba238fcfc93d315405919a4f2f1b165802ddde3940` |
+| `candidate-1b19ae1/report.json` | `8df070989a45127d5d4a94993ecafc7c3c60e50be12d69054c6dd0305ea7be3f` |
+| `source-appraisal.json` | `572865a259acbda16368c89735b34f610fec8885377deadec075c6adde1d868e` |
+| `evidence-index-v17.json` | `84fd12ab86f3e9ab912547ea7170707b35b8010cd5e463a0dc51da322534a086` |
+
+Index v17 preserves all 52 prior entries and adds six, retaining the failed test
+and raw comparison journal. Historical source mismatches remain visible; nested
+inventories/logs are report-bound, not recursively revalidated by the index.
+The exact baseline comparison still includes its 22 mismatches. All twelve
+reserved routing requests are now exposed; future candidates must not call them
+unseen. The operator authored the template families, so this is not independent
+blinding. No authoring withheld body was opened in this appraisal.
+
+The inventory is now **8/18**, not a product-accuracy or effort percentage.
+R2 actual delivery, R3 native quality, R5 receiving and full pre-merge integration
+remain open. This records the frozen candidate, not a newly evaluated version of
+these status documents. Both skills already carry the comparison and exposure
+rules from `1b19ae1`; this checkpoint changes no behavior or approval. The USER
+left revised #110 and new #115 for follow-up; neither is included in this work.
+Dashboard/server work stays deferred and the user-owned `.gitignore` is unchanged.
 
 #### Execution Order And Boundaries
 

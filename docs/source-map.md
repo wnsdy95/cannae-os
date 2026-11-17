@@ -228,6 +228,12 @@ adds `skill-routing-evaluation.js` and extends `run-skill-evaluation-fixtures.js
 with one-attempt, exact-pin, failure-retention and boundary checks. This is a local
 engineering protocol for reserved evaluation, not external doctrine, protected
 execution, native-call approval or criterion closure from a count alone.
+The [2026-11-17 source appraisal](completion-backlog.md#fixed-routing-source-appraisal-2026-11-17)
+records the actual frozen comparison at `1b19ae1`, its original 24 requests,
+both-provider boundary checks and separate unchanged-router counterexamples.
+SR02/SR03 close at that bounded scope; the private report and 58-entry evidence
+index retain failures and version limits. This is local engineering evidence,
+not a new military-source claim, native quality result or unseen reusable set.
 
 The [version-bound reference reader](evaluation-metrics.md#version-bound-reference-measurement)
 in `skill-reference-reader.js` and both `read_controls_reference.js` wrappers

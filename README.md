@@ -89,15 +89,20 @@ started planned; prior acceptance does not count as their completion. The
 closes SR01 only and retains ten failing development observations. Dashboards,
 servers and optional plugin packaging remain deferred.
 The [first English intake improvement](docs/completion-backlog.md#english-intake-development-2026-11-15)
-resolves eight of those paired routing failures; Korean intake and reserved
-evaluation remain open. This is local routing evidence, not native model quality.
+resolved eight of those paired routing failures; at that checkpoint Korean
+intake and reserved evaluation remained open. This is local routing evidence.
 The [bounded Korean intake follow-up](docs/completion-backlog.md#korean-intake-development-2026-11-15)
 resolves the remaining development request in both providers while preserving
-original wording and explicit limits. Reserved and native evaluation remain open.
+original wording and explicit limits. Native quality remains separate.
 The [frozen routing comparison](docs/evaluation-metrics.md#frozen-routing-comparison)
 pins an exact candidate before reserved execution and retains all 24 requests
 across both revisions and clients. Its local measurement and failure journal
 are not native quality, actual context savings or automatic acceptance.
+The [completed source appraisal](docs/completion-backlog.md#fixed-routing-source-appraisal-2026-11-17)
+records 26/48 baseline and 48/48 candidate matches, exact request/authority
+preservation and retained guarded refusals. SR02/SR03 are bounded-verified;
+the inventory is now 8/18. Reserved routing cases are exposed, not reusable as
+unseen tests. Actual model context, writing quality and receiving remain open.
 
 The initial [conditional instruction split](docs/completion-backlog.md#conditional-instruction-delivery-2026-11-15)
 reduced both entrypoints by 23.4% while retaining linked content/reporting, client,

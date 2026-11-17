@@ -268,6 +268,12 @@ The original templates remain author-aware, not independently blind. Native R2,
 R3 and R5 work still requires its own exact source-bound inputs and applicable
 consent; this full-commit snapshot grants neither execution nor adoption there.
 
+The [2026-11-17 source appraisal](completion-backlog.md#fixed-routing-source-appraisal-2026-11-17)
+records the first completed fixed-candidate run and its bounded SR02/SR03 closure.
+It preserves the original expectations, baseline mismatches, raw journal and
+separate counterexample scope. Its reserved routing cases are now exposed;
+recording this result does not authorize another run or a native transfer.
+
 #### Version-Bound Reference Measurement
 
 The local `skill-reference-reader.js` and both bundled

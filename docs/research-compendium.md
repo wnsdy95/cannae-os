@@ -55,6 +55,15 @@ all attempts and distinguish collection completion from actual matches. A proces
 or assessment failure must not erase the invocation that exposed it. Copied
 records, fresh filenames and later candidates do not restore unseen status.
 This local procedure is neither independent blinding nor native quality evidence.
+The [completed fixed-candidate appraisal](completion-backlog.md#fixed-routing-source-appraisal-2026-11-17)
+compares `9331ff5` with `1b19ae1`: 26/48 baseline and 48/48 candidate matches.
+Original text, partial Korean normalization, separate compound gaps, explicit
+sources, authority and guarded denials were checked beyond the counts; the
+unchanged-router counterexamples cover declared parent/term/input boundaries.
+SR02/SR03 are bounded-verified, bringing the inventory to 8/18. Reserved routing
+cases are now exposed. Native quality, actual context savings and receiving
+remain open; the prior failed harness test and incomplete source binding remain
+explicit rather than being rewritten as clean historical passes.
 
 The next authoring preparation step uses `skill-authoring-evaluation.js` to bind
 each baseline instruction/source body to its exact prompt span. A selected path

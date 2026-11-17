@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record one frozen 24-request routing comparison across both revisions/providers and source-appraise intake, objectives, sources, authority and guarded refusals. Close SR02/SR03 at bounded scope (8/18 criteria), preserving the baseline's 22 mismatches, prior harness failure, incomplete initial helper binding and reserved-case exposure. Native quality, actual context savings and full integration remain open; revised #110 and new #115 remain deferred by USER.
+
 - Add a one-attempt frozen routing comparison for all 24 fixed requests across baseline/candidate and both providers. Bind complete clean revisions, unchanged evaluation inputs and evaluator code; retain raw attempted results, semantic mismatches and unexecuted suffixes on failure. Mirror reserved-case exposure and source-appraisal guidance in both skills without approving native transfers or claiming acceptance from fixture counts.
 
 - Reuse the exact recipient projection already validated against the saved prompt within one packet inspection, removing the reader's third reviewed-source appraisal without caching across calls. Preserve standalone checks, exact recipient binding and metadata-only inspection; add mid-inspection source/decision/expiry regressions and mirror adapter guidance in both skills. Screening-source changes require fresh proposal review, not reused historical approvals.
