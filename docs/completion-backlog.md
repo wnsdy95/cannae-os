@@ -24,8 +24,9 @@ scope, and the installation/diagnostic compatibility matrix closes SR16 for its
 tested configurations. The requirement-level local terminology boundary appraisal
 closes SR12. The source-appraised local capture progression closes SR10; actual
 context savings, native quality and cross-client receiving remain open.
-The [latest metadata-integrity repair](#knowledge-metadata-integrity-2026-11-17)
-retains its focused passes, writer failure and changed native-proposal bindings.
+The [operation-local reader correction](#operation-local-reader-inspection-2026-11-17)
+completes the affected local session check while preserving prior failures and
+the still-open native and full-integration requirements.
 
 #### Observed Skill Limits
 
@@ -1935,6 +1936,62 @@ target repository, and the runtime artifact store defaults to the caller's
 working directory with a separately declared target namespace. A configurable,
 automatic common destination for every generated document is not implemented.
 This is a storage-gap audit, not a new storage policy or completed feature.
+
+#### Operation-Local Reader Inspection (2026-11-17)
+
+The repeated session workload was investigated before another full attempt.
+Two early synthetic probes remain failed: an invalid fixture reference ID, then
+`PROJECT_PACKET_GIT_UNAVAILABLE` during reader construction. The second report's
+completion timestamp coincides with a recorded wake after Maintenance Sleep;
+aggregate timings do not identify the exact failed Git command or prove a sole
+cause. Neither interrupted run supplies a complete performance baseline.
+
+A corrected probe with a separate 120-second parent observation limit completed
+once on the original code and once on the candidate, using the same harness
+hash and 14 synthetic represented sources plus one reference-only source.
+Host suspension can still delay that limit; no power setting changed. Each
+reader construction, catalog and read used 217 -> 146 Git calls and 42 -> 28
+original-source opens. Proposal/preparation counts stayed unchanged. This is
+local workload evidence, not SR05 model-context savings or a general speed claim.
+
+The reader now receives the detached projection already checked against the saved
+prompt in the same inspection. It removes only the third reviewed-source appraisal;
+two current appraisals, standalone projection checks and fresh later calls remain.
+New regressions cover decision/source changes and expiry between appraisals,
+recipient mismatch, caller mutation and metadata-only inspection. Both skills
+instruct adapters to use that bound inspection rather than cache a prior result.
+See [the procedure](role-document-access-policy.md#operation-local-inspection-reuse).
+
+Two separate focused gates completed on unchanged candidate source:
+
+- Packet 37 groups, review 16 and reader 14; report SHA-256
+  `2cae9fa67544f8168ee1a3f3d39cd2139c407b1e07b9475f15b235db736c8eba`.
+- Git failures 55 groups, terminology writer 31, terminology handoff 34,
+  document session 16 and session reading 32; report SHA-256
+  `aa031bb6dfb0fc0c3fa51122750860bfa1e28a0b3d8cd7d9e8930efdc017b0c7`.
+
+The session's 16 groups completed in **233,973 ms in one execution**, with the
+unchanged ten-minute parent cap and product deadlines. Its actual local router
+and stdio checks are not native model receiving. Prior 12/16 and 14/16 attempts
+remain failed; their results were not combined into this pass. Scoped probe and
+session processes were subsequently observed absent.
+
+Private appraisal: `.cannae/maintenance/session-inspection-profile-20261117/appraisal.json`,
+SHA-256 `df7be090d52ffada5af43598b9c24b9e9766a0e3abd720d85157817e73997560`.
+Its `evidence-index-v15.json` preserves the earlier 45 entries and adds the two
+failed probes, completed baseline/candidate probes and two gates, for 51 entries.
+Index SHA-256: `3262afdc0a5f6e1955977666de864ea5542f12ee0320d694ff2798a1a1d69ea7`;
+inspection SHA-256: `91c2c1be94536ddc9704ef785688886d6b4f1a0fefe85e68a004473eb7515e19`.
+Nested source inventories and observer logs remain bound by the original reports,
+not recursively inspected by the index. Old source versions stay historical.
+
+No native model, withheld evaluation or full integration gate ran. The packet
+code's screening identity changed; old proposal/decision bytes are retained, not
+rehashable into current approval. Fresh applicable consent and source-bound
+inputs remain required for R2/R3/R5, and full integration remains required before
+merge. No new SR criterion closes: the bounded inventory stays **6/18**.
+Dashboards, servers and the separately deferred dependency PRs stay outside this
+change. The user's `.gitignore` is preserved.
 
 #### Execution Order And Boundaries
 

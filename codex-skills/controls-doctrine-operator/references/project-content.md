@@ -16,10 +16,14 @@ preserved; never silently redact the task or reuse approval for changed bytes.
 Inspect the exact candidate again before separately authorized transfer
 of `prompt.md`, not the private `packet.json`. Prepared/current does not mean sent
 or read, and this helper cannot bypass a guarded mission's unsupported inputs.
-For a tool/client adapter, use `project-document-packet.js`'s `recipientData` on
-a current compiled/inspected packet. Never rebuild its catalog from the private
-request: a denied read does not prevent a path leak in the listing. Projection
-does not refresh sources or grant transfer authority; preserve those checks.
+For a file-backed tool/client adapter, use `createDocumentReader` or the packet
+helper's `inspectRecipientData` with the expected digest, root and exact recipient.
+Reuse that call's checked projection, not a cached earlier inspection or a
+caller-selected validation bypass. Every later read must inspect afresh. The
+standalone `recipientData` still requires a current compiled/inspected packet;
+projection alone does not refresh ordinary sources or grant transfer authority.
+Never rebuild a catalog from the private request: denying its later read cannot
+undo a path leak in the listing. See the access policy's inspection-reuse limits.
 On a content-review refusal, an authorized source preparer can use the same
 helper's `review-content` command for local rule/count diagnostics. Preserve the
 blocked request and inspect only within existing read authority; later sources

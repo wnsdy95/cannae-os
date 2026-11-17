@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Reuse the exact recipient projection already validated against the saved prompt within one packet inspection, removing the reader's third reviewed-source appraisal without caching across calls. Preserve standalone checks, exact recipient binding and metadata-only inspection; add mid-inspection source/decision/expiry regressions and mirror adapter guidance in both skills. Screening-source changes require fresh proposal review, not reused historical approvals.
+
 - Preserve the separate session-only timeout at 12/16 groups and its source-bound evidence without combining partial runs. Audit both installed routers in another repository and record that helper outputs use project-local subtrees, but ordinary documents do not yet have an automatic common storage destination.
 
 - Record five complete current-source document/terminology consumer suites and an incomplete 14/16 document-session result from one fixed awake-window attempt. Preserve the failed aggregate, prior failures and observed 84,398 ms termination delay across host sleep; do not claim exact wall-time enforcement, native receiving, new criterion closure or full integration.

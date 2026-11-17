@@ -806,6 +806,15 @@ recipient; each list/read reinspects sources and any canonical decision while
 preserving summary/representation modes. Synthetic local tests do not establish
 human consent, actual client receipt, route completion or semantic understanding.
 
+The [inspection-reuse correction](role-document-access-policy.md#operation-local-inspection-reuse)
+distinguishes repeated appraisal from later-call freshness: the reader can use
+the detached data already checked against its saved prompt in the same call,
+but cannot retain that inspection as authority for the next read. A 14-source
+local probe reduced each reader operation from 217 to 146 Git calls and from
+42 to 28 original-source opens. Proposal/preparation work stayed unchanged.
+These counts do not close native context or receiving criteria. Changed screening
+code requires fresh proposal binding, never rewritten historical approval.
+
 The [routed receiving integration](document-authoring-case-study.md#routed-receiving-integration)
 retains the whole assignment while assigning a fresh read context to each actual
 route. An attempted reroute must retire the preceding context even on failure;

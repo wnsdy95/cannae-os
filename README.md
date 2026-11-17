@@ -905,6 +905,9 @@ The [bound recipient reader](docs/role-document-access-policy.md#bound-recipient
 lets an authorized adapter list and read packet source IDs without reconstructing
 private paths. Every call reinspects current bindings and preserves raw, summary
 or representation mode. This local utility is not a native receiving result.
+Its [operation-local inspection reuse](docs/role-document-access-policy.md#operation-local-inspection-reuse)
+returns the projection already checked against the saved prompt, reducing duplicate
+source appraisal without caching across calls or skipping current decision checks.
 The [routed receiving tools](docs/role-document-access-policy.md#routed-receiving-tools)
 connect that reader to the installed router with phase-local read IDs and fixed
 source holds. An opt-in stdio adapter exposes only routing and selected reads;

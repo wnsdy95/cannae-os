@@ -101,6 +101,58 @@ try {
     const reviewed = reviews.prepareReviewed(root, binding);
     const reviewedOptions = { ...options, packet_path: reviewed.packet_path, packet_sha256: reviewed.packet_sha256 };
     const reviewedReader = createDocumentReader(reviewedOptions);
+    test(`${provider}: inspection shares its checked projection only within one call`, () => {
+      const compile = packets.compileReviewCandidate;
+      let calls = 0;
+      packets.compileReviewCandidate = function(...args) { calls++; return compile(...args); };
+      try {
+        const check = (operation, expected) => { calls = 0; const result = operation(); assert.equal(calls, expected); return result; };
+        const freshReader = check(() => createDocumentReader(reviewedOptions), 2);
+        check(() => freshReader.catalog(), 2);
+        check(() => freshReader.read(source.id), 2);
+        const info = check(() => packets.inspect(reviewed.packet_path, reviewed.packet_sha256, root), 2);
+        assert(!Object.hasOwn(info, "data")); assert(!Object.hasOwn(info, "documents")); approvalsAbsent(info);
+        const data = check(() => packets.inspectRecipientData(reviewed.packet_path, reviewed.packet_sha256, root, request.recipient), 2);
+        assert.equal(data.documents[0].content, original.replace(`${root}/${relative}`, `source:${source.id}`));
+        assert(!JSON.stringify(data).includes(root));
+        data.documents[0].content = "Caller-owned mutation";
+        assert.notEqual(check(() => freshReader.read(source.id), 2).document.content, "Caller-owned mutation");
+        const stored = JSON.parse(fs.readFileSync(reviewed.packet_path));
+        check(() => packets.recipientData(stored), 1);
+        check(() => packets.renderPrompt(stored), 1);
+        for (const recipient of [undefined, null, [], "S3"]) {
+          assert.throws(() => packets.inspectRecipientData(reviewed.packet_path, reviewed.packet_sha256, root, recipient), /PROJECT_PACKET_RECIPIENT_REQUIRED/);
+        }
+        calls = 0;
+        assert.throws(() => packets.inspectRecipientData(reviewed.packet_path, reviewed.packet_sha256, root,
+          { ...request.recipient, role: "USER" }), /PROJECT_PACKET_RECIPIENT_MISMATCH/);
+        assert.equal(calls, 0);
+      } finally { packets.compileReviewCandidate = compile; }
+    });
+    test(`${provider}: a decision or source change during inspection still stops the same call`, () => {
+      const compile = packets.compileReviewCandidate;
+      for (const change of ["source", "decision", "expiry"]) {
+        let calls = 0;
+        const now = Date.now;
+        packets.compileReviewCandidate = function(...args) {
+          const result = compile(...args);
+          if (++calls === 1) {
+            if (change === "source") write(path.join(root, relative), original + "Changed during inspection.\n");
+            if (change === "decision") write(proposal.decision_path, json({ ...decision, decision: "revoked" }));
+            if (change === "expiry") Date.now = () => Date.parse(decision.expires_at) + 1;
+          }
+          return result;
+        };
+        try {
+          const code = { source: "PROJECT_PACKET_SOURCE_DIGEST_MISMATCH", decision: "PROJECT_REVIEW_DIGEST_MISMATCH", expiry: "PROJECT_REVIEW_NOT_CURRENT" }[change];
+          assert.throws(() => reviewedReader.read(source.id), error => error.message === code);
+        } finally {
+          packets.compileReviewCandidate = compile; Date.now = now;
+          write(path.join(root, relative), original); write(proposal.decision_path, decisionBytes);
+        }
+        assert.equal(reviewedReader.read(source.id).document.source_sha256, packets.sha256(original));
+      }
+    });
     test(`${provider}: reviewed representation remains distinct and source-bound without opening private originals to the recipient`, () => {
       const data = reviewedReader.catalog(), result = reviewedReader.read(source.id);
       approvalsAbsent(data); approvalsAbsent(result);

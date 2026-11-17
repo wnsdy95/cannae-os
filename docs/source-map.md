@@ -167,6 +167,10 @@ It reuses existing inspection and recipient projection for ID-only catalog/reads
 preserving representation modes and current decision checks. This is local
 engineering evidence, not a new disclosure decision, authenticated recipient,
 native receiving result or separate service.
+The [inspection-reuse correction](role-document-access-policy.md#operation-local-inspection-reuse)
+uses the same checked prompt projection inside one call. Local 14-source probes
+and reader regressions cover repeated work, exact recipients and changes between
+appraisals; they do not prove atomic delivery, native context savings or approval.
 The [routed-session integration](document-authoring-case-study.md#routed-receiving-integration)
 adds `project-document-session.js`, its optional stdio adapter and integration
 fixtures. It uses the existing pinned MCP client/server packages from

@@ -23,6 +23,13 @@ map, not automatic dependency discovery or permission to omit a routed control.
 | Installation or client integration | Skill installation, installation-inspector and client-discovery fixtures; test both providers and the changed link/copy path |
 | Evidence index | `run-skill-evidence-index-fixtures.js`, inspection of the actual retained records, and the documentation checks above |
 
+For operation-local packet inspection reuse, the reader fixture also checks
+two real reviewed compilations per call, fresh later calls, standalone projection
+checks, exact recipients and source/decision/expiry changes between appraisals.
+Keep packet/review/Git/terminology/session consumers in the affected set; a lower
+call count alone cannot prove freshness or full integration. Historical proposal
+bindings must stay unchanged when screening implementation bytes change.
+
 Before merge, run the current complete gates from `.github/workflows/validate.yml`,
 including validator fixtures, `run-all-fixtures.js`, the unified proof gate and
 the declared live OCI requirement. A smaller passing group is not that full run.

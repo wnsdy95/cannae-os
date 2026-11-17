@@ -540,6 +540,35 @@ or adoption. Calls are point-in-time and do not provide atomic sending, continuo
 revocation or protected-host guarantees. Execution/release/verified-authority and
 receiver-acceptance flags remain false.
 
+### Operation-Local Inspection Reuse
+
+The file-backed reader uses `inspectRecipientData(packetPath, expectedDigest,
+repository, recipient)` to receive the detached projection already checked
+against the saved prompt in that same inspection. The exact recipient is required
+and checked before reading original source content. `inspect` remains metadata-only;
+it does not expose that projection, and its result is not a reusable validation token.
+
+Reviewed inspection still rebuilds the current proposal and rechecks it when
+projecting the prompt. The reader no longer repeats that projection's source
+appraisal a third time after the prompt comparison. No cached state survives a
+call, no caller flag skips validation, and standalone `recipientData` and
+`renderPrompt` retain their checks. Source drift, changed or expired decisions,
+wrong recipients and modified packet/prompt bytes remain refusal conditions.
+Concurrent changes between the two appraisals must still fail. This is not an
+atomic filesystem snapshot or a guarantee against mutation after the final check.
+
+A local 14-document representation probe observed 217 -> 146 Git calls and
+42 -> 28 original-source opens per reader construction, catalog and read. Proposal
+creation and packet preparation counts stayed unchanged. These are synthetic
+local workload observations, not native context-byte savings, semantic quality,
+universal speedup or a completed session integration result. Retain interrupted
+earlier probes separately. The [active backlog](completion-backlog.md) owns the
+current acceptance status.
+
+Changing the packet implementation changes reviewed proposals' screening-source
+identity. Preserve old proposals and decisions; do not rehash them into current
+approval. A new current-source proposal requires its own applicable review.
+
 ### Routed Receiving Tools
 
 `project-document-session.js` composes the bound reader with the selected installed
