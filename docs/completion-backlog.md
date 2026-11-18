@@ -2495,6 +2495,48 @@ Evidence:
 The strict inventory stays **8/18**. No Claude-only result was promoted to a
 two-client pass, and no threshold was changed. R5 has not started.
 
+#### Claude-Only R5 Chains Through The Change Phase (2026-11-19)
+
+The USER answered "Build R5" to a question asking whether to build and run the
+Claude-to-Claude chains. The new harness is under
+`.cannae/maintenance/skill-workflow-r5-claude-20261119/`. It holds two distinct
+synthetic chains:
+
+- `CHAIN-CLAUDE-A`: a policy change from seven days to five.
+- `CHAIN-CLAUDE-B`: a term change in which "complete" gains a verified
+  source-version reference.
+
+Each chain runs a Claude S3/operations writer and then a fresh Claude
+S6/knowledge receiver. Both use their own project Git repository, packets and
+registered `WORK-SOP`/`WORK-ROSTER` dependencies. The doctrine and skills come
+from a pinned clean checkout at `44c3238`. Each phase is one Claude Code 2.1.322
+process with only the product document-session tools: route in `brief`, route
+plus read in the later phases. A per-process adapter records every parsed
+message, and closeout matches every native tool call and result text to that
+record. These are exposed operator-authored exercises, not blind cases. They are
+not cross-client chains; Codex is deferred by USER.
+
+A local SDK smoke test showed `brief` refusing `read_document` and `review`
+returning sources. All six native phases then completed with `claude-opus-5-5`,
+one attempt each and every call matched:
+
+| Phase | Evidence |
+| --- | --- |
+| Brief | One route call each; all sources held; 7.6/8.1 KB advance briefs. The parent then delivered the exact brief texts to USER with SendUserFile before any work. Acknowledgement was not observed. |
+| Work | A fresh route, then all three sources and the workflow guide read in each chain. Output: SOP, status note, roster appendix, self-contained handoff and work report. |
+| Source change | The source owner's revision was committed to each project and a fresh packet compiled. Inspection: `WORK-SOP` held (`source_changed`), `WORK-ROSTER` current. |
+| Change | A fresh route and current reads in each chain. Each worker reported the exact old and new version and digest and held the SOP, keeping the previous text verbatim. It continued the roster appendix and asked for a separately recorded USER decision naming the exact changed input. Neither treated the dependency record or its own reads as clearance. The parent delivered both change outputs to USER. |
+
+The USER was then asked for each chain's bounded continuation decision and
+dismissed the question. No decision exists, so both SOP holds stand, and the
+resume and cold-receiving phases were not run. SR13 now has actual intake,
+brief, notice delivery, work and report phases in two Claude-only chains, but no
+cold receiving. SR14 has an actual changed source, held dependent work, retained
+permitted work and a truthful notice, but no authorized continuation. SR15 has
+no receiving evidence. The source appraisal of the produced documents has not
+been performed yet. All three criteria stay open, and the inventory stays
+**8/18**.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
