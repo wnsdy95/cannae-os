@@ -109,11 +109,11 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR02 | R1 | Fix the demonstrated heading/exclusion excess and Korean intake gap through a documented skill path. Preserve original language/text and explicit translation/normalization provenance; equivalent covered tasks receive authoring guidance. | Verified (bounded) |
 | SR03 | R1 | Preserve each compound objective and genuine gap, required/parent sources, actual technical subjects and declared authority. Pass the fixed negative cases without reducing issued controls or accepting unsupported guarded inputs. | Verified (bounded) |
 | SR04 | R2 | Reduce each entrypoint's UTF-8 bytes by at least 20% from the recorded baseline, remain within 500 lines and move applicable detail into discoverable task-specific references. Do not merely join lines or delete controls. | Verified (bounded) |
-| SR05 | R2 | On a frozen six-task ordinary-work subset, reduce median loaded instruction/reference bytes by at least 20%, counting every delivered section and entrypoint. Preserve all assigned source content; report document counts and bytes separately from tokens, cost or quality. | In progress |
+| SR05 | R2 | On a frozen six-task ordinary-work subset, reduce median loaded instruction/reference bytes by at least 20%, counting every delivered section and entrypoint. Preserve all assigned source content; report document counts and bytes separately from tokens, cost or quality. | In progress (Claude-only: 14.6%, three fidelity regressions; Codex deferred) |
 | SR06 | R2 | Verify both providers still find conditional procedures for actual runtime maintenance, explicit inputs and sensitive handoffs; ordinary work need not load retained platform history. Selection is not read authority or an automatic access-profile grant. | In progress |
-| SR07 | R3 | Freeze eight source-grounded tasks and a rubric covering omitted obligations, invented facts/approvals, false findings, locators, unknowns and complete/compressed output consistency; record both-client baseline and candidate artifacts separately. | In progress |
-| SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | In progress |
-| SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | Planned |
+| SR07 | R3 | Freeze eight source-grounded tasks and a rubric covering omitted obligations, invented facts/approvals, false findings, locators, unknowns and complete/compressed output consistency; record both-client baseline and candidate artifacts separately. | In progress (Claude half complete; Codex deferred) |
+| SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | In progress (withheld major regression; Codex deferred) |
+| SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | In progress (Claude withheld: AH-01 C5 failed) |
 | SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | Verified (bounded) |
 | SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Verified (bounded) |
 | SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | Verified (bounded) |
@@ -2422,6 +2422,78 @@ input bytes, and all eight prechecks passed. None has run.
 
 R5 still needs a Claude-to-Claude chain harness for every phase after the
 brief. The inventory stays **8/18**.
+
+#### Claude-Only R2 And Withheld R3 Results (2026-11-19)
+
+The USER explicitly approved both prepared batches ("Run both"). Every process
+completed with `claude-opus-5-5`, no task-tool events and no relaunch: twelve R2
+cases under v2 plan `9afc34d7…` and eight withheld R3 cases under plan
+`7a041264…`. All R2 traces reconciled on the 2026-07-28 lifecycle.
+
+**SR05 fails its threshold for Claude.** Loaded instruction/reference bytes are
+the controlled client input minus the assigned task bytes. Their median fell
+from 64,629 to 55,189.5, a **14.606% reduction against the unchanged 20%
+criterion**. Per case:
+
+| Case | RD-01 | RD-02 | RD-03 | RD-04 | RD-08 | RD-09 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Reduction | 28.26% | 14.60% | 18.98% | 14.73% | 18.56% | 10.95% |
+
+The entrypoint fell 21% (32,916 to 25,944 bytes), and the median number of
+reads fell from 7 to 4. Reference bodies read fell only from 15,627 to 13,584
+bytes, and route and connection setup add about 11.5 KB on both sides.
+
+Output quality also regressed. A separate source-bound appraisal of all twelve
+outputs located 172 quotes. The candidate is worse than its baseline in three
+cases:
+
+- RD-02 and RD-04 make USER the publication owner, citing P341-SUPPORT
+  "Assignment", which names no owner.
+- RD-08 merges the ledger and the appendix into one item.
+
+It is better in RD-09, where the baseline reported a pooled 31/106 rate as a
+fact. So fewer bytes came with lost source fidelity. SR05 stays **open**. The
+fix needs reading that is both smaller and source-preserving, not a lower bar.
+SR06's maintenance, explicit-input and handoff procedures were not exercised by
+these ordinary cases.
+
+**Withheld R3, Claude.** All 29 rubric checks and 21 required outputs were
+inspected for each revision, with 183 located quotes:
+
+| Measure | Baseline (`9331ff5`) | Frozen candidate (`4eb6fc2`) |
+| --- | --- | --- |
+| Rubric checks | 29/29 | 28/29 (AH-01 C5 failed) |
+| Required outputs | 21/21 | 20/21 (AH-01 change note) |
+| Additional findings | 4 minor | 1 major, 6 minor |
+
+AH-01's change note says the corrected SOP now records acceptance only when
+observed. The SOP itself omits any acceptance rule, which the baseline SOP
+kept. The candidate also introduces an invented role duty, an unsupported
+classification, an asserted unknown dependency, an unestablished retry owner, an
+unsupported non-occurrence and an outline outside the unit. It does remove the
+baseline's pooled denominator and merged appendix/ledger hold. No critical
+authority, disclosure or prohibited-operation regression was found.
+
+The development improvement therefore did not carry over to unseen cases. The
+withheld mandatory boundary fails at AH-01 C5, so **SR09 stays open**. SR08's
+reproduced families improved on development cases with no new critical
+regression. However, the withheld evaluation adds a new major regression, and
+the Codex half is deferred, so **SR08 stays in progress**. SR07's Claude
+baseline and candidate artifacts are complete for both splits; its Codex half is
+deferred. The appraisers were Claude subagents that knew each response's
+revision. Their quotes were machine-located and the decisive findings re-read
+by the operator, but the review is neither blind nor independent.
+
+Evidence:
+
+| Evidence | SHA-256 |
+| --- | --- |
+| `native-claude-only-v2/measurement.json` | `5f09ed351f4f794cf83ac34cba9447716df286d1a6b9db7f04cef71cc2aaf552` |
+| `native-claude-only-v2/quality-appraisals.js` | `67707869a4e93bca1fa8d07c76f2969ef01102190db155bfc1ba826a329e959f` |
+| `skill-authoring-withheld-20261119/appraisals.js` | `672207f00ac1a564e1358e60a9a3af9cbfe751806e20d2ced287f2afd2067474` |
+
+The strict inventory stays **8/18**. No Claude-only result was promoted to a
+two-client pass, and no threshold was changed. R5 has not started.
 
 #### Execution Order And Boundaries
 
