@@ -117,9 +117,9 @@ used for tuning becomes a regression, not an unseen case on the next attempt.
 | SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | Verified (bounded) |
 | SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Verified (bounded) |
 | SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | Verified (bounded) |
-| SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | In progress |
-| SR14 | R5 | Include a changed-source/term or unavailable-source interruption in those chains; observe dependent work held, permitted independent work retained, a truthful notice and separately authorized fresh continuation without invented receipts or retry permission. | Planned |
-| SR15 | R5 | Validate the final receiving unit and actual next-agent use against original objectives, current sources, unresolved decisions and recipient scope. A prepared packet or final self-claim alone cannot close this criterion. | Planned |
+| SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | In progress (two Claude-only chains complete with defects; Codex deferred) |
+| SR14 | R5 | Include a changed-source/term or unavailable-source interruption in those chains; observe dependent work held, permitted independent work retained, a truthful notice and separately authorized fresh continuation without invented receipts or retry permission. | In progress (Claude-only: held/retained/notice/USER continuation observed; Codex deferred) |
+| SR15 | R5 | Validate the final receiving unit and actual next-agent use against original objectives, current sources, unresolved decisions and recipient scope. A prepared packet or final self-claim alone cannot close this criterion. | In progress (Claude receivers used units; misses and false findings recorded) |
 | SR16 | R6 | Verify linked and copied skills from a different target repository in the installed client configurations; diagnose stale copy/root/version problems without silently reinstalling, changing settings or reading credentials. Record a bounded compatibility matrix. | Verified (bounded) |
 | SR17 | R6 | Map affected surfaces to focused checks and retain full integration validation before merge. Keep a non-authorizing local evidence index with exact source/result versions and unavailable-evidence states; no temporary-file loss may be presented as a fresh pass. | In progress |
 | SR18 | R6 | Demonstrate one bounded gap -> candidate -> both-skill adaptation -> regression/source appraisal -> accepted change cycle. Preserve review/adoption distinctions, historical evidence and unrelated edits; reconcile scope, indexes, backlog and actual goal status at closure. | Planned |
@@ -2536,6 +2536,85 @@ permitted work and a truthful notice, but no authorized continuation. SR15 has
 no receiving evidence. The source appraisal of the produced documents has not
 been performed yet. All three criteria stay open, and the inventory stays
 **8/18**.
+
+#### Claude-Only R5 Completion And 18-Criterion Audit (2026-11-19)
+
+The USER was asked again and answered "Approve bounded revision" for both
+chains. Each answer was recorded in that chain's `continuation-decision.json`
+with the full changed-input digest and scope. That decision clears only the
+`WORK-SOP` hold for that input. Adoption, publication, transmission, record
+changes and archive operations stay excluded.
+
+**Operator defect.** The CHAIN-B question showed the TERMS-V2 digest abbreviated
+as `c9e91e1c…5619`. The real digest ends `…8a619325`. The version label and the
+recorded full digest are correct, and the resume writer flagged the mismatch.
+The defect is retained rather than corrected after the fact.
+
+Both resume phases and both cold-receiving phases then completed, one attempt
+each, with `claude-opus-5-5` and every call matched. The first CHAIN-A
+delivery-unit extraction stopped at an end-marker phrase inside the declaration
+sentence and produced 207 bytes. It was re-extracted to the declared 17,004
+bytes before any receiving attempt, and the bad extraction is retained as a
+superseded record. Each receiver got only its delivered unit and then looked up
+the current sources itself through its own S6/knowledge packet.
+
+A Claude subagent then appraised all ten phase outputs with 110 located quotes.
+It knew the phase of each output. The operator re-read the decisive findings.
+
+| Phase | CHAIN-CLAUDE-A | CHAIN-CLAUDE-B |
+| --- | --- | --- |
+| Brief | pass | pass |
+| Work | pass, 5 minor | **fail**: the roster appendix claims independence from SRC-TERMS but carries TERMS-V1 owner and review-date columns |
+| Change | pass, 4 minor | pass, 3 minor |
+| Resume | **fail**: the unit claims all references are internal, then points to "Part 1" outside it | pass, 5 minor |
+| Receive | pass, 4 minor; it caught the outside reference, the changed-span errors and the date order | pass, 4 minor; it caught the digest mismatch |
+
+No critical authority, disclosure, out-of-scope continuation or
+prohibited-operation finding was made. The receivers also missed some issues:
+
+- A's second Part 1 reference.
+- An unlabeled SOP step.
+- An adoption condition with no source; B's receiver repeated it.
+- Their own inability to verify the original assignment. The receiver packet
+  carried only the receiving task, so the assignment could be compared only
+  with the unit's own verbatim copy. That is a harness limit; a future receiver
+  packet should also bind `original-request.md`.
+
+Each receiver also made one overstated or false finding.
+
+**Disposition.** In the Claude-only variant, SR13-SR15 now have actual,
+recorded and appraised evidence for every phase in both chains. The evidence
+covers intake, brief, real notice delivery, work, a real changed source, held
+dependent work, retained permitted work, a truthful notice, a separately
+recorded USER continuation, the resume and actual cold receiving. The
+appraisal still found two major content defects, the receivers' misses and
+the operator's digest error. In addition, both directions named by the
+criteria are cross-client and the Codex half is deferred by USER. **SR13-SR15
+therefore stay in progress.** Evidence:
+`skill-workflow-r5-claude-20261119/appraisals.js`, SHA-256
+`c9ed51d1fa98445e6f893d8df010d45a1a440f98b61c5ec42b48f2dd6e4c0253`.
+
+**Audit of all 18 criteria at this checkpoint.** Eight are verified (bounded):
+
+- SR01-SR04 and SR10-SR12: unchanged.
+- SR16: installation matrix, unchanged.
+
+The other ten remain open with recorded evidence:
+
+| Criterion | Status |
+| --- | --- |
+| SR05 | Claude 14.6% < 20%, with fidelity regressions. |
+| SR06 | Not exercised. |
+| SR07 | Claude half complete. |
+| SR08 | Development improvement, but a new withheld major. |
+| SR09 | AH-01 C5 failed. |
+| SR13-SR15 | Claude chains complete, with defects. |
+| SR17 | This head's CI still running; local Docker unavailable. |
+| SR18 | No accepted, merged cycle yet. |
+
+Every criterion that names both clients keeps its Codex half deferred by USER.
+The inventory is **8/18**. No threshold, case or rubric was lowered, and
+exposed cases are labeled as exposed.
 
 #### Execution Order And Boundaries
 
