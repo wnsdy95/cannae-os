@@ -2277,6 +2277,113 @@ live-OCI runner step and unified proof gate still need a fresh CI run. That run
 needs its own USER approval for the push. SR17/SR18 stay open, and the inventory
 stays **8/18**.
 
+#### Native Retry Model Availability (2026-11-19)
+
+The USER then replied in Korean to proceed with all items and not to stop.
+This is an English record of the reply, not a verbatim quote; the exact text is
+in the private decision record. The reply followed a status summary that listed
+three items: the PR #116 push and one CI run, the single
+R2 startup retry, and R3/R5 re-preparation. Commit `748c2d1` was pushed to
+the PR branch as a fast-forward, which starts that one CI run.
+
+The R2 V2 precheck passed. It confirmed all 125 bound sources, the prepared
+40,716-byte input, the Codex CLI 0.162.1 binary, configuration, argv, sandbox
+profile and configured model. The shell lacked `rg` on PATH, so a wrapper around
+the client-bundled ripgrep supplied the precheck's model-line read. The child
+process environment is fixed and unaffected. A decision record bound to plan
+`8ae87fed…` and proposal `07f6753e…` was written with a 23-hour expiry
+(SHA-256 `4008693adef4d6c4f8888e3b98f9e0044718d98aa43368ae04e41e2019277464`).
+
+The single retry **failed** after 2,555 ms with
+`SKILL_CONTEXT_TRACE_PROHIBITED_EVENT`. The startup diagnostics now pass the
+repaired ordering check, and the turn did start. The provider then returned 400
+`model_not_found`: `gpt-6-astra` is "not supported when using Codex with a
+ChatGPT account." The observer stopped the process group. No response or usage
+exists, and no relaunch followed. The refreshed Codex model cache now lists
+`gpt-reserve`, `gpt-6-luna`, `gpt-5.6-terra`, `gpt-5.6-luna` and
+`codex-auto-review`. The configured default and every prepared Codex row still
+name `gpt-6-astra`. This is an external availability change, not a skill or
+observer defect. The retry plan is consumed, and its evidence is retained under
+`native-startup-recovery-v2/baseline-codex-RD-01/`.
+
+| Evidence | SHA-256 |
+| --- | --- |
+| `execution-result.json` | `b970a71d52b9c1d8120794b3d1b7defb1a9314bb91d96d82e1f2af4a2e390849` |
+| `stdout.jsonl` | `109c6dc49238203e8627a24e684294e6846037aebee4857e6946bab4c4a18e93` |
+| `stderr.log` | `7f7d4d241a04741d9bca280f764749d7c80ba6a49a8892948f41f7513aa52858` |
+
+The R3 candidate precheck still passes for both clients, and Claude Code remains
+2.1.322. Its Codex rows run first and would fail the same way, consuming the
+one-attempt batch. The R5 brief plan also starts with a Codex row. Neither was
+launched. Any change of Codex model breaks comparability with the
+`gpt-6-astra` R2/R3 baselines. Choosing a replacement, and deciding whether to
+rerun those baselines, is therefore a USER decision. SR05-SR09 and SR13-SR15
+remain open; the inventory stays **8/18**.
+
+#### Claude-Only Authoring Candidate (2026-11-19)
+
+Asked how to proceed, the USER chose to run the Claude rows first and defer
+Codex. A derived plan, `claude-only-v1/execution-plan.json` (SHA-256
+`364f3c2701b199b81309745f225c4e4054c7d5c44762cb683adf56a7aaadc9e3`), keeps
+the four Claude rows of the unapproved eight-call plan `3e5be114…`. Each row's
+argv, sandbox profile, environment, binary, prompt and manifest are
+byte-identical to the original. The derived observer differs only in paths,
+the four-process count, and a check that no case was started under the original
+plan. The four prechecks passed, and a decision record bound the plan and its
+narrowed proposal.
+
+All four processes completed in sequence, with no tool events and no relaunch.
+Claude Code 2.1.322 reported `claude-opus-5-5`, the same model as the baseline.
+Elapsed times were 77.8, 39.9, 65.0 and 66.2 seconds. Each input carried its
+prepared instruction bodies, 127,452-185,452 bytes per case. These are not
+R2 savings.
+
+A Claude Code operator appraised every complete response against the unchanged
+frozen rubric, and a builder located each evidence quote in the response bytes:
+
+| Measure | Claude baseline (`9331ff5`) | Claude candidate (`4eb6fc2`) |
+| --- | --- | --- |
+| Frozen rubric checks | 28/29 (AD-04 C8 failed) | 29/29 |
+| Required outputs | 13/21 | 21/21 |
+| Additional findings | 1 critical, 3 major, 1 minor | 3 minor |
+
+None of the five baseline Claude defect families recurs:
+
+- AD-03 now declares the whole document as its receiving unit. It contains W2,
+  the FRAGO, both status tables, the request and all source bodies, so its next
+  review needs nothing outside the unit.
+- AD-02 reports no pooled rate. It states that 31/106 would assume the two
+  groups share no accounts.
+- AD-04 keeps the appendix and ledger as separate holds and asks whether they
+  are one item. It scopes non-execution to this response and says that current
+  unavailability does not prove the appendix was never reviewed.
+- AD-01's unit description now matches its sections.
+
+The new minor findings are:
+
+- **CX-01:** AD-01's SOP header lists two sources, although its sections also
+  cite P341-QUEUE and the supplied handoff template.
+- **CX-02:** AD-01's unit paraphrases the request and points to a task record.
+- **CX-03:** an optional AD-02 handoff section refers to source bodies it omits.
+
+No authority, disclosure or required-task regression was found.
+
+Limits:
+
+- These four development cases informed the `617d0c6` repair, so this is
+  regression evidence on exposed cases, not unseen-case evidence.
+- The appraiser is a Claude-family model reviewing Claude outputs. It is
+  neither independent nor blind.
+- The Codex candidate, both withheld sets and the Codex baseline under any
+  replacement model have not run.
+
+SR07 and SR08 therefore stay **in progress**. The Claude half supplies their
+candidate artifacts and a documented improvement for reproduced families. SR09
+stays planned. No R5 call was made, and the inventory stays **8/18**. Evidence
+is retained under `skill-authoring-candidate-4eb6fc2-20261117/claude-only-v1/`.
+The appraisal is `appraisal-46ddc2b0-96de-48f9-a51a-faf8f91cb6f4.json`,
+SHA-256 `1335b922642326157adc1faafa0e3cc75a7cdece0b1bdede8e9abdfe8194cc24`.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
