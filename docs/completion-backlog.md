@@ -2384,6 +2384,45 @@ is retained under `skill-authoring-candidate-4eb6fc2-20261117/claude-only-v1/`.
 The appraisal is `appraisal-46ddc2b0-96de-48f9-a51a-faf8f91cb6f4.json`,
 SHA-256 `1335b922642326157adc1faafa0e3cc75a7cdece0b1bdede8e9abdfe8194cc24`.
 
+#### Claude-Only Completion Direction (2026-11-19)
+
+The USER said that only Claude is now in use, that Codex must be held, and that
+the remaining tests should all run on Claude to finish. This is a USER scope
+decision. Criteria that name both clients or both directions are SR05/SR06,
+SR07-SR09 and SR13-SR15. Each will report a Claude-only result with its Codex
+half **deferred by USER**, not passed or removed. No threshold, case or rubric
+changes.
+
+**R2 Claude-only batch v1** (`native-claude-only-v1/`, plan `2c93b5ca…`) covered
+the twelve Claude rows of the stopped 24-case plan. Its first case,
+`baseline-claude-RD-01`, completed its native turn in 63 s with
+`claude-opus-5-5`, but closeout failed with
+`SKILL_CONTEXT_TRACE_TRANSPORT_REQUEST`. Claude Code 2.1.322 negotiated the
+2026-07-28 MCP lifecycle: `server/discover`, `subscriptions/listen`, result
+envelopes and a SIGINT shutdown. The transport check accepted only `initialize`,
+so the batch stopped with eleven cases unstarted. Commit `07bd751` repairs the
+trace (17/17 trace fixtures). Replaying the retained capture through it
+reconciles nine matched reads and 78,197 controlled client-input bytes. The
+original trace still rejects it, and the attempt stays failed.
+
+**R2 bounded retry v2** (`native-claude-only-v2/`, plan `9afc34d7…`) loads the
+trace from a pinned clean checkout at `07bd751`. All twelve prechecks passed.
+Its launch was **refused by the operator session's automated permission check**
+before any process started, so no v2 attempt exists. It needs the USER's
+explicit approval.
+
+**R3 withheld.** The global withheld candidate was frozen at `4eb6fc2`, the
+candidate with development evidence, in
+`skill-authoring-withheld-20261119/candidate-freeze.json`. The four withheld
+tasks were then rendered for Claude at baseline and candidate with the
+unchanged packet builder, and the task hashes match per case. The builder's
+fixed intro still describes the inputs as development inputs; the wording is
+identical on both sides. Plan `7a041264…` covers eight processes and 1,162,383
+input bytes, and all eight prechecks passed. None has run.
+
+R5 still needs a Claude-to-Claude chain harness for every phase after the
+brief. The inventory stays **8/18**.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
