@@ -8,6 +8,7 @@ const { execFileSync } = require("node:child_process");
 const { openWave, recordWave } = require("./skill-mission-controller");
 const dispatch = require("./dispatch-runtime-controller");
 const { assertContextDocuments, documentBinding } = require("./context-document-integrity");
+const { TOPICS } = require("./codex-skills/controls-doctrine-operator/scripts/read_controls_instructions");
 
 const ROOT = __dirname;
 const temporary = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "cannae-context-documents-")));
@@ -64,6 +65,18 @@ try {
     fixture(`${provider}: exact current routed documents validate without granting content access`, () => {
       assert.equal(assertContextDocuments(context, receipt, plan, doctrine), true);
       assert.deepEqual(Object.keys(documentBinding(doctrine, "SUPPORT.md")).sort(), ["path", "sha256"]);
+    });
+    fixture(`${provider}: all moved conditional instructions remain digest-bound in guarded context`, () => {
+      for (const directory of ["codex-skills", ".claude/skills"]) for (const relative of Object.values(TOPICS)) {
+        const file = directory + "/controls-doctrine-operator/" + relative;
+        const row = context.documents.find(document => document.path === file);
+        assert.deepEqual(row, documentBinding(doctrine, file));
+        const absolute = path.join(doctrine, file), original = fs.readFileSync(absolute);
+        try {
+          fs.appendFileSync(absolute, "\nChanged conditional instruction.\n");
+          assert.throws(() => assertContextDocuments(context, receipt, plan, doctrine), /CONTEXT_DOCUMENT_DIGEST_MISMATCH/);
+        } finally { fs.writeFileSync(absolute, original); }
+      }
     });
     fixture(`${provider}: missing additional duplicate and wrong-recipient document bindings fail`, () => {
       for (const change of [value => value.documents.pop(), value => value.documents.push(documentBinding(doctrine, "GOVERNANCE.md")),

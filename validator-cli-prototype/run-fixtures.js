@@ -12,6 +12,43 @@ const VALIDATOR = path.join(ROOT, "validator-cli-prototype", "validate.js");
 const readJsonFixture = file => JSON.parse(fs.readFileSync(path.join(ROOT, file), "utf8"));
 
 const fixtures = [
+  { name: "both APIs preserve merged document and training non-execution boundaries", requiredCodes: [], check() {
+    const types = [
+      ...["request", "proposal", "review", "transaction"].map(kind => `project-terminology-change-${kind}`),
+      ...["request", "record"].map(kind => `project-knowledge-dependency-${kind}`),
+      "native-training-failure-appraisal", "operator-native-training-reconciliation-authorization", "operator-native-training-reconciliation-record",
+      "native-training-producer-inspection", "native-training-transfer-review-request", "native-training-transfer-authorization", "operator-native-training-product",
+      ...["request", "response", "appraisal"].map(kind => `native-training-product-${kind}`),
+      "training-session-proposal", "training-session-authorization",
+      ...["standard", "trial-request", "session-binding", "completion-input", "trial-appraisal"].map(kind => `task-training-${kind}`)
+    ];
+    for (const type of types) for (const api of [validatePayload, validateSchemaPayload]) {
+      const result = api(readJsonFixture(`sample-payloads/valid-${type}.json`), type);
+      assert.equal(result.valid, true, `${api.name}: ${type} must be valid before testing its execution boundary`);
+      assert.equal(result.can_execute, false, `${api.name}: ${type} is not execution authority`);
+    }
+  } },
+  ...["request", "record"].flatMap(kind => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing knowledge dependency ${kind}`,
+    file: `sample-payloads/${prefix}-project-knowledge-dependency-${kind}.json`,
+    type: `project-knowledge-dependency-${kind}`, exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] :
+      [kind === "request" ? "KNOWLEDGE_DEPENDENCY_SOURCE_PATH_INVALID" : "KNOWLEDGE_DEPENDENCY_REQUEST_BINDING_MISMATCH"]
+  }))),
+  ...["review", "transaction"].flatMap(kind => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-authorizing terminology change ${kind}`,
+    file: `sample-payloads/${prefix}-project-terminology-change-${kind}.json`,
+    type: `project-terminology-change-${kind}`, exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] :
+      [kind === "review" ? "TERMINOLOGY_WRITER_VALIDITY_INVALID" : "TERMINOLOGY_WRITER_TRANSACTION_ID_MISMATCH"]
+  }))),
+  ...["request", "proposal"].flatMap(kind => ["valid", "invalid"].map(prefix => ({
+    name: `${prefix} non-adopting terminology change ${kind}`,
+    file: `sample-payloads/${prefix}-project-terminology-change-${kind}.json`,
+    type: `project-terminology-change-${kind}`, exitCode: prefix === "valid" ? 0 : 1,
+    expectedCanExecute: false, requiredCodes: prefix === "valid" ? [] :
+      [kind === "request" ? "TERMINOLOGY_CHANGE_INFERRED_DECISION" : "TERMINOLOGY_CHANGE_ENTRY_BINDING_MISMATCH"]
+  }))),
   ...["valid", "invalid"].map(prefix => ({ name: `${prefix} exact-review packet binding`,
     file: `sample-payloads/${prefix}-project-document-packet-reviewed.json`, type: "project-document-packet",
     exitCode: prefix === "valid" ? 0 : 1, expectedCanExecute: false,

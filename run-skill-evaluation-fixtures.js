@@ -1,0 +1,449 @@
+#!/usr/bin/env node
+
+const assert = require("node:assert/strict"), fs = require("node:fs"), os = require("node:os"), path = require("node:path");
+const { spawnSync } = require("node:child_process");
+const runner = require("./skill-evaluation-runner");
+const authoring = require("./skill-authoring-evaluation");
+const routing = require("./skill-routing-evaluation");
+const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "skill-evaluation-")));
+let count = 0;
+const check = (name, fn) => { fn(); count++; console.log(`PASS ${name}`); };
+const write = (file, data) => { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, data); };
+const json = value => JSON.stringify(value, null, 2) + "\n";
+const command = (exe, args, cwd) => {
+  const result = spawnSync(exe, args, { cwd, encoding: "utf8", env: { ...process.env, GIT_CONFIG_NOSYSTEM: "1" } });
+  assert.equal(result.status, 0, result.stderr); return result.stdout.trim();
+};
+
+function dataset(commit) {
+  const data = { "protocol.json": { version: 1, routing_count: 24, authoring_count: 8,
+    native_transfer_authorized: false, candidate_frozen: false, dimensions: runner.DIMENSIONS,
+    holdout_limit: "Fixture-only dataset; no model or independent blinding." } };
+  for (const [split, prefix] of [["development", "DEV"], ["withheld", "HLD"]]) {
+    data[`routing-${split}.json`] = Array.from({ length: 12 }, (_, i) => ({ id: `${prefix}-R-${i}`, family: "fixture",
+      query: `Draft an SOP ${i}.`, options: { actor: "user", role: null, department: null, authority: null,
+        objectives: [], sources: [], guarded: false }, expected: { exit_code: 0, capability: "covered",
+        required_documents: ["docs/source.md"], absent_documents: [], error_code: null },
+      context_measurement: split === "development" && i < 6 }));
+    data[`authoring-${split}.json`] = ["sop", "research", "order-report", "handoff"].map((format, i) => ({
+      id: `${prefix}-A-${i}`, format, request: "Draft, do not publish.", sources: [{ id: "SRC", version: "1", body: "Synthetic source." }],
+      required_outputs: ["draft"] }));
+    data[`reference-${split}.json`] = data[`authoring-${split}.json`].map(row => ({ id: row.id,
+      checks: [{ id: "C1", dimension: "authority_and_disclosure", severity: "critical", source_id: "SRC", assertion: "No publication." }] }));
+  }
+  return { data, manifest: { version: 1, baseline_commit: commit, members: {},
+    withheld_policy: "candidate_freeze_before_execution; no_tuning_exposure" } };
+}
+
+const repo = path.join(root, "repository"), bundle = path.join(root, "bundle");
+fs.mkdirSync(repo); fs.mkdirSync(bundle);
+const git = args => command("git", ["-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", ...args], repo);
+try {
+  git(["init", "-q"]);
+  for (const provider of ["codex-skills", ".claude/skills"]) {
+    write(path.join(repo, provider, "controls-doctrine-operator/SKILL.md"), "Fixture instructions.\n");
+    write(path.join(repo, provider, "controls-doctrine-operator/scripts/route_controls_docs.js"),
+      'const q=process.argv.at(-1);console.log(JSON.stringify({query:q,recommended_documents:[{path:"docs/source.md"}],operating_mode:{actor:"user",role:null,department:null,authority:null},capability_routing:{status:"covered",provisional_organization:{authority_expansion_authorized:false,standing_department_activation_authorized:false}}}));\n');
+  }
+  write(path.join(repo, "docs/source.md"), "Synthetic policy.\n");
+  for (const provider of ["codex", "claude"]) for (const format of ["sop", "research", "order-report", "handoff"]) {
+    for (const file of authoring.instructionPaths(provider, format)) {
+      if (!fs.existsSync(path.join(repo, file))) write(path.join(repo, file), "# Synthetic Guide\nFixture-only instructions.\n");
+    }
+  }
+  git(["add", "."]); git(["commit", "-qm", "Fixture baseline"]);
+  const frozen = dataset(git(["rev-parse", "HEAD"]));
+  function publish() {
+    for (const name of runner.MEMBERS) {
+      const bytes = json(frozen.data[name]); write(path.join(bundle, name), bytes);
+      frozen.manifest.members[name] = { sha256: runner.hash(bytes), bytes: Buffer.byteLength(bytes) };
+    }
+    write(path.join(bundle, "manifest.json"), json(frozen.manifest));
+  }
+  publish();
+  check("inspection validates all split counts without returning held-out tasks or references", () => {
+    const result = runner.inspectBundle(bundle);
+    assert.equal(result.development.length, 12); assert.equal(result.authoring.length, 4);
+    assert(!JSON.stringify(result).includes("HLD-R-") && !JSON.stringify(result).includes("HLD-A-"));
+  });
+  check("changed member bytes fail without a silent manifest refresh", () => {
+    fs.appendFileSync(path.join(bundle, "routing-withheld.json"), " ");
+    assert.throws(() => runner.inspectBundle(bundle), /MEMBER_CHANGED/); publish();
+  });
+  check("malformed withheld JSON does not disclose its contents in errors", () => {
+    const name = "routing-withheld.json", bytes = "WITHHELD-PRIVATE-CONTENT";
+    write(path.join(bundle, name), bytes);
+    frozen.manifest.members[name] = { sha256: runner.hash(bytes), bytes: Buffer.byteLength(bytes) };
+    write(path.join(bundle, "manifest.json"), json(frozen.manifest));
+    assert.throws(() => runner.inspectBundle(bundle), error => error.message === `SKILL_EVALUATION_JSON_INVALID:${name}`);
+    publish();
+  });
+  check("duplicate source or rubric IDs cannot make evidence ambiguous", () => {
+    const task = frozen.data["authoring-development.json"][0];
+    task.sources.push(structuredClone(task.sources[0])); publish();
+    assert.throws(() => runner.inspectBundle(bundle), /AUTHORING_CASE_INVALID/);
+    task.sources.pop(); publish();
+    const ref = frozen.data["reference-development.json"][0];
+    ref.checks.push(structuredClone(ref.checks[0])); publish();
+    assert.throws(() => runner.inspectBundle(bundle), /REFERENCE_INVALID/);
+    ref.checks.pop(); publish();
+  });
+  check("duplicate split IDs and wrong subset sizes fail", () => {
+    const rows = frozen.data["routing-withheld.json"], original = rows[0].id;
+    rows[0].id = frozen.data["routing-development.json"][0].id; publish();
+    assert.throws(() => runner.inspectBundle(bundle), /SPLIT_ID_COLLISION/);
+    rows[0].id = original; rows[0].context_measurement = true; publish();
+    assert.throws(() => runner.inspectBundle(bundle), /CONTEXT_SUBSET_INVALID/);
+    rows[0].context_measurement = false; publish();
+  });
+  check("symlinked or escaping source paths fail", () => {
+    const file = path.join(bundle, "protocol.json"), held = path.join(root, "policy.json");
+    fs.renameSync(file, held); fs.symlinkSync(held, file);
+    assert.throws(() => runner.inspectBundle(bundle), /SOURCE_SYMLINK/);
+    fs.unlinkSync(file); fs.renameSync(held, file);
+    assert.throws(() => runner.readFile(bundle, "../policy.json"), /PATH_INVALID/);
+  });
+  check("extra execution options cannot become arbitrary commands", () => {
+    const rows = structuredClone(frozen.data["routing-development.json"]);
+    rows[0].options.command = "unexpected";
+    assert.throws(() => runner.validateRouting(rows), /ROUTING_OPTIONS_INVALID/);
+  });
+  check("option-like query text stays after the end-of-options boundary", () => {
+    const row = structuredClone(frozen.data["routing-development.json"][0]); row.query = "--actor=ai Do not publish.";
+    const args = runner.routerArgs("router.js", row);
+    assert.deepEqual(args.slice(-2), ["--", row.query]); assert.equal(args[1], "--actor=user");
+  });
+  check("null route output cannot pass because semantic checks were skipped", () => {
+    const result = runner.assess(frozen.data["routing-development.json"][0], { status: 0, stdout: "null", stderr: "" });
+    assert(result.issues.includes("ROUTE_OUTPUT_SHAPE"));
+  });
+  check("known error must be exact and stdout empty", () => {
+    const row = structuredClone(frozen.data["routing-development.json"][0]);
+    row.expected.exit_code = 2; row.expected.error_code = "MULTI_OBJECTIVE_MODE_UNSUPPORTED";
+    assert.deepEqual(runner.assess(row, { status: 2, stderr: "MULTI_OBJECTIVE_MODE_UNSUPPORTED", stdout: "" }).issues, []);
+    assert(runner.assess(row, { status: 2, stderr: "other error", stdout: "" }).issues.includes("ERROR_BOUNDARY"));
+    assert(runner.assess(row, { status: 2, stderr: "NOT_MULTI_OBJECTIVE_MODE_UNSUPPORTED: other error", stdout: "" }).issues.includes("ERROR_BOUNDARY"));
+  });
+  check("baseline captures all development runs but neither native use nor held-out execution", () => {
+    const result = runner.baseline(bundle, repo);
+    assert.equal(result.case_count, 24); assert.equal(result.matched_expectations, 24);
+    assert.equal(result.withheld_executions, 0); assert.equal(result.native_model_calls, 0);
+    assert.equal(result.semantic_acceptance, false); assert.equal(result.promotion_authorized, false);
+    assert(result.results.every(row => row.loaded_instruction_bytes === null && row.selected_bytes > 0));
+  });
+  check("dirty or wrong baseline revisions fail before measurement", () => {
+    write(path.join(repo, "docs/source.md"), "Changed.\n");
+    assert.throws(() => runner.baseline(bundle, repo), /BASELINE_NOT_CLEAN_PINNED_REVISION/);
+    write(path.join(repo, "docs/source.md"), "Synthetic policy.\n");
+    const original = frozen.manifest.baseline_commit; frozen.manifest.baseline_commit = "1".repeat(40); publish();
+    assert.throws(() => runner.baseline(bundle, repo), /BASELINE_NOT_CLEAN_PINNED_REVISION/);
+    frozen.manifest.baseline_commit = original; publish();
+  });
+  check("CLI inspection is summary-only and withheld execution is unsupported", () => {
+    const script = path.join(__dirname, "skill-evaluation-runner.js");
+    const summary = JSON.parse(command(process.execPath, [script, "inspect", "--bundle", bundle], repo));
+    assert.equal(summary.withheld_execution_supported, false);
+    const denied = spawnSync(process.execPath, [script, "withheld", "--bundle", bundle], { encoding: "utf8" });
+    assert.equal(denied.status, 1); assert.equal(denied.stdout, "");
+  });
+  check("authoring preparation preserves every development task with exact full instruction spans", () => {
+    for (const provider of ["codex", "claude"]) for (const task of frozen.data["authoring-development.json"]) {
+      const packet = authoring.buildPacket(repo, provider, task, { baseline_commit: frozen.manifest.baseline_commit,
+        bundle_sha256: runner.hash(fs.readFileSync(path.join(bundle, "manifest.json"))) });
+      const result = authoring.verifyPacket(packet.prompt, packet.manifest);
+      assert.equal(result.valid, true); assert.equal(result.loaded_instruction_bytes, null);
+      assert.equal(result.native_transfer_authorized, false); assert.equal(result.semantic_acceptance, false);
+      for (const segment of packet.manifest.segments.filter(row => row.kind === "instruction")) {
+        assert(packet.prompt.subarray(segment.start_byte, segment.end_byte).equals(fs.readFileSync(path.join(repo, segment.path))));
+      }
+      const segment = packet.manifest.segments.at(-1);
+      assert.deepEqual(JSON.parse(packet.prompt.subarray(segment.start_byte, segment.end_byte)), task);
+      assert(!packet.prompt.toString().includes("HLD-"));
+    }
+  });
+  const sampleTask = frozen.data["authoring-development.json"][0];
+  const packet = () => authoring.buildPacket(repo, "codex", sampleTask, {
+    baseline_commit: frozen.manifest.baseline_commit, bundle_sha256: runner.hash(fs.readFileSync(path.join(bundle, "manifest.json"))) });
+  check("task serialization excludes attached evaluator fields and preserves multibyte source text", () => {
+    const task = structuredClone(sampleTask); task.checks = "ANSWER-NOT-FOR-MODEL";
+    task.sources[0].body += "\n\uC6A9\uC5B4 \uC815\uC758.\n"; task.sources[0].assertion = "ANSWER-NOT-FOR-MODEL";
+    const prepared = authoring.buildPacket(repo, "claude", task, {});
+    assert(!prepared.prompt.includes("ANSWER-NOT-FOR-MODEL"));
+    assert(prepared.prompt.includes(task.sources[0].body.replace(/\n/g, "\\n")));
+    assert.equal(authoring.verifyPacket(prepared.prompt, prepared.manifest).valid, true);
+  });
+  check("changed bytes and segment digests cannot be counted as delivered context", () => {
+    const prepared = packet(), changed = Buffer.from(prepared.prompt); changed[changed.length - 1] = 0;
+    assert.throws(() => authoring.verifyPacket(changed, prepared.manifest), /PACKET_INVALID/);
+    for (const mutate of [m => m.segments[0].sha256 = "0".repeat(64), m => m.segments[0].start_byte++,
+      m => m.segments[0].end_byte++, m => m.segments.pop(), m => m.prepared_instruction_bytes++,
+      m => m.framing_bytes++, m => m.task_sha256 = "0".repeat(64), m => m.segments[0].path = "../secret"]) {
+      const manifest = structuredClone(prepared.manifest); mutate(manifest);
+      assert.throws(() => authoring.verifyPacket(prepared.prompt, manifest), /SKILL_AUTHORING_EVALUATION_/);
+    }
+  });
+  check("preparation cannot become an authority or native receipt through manifest flag edits", () => {
+    const prepared = packet();
+    for (const [key, value] of [["native_transfer_authorized", true], ["loaded_instruction_bytes", 1],
+      ["native_model_calls", 1], ["semantic_acceptance", true], ["promotion_authorized", true],
+      ["split", "withheld"], ["phase", "candidate"]]) {
+      assert.throws(() => authoring.verifyPacket(prepared.prompt, { ...prepared.manifest, [key]: value }), /PACKET_INVALID/);
+    }
+  });
+  check("full packet framing has no uncounted trailing instructions", () => {
+    const prepared = packet(), changed = Buffer.concat([prepared.prompt, Buffer.from("Injected instructions")]);
+    const manifest = { ...prepared.manifest, prompt_sha256: runner.hash(changed), prompt_bytes: changed.length };
+    assert.throws(() => authoring.verifyPacket(changed, manifest), /ACCOUNTING_INVALID/);
+  });
+  check("missing symlinked and hardlinked full-body guides stop preparation", () => {
+    const file = path.join(repo, "docs/knowledge-management-sop.md"), backup = path.join(root, "saved-guide.md");
+    fs.renameSync(file, backup);
+    try {
+      assert.throws(packet, /MISSING/);
+      fs.symlinkSync(backup, file); assert.throws(packet, /PATH_INVALID/); fs.unlinkSync(file);
+      fs.linkSync(backup, file); assert.throws(packet, /FILE_INVALID/); fs.unlinkSync(file);
+    } finally { fs.renameSync(backup, file); }
+  });
+  check("empty or invalid UTF-8 instructions do not make valid packets", () => {
+    const file = path.join(repo, "docs/knowledge-management-sop.md"), original = fs.readFileSync(file);
+    try { for (const bytes of [Buffer.alloc(0), Buffer.from([0xff])]) {
+      fs.writeFileSync(file, bytes); assert.throws(packet, /INSTRUCTION_ENCODING_INVALID/);
+    } } finally { fs.writeFileSync(file, original); }
+  });
+  check("baseline preparation writes all eight private packets without executing a client", () => {
+    const output = path.join(root, "prepared");
+    const result = authoring.prepareBaseline(bundle, repo, output);
+    assert.equal(result.cases.length, 8); assert.equal(result.native_model_calls, 0);
+    assert.equal(result.withheld_executions, 0); assert.equal(result.loaded_instruction_bytes, null);
+    for (const row of result.cases) {
+      const directory = path.join(output, row.name), bytes = fs.readFileSync(path.join(directory, "prompt.md"));
+      assert.equal(runner.hash(bytes), row.prompt_sha256);
+      assert.equal(fs.statSync(path.join(directory, "prompt.md")).mode & 0o777, 0o600);
+      assert.equal(authoring.verifyPacket(bytes, JSON.parse(fs.readFileSync(path.join(directory, "manifest.json")))).valid, true);
+    }
+    assert.throws(() => authoring.prepareBaseline(bundle, repo, output), /EEXIST/);
+    assert.throws(() => authoring.prepareBaseline(bundle, repo, path.join(repo, "outputs")), /DESTINATION_INVALID/);
+    assert.throws(() => authoring.prepareBaseline(bundle, repo, path.join(bundle, "outputs")), /DESTINATION_INVALID/);
+    write(path.join(repo, "docs/source.md"), "changed");
+    try { assert.throws(() => authoring.prepareBaseline(bundle, repo, path.join(root, "dirty")), /BASELINE_NOT_CLEAN_PINNED_REVISION/); }
+    finally { write(path.join(repo, "docs/source.md"), "Synthetic policy.\n"); }
+  });
+  check("native and withheld launch options remain unsupported", () => {
+    for (const verb of ["execute", "withheld", "candidate"]) {
+      const denied = spawnSync(process.execPath, [path.join(__dirname, "skill-authoring-evaluation.js"), verb], { encoding: "utf8" });
+      assert.equal(denied.status, 1); assert.equal(denied.stdout, "");
+      assert.equal(denied.stderr, "SKILL_AUTHORING_EVALUATION_USAGE\n");
+    }
+  });
+  for (const provider of ["codex", "claude"]) for (const format of ["sop", "research", "order-report", "handoff"]) {
+    for (const file of authoring.instructionPaths(provider, format, "candidate")) {
+      if (!fs.existsSync(path.join(repo, file))) write(path.join(repo, file), "# Candidate Conditional Guide\nDo not invent tool execution or source access.\n");
+    }
+  }
+  git(["add", "."]); git(["commit", "-qm", "Fixture candidate with conditional guides"]);
+  const candidateCommit = git(["rev-parse", "HEAD"]);
+  const provenance = { phase: "candidate", candidate_commit: candidateCommit, baseline_commit: frozen.manifest.baseline_commit,
+    bundle_sha256: runner.hash(fs.readFileSync(path.join(bundle, "manifest.json"))) };
+  check("candidate packets retain original task bytes and include revision-specific conditional bodies", () => {
+    for (const provider of ["codex", "claude"]) for (const task of frozen.data["authoring-development.json"]) {
+      const built = authoring.buildPacket(repo, provider, task, provenance), manifest = built.manifest;
+      assert.equal(manifest.version, 2); assert.equal(manifest.phase, "candidate");
+      assert.equal(manifest.candidate_commit, candidateCommit); assert.equal(manifest.baseline_commit, frozen.manifest.baseline_commit);
+      assert.equal(authoring.verifyPacket(built.prompt, manifest).valid, true);
+      const prior = JSON.parse(fs.readFileSync(path.join(root, "prepared", provider + "-" + task.id, "manifest.json")));
+      assert.equal(manifest.task_sha256, prior.task_sha256); assert.equal(manifest.task_bytes, prior.task_bytes);
+      const paths = manifest.segments.map(row => row.path);
+      assert(paths.some(file => file.endsWith("/references/project-content.md")));
+      assert.equal(paths.some(file => file.endsWith("/references/project-terms.md")), task.format === "handoff");
+      for (const segment of manifest.segments.filter(row => row.kind === "instruction")) {
+        assert(built.prompt.subarray(segment.start_byte, segment.end_byte).equals(fs.readFileSync(path.join(repo, segment.path))));
+      }
+    }
+  });
+  check("candidate revision, phase and authorization cannot be substituted in a manifest", () => {
+    const built = authoring.buildPacket(repo, "codex", sampleTask, provenance);
+    for (const mutate of [m => m.candidate_commit = m.baseline_commit, m => m.candidate_commit = "short",
+      m => m.phase = "baseline", m => m.version = 1, m => m.bundle_sha256 = null,
+      m => m.native_transfer_authorized = true, m => m.semantic_acceptance = true, m => m.split = "withheld",
+      m => m.loaded_instruction_bytes = 1, m => m.segments.splice(-2, 1)]) {
+      const manifest = structuredClone(built.manifest); mutate(manifest);
+      assert.throws(() => authoring.verifyPacket(built.prompt, manifest), /SKILL_AUTHORING_EVALUATION_/);
+    }
+    for (const phase of ["withheld", "native", "", null]) assert.throws(() => authoring.buildPacket(repo, "codex", sampleTask, { ...provenance, phase }), /SELECTION_INVALID/);
+  });
+  check("a missing or unsafe candidate conditional guide cannot be replaced by the entrypoint link", () => {
+    const file = path.join(repo, "codex-skills/controls-doctrine-operator/references/project-content.md"), backup = path.join(root, "candidate-guide.md");
+    fs.renameSync(file, backup);
+    try {
+      assert.throws(() => authoring.buildPacket(repo, "codex", sampleTask, provenance), /MISSING/);
+      fs.symlinkSync(backup, file); assert.throws(() => authoring.buildPacket(repo, "codex", sampleTask, provenance), /PATH_INVALID/); fs.unlinkSync(file);
+    } finally { fs.renameSync(backup, file); }
+  });
+  check("candidate preparation creates eight exclusive development packets without freezing withheld evaluation", () => {
+    const output = path.join(root, "candidate-prepared"), result = authoring.prepareCandidate(bundle, repo, candidateCommit, output);
+    assert.equal(result.phase, "candidate"); assert.equal(result.candidate_commit, candidateCommit); assert.equal(result.cases.length, 8);
+    assert.equal(result.global_withheld_candidate_frozen, false); assert.equal(result.withheld_executions, 0);
+    assert.equal(result.native_transfer_authorized, false); assert.equal(result.native_model_calls, 0); assert.equal(result.semantic_acceptance, false);
+    for (const row of result.cases) {
+      const directory = path.join(output, row.name), bytes = fs.readFileSync(path.join(directory, "prompt.md"));
+      assert.equal(runner.hash(bytes), row.prompt_sha256);
+      assert.equal(authoring.verifyPacket(bytes, JSON.parse(fs.readFileSync(path.join(directory, "manifest.json")))).valid, true);
+      assert.equal(fs.statSync(path.join(directory, "prompt.md")).mode & 0o777, 0o600);
+      assert(!bytes.includes("HLD-"));
+    }
+    assert.throws(() => authoring.prepareCandidate(bundle, repo, candidateCommit, output), /EEXIST/);
+    assert.throws(() => authoring.prepareCandidate(bundle, repo, candidateCommit, path.join(repo, "out")), /DESTINATION_INVALID/);
+    assert.throws(() => authoring.prepareCandidate(bundle, repo, candidateCommit, path.join(bundle, "out")), /DESTINATION_INVALID/);
+  });
+  check("candidate preparation rejects dirty, wrong, baseline or missing revision pins", () => {
+    const output = path.join(root, "rejected-candidate");
+    for (const commit of [null, undefined, "", frozen.manifest.baseline_commit]) {
+      assert.throws(() => authoring.prepareCandidate(bundle, repo, commit, output), /CANDIDATE_BINDING_INVALID/);
+    }
+    assert.throws(() => authoring.prepareCandidate(bundle, repo, "1".repeat(40), output), /CANDIDATE_NOT_CLEAN_PINNED_REVISION/);
+    write(path.join(repo, "untracked.md"), "Uncommitted source.\n");
+    try { assert.throws(() => authoring.prepareCandidate(bundle, repo, candidateCommit, output), /CANDIDATE_NOT_CLEAN_PINNED_REVISION/); }
+    finally { fs.unlinkSync(path.join(repo, "untracked.md")); }
+    assert(!fs.existsSync(output));
+  });
+  check("candidate CLI needs an explicit revision and never treats options as execution authority", () => {
+    const script = path.join(__dirname, "skill-authoring-evaluation.js"), output = path.join(root, "candidate-cli");
+    const args = [script, "prepare-candidate", "--bundle", bundle, "--repository", repo, "--candidate-revision", candidateCommit, "--output", output];
+    const result = spawnSync(process.execPath, args, { encoding: "utf8" }); assert.equal(result.status, 0, result.stderr);
+    assert.equal(JSON.parse(result.stdout).native_transfer_authorized, false);
+    for (const tail of [["--execute", "true"], ["--candidate-revision", candidateCommit]]) {
+      const denied = spawnSync(process.execPath, [...args, ...tail], { encoding: "utf8" });
+      assert.equal(denied.status, 1); assert.equal(denied.stdout, "");
+    }
+  });
+  const baselineRoot = path.join(root, "baseline"), freezeRoot = path.join(root, "routing-freeze");
+  git(["worktree", "add", "--quiet", "--detach", baselineRoot, frozen.manifest.baseline_commit]);
+  let sealed;
+  check("routing freeze pins the clean full candidate and both providers without executing withheld inputs", () => {
+    sealed = routing.freezeCandidate(bundle, baselineRoot, repo, candidateCommit, freezeRoot);
+    const freeze = routing.inspectFreeze(sealed.freeze_path, sealed.freeze_sha256).freeze;
+    assert.equal(freeze.candidate.revision, candidateCommit); assert.equal(freeze.baseline.revision, frozen.manifest.baseline_commit);
+    assert.equal(Object.keys(freeze.candidate.source_bindings).length, 4); assert.equal(freeze.process_count, 96);
+    assert.equal(sealed.withheld_executions, 0); assert.equal(freeze.authoring_execution_authorized, false);
+    assert(!fs.existsSync(path.join(freezeRoot, "attempt.json")));
+    assert.throws(() => routing.freezeCandidate(bundle, baselineRoot, repo, candidateCommit, freezeRoot), /EEXIST/);
+    assert.throws(() => routing.freezeCandidate(bundle, baselineRoot, repo, frozen.manifest.baseline_commit, path.join(root, "same")), /CANDIDATE_EQUALS_BASELINE/);
+    for (const base of [repo, baselineRoot, bundle]) {
+      assert.throws(() => routing.freezeCandidate(bundle, baselineRoot, repo, candidateCommit, path.join(base, "outputs")), /DESTINATION_INVALID/);
+    }
+  });
+  check("changed pins, harness, bundle, digest and execution flags reject before a batch is reserved", () => {
+    const original = fs.readFileSync(sealed.freeze_path), freeze = JSON.parse(original);
+    assert.throws(() => routing.inspectFreeze(sealed.freeze_path, "0".repeat(64)), /FREEZE_DIGEST_MISMATCH/);
+    for (const mutate of [x => x.native_transfer_authorized = true, x => x.process_count--,
+      x => x.total_timeout_ms++, x => x.harness_sources["skill-routing-evaluation.js"] = "0".repeat(64),
+      x => x.candidate.source_bindings["codex-skills/controls-doctrine-operator/SKILL.md"] = "0".repeat(64)]) {
+      const changed = structuredClone(freeze); mutate(changed); const bytes = json(changed); write(sealed.freeze_path, bytes);
+      assert.throws(() => routing.evaluateFrozen(sealed.freeze_path, runner.hash(bytes)), /SKILL_ROUTING_EVALUATION_/);
+      assert(!fs.existsSync(path.join(freezeRoot, "attempt.json")));
+    }
+    write(sealed.freeze_path, original);
+    const nodeOptions = process.env.NODE_OPTIONS;
+    process.env.NODE_OPTIONS = [nodeOptions, "--no-warnings"].filter(Boolean).join(" ");
+    try { assert.throws(() => routing.evaluateFrozen(sealed.freeze_path, sealed.freeze_sha256), /RUNTIME_CHANGED/); }
+    finally { if (nodeOptions === undefined) delete process.env.NODE_OPTIONS; else process.env.NODE_OPTIONS = nodeOptions; }
+    const source = path.join(repo, "docs/source.md"); write(source, "Changed\n");
+    try { assert.throws(() => routing.evaluateFrozen(sealed.freeze_path, sealed.freeze_sha256), /REVISION_NOT_CLEAN_PINNED/); }
+    finally { write(source, "Synthetic policy.\n"); }
+    fs.appendFileSync(path.join(bundle, "routing-withheld.json"), " ");
+    try { assert.throws(() => routing.evaluateFrozen(sealed.freeze_path, sealed.freeze_sha256), /MEMBER_CHANGED/); }
+    finally { publish(); }
+    const copy = path.join(root, "copied-freeze"); fs.mkdirSync(copy); write(path.join(copy, "freeze.json"), original);
+    assert.throws(() => routing.evaluateFrozen(path.join(copy, "freeze.json"), sealed.freeze_sha256), /FREEZE_INVALID/);
+    assert(!fs.existsSync(path.join(freezeRoot, "attempt.json")));
+  });
+  check("one frozen routing batch covers 24 cases in both revisions and clients with raw failures retained", () => {
+    const result = routing.evaluateFrozen(sealed.freeze_path, sealed.freeze_sha256);
+    assert.equal(result.measurement_completed, true); assert.equal(result.candidate_matches_all, true);
+    assert.deepEqual(result.counts, { baseline: { observed: 48, matched: 48 }, candidate: { observed: 48, matched: 48 } });
+    const report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(report.results.length, 96); assert.equal(report.withheld_executions, 48);
+    assert.equal(report.native_model_calls, 0); assert.equal(report.semantic_acceptance, false);
+    assert.equal(report.loaded_instruction_bytes, null); assert.equal(report.unexecuted_processes, 0);
+    assert(report.results.every(row => row.selection_completed && row.argv.at(-2) === "--"));
+    assert.equal(fs.readFileSync(path.join(freezeRoot, "results.jsonl"), "utf8").trimEnd().split("\n").map(line => JSON.parse(line)).length, 96);
+    assert.equal(fs.statSync(result.report_path).mode & 0o777, 0o600);
+    assert.throws(() => routing.evaluateFrozen(sealed.freeze_path, sealed.freeze_sha256), /ALREADY_ATTEMPTED/);
+  });
+  check("Git errors and signals cannot freeze a completed-looking checkout", () => {
+    for (const injected of ['error:Object.assign(new Error("timeout"),{code:"ETIMEDOUT"})', 'signal:"SIGTERM"', 'status:null']) {
+      const code = `const cp=require('node:child_process'),spawn=cp.spawnSync;cp.spawnSync=(...a)=>{const r=spawn(...a);return a[0]==='git'?{...r,${injected}}:r;};try{require(${JSON.stringify(path.join(__dirname, "skill-routing-evaluation.js"))}).freezeCandidate(...${JSON.stringify([bundle, baselineRoot, repo, candidateCommit, path.join(root, "git-failed")])});process.exitCode=2;}catch(e){console.log(e.message);}`;
+      const observed = spawnSync(process.execPath, ["-e", code], { encoding: "utf8", timeout: 20000 });
+      assert.equal(observed.status, 0); assert.equal(observed.stdout.trim(), "SKILL_ROUTING_EVALUATION_GIT_UNAVAILABLE");
+    }
+    assert(!fs.existsSync(path.join(root, "git-failed")));
+  });
+  const routerPath = path.join(repo, "codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js");
+  const safeRouter = fs.readFileSync(routerPath, "utf8");
+  check("a batch deadline leaves an attempted record and does not start the remaining processes", () => {
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, candidateCommit, path.join(root, "deadline"));
+    const now = Date.now; let calls = 0, result;
+    Date.now = () => now() + calls++ * 600001;
+    try { result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256); }
+    finally { Date.now = now; }
+    const report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(result.failure, "SKILL_ROUTING_EVALUATION_BATCH_DEADLINE");
+    assert.equal(report.results.length, 0); assert.equal(report.unexecuted_processes, 96);
+    assert.throws(() => routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), /ALREADY_ATTEMPTED/);
+  });
+  check("semantic mismatches remain complete measurements but never candidate passes", () => {
+    fs.appendFileSync(routerPath, 'console.log("Unexpected extra output");\n');
+    git(["add", "."]); git(["commit", "-qm", "Fixture routing mismatch"]);
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, git(["rev-parse", "HEAD"]), path.join(root, "mismatch"));
+    const result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256);
+    assert.equal(result.measurement_completed, true); assert.equal(result.candidate_matches_all, false);
+    assert.equal(result.counts.candidate.matched, 24);
+    const report = JSON.parse(fs.readFileSync(result.report_path));
+    assert(report.results.filter(row => row.phase === "candidate" && row.provider === "codex-skills").every(row => row.issues.includes("JSON_OUTPUT")));
+  });
+  check("a process interruption preserves the attempted result, stops the suffix and cannot be retried", () => {
+    write(routerPath, 'process.kill(process.pid,"SIGTERM");\n');
+    git(["add", "."]); git(["commit", "-qm", "Fixture routing interruption"]);
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, git(["rev-parse", "HEAD"]), path.join(root, "interrupted"));
+    const result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(result.measurement_completed, false); assert.equal(result.failure, "SKILL_ROUTING_EVALUATION_PROCESS_INCOMPLETE");
+    assert.equal(report.results.length, 49); assert.equal(report.results.at(-1).signal, "SIGTERM");
+    assert.equal(report.unexecuted_processes, 47);
+    assert.throws(() => routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), /ALREADY_ATTEMPTED/);
+  });
+  check("unsafe selected paths preserve process evidence rather than losing the completed invocation", () => {
+    write(routerPath, 'console.log(JSON.stringify({query:process.argv.at(-1),recommended_documents:[{path:"../outside.md"}],operating_mode:{actor:"user",role:null,department:null,authority:null},capability_routing:{status:"covered"}}));\n');
+    git(["add", "."]); git(["commit", "-qm", "Fixture unsafe selection"]);
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, git(["rev-parse", "HEAD"]), path.join(root, "unsafe"));
+    const result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(result.measurement_completed, false); assert.equal(result.failure, "SKILL_EVALUATION_PATH_INVALID");
+    assert.equal(report.results.length, 49); assert.equal(report.results.at(-1).exit_code, 0);
+    assert.equal(report.results.at(-1).selection_completed, false); assert(report.results.at(-1).stdout.includes("outside.md"));
+  });
+  check("malformed route members retain raw output even when assessment cannot complete", () => {
+    write(routerPath, 'console.log(JSON.stringify({query:process.argv.at(-1),recommended_documents:[null],operating_mode:{actor:"user"},capability_routing:{status:"covered"}}));\n');
+    git(["add", "."]); git(["commit", "-qm", "Fixture malformed route members"]);
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, git(["rev-parse", "HEAD"]), path.join(root, "malformed"));
+    const result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(result.failure, "SKILL_ROUTING_EVALUATION_ROUTE_ASSESSMENT_FAILED");
+    assert.equal(report.results.length, 49); assert(report.results.at(-1).stdout.includes("[null]"));
+    assert.equal(report.results.at(-1).selection_completed, false);
+  });
+  check("a checkout changed during successful-looking routing cannot pass the final pin check", () => {
+    write(routerPath, 'require("fs").appendFileSync("docs/source.md","Changed during execution.\\n");\n' + safeRouter);
+    git(["add", "."]); git(["commit", "-qm", "Fixture changes checkout during routing"]);
+    const next = routing.freezeCandidate(bundle, baselineRoot, repo, git(["rev-parse", "HEAD"]), path.join(root, "drift"));
+    const result = routing.evaluateFrozen(next.freeze_path, next.freeze_sha256), report = JSON.parse(fs.readFileSync(result.report_path));
+    assert.equal(result.failure, "SKILL_ROUTING_EVALUATION_REVISION_NOT_CLEAN_PINNED");
+    assert.equal(report.results.length, 96); assert.equal(report.counts.candidate.matched, 48);
+    assert.equal(result.measurement_completed, false); assert.equal(result.candidate_matches_all, false);
+  });
+  check("routing CLI refuses omitted freeze digests and unrelated execution options", () => {
+    for (const args of [["evaluate", "--freeze", sealed.freeze_path], ["execute"],
+      ["evaluate", "--freeze", sealed.freeze_path, "--freeze-sha256", sealed.freeze_sha256, "--native", "true"]]) {
+      const denied = spawnSync(process.execPath, [path.join(__dirname, "skill-routing-evaluation.js"), ...args], { encoding: "utf8" });
+      assert.equal(denied.status, 1); assert.equal(denied.stdout, ""); assert.equal(denied.stderr, "SKILL_ROUTING_EVALUATION_USAGE\n");
+    }
+  });
+  console.log(JSON.stringify({ valid: true, fixtures: count, native_model_calls: 0, actual_evaluation_withheld_executions: 0 }));
+} finally { fs.rmSync(root, { recursive: true, force: true }); }

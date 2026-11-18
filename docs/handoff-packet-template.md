@@ -71,6 +71,13 @@ origin-map row in every paragraph. State whose checks ran in which phase;
 model-only non-execution claims must not erase the preparer's actual work.
 Check every "above", "below", "attached" and original-request reference against
 that declared unit. A model's prompt is not an attachment to its response.
+Check the successor's stated next action using only that unit. If it requires
+reviewing a named draft, order, table or question list outside the selected
+section, include those bodies or declare the complete packet as the unit.
+Operative summary bullets are not the exact candidate the successor is asked
+to review. Do not call a subsection standalone while retaining undefined
+question IDs or references to omitted outputs. Reconcile "whole packet" labels
+with any section range, including material added after that range.
 Include the authorized text or an actual supplied lookup; do not claim the
 original request is reproduced when only a purpose summary is present.
 

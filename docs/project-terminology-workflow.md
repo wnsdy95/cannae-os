@@ -29,8 +29,9 @@ ledger entry merely because the mention's origin is known.
 Use [Document Authoring Workflow](document-authoring-workflow.md) and
 [Knowledge Management SOP](knowledge-management-sop.md), not a separate service
 or background collector. The agent performs capture through ordinary authorized
-file edits; the local helper validates and selects records but does not listen
-to conversations or write definitions automatically. Actual model compliance
+file work; the local helper validates/selects records, prepares source-bound
+proposals and explicitly appends reviewed changes. It does not listen to
+conversations or decide definitions automatically. Actual model compliance
 with this procedure still needs behavioral evaluation.
 
 ## Canonical Record And Boundaries
@@ -68,6 +69,29 @@ execution authority or release permission. A project's informal use of
 rules. Qualify overloaded terms and retain the actual control fields unchanged.
 Do not infer role access from vocabulary familiarity or a newly suggested team.
 
+### Capture State Progression
+
+Use the local proposal, appraisal and writer commands below when the current
+task supplies a reusable meaning. A new question can remain a source-bound memo;
+capture does not require inventing a definition or writing a ledger entry.
+
+| Observation | Record and report | Current meaning |
+| --- | --- | --- |
+| Explicit USER definition | Prepare, compare each field with the statement, then explicitly append under existing writer authority. | No new current definition until the append completes. |
+| AI interpretation of that concept | Append a reviewed candidate with its AI basis; retain the earlier confirmed definition. | Report the operative definition and candidate separately. |
+| Later USER correction | Append after the latest revision, even when that revision is a candidate; use the new USER source. | The new confirmed revision becomes operative without relabeling the old AI entry. |
+| Same spelling in another project/domain | Appraise a separate concept; do not borrow aliases, exclusions or access lists. | Only that project's scoped selection applies. |
+| Question about meaning or approval | Retain the unresolved question; clarify when material. No definition or permission follows. | Unavailable in this selection is not universal absence. |
+| Explicit USER retirement | Append retirement and retain the identifying text and lineage. | Historical text is not a current meaning or authorized fallback. |
+
+The latest revision determines append lineage; it need not be the operative
+confirmed meaning. Reinspect the current ledger and obtain a fresh selection
+after writing. Preserve old reports and stale bindings instead of patching their
+digests. The [local capture walkthrough](completion-backlog.md#local-terminology-capture-2026-11-16)
+observed this progression through both bundled CLI wrappers in two synthetic
+repositories. It is operator-assisted engineering evidence, not automatic
+conversation understanding, authenticated USER authorship or native receiving.
+
 ## Local Checks And Selection
 
 From either loaded provider bundle, locate its `scripts/project_terminology.js`.
@@ -83,7 +107,8 @@ node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" select --repository "$
 
 `init` prints an empty root-bound candidate; it creates or overwrites nothing.
 When a reusable term is actually observed and local writing is allowed, the
-agent creates the private ledger from that identity and appends sourced records.
+designated writer uses the proposal and reviewed-append path below to create the
+private ledger or append a sourced revision under existing write authority.
 Do not initialize empty ledgers in every visited project. Check repository
 exclusions before storing private material; never commit the ledger by default.
 No command fetches source references, invokes a model, installs a client or
@@ -105,6 +130,196 @@ Role and department must both match. A user selection is not artificially
 restricted by an assistant role, but still requires source read authority.
 Inspect selected text for sensitive information before transfer. Do not ship
 the private ledger or treat syntactic validity as disclosure clearance.
+
+## Source-Bound Change Proposals
+
+For an observed term, the authorized source reader preserves the minimal original
+statement in the target project, not a global conversation cache. Do not collect
+unrelated messages. Create a request using
+[ProjectTerminologyChangeRequest](../schema-files/project-terminology-change-request.schema.json);
+the [synthetic sample](../sample-payloads/valid-project-terminology-change-request.json)
+is shape guidance, not an actual user statement or runnable source approval.
+
+The request supplies the exact existing ledger SHA-256, or null when it does not
+exist; the concept and scope; proposed spelling, aliases, meaning and status; and
+source kind/reference/excerpt. Its source binding names an exact relative UTF-8
+file, whole-file SHA-256 and zero-based half-open byte range for that excerpt.
+Offsets are UTF-8 bytes, not characters or lines. Preserve original language;
+normalization used for matching is not exact source reproduction.
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" propose-change --repository "$TARGET_REPOSITORY" --request .cannae/knowledge/change-requests/one.json
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" inspect-change --repository "$TARGET_REPOSITORY" --proposal .cannae/knowledge/changes/<proposal-id>/proposal.json --proposal-sha256 <exact-sha256>
+```
+
+Use a regular project source file or the private
+`.cannae/knowledge/observations/` subtree. The helper does not fetch URLs, inspect
+other conversations or interpret the source text. Inputs stay within the exact
+target repository; traversal, hidden configuration paths, symlinks, hardlinks,
+invalid UTF-8 and changed/incomplete reads are rejected. The source is bounded to
+128 KiB; minimize an authorized observation rather than silently truncating it.
+Only an operator allowed to read the whole selected source and private ledger
+may invoke this path. A CLI argument is not a new source-access grant.
+
+`propose-change` validates the complete proposed append against the old ledger,
+assigns its revision ID/version/predecessor and writes only
+`.cannae/knowledge/changes/<proposal-id>/proposal.json`. That destination must
+already be ignored by the project; the helper neither changes ignore rules nor
+commits anything. The exact proposed path is checked before creating its directory,
+immediately before writing and during inspection; a generic ignored probe is not
+enough. A negated Git rule or already tracked proposal stops this path. Preserve
+existing evidence and ask its owner to resolve storage; do not automatically edit
+ignore rules, untrack files, delete a proposal or move its private contents.
+This local recheck does not protect against a concurrent actor changing Git policy
+after the check. It creates no canonical ledger, even when none existed.
+New concepts have no delegated access by default; a correction preserves the
+predecessor's domain/task and role/department lists. A changed scope requires a
+separate concept, not rewriting prior meaning. Term capture cannot widen access.
+Scope equality compares domain/task values, not JSON object-key order. Exact
+request and proposal digests still bind their serialization independently.
+
+The [proposal contract](../schema-files/project-terminology-change-proposal.schema.json)
+binds the exact request, repository identity, proposed entry and predecessor.
+An AI inference may request only `candidate`. A user-sourced request may propose
+`confirmed` or an existing concept's retirement, but these are proposed states,
+not current definitions: `canonical_ledger_written`, `confirmation_adopted`
+and `transfer_authorized` remain false. Source-kind labels and exact quotes do
+not authenticate who said them or establish semantic accuracy. Review the actual
+USER statement and proposed interpretation before any canonical append.
+
+`inspect-change` requires the exact proposal digest, rereads the current ledger
+and source, and reconstructs the expected append. Any ledger change, including
+an unrelated new term, invalidates its old base. Source edits or repository
+replacement likewise stop reuse. Preserve the old proposal and prepare a new
+one for review; do not patch hashes or silently choose the last competing draft.
+A final-inspection failure may leave a private pending file, never an adopted
+entry. An unrelated valid draft need not stop merely because this proposal is stale.
+
+The local OPSEC checker rejects credential-shaped values and other configured
+findings before proposal publication; diagnostics do not echo their contents.
+A refusal needs authorized source review, not deletion of real restrictions or
+an automatic exception. Passing this local check is not disclosure clearance.
+Do not send private proposals or use them as current recipient selections.
+The existing packet screening and required-term checks still govern handoffs.
+
+These two proposal commands never apply, confirm or retire a definition. The
+separate reviewed-append path below handles a designated writer's explicit
+canonical update. Registered document/task impact tracking uses the dependency
+procedure below; complete R4 appraisal remains separately tracked in the backlog.
+The checks do not claim a protected host, automatic semantic dependency discovery,
+authenticated human decisions or actual model use.
+
+## Reviewed Canonical Append
+
+Only the designated writer with existing read/write authority for the whole
+ledger uses this path. Delegates submit proposals; a role string, writer ID or
+valid JSON file cannot appoint that writer or grant source access. The helper
+does not authenticate the operator or prevent a filesystem owner from editing
+files directly. It coordinates cooperating local processes, not a protected host.
+
+Before writing, inspect the exact proposal and compare its meaning with the
+actual source. Review the preferred term, aliases, definition, excluded meanings
+and scope separately. Exact byte binding proves which text was supplied, not
+that every populated field follows from it. A user's question or suggestion is
+not necessarily an explicit definition; keep uncertainty in a candidate or
+clarify only when it affects the task or boundary.
+
+Do not turn general execution policy into a claimed user definition. For example,
+the sample source excludes a contact role, not "execution approval"; the corrected
+`not_meaning` retains only that sourced exclusion. An unstated exclusion can be
+empty. Reusing a sample for a different concept must not carry its old exclusions
+or aliases automatically. Corrections may retain still-applicable predecessor
+meaning with its lineage; a different concept/scope needs its own appraisal.
+Authority, disclosure and stop controls remain independently applicable even
+when the vocabulary record has no excluded meaning. This is a review procedure,
+not an automatic semantic validator or an extra approval for each unambiguous word.
+
+Record that appraisal in `review.json` beside `proposal.json`,
+using [ProjectTerminologyChangeReview](../schema-files/project-terminology-change-review.schema.json).
+The [synthetic example](../sample-payloads/valid-project-terminology-change-review.json)
+is not a real appraisal, USER decision, source-access grant or reusable consent.
+Do not create an `append` record merely because preparation or tests passed.
+
+The record binds the proposal SHA-256, writer attribution, review reference,
+decision and source assessment. `candidate_only` preserves uncertainty;
+`explicit_user_definition` and `explicit_user_retirement` require the corresponding
+actual USER statement. These labels are the writer's recorded assessment, not
+authenticated proof. AI inference cannot become confirmed or retired. Existing
+capture authority can cover recording a clear USER definition; do not invent a
+new approval requirement for every word. Ask when meaning or authority is unclear.
+`defer` and `reject` never append. A review is valid for at most 24 hours and is
+checked again immediately before writing; this local bound is not military doctrine
+or a renewal of unrelated execution/model-transfer consent.
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" adopt-change --repository "$TARGET_REPOSITORY" --proposal .cannae/knowledge/changes/<proposal-id>/proposal.json --proposal-sha256 <exact-proposal-sha256> --review-sha256 <exact-review-sha256>
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" inspect-adoption --repository "$TARGET_REPOSITORY" --transaction .cannae/knowledge/transactions/<transaction-id>/transaction.json --transaction-sha256 <exact-transaction-sha256>
+```
+
+The writer rechecks source, proposal, review, repository identity and expected
+ledger under an exclusive non-expiring `terminology-write.lock.json`. It writes
+private, hash-bound proposal/review and before/after snapshots under
+`.cannae/knowledge/transactions/<transaction-id>/`, governed by
+[ProjectTerminologyChangeTransaction](../schema-files/project-terminology-change-transaction.schema.json).
+The ID derives from the proposal/review hashes. An existing transaction directory
+prevents reuse of that exact review, including after a failed partial preparation.
+Do not delete the directory or change an old hash to obtain another attempt.
+Retain it and prepare a fresh reviewed change if another append is still needed.
+
+Every actual output must already be ignored by Git and absent from its index,
+including an existing canonical ledger. A force-tracked file is not made private
+by an ignore rule. The helper changes no ignore rule, untracks nothing and
+publishes nothing. It preserves the complete earlier ledger as a private
+snapshot, appends exactly one validated entry, syncs the staged file and atomically
+renames it into place. It checks the resulting ledger and releases only its own
+unchanged lock. Source/review changes, expiry or changed exact ignore rules before publication stop the write;
+new concepts still have no delegated readers and corrections cannot widen access.
+No automatic adoption follows from `propose-change` or `inspect-change`.
+
+On success, retain the returned transaction path/hash and current ledger digest.
+Obtain a fresh scoped selection for subsequent work. Earlier reports, excerpts,
+packets and source snapshots remain unchanged. A successful append is not task
+resumption, policy adoption, execution permission, disclosure clearance or proof
+that another agent received or understood the new meaning.
+
+`inspect-adoption` appraises retained snapshots against the current canonical
+ledger, not the current source conversation. `matches_before` observes the old
+bytes or expected absence; it does not prove the append never occurred before an
+external rollback. `matches_after` observes the exact result. `extends_after`
+requires additional entries with the earlier prefix unchanged. A formatting-only
+rewrite is `after_content_reencoded`, not a new term revision; its changed ledger
+digest still invalidates old packet bindings. Divergent history is refused rather
+than reconstructed from a snapshot. Historical review expiry does not erase a
+recorded append or authorize another one.
+
+### Interrupted Writer Reconciliation
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" inspect-writer --repository "$TARGET_REPOSITORY"
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" recover-adoption --repository "$TARGET_REPOSITORY" --lock-id <observed-lock-id> --transaction-sha256 <observed-transaction-sha256>
+```
+
+No timeout or age automatically steals a lock. `inspect-writer` checks the
+recorded local process; a different host, permission uncertainty or reused live
+PID is not proof of exit. Do not terminate another writer merely to proceed.
+Recovery requires the exact lock/transaction binding and an exited local process,
+then rechecks ownership and snapshots before releasing the lock. It never applies
+the staged definition, rewrites the ledger, renews a review or retries the append.
+
+An incomplete transaction may be released only while the ledger still matches
+the recorded before state. Missing evidence after publication, divergent history,
+malformed locks, root replacement or unobservable ownership remain held for manual
+owner appraisal. Preserve staged files and partial records; do not invent a pass
+or silently clear them. If a process exits after a completed write, observe its
+actual result before proposing another append. If a later release/directory-sync
+error leaves no active lock, use the retained transaction to inspect the result;
+absence of a lock is not proof of success or permission to repeat it.
+
+This is local cooperative serialization with process-interruption checks. It does
+not enforce append-only history against an editor that ignores the lock, provide
+filesystem compare-and-swap against such an editor, guarantee storage behavior
+under power loss, authenticate human decisions or synchronize distributed hosts.
+Registered impact reconciliation and native agent use are evaluated separately.
 
 ## Routing And Handoff
 
@@ -196,6 +411,112 @@ Binding includes local directory device/inode identities, so replacing the Git
 repository at the same path also requires review. This is local identity
 checking, not cryptographic repository authentication or portable synchronization.
 
+## Registered Dependency Impact
+
+The local `project-knowledge-dependencies.js` helper is available through both
+installed `scripts/project_terminology.js` wrappers. It records declared document,
+task, source, term and upstream-work dependencies without a server or background
+collector. It does not discover unregistered semantic uses. Only a caller already
+authorized for all inputs, the registry and the whole terminology ledger may use
+it; private paths and hashes are metadata, not approved outbound content.
+
+Use [ProjectKnowledgeDependencyRequest](../schema-files/project-knowledge-dependency-request.schema.json)
+and its [synthetic sample](../sample-payloads/valid-project-knowledge-dependency-request.json).
+Keep the request under `.cannae/knowledge/dependency-requests/<name>.json` in the
+target Git root. The subject identifies a document and/or task; a planned document
+path is not automatically read as an input. List exact source hashes and whether
+each is required. Ordinary non-hidden project documents and explicitly selected
+`.cannae/document-drafts/` files are supported, with a 4 MiB limit per source.
+Hidden credential locations, symbolic/hard links, nested repositories and paths
+outside this root are rejected. This path policy is not universal secret detection
+or proof that the caller may read an otherwise valid file.
+
+Optional terminology binding declares the exact ledger hash (null only for known
+absence), domain, task, reader context, original spellings and `required_terms`.
+An empty required list is a declaration, not proof the task needs no meanings.
+Compare it with the original request. Denied definitions are not retained in the
+record; selected views are hashed with their scope, revision and operative state.
+Use upstream work IDs and exact record hashes when a downstream task depends on
+another registered work item, not just on a file that has not yet been revised.
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" register-dependencies \
+  --repository /absolute/project --request .cannae/knowledge/dependency-requests/sop.json \
+  --request-sha256 <exact-reviewed-request-sha256>
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" inspect-dependencies \
+  --repository /absolute/project
+node "$CONTROLS_SKILL_DIR/scripts/project_terminology.js" prepare-dependency-refresh \
+  --repository /absolute/project --work-id WORK-SOP --record-sha256 <current-record-sha256>
+```
+
+`register-dependencies` requires a nonempty `review_reference` describing the real
+appraisal. This is attribution, not authenticated approval or semantic review by
+the CLI. Initial registration uses null `previous_sha256`; refresh binds the exact
+current predecessor. A successful write creates the next exclusive numeric record
+under `.cannae/knowledge/dependencies/<WORK-ID>/000001.json`, never overwrites it.
+The exact output must already be ignored and untracked. The
+[record contract](../schema-files/project-knowledge-dependency-record.schema.json)
+retains the request, local repository identity, version and term observations.
+No definition bodies or source contents are copied into the registry.
+
+Repository identity, source-origin and output-ignore checks reject Git process
+errors, termination signals and missing terminal status before using stdout or
+status zero. `TERMINOLOGY_GIT_UNAVAILABLE` and
+`KNOWLEDGE_DEPENDENCY_GIT_UNAVAILABLE` mean the metadata observation failed, not
+that a ledger is absent, a source belongs elsewhere or an ignore rule is wrong.
+The dependency CLI may report its sanitized `INPUT_UNAVAILABLE` for an identity
+failure. Preserve the original failure and existing ledger/records; do not
+initialize replacement state, change ignore rules or silently reuse old metadata.
+Failures before publication stop creation of the record or refresh request.
+A failed post-publication reinspection can leave the new record present: retain
+it and inspect the actual state once metadata is available rather than assuming
+the failed call wrote nothing or replaying initial registration. Reinspection
+reports an unavailable source with its original required
+flag, so dependent work is held without inventing a global stop for optional work.
+Any permitted fresh attempt must recheck current inputs without extending the
+original process deadline or inheriting retry/transfer permission.
+
+`inspect-dependencies` optionally takes `--work-id`. It reports only registered
+work, not a scan of project prose. Recheck before dependent work and handoff:
+
+| Status | Required operator action |
+| --- | --- |
+| `registered_inputs_current` | Inputs match their recorded versions. Still review the work itself and original task; this is not permission to execute or transfer. |
+| `binding_refresh_required` | Appraise a changed ledger binding, pending candidate or upstream notice. An unchanged confirmed meaning is not silently replaced; exact packet checks still apply. |
+| `review_needed` | Optional dependency changed or is unavailable. Record the uncertainty and preserve permitted independent work. |
+| `held` | A required source/meaning/upstream changed or is unavailable, or the local record is invalid. Hold affected conclusions and appraise the actual cause. |
+
+Required candidate-only, retired, conflicting or denied meanings stay held even
+after registering their observed state. A candidate after an operative confirmed
+definition does not replace that definition. Unrelated ledger edits and formatting
+changes trigger binding refresh, not a global halt. An upstream hold propagates
+to its required dependents before any dependent document changes. A fresh upstream
+record does not prove its document is repaired, so downstream record changes still
+need their own appraisal. No result grants authority, confirms completeness or
+claims source truth, work correctness or receiver acceptance.
+
+Refresh preparation writes a separate request with `review_reference: null` and
+current explicit hashes; it does not change the registered record. Unavailable
+sources, including optional ones, prevent creating that draft rather than being
+dropped. Optional work may still continue with a reported limitation. Review
+the actual revised inputs against the original task, repair the work where needed,
+then record the appraisal and pass the edited request's new hash to registration.
+Changing requirements, source identities/paths, reader/scope, subject or upstream
+membership in a refresh is rejected. Legitimate scope changes require replanning
+and an explicitly separate replacement work ID; retain and link the old history.
+This registry does not authenticate that replacement decision or retire old work.
+
+Keep prior reports, packets and records unchanged. Prepare a new scoped excerpt
+and packet through the existing recipient/disclosure procedure; registry refresh
+is not transmission clearance and does not make an old packet current. On missing,
+malformed, partial or gapped records, preserve evidence for owner appraisal. Never
+fall back to an older version or delete a competing write to obtain a pass. There
+is no automatic repair, expiry-based recovery, protected storage, portable identity
+or transactional snapshot of all source files. Rechecks detect bounded changes;
+an editor ignoring this cooperative local procedure can alter state. The bounded
+registry supports 128 work items per inspection, 256 revisions per work item,
+16 sources, 16 upstream dependencies and 32 selected terms per request.
+
 ## Evidence And Limits
 
 `run-project-terminology-fixtures.js` exercises fresh-process reuse, inferred
@@ -204,15 +525,20 @@ filtering, multilingual aliases, repository separation, stale digests, unsafe
 paths and both linked/copied provider wrappers. The shared validator always
 returns `can_execute: false` for this contract.
 
-These are deterministic local checks. They do not authenticate the claimed user
-source, prove an inferred definition is correct, enforce append-only storage
-against an editor, provide concurrent-write transactions or prove actual
-recipient understanding. Coordinate a single writer, compare the predecessor
-before saving, and merge delegates' reported candidates under existing write
-authority rather than allowing simultaneous full-ledger edits. Retain history
-and re-read after edits. The approved synthetic dialogue exercise below observes
+`run-project-terminology-writer-fixtures.js` additionally exercises reviewed
+append, actual competing local processes and interrupted-writer reconciliation.
+These local checks do not authenticate the claimed user source, prove an inferred
+definition correct, enforce storage against an editor ignoring the lock or prove
+actual recipient understanding. Coordinate the designated writer through the
+reviewed-append path instead of simultaneous full-ledger edits; preserve history
+and re-read after updates. The approved synthetic dialogue exercise below observes
 supplied-guidance capture, not automatic collection or actual multi-agent use.
 Those broader behaviors remain unverified. No dashboard or infrastructure claim follows.
+
+`run-project-knowledge-dependency-fixtures.js` exercises registered impact,
+required/optional and independent work, scoped term states, reviewed refresh,
+history preservation, unsafe/unavailable files and both installed wrappers. These
+are local synthetic checks, not fresh native-agent use or semantic discovery.
 
 ## Approved Dialogue Exercise (2026-11-11)
 

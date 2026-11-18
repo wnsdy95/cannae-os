@@ -6,6 +6,7 @@ const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
 const { validateSkill } = require("./validate-controls-skill");
+const { TOPICS } = require("./codex-skills/controls-doctrine-operator/scripts/read_controls_instructions");
 
 const ROOT = __dirname;
 const ROUTERS = [
@@ -217,6 +218,71 @@ function testS6Reading(router) {
   const incomplete = route(router, ["--actor=ai", "--role=S6", "--authority=read-only"], query);
   assert(incomplete.operating_mode.escalation_required_when.some(x => x.includes("missing department")));
   assert.equal(incomplete.operating_mode.department, "unspecified");
+}
+
+function testTaskIntakeViews(router) {
+  const args = ["--actor=ai", "--role=S3", "--department=operations", "--authority=read-only"];
+  const specialists = ["docs/enforced-dispatch-and-resume.md", "docs/protected-tool-gateway-contract.md",
+    "docs/protected-process-execution.md", "docs/oci-linux-sandbox-provider.md", "docs/production-sandbox-admission.md", ...RUNTIME_SPECIALIST_DOCS];
+  const original = "Draft a support SOP from supplied policy. Do not publish. Do not build a dashboard.";
+  const baseline = route(router, args, original);
+  for (const heading of ["", "Task: ", "Request: ", "### Assignment: ", "**Objective:**\n"]) {
+    for (const exclusion of ["Do not publish or build a dashboard.", "Exclude dashboard and server work.",
+      "Never build a dashboard or transmit the document.", "Omit dashboard and server implementation from this task."]) {
+      const query = heading + "Draft a support SOP from supplied policy. Do not publish. " + exclusion;
+      const result = route(router, args, query);
+      assert.equal(result.query, query); assert.equal(result.capability_routing.status, "covered");
+      assert.equal(result.request_intake.original_constraints_in, "query");
+      assert.equal(result.request_intake.semantic_completeness_verified, false);
+      assert.equal(result.request_intake.authority_changed, false);
+      assert.equal(result.operating_mode.authority, "read-only");
+      for (const file of ["docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md"]) {
+        assert(result.recommended_documents.some(row => row.path === file));
+      }
+      for (const file of specialists) assert(!result.recommended_documents.some(row => row.path === file), query + file);
+      for (const command of baseline.validation_commands) assert(result.validation_commands.includes(command));
+    }
+  }
+  const excluded = "Request: Draft a support SOP. Exclude dashboard and server work.";
+  for (const extra of [["--source=docs/event-sourcing-model.md"], ["--department=systems"],
+    ["--capability-query=Review dashboard architecture."]]) {
+    const result = route(router, [...args, ...extra], excluded);
+    assert(result.recommended_documents.some(row => row.path === "docs/event-sourcing-model.md"));
+  }
+  for (const query of ["Task: Review dashboard architecture without deployment.",
+    "Task: Draft an SOP. Exclude dashboard implementation. Review its design.",
+    "Draft an SOP. Do not build a dashboard unless its review requires it.",
+    "Draft an SOP. Exclude skipped dashboard verification."]) {
+    assert(route(router, args, query).recommended_documents.some(row => row.path === "docs/reference-architecture.md"), query);
+  }
+  for (const join of [" and ", "; also ", ". ", " and then "]) {
+    const query = "Task: Compare ICP sales targeting" + join + "Draft a support SOP. Do not contact customers.";
+    const result = route(router, args, query);
+    assert.equal(result.query, query); assert.equal(result.capability_routing.status, "gap_detected");
+    assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+    assert.equal(result.request_intake.objectives, "inferred_task_clauses");
+    assert(result.capability_assessment_basis.includes("unverified"));
+    assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+    assert.equal(result.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+    const declared = route(router, [...args, ...result.capability_queries.map(value => "--capability-query=" + value)], query);
+    for (const field of ["operating_mode", "recommended_documents", "validation_commands", "capability_routing"]) {
+      assert.deepEqual(result[field], declared[field], "Inferred and declared clauses need the same conservative context");
+    }
+    const guarded = spawnSync(process.execPath, [path.join(ROOT, router), ...args,
+      "--receipt", "--scope=agent", "--mission=MIS-INTAKE", "--wave=W1", "--agent=writer", "--", query], { encoding: "utf8" });
+    assert.equal(guarded.status, 2); assert.equal(guarded.stdout, "");
+    assert(guarded.stderr.startsWith("MULTI_OBJECTIVE_MODE_UNSUPPORTED:"));
+    rejectedObjectives++;
+  }
+  for (const query of ["Review source policies and write a research report in Korean. Do not publish.",
+    "Revise the outgoing documents. Assess the readiness of the drafts."]) {
+    const result = route(router, args, query);
+    assert.equal(result.capability_routing.status, "covered");
+    assert(result.capability_assessments.every(row => row.status === "covered"));
+    assert(!result.recommended_documents.some(row => row.path === "docs/reference-architecture.md"));
+  }
+  const quoted = route(router, args, 'Review "Compare ICP targeting and draft a support SOP" against source policy.');
+  assert(!Object.hasOwn(quoted, "capability_assessments"), "Quoted source text must not become extracted tasking");
 }
 
 function testReadOnlyOperationsDocuments(router) {
@@ -547,12 +613,18 @@ function testDocumentReviewWorkflow(router) {
 function testPlatformExclusionLists(router) {
   const controls = ["node run-maintenance-dashboard-fixtures.js", "node event-replay-prototype/run-event-fixtures.js"];
   const noWork = "No publication, external operations, dashboard or server development.";
+  const deferred = "Keep model transfers and dashboard development deferred.";
   for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
     const plain = route(router, args, "Draft a handoff document.");
     for (const clause of [noWork, "Dashboard and service development remain deferred.",
       "No dashboard implementation, database development, or server work.",
       "The dashboard, a separate server and service implementation are out of scope.",
-      "Do not build a dashboard or a server.", "No publication and external operation or dashboard implementation."]) {
+      "Do not build a dashboard or a server.", "No publication and external operation or dashboard implementation.",
+      deferred, "Please keep model transmissions, dashboard or server work deferred.",
+      "Leave publication, dashboard and server development out of scope.",
+      "Model transfers and dashboard development remain deferred.",
+      "No model transmissions, dashboard development or servers.",
+      "Exclude model transfers, dashboard and server work."]) {
       const query = "Draft a handoff document. " + clause, result = route(router, args, query);
       assert.equal(result.query, query); assert.equal(result.capability_query, query);
       for (const file of RUNTIME_SPECIALIST_DOCS) assert(!result.recommended_documents.some(row => row.path === file), query + ": " + file);
@@ -566,25 +638,45 @@ function testPlatformExclusionLists(router) {
       "No dashboard or server development unless the review requires it.",
       "No publication, dashboard or unknown work.", "No external operations or dashboard review omission.",
       "Do not build a dashboard or a server but review the design.",
-      "No dashboard implementation approval is needed."]) {
+      "No dashboard implementation approval is needed.",
+      deferred + " Review its design.", deferred + " Inspect the dashboard architecture.",
+      "Keep dashboard development deferred unless the review requires it.",
+      "Keep model transfers, dashboard and unknown work deferred.",
+      "Do not keep dashboard development deferred.", "Keep model transfers and dashboard development deferred?",
+      "Dashboard development is deferred?", "No model transmissions, dashboard development or servers?",
+      'The source says "Keep dashboard development deferred".', "Leave dashboard review out of scope."]) {
       const query = "Draft a handoff document. " + clause, result = route(router, args, query);
       for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file), query + ": " + file);
       for (const command of controls) assert(result.validation_commands.includes(command));
     }
-    const query = "Draft a handoff document. " + noWork;
-    for (const extra of [["--source=docs/command-post-dashboard.md"], ["--capability-query=Review dashboard architecture."]]) {
-      const result = route(router, [...args, ...extra], query);
-      for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file));
+    for (const clause of [noWork, deferred]) {
+      const query = "Draft a handoff document. " + clause;
+      for (const extra of [["--source=docs/command-post-dashboard.md"], ["--capability-query=Review dashboard architecture."]]) {
+        const result = route(router, [...args, ...extra], query);
+        for (const file of RUNTIME_SPECIALIST_DOCS) assert(result.recommended_documents.some(row => row.path === file));
+      }
+      const domain = "Analyze museum attendance. " + clause, gap = route(router, args, domain);
+      assert.equal(gap.query, domain); assert.equal(gap.capability_routing.status, "gap_detected");
+      assert(gap.capability_routing.provisional_organization.required);
+      assert.equal(gap.capability_routing.provisional_organization.standing_department_activation_authorized, false);
+      for (const command of [...controls, "node run-force-structure-change-fixtures.js"]) assert(gap.validation_commands.includes(command));
+      const compound = route(router, [...args, "--capability-query=" + domain, "--capability-query=Draft a handoff document."], query + " " + domain);
+      assert.deepEqual(compound.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
     }
-    const domain = "Analyze museum attendance. " + noWork, gap = route(router, args, domain);
-    assert.equal(gap.query, domain); assert.equal(gap.capability_routing.status, "gap_detected");
-    assert(gap.capability_routing.provisional_organization.required);
-    assert.equal(gap.capability_routing.provisional_organization.standing_department_activation_authorized, false);
-    for (const command of [...controls, "node run-force-structure-change-fixtures.js"]) assert(gap.validation_commands.includes(command));
-    const compound = route(router, [...args, "--capability-query=" + domain, "--capability-query=Draft a handoff document."], query + " " + domain);
-    assert.deepEqual(compound.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+    for (const query of [
+      "Audit the Controls project terminology workflow against SR10 and SR12 using local source-grounded capture, reviewed changes and recipient-bound handoff evidence. " + deferred,
+      "Execute the prepared SR10 local terminology capture walkthrough in two synthetic repositories, appraise exact source fields, retain candidate and correction history, and verify retirement and recipient restrictions. No model transmissions, dashboard development or servers."
+    ]) {
+      const result = route(router, args, query);
+      assert.equal(result.query, query); assert.equal(result.request_intake.authority_changed, false);
+      assert.equal(result.operating_mode.actor, args[0] === "--actor=user" ? "user" : "ai");
+      if (args.length > 1) assert.equal(result.operating_mode.authority, "read-only");
+      assert(result.recommended_documents.some(row => row.path === "docs/project-terminology-workflow.md"));
+      for (const file of RUNTIME_SPECIALIST_DOCS) assert(!result.recommended_documents.some(row => row.path === file));
+      for (const command of [...controls, "node run-project-terminology-fixtures.js"]) assert(result.validation_commands.includes(command));
+    }
   }
-  const task = "Draft a handoff document. " + noWork;
+  const task = "Draft a handoff document. " + deferred;
   const systems = route(router, ["--actor=ai", "--role=S6", "--department=systems", "--authority=read-only"], task);
   for (const file of ["docs/reference-architecture.md", "docs/event-sourcing-model.md"]) {
     assert(systems.recommended_documents.some(row => row.path === file));
@@ -593,7 +685,19 @@ function testPlatformExclusionLists(router) {
   const direct = route(router, args, task);
   const receipt = route(router, [...args, "--receipt", "--scope=agent", "--mission=MIS-EXCLUSION-READING", "--wave=W1", "--agent=writer"], task);
   assert.equal(receipt.router_query, task);
-  for (const key of ["matched_routes", "validation_commands", "capability_routing", "recommended_documents"]) assert.deepEqual(receipt[key], direct[key]);
+  for (const key of ["matched_routes", "validation_commands", "capability_routing"]) assert.deepEqual(receipt[key], direct[key]);
+  const conditional = Object.values(TOPICS).flatMap(file =>
+    ["codex-skills", ".claude/skills"].map(directory => directory + "/controls-doctrine-operator/" + file));
+  assert.deepEqual(receipt.recommended_documents.map(row => row.path).sort(),
+    [...new Set([...direct.recommended_documents.map(row => row.path), ...conditional,
+      "docs/model-force-assignment-policy.md", "docs/model-force-v0.2-operations.md", "docs/agent-metl.md",
+      "docs/agent-readiness-ledger.md", "docs/evaluation-metrics.md", "docs/ai-special-operations-tf.md"])].sort());
+  const compoundTask = "Analyze museum attendance and draft a handoff document. " + deferred;
+  const rejected = spawnSync(process.execPath, [path.join(ROOT, router), "--actor=ai", "--role=S3",
+    "--department=operations", "--authority=scoped-execution", "--receipt", "--scope=agent",
+    "--mission=MIS-DEFERRED-COMPOUND", "--wave=W1", "--agent=writer", "--", compoundTask], { encoding: "utf8" });
+  assert.equal(rejected.status, 2); assert.equal(rejected.stdout, "");
+  assert(rejected.stderr.startsWith("MULTI_OBJECTIVE_MODE_UNSUPPORTED:")); rejectedObjectives++;
 }
 
 function testDocumentReadinessScope(router) {
@@ -1108,6 +1212,7 @@ function testDirectTaskIdentity(router) {
 }
 
 for (const router of ROUTERS) {
+  testTaskIntakeViews(router);
   testSourceBoundDraftReview(router);
   testDocumentReviewWorkflow(router);
   testPlatformExclusionLists(router);
@@ -1369,7 +1474,30 @@ for (const router of ROUTERS) {
     assert.deepEqual(limited.capability_routing, mixed.capability_routing);
     assert.equal(limited.supporting_artifacts.length, 1);
   }
-  for (const query of ["native training recovery", "native failure appraisal", "NativeTrainingFailureAppraisal", "OperatorNativeTrainingReconciliationAuthorization",
+  for (const args of [["--actor=user"], ["--actor=ai", "--role=S6", "--department=knowledge", "--authority=read-only"]]) {
+    const query = "Diagnose a failed native Codex document review in a skill-only comparison. Preserve the stopped attempt and require new model-transfer consent. No training enrollment or operator application.";
+    for (const task of [query,
+      "Inspect a failed native Claude document response. Keep the existing source packet and do not retry.",
+      "Review a failed native context measurement and its diagnostic log without changing approval."]) {
+      const result = route(router, args, task);
+      assert.equal(result.query, task);
+      assert(!result.matched_routes.some(row => row.id === "native-training-reconciliation"));
+      for (const file of ["docs/native-training-failure-reconciliation.md", "docs/native-training-owner-consent.md", "docs/native-training-producer-history.md"]) {
+        assert(!result.recommended_documents.some(row => row.path === file), file);
+      }
+      assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      if (args.includes("--actor=ai")) assert.equal(result.operating_mode.authority, "read-only");
+    }
+    const parent = route(router, [...args, "--capability-query=Review native training recovery"], query);
+    assertRoutes(parent, ["native-training-reconciliation"]);
+    assert(parent.recommended_documents.some(row => row.path === "docs/native-training-owner-consent.md"));
+    assert(parent.validation_commands.includes("node run-native-training-failure-fixtures.js"));
+    const assigned = route(router, [...args, "--source=docs/native-training-failure-reconciliation.md"], query);
+    assert(assigned.recommended_documents.some(row => row.path === "docs/native-training-failure-reconciliation.md"));
+    assert(assigned.task_references.resolved.some(row => row.path === "docs/native-training-failure-reconciliation.md"));
+    assert.equal(assigned.query, query);
+  }
+  for (const query of ["native training recovery", "Inspect failed native training", "native failure appraisal", "NativeTrainingFailureAppraisal", "OperatorNativeTrainingReconciliationAuthorization",
     "OperatorNativeTrainingReconciliationRecord", "operator-native-training-failure.js", "native-training-failure-appraisal.schema.json", "native training reconciliation fresh owner ceremony durable one-use receipt history UI publication adversaries",
     "run-native-training-reconciliation-fixtures.js", "run-native-training-reconciliation-crash-fixtures.js", "native-training-reconciliation-fixtures/browser-check.js", "run-native-training-reconciliation-source-fixtures.js"])
     for (const actor of [["--actor=user"], ["--actor=ai", "--role=S3", "--department=operations", "--authority=scoped-execution"]]) {

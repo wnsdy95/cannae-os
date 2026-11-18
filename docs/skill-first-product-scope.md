@@ -10,11 +10,46 @@ separates active core work from the retained platform program.
 
 ## Active Objectives
 
-The USER confirmed these five remaining objectives on 2026-11-10. They replace
-the previous eight-outcome program as the active goal. Each requires its own
+On 2026-11-15 the USER requested a new goal addressing remaining skill-level
+limitations, while keeping dashboards and servers deferred. The active cycle is
+**Skill Reliability And Efficiency**, R1-R6. It extends the completed baseline;
+it does not reopen or reinterpret its twenty accepted requirements.
+
+1. **R1 - Robust request intake and routing:** preserve original Korean/English
+   requests, compound objectives, exclusions and declared authority while reducing
+   known heading/wording-sensitive omissions and irrelevant reading.
+2. **R2 - Efficient instruction and context delivery:** shorten ordinary entry
+   guidance and select task-relevant reference sections without dropping required
+   sources, conditional controls or history needed for the actual task.
+3. **R3 - Source-grounded quality beyond rehearsed cases:** compare baseline and
+   candidate behavior on a frozen authoring/review evaluation, including withheld
+   tasks, false findings, compressed reports and original-source fidelity.
+4. **R4 - Terminology and document-change impact:** make scoped term capture,
+   proposed updates and affected-document reconciliation practical through local
+   files/helpers, without automatic confirmation, disclosure or policy adoption.
+5. **R5 - Repeatable cross-client work and recovery:** demonstrate complete
+   document-only workflows with actual notices, rerouting, changed-source holds,
+   useful partial work and cold-start receiving in both client directions.
+6. **R6 - Reproducible maintenance and distribution:** retain exact evidence,
+   test affected controls efficiently, diagnose stale skill copies and verify
+   bounded compatibility in existing clients without changing host settings.
+
+The [new acceptance inventory](completion-backlog.md#skill-reliability-acceptance)
+has eighteen required criteria, separate from A01-A21. They started planned;
+the backlog records evidence-backed changes, not inherited acceptance. Audit
+and registration are not implementation. Ordinary CLI helpers and existing local
+file workflows are in scope. A new service, dashboard, orchestration backend,
+authenticated application or production infrastructure is not. Optional plugin
+packaging remains deferred, not a requirement to ship this cycle.
+
+### Completed Baseline Objectives
+
+The USER confirmed these five objectives on 2026-11-10. They replaced
+the previous eight-outcome program and reached bounded acceptance on 2026-11-15.
+The unchanged definitions below preserve their original scope. Each required its own
 behavioral acceptance; scope and entrypoint cleanup alone cannot complete an
 objective. The [requirement audit](completion-backlog.md#requirement-level-audit)
-owns current evidence and dispositions without changing these criteria.
+retains their evidence and limits without changing these criteria.
 
 1. **G1 - Document authoring and revision quality:** verify representative SOP,
    order, research and handoff tasks preserve intent, required work, sources,
@@ -100,7 +135,12 @@ to inflate progress, or equate inventory coverage with task-level correctness.
 ## Continuation Rule
 
 For "continue" or "what next", read this scope and the active backlog first.
-Choose the smallest dependency-ready core task. Consult the implementation
+Choose the smallest dependency-ready R1-R6 task and its SR acceptance criterion.
+Do not reuse the completed A-series denominator or carry its passes into the new
+cycle. Existing exact decisions stay attached to their artifacts; the prior
+until-completion verification consent ended with that goal. Obtain new applicable
+consent before a native model transfer; registration is not transfer approval.
+Consult the implementation
 registry for existing code and claims, not as permission to expand the product.
 If a core task appears to require a deferred service, identify the actual
 dependency and return the scope decision to the USER rather than silently

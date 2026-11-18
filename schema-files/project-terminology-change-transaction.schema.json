@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/project-terminology-change-transaction.schema.json",
+  "title": "Project Terminology Change Transaction",
+  "description": "Immutable before/after snapshot bindings for one reviewed local append. Static validity does not prove application or authorization.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "type",
+    "id",
+    "repository",
+    "proposal_sha256",
+    "review_sha256",
+    "before_ledger_sha256",
+    "after_ledger_sha256",
+    "entry_id",
+    "authorization_verified",
+    "transfer_authorized",
+    "policy_adoption_authorized"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "type": {
+      "const": "ProjectTerminologyChangeTransaction"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "repository": {
+      "$ref": "project-terminology.schema.json#/properties/repository"
+    },
+    "proposal_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "review_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "before_ledger_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "after_ledger_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "entry_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "authorization_verified": {
+      "const": false
+    },
+    "transfer_authorized": {
+      "const": false
+    },
+    "policy_adoption_authorized": {
+      "const": false
+    }
+  }
+}

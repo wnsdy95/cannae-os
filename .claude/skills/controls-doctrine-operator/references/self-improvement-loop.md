@@ -39,6 +39,16 @@ Move procedure detail into the linked reference or doctrine document; do not rai
 the limit or omit the routed control. Routing fixtures execute this check so a
 valid route cannot conceal an invalid entrypoint.
 
+Before splitting an entrypoint, preserve the old procedure bodies and compare
+the relocated text, accounting for changed relative links. Verify each entry
+link names its applicability, both installations carry the helper/references,
+and guarded context binds the moved files. Test missing/unlinked modules and
+changed-context rejection; a smaller entrypoint is not enough. For tool-disabled
+reviews, inspect the actual authorized input for applicable guide bytes instead
+of assuming a link will be opened. Keep local emitted bytes, selected catalog
+bytes and observed recipient delivery separate. Record ambiguous wording as
+an open intake limit, not a reason to replace the user's original with a keyword.
+
 When extending validator CLI cases, declare `requiredCodes` explicitly, including
 `[]` for valid cases, and run `node validator-cli-prototype/run-fixtures.js`
 before expensive producer/browser ladders. The harness preflights definitions;
@@ -53,6 +63,10 @@ Refresh only current synthetic examples with their named builders in dependency
 order and fixed fixture clocks; never rewrite historical producer archives,
 retained approvals or expected IDs to conceal the mismatch. Run both document
 and training non-execution regressions after resolving their shared validator.
+For overlapping exclusion lists, retain the union of both branches' non-executing
+types, including terminology changes and knowledge dependencies. Test valid
+examples through both validator APIs: an invalid sample's denial cannot prove
+that a valid record remains non-authorizing after conflict resolution.
 When a reduced installation fixture fails loading that validator, include its
 real pinned data dependencies and regress missing/changed dependency refusal in
 both providers. Do not stub validation or silently make a required catalog optional.
@@ -276,11 +290,54 @@ disabling it or accepting its rejection in place of the intended exact error.
 Keep out-of-corpus capability routing for genuinely uncovered domains, not
 ordinary corpus maintenance.
 
-Tie each continuation task and its acceptance evidence to one of the five
-active objectives, G1-G5, in `docs/skill-first-product-scope.md`. Keep completed
-entrypoint/scope cleanup separate from behavioral goal acceptance. Do not count
-that preparation as a completed goal or reuse the old eight-outcome list as
-the active queue. A goal remains open until its own evidence is sufficient.
+Tie each continuation task and its evidence to the current cycle and acceptance
+ID in `docs/skill-first-product-scope.md` and `docs/completion-backlog.md`.
+For the USER-requested reliability cycle, use R1-R6 and SR01-SR18; keep completed
+G1-G5/A01-A20 as a separate baseline, not carried-forward passes. Freeze expected
+sources, holds, evaluation cases and scoring before tuning. Record a case exposed
+to tuning as a regression, not an unseen success. Count loaded bytes, selection
+and semantic quality separately; shorter text must not silently drop controls.
+Registration is not implementation or model-transfer consent. Previous
+until-completion consent does not carry into a successor goal. Preserve exact
+pending artifact decisions and obtain applicable new consent before native calls.
+Do not reuse the old eight-outcome list as the active queue. A goal remains open
+until its own evidence is sufficient; absence of an app goal is not proof of it.
+
+For skill-only comparisons, use `docs/evaluation-metrics.md`'s frozen local
+protocol and `skill-evaluation-runner.js`, not a new campaign service. Inspect
+the bundle before measurement; use a clean pinned baseline and keep failed runs
+with their harness/source hashes. Exit zero means measurement completed, not
+product acceptance. Keep selected bytes separate from actual loaded instructions;
+a null delivery count cannot prove context savings. Do not inspect withheld
+bodies during tuning or call author-aware templates independently blind. Never
+refresh expected results silently to fit a candidate. Native comparison still
+needs its own applicable consent and source-appraised artifacts.
+
+For reserved routing comparisons, follow the evaluation guide's frozen-routing
+procedure: pin the whole clean candidate before exposing reserved requests and
+keep the original bundle and evaluator versions. Use its one-attempt record;
+preserve partial journals and unexecuted cases instead of restarting a batch.
+A copied freeze is not a new experiment. Later candidates retain prior exposure
+and failures; do not call those cases unseen again. Appraise source/authority
+boundaries as well as matched counts. This local comparison grants no native-call
+consent and cannot prove actual delivered-context savings or authoring quality.
+
+Use `docs/evaluation-fixtures.md`'s skill-maintenance map to select additive
+focused checks, then retain the full current CI gates before merge. Record an
+unexecuted suffix after a failed command; do not borrow an older pass for changed
+source. Keep a private cycle evidence index with the original source/result
+bindings and inspect it through `skill-evidence-index.js`. A retained failed log
+is still failure; matching hashes are not result appraisal. Missing, changed or
+unsafe evidence cannot be reconstructed as a fresh pass. Add a new entry for a
+new run instead of rewriting old expectations. Review declared dependency coverage
+and the original results before acceptance; the helper grants no execution,
+model-transfer or merge authority. See the evaluation guide for the local format.
+
+The map is a starting point, not dependency discovery. When a full gate fails a
+suite outside the focused set, retain that run, add the missed coupling to the map
+and mirror the rule in both skills. A reworded rule needs its text assertion moved
+to the current wording, not deleted. Changing a runtime-digest file requires its
+dependent sample writers to be rerun; never hand-edit generated hashes.
 
 Separate current navigation from retained evidence history. After a proposed
 successor or completed review, reconcile the document's opening current-candidate

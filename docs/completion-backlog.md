@@ -32,7 +32,2275 @@ byte-identical historical evidence; only current synthetic examples are refreshe
 for the new measured runtime. Superseded PRs close only after the combined
 candidate passes required hosted checks and reaches main through ordinary merge.
 
+That approved set reached main through #114 at `4c4ab32`. Its original #110
+change selected lucide-static 1.66.0. The later replacement #110 (1.73.0) and
+new #115 (glob/cacache) remain deferred by USER; their PR numbers do not extend
+the approved content of the earlier integration.
+
 ## Active Core Work
+
+### Skill Reliability And Efficiency
+
+Decision: USER, 2026-11-15. Investigate and improve remaining skill limitations;
+keep dashboards, servers and production infrastructure deferred. R1-R6 in the
+[scope](skill-first-product-scope.md#active-objectives) are the new active goal.
+The completed G1-G5/A01-A20 baseline below remains intact. New status:
+**8/18 required criteria verified**; this is a work inventory, not an accuracy
+or product-completion percentage. Registration and the initial probes closed none;
+the frozen evaluation closes SR01 and the conditional-instruction checkpoint
+below closes SR04. Registered local dependency impact closes SR11 at its bounded
+scope, and the installation/diagnostic compatibility matrix closes SR16 for its
+tested configurations. The requirement-level local terminology boundary appraisal
+closes SR12. The source-appraised local capture progression closes SR10; actual
+context savings, native quality and cross-client receiving remain open.
+The [fixed routing source appraisal](#fixed-routing-source-appraisal-2026-11-17)
+closes SR02/SR03 for the pinned cases and reviewed counterexamples, not universal
+intent understanding. All reserved routing cases are now exposed.
+The [operation-local reader correction](#operation-local-reader-inspection-2026-11-17)
+completes the affected local session check while preserving prior failures and
+the still-open native and full-integration requirements.
+
+#### Observed Skill Limits
+
+Read-only probes at `21a90d8` used both installed-source routers with
+`--actor=ai --role=S3 --department=operations --authority=read-only`, all options
+before `--`. Both providers produced the same results and retained the complete
+original query. These are local routing observations, not native model behavior.
+
+| Input variant | Recommended documents | Observed limitation |
+| --- | --- | --- |
+| Draft a support SOP from supplied policy. Do not publish. Do not build a dashboard. | 18 | Reference form includes authoring and omits protected-execution/dashboard guides. |
+| The same request prefixed by `Task:` | 23 | Five protected-execution defaults return although the assignment is unchanged. |
+| Draft a support SOP from supplied policy. Do not publish or build a dashboard. | 28 | Combined negation retains dashboard and protected-execution reading. |
+| Draft a support SOP from supplied policy. Exclude dashboard and server work. | 26 | Another ordinary exclusion formulation retains specialist reading. |
+| Literal Korean equivalent requesting a support procedure and excluding publication/dashboard work | 20 | No authoring guide; capability gap reported. The documented English-query translation is still a manual dependency. |
+| ICP sales-targeting comparison plus support SOP, without separate objective declarations | 18 | The supported SOP masks the uncovered domain in the combined capability result. |
+| The identical compound request with both `--capability-query` declarations | 29 | The gap is retained. Explicit decomposition works; automatic semantic completeness is not implemented. |
+
+An earlier probe used the unrecognized `document-review` authority descriptor;
+its conservative role defaults are not treated as a narrowing regression. The
+table uses the documented `read-only` descriptor. Unsupported guarded project or
+multi-objective inputs must continue to fail, not be downgraded to direct work.
+
+Both entrypoints have 499 lines and 32,902/32,916 UTF-8 bytes (Codex/Claude).
+Their routing references have 1,389 lines and 110,091/110,100 bytes. Length is a
+context-cost observation, not proof of worse answers. Existing installed/native
+acceptance is version-scoped; reviewed access profiles and required-term lists
+are still supplied by operators. The terminology helper validates/selects but
+does not capture a conversation or compute all affected drafts. The completed
+audit also records separate workflow cases rather than one recovery chain and
+two unavailable historical temporary bodies. Do not reconstruct missing evidence.
+
+#### Skill Reliability Acceptance
+
+Freeze case IDs, expected sources/holds, baseline revision and scoring before
+implementation or candidate evaluation. Use a fixed 24-request routing corpus
+(12 development, 12 withheld cases) across language, heading, exclusion, compound
+intent, role and explicit-source variants. Use eight source-grounded authoring
+tasks across SOP, research, order/report and handoff, with four reserved until
+candidate evaluation. Withheld inputs and answers stay out of tuning prompts;
+run the frozen baseline and candidate on them only after freezing the candidate.
+Task sources must not include evaluator answers. A case
+used for tuning becomes a regression, not an unseen case on the next attempt.
+
+| ID | Objective | Required evidence for closure | Status |
+| --- | --- | --- | --- |
+| SR01 | R1 | Freeze 24 original requests, expected objectives/documents, exclusions and the baseline revision; record development outputs in both providers. Label withheld cases and keep them out of tuning until the candidate is frozen. | Verified (bounded) |
+| SR02 | R1 | Fix the demonstrated heading/exclusion excess and Korean intake gap through a documented skill path. Preserve original language/text and explicit translation/normalization provenance; equivalent covered tasks receive authoring guidance. | Verified (bounded) |
+| SR03 | R1 | Preserve each compound objective and genuine gap, required/parent sources, actual technical subjects and declared authority. Pass the fixed negative cases without reducing issued controls or accepting unsupported guarded inputs. | Verified (bounded) |
+| SR04 | R2 | Reduce each entrypoint's UTF-8 bytes by at least 20% from the recorded baseline, remain within 500 lines and move applicable detail into discoverable task-specific references. Do not merely join lines or delete controls. | Verified (bounded) |
+| SR05 | R2 | On a frozen six-task ordinary-work subset, reduce median loaded instruction/reference bytes by at least 20%, counting every delivered section and entrypoint. Preserve all assigned source content; report document counts and bytes separately from tokens, cost or quality. | In progress |
+| SR06 | R2 | Verify both providers still find conditional procedures for actual runtime maintenance, explicit inputs and sensitive handoffs; ordinary work need not load retained platform history. Selection is not read authority or an automatic access-profile grant. | In progress |
+| SR07 | R3 | Freeze eight source-grounded tasks and a rubric covering omitted obligations, invented facts/approvals, false findings, locators, unknowns and complete/compressed output consistency; record both-client baseline and candidate artifacts separately. | In progress |
+| SR08 | R3 | Demonstrate improvement for at least one reproduced defect family with no new critical authority/disclosure/required-task regression on the fixed evaluation. Report raw counts, false positives/negatives and all failures, not only successful reruns or self-ratings. | In progress |
+| SR09 | R3 | Inspect every required output and source binding in the withheld cases for both clients. All fixed mandatory boundaries must pass; unresolved findings keep the criterion open. Record versions/configurations and do not infer universal reliability or causal improvement from an uncontrolled model change. | Planned |
+| SR10 | R4 | Provide a usable local capture/proposed-change path for explicit definitions, corrections and inferred candidates, with minimal source evidence and no background collection. Preserve scope and append-only lineage; only actual USER definitions confirm meanings. | Verified (bounded) |
+| SR11 | R4 | Show affected document/task/term bindings after a term or source revision, distinguish unrelated work and prepare a reviewed refresh instead of silently reusing stale meaning or rewriting prior evidence. Do not claim discovery of unregistered semantic dependencies. | Verified (bounded) |
+| SR12 | R4 | Verify two repositories, same-spelling different scopes, candidate-only/retired/conflicting definitions and denied recipients. Preserve single-writer reconciliation, pending decisions and real secret refusal; no automatic publication, access expansion or false-positive clearance. | Verified (bounded) |
+| SR13 | R5 | Retain one complete document-work chain in each client direction: original intake, plan, actual advance notice, work, source-appraised report and cold-start receiving using exact source/term versions without prior chat. Do not assemble unrelated runs into one chain. | In progress |
+| SR14 | R5 | Include a changed-source/term or unavailable-source interruption in those chains; observe dependent work held, permitted independent work retained, a truthful notice and separately authorized fresh continuation without invented receipts or retry permission. | Planned |
+| SR15 | R5 | Validate the final receiving unit and actual next-agent use against original objectives, current sources, unresolved decisions and recipient scope. A prepared packet or final self-claim alone cannot close this criterion. | Planned |
+| SR16 | R6 | Verify linked and copied skills from a different target repository in the installed client configurations; diagnose stale copy/root/version problems without silently reinstalling, changing settings or reading credentials. Record a bounded compatibility matrix. | Verified (bounded) |
+| SR17 | R6 | Map affected surfaces to focused checks and retain full integration validation before merge. Keep a non-authorizing local evidence index with exact source/result versions and unavailable-evidence states; no temporary-file loss may be presented as a fresh pass. | In progress |
+| SR18 | R6 | Demonstrate one bounded gap -> candidate -> both-skill adaptation -> regression/source appraisal -> accepted change cycle. Preserve review/adoption distinctions, historical evidence and unrelated edits; reconcile scope, indexes, backlog and actual goal status at closure. | Planned |
+
+#### Evaluation Freeze Checkpoint (2026-11-15)
+
+SR01 is bounded-verified: the fixed 24-request inventory includes exact original
+text, context, objectives, sources, exclusions and guarded failure expectations.
+Both providers ran the twelve development cases at clean commit
+`9331ff5c613f60cb30bd61e853c78d3d0e9440fb`. Fourteen of twenty-four observations
+matched; ten did not. In each provider RD-02 retained five execution guides;
+RD-03/04 retained execution and platform guides; RD-05 missed Korean authoring
+coverage; RD-06 hid a compound capability gap. These are measured defects, not
+reasons to lower expectations or call the baseline a product pass.
+
+The eight authoring tasks and seven-dimensional source-bound rubric were also
+frozen at this checkpoint, before either client's native baseline/candidate
+artifacts existed. The later native baseline checkpoint below records development
+responses; SR07 still requires candidate and reserved evidence. Context cases are
+RD-01/02/03/04/08/09; their actual loaded-instruction counts remain null. The local reports cannot close
+SR02-SR06 or establish comprehension, instruction savings or authoring quality.
+
+Private evidence root: `.cannae/maintenance/skill-reliability-evaluation-20261115/bundle/`.
+The public [protocol](evaluation-metrics.md#82-skill-only-evaluation-protocol)
+and runner explain reproduction; absence of the private bundle must be reported,
+not replaced with invented evidence. Exact bindings:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Frozen `manifest.json`, binding seven split/protocol members | `ea1dbb99f3acc3f46ab79bb167765724b95706aa204aea4faab5b22cf6f6eac4` |
+| Initial `baseline-5dd32c07-ec2d-4f7f-9b6d-2a6b21ca63cc.json` | `b1a26ed6099704e8c35edf3643550babbbc33dd25db24f86d0d0aa082e71926b` |
+| Parse/ID-hardened `baseline-fac11505-ef0c-4ece-91eb-c2a123bda976.json` | `c2a667d1377e0edbae9da3131fad1d1eeafe49982e84d411a93adb28837ed76b` |
+| Final exact-error harness `baseline-8a45e7fe-61d7-4c58-9d8d-7bd420bda204.json` | `ec4dd1d773a47c7943e3d596cca53d1a43cb55d754c24f27c5c0b46ab52b6601` |
+
+The later measurements follow helper-only parse-error privacy, duplicate-ID and
+exact error-code checks, not router tuning; all reports retain identical case
+outcomes and their own harness hashes. Thirteen synthetic helper fixtures passed. No native model
+call or withheld execution occurred. Withheld templates were designed by the
+same operator, not an independent evaluator; their rendered inputs remain outside
+tuning. This is author-aware procedural separation, not a blind benchmark or
+protected host. Candidate behavior, native consent and later acceptance remain
+open; no model transfer, adoption or authority follows from this checkpoint.
+
+#### English Intake Development (2026-11-15)
+
+The first R1 implementation separates leading task labels and bounded exclusion
+views from the unchanged original query. It suggests English action clauses when
+no objectives were declared, retaining each capability assessment and a combined
+gap. Declared and inferred clauses use the same conservative role-reading context.
+Actual technical subjects, explicit/parent sources and all selected controls stay
+applicable. Quoted text and deictic steps are not independently split; inspect the
+original request and declare missing objectives rather than treating inference
+as complete. Guarded automatic compound intake fails without issuing a receipt.
+
+Both routers ran the same frozen twelve development requests. Expected matches
+increased from 14/24 to 22/24, with no new expectation failure or removed validation
+command. RD-02/03/04/06 now match in both providers; literal Korean RD-05 still
+fails. These are paired local router observations, not independent model samples,
+native reading or a quality percentage. Source-policy review and noun-qualified
+draft-readiness checks remain covered after decomposition; dependent design review
+retains technical context. Separate regressions cover quoted text, authority,
+technical sources/departments and linked/copied use from another repository.
+
+Private observation root: `.cannae/maintenance/skill-intake-r1a-20261115/`.
+`development-2343bef7-cb19-4d0b-80e1-30bd2067193a.json` has SHA-256
+`07d91c292065aa78a1dfb6b7f758f0960366aaa1b9d4ac1d6d62e06c69ea2880`.
+It binds exact router/source bytes before this index update, original outputs,
+baseline comparison and the evaluator; it is not a frozen final candidate.
+The earlier development report is retained, not overwritten. Both skills now
+require inspecting inference provenance and correcting missing/misgrouped
+objectives before forwarding, while preserving the complete original constraints.
+The document-session projection also returns the intake views alongside its
+explicit objective assessments; these do not authorize reads or replace the
+prepared assignment. Direct and local stdio receiving checks retain private-path
+refusal and the original source profile.
+
+The first source-bound 22-gate verification retained one failing gate: mission
+report admission correctly stopped at independent release verification. A separate
+diagnostic found local `ip-address` 10.7.2 against locked 10.7.4, including four
+failing parser checks. This dependency drift is not a reason to waive a control
+or lower an expected version. Preserve the failed report and verify the exact
+locked install before retrying affected gates; do not describe the initial run
+as fully passed.
+
+After `npm ci --ignore-scripts --no-audit --no-fund` restored locked 10.7.4
+without changing the lockfile, independent verification passed 140/140 and all
+22 follow-up commands passed, including mission admission and sixteen direct/
+stdio document-session fixtures. Exact source bindings remained unchanged during
+that run. Its private report is
+`verification-followup-9536a0c8-e02f-46e6-9faf-0f254e049d82.json`, SHA-256
+`7ab711e85a3d7f01320f7620a380e8541803b1629f9d3d3598c8625db904e24a`.
+The follow-up retains the prior failure and reuses only the earlier routing check
+whose two router/fixture hashes are unchanged (1,776 routed queries); it reruns
+the changed session projection and instruction checks. This is focused validation,
+not the full repository integration gate or native receiving acceptance.
+
+SR02 and SR03 remain in progress. Korean intake, broader explicit-objective
+completeness and the reserved evaluation remain open. No withheld case or native
+model was run. Actual delivered bytes remain unmeasured; R2/R3/R5 acceptance and
+all authority/consent decisions are unchanged. The verified count remains 1/18.
+
+#### Korean Intake Development (2026-11-15)
+
+Both routers now add bounded Korean format/source aliases, action-clause views
+and complete platform exclusions. They retain the exact original query, parent
+objectives, source references and authority. The direct normalization record
+explicitly denies complete translation; inferred clauses remain original-language
+suggestions. Conditional/unknown clauses, actual technical review and assigned
+sources stay conservative. Both skills require comparing hints with each original
+purpose and prohibition and labeling any later operator translation separately.
+
+The same twelve frozen development requests now match in both providers (24/24),
+up from 22/24 after the English change and 14/24 at the clean baseline. These are
+local routing observations only. In RD-05, resolving the false capability gap
+removes the two gap-only force-structure fallback commands from each direct
+result; release controls remain selected. No issued receipt or context is edited
+or excused. Do not describe this as zero command removals or verified semantic
+coverage. Fifty-six focused checks include compounds, source/parent retention,
+guarded rejection, guarded single-parent controls and original Unicode bytes.
+
+The private observation is retained in the same intake evidence root:
+`development-fdd72e21-cf9d-42a4-8ccc-b8d03d93945d.json`, SHA-256
+`627e5f975cbc9109a26f8a101b4187630f1cd70e4ea5d5aebfcf165faac3cc8e`.
+It binds router bytes before this index update, not a final frozen candidate.
+The earlier Korean development reports remain historical. Initial focused tests
+correctly lacked the new metadata; an added receipt assertion then used `query`
+instead of the existing `router_query` field and was corrected without changing
+the receipt contract. No native call or withheld evaluation occurred.
+
+Additional probes caught an unmapped Korean execution clause being narrowed to
+document work and a Korean parent lacking provenance under an English task.
+The local verification was deliberately stopped before accepting those results;
+owned process group 30414 exited 143 and no member remained. Its incremental
+report and terminal reconciliation are retained under
+`.cannae/maintenance/skill-intake-r1b-20261115/`; a historical `running` field is
+not a live handle or completed check. The fixes retain separate operational
+objectives and execution reading without changing authority, and expose indexed
+original-parent matching views. New Korean/English and guarded regressions pass.
+
+The final source-bound 22-command run passed with unchanged source bindings.
+It includes 56 Korean/mixed-language checks, 1,776 existing routed queries,
+55 installation fixtures, 22 preflight fixtures and sixteen direct/actual-stdio
+document-session fixtures with the new Korean observations. Its report is
+`verification-575ab110-5f44-4d5e-83b0-76175dcf17e4.json` under the R1B root above,
+SHA-256 `82812ca9ffbbad4d2e78344c16ca79eba1385be0b609c61f496921e66191bfd3`.
+This is focused routing/instruction/receiving validation, not a new full
+repository integration, mission dispatch or native-model acceptance run.
+
+The bounded grammar is not a Korean parser. Unknown words, unsupported spacing,
+dependent or unrecognized clauses and operator-declared objective completeness
+still need review. Linked/copied and actual local receiving regression results
+do not establish native-client comprehension or actual loaded-context savings.
+SR02/SR03 stay in progress until the reserved candidate evaluation, with 1/18
+criteria verified. R2 loaded-context savings and R3/R5 native evidence remain open.
+
+#### Conditional Instruction Delivery (2026-11-15)
+
+R2 moves four existing procedure bodies from `ea1a951` into mirrored linked
+guides: project content/reporting, client operation, project terminology and
+delegated waves. Body comparison permits only the required sibling Markdown-link
+adjustment. The entrypoint retains applicability and stop conditions; shortening
+does not delete a control or combine lines to evade the line limit.
+
+| Provider | Frozen entry bytes (`9331ff5`) | Candidate entry bytes | Reduction | Validator lines |
+| --- | --- | --- | --- | --- |
+| Codex | 32,902 | 25,198 | 23.415% | 392 |
+| Claude | 32,916 | 25,212 | 23.405% | 392 |
+
+The bundled local reader emits the entrypoint plus explicitly named linked
+guides, with full content, byte/hash bindings and no model call, project-source
+read or authority grant. Duplicate/unknown topics and missing, unlinked, empty,
+invalid UTF-8 or symlinked instruction files fail before stdout. Its JSON framing
+is additional output, not included in the content-body sum. A tool-disabled
+recipient still needs applicable bodies in its authorized input; a link is not
+delivery and a router recommendation cannot expand an assigned read profile.
+
+Direct task reading selects applicable guides; explicit conditional inputs do
+not automatically request all skill-maintenance procedures. Skill maintenance
+and guarded context retain all four guides in both provider trees. Context
+integrity tests change each moved guide and reject the old binding; no existing
+authority, source requirement or issued control is removed.
+
+Initial focused fixtures passed for 15 progressive-disclosure cases, 74 authoring
+packet checks and 16 context-integrity cases. A new probe found generic
+`Draft an order from the supplied policy.` remains a capability gap in both
+baseline and candidate; format-specific OPORD discovery is not universal intake.
+The first authoring test still looked for a relocated term rule in the entrypoint
+only; it now reads the explicitly linked term guide without dropping the assertion.
+
+The first aggregate stopped at the twentieth command: preflight still expected
+direct and guarded document sets to be identical. The corrected test requires
+exactly the direct set plus all eight mirrored conditional files, unchanged
+controls and separate guarded `--limit` invariance. It passed 22/22 afterward.
+Preserved initial report under `.cannae/maintenance/skill-progressive-r2-20261115/`:
+`verification-cd40912c-fac7-4e4d-a5e7-a03dea27dd23.json`, SHA-256
+`7407506fa02ecbda8ca8d23a094664e881a17e6f4bb4eae2ed502ea2eb80d989`.
+Its suffix did not execute and is not counted as a pass.
+
+A second aggregate stopped at its third command because a new project-input
+fixture reused the doctrine root; the existing distinct-project rule correctly
+rejected it. The fixture now uses a separate synthetic Git project without
+weakening that rule. Retained report: `verification-073f5f6b-6600-43e6-9ce2-7f02f55c482e.json`,
+SHA-256 `9841c2e6ed0ddbe09b8773d00928a4887f9db0e70149bb79319ec945d6b2adac`.
+
+The final affected-surface gate passed all 24 commands without source drift:
+`verification-c1f8b0dd-35cd-4b82-a709-06f569c39819.json` in the same R2 root,
+SHA-256 `00cc6f9b32b79b71dc85eb4cfcab8380a204fb56c8096efb71889a375c94f2b5`.
+It retains exact moved-body/entry comparisons and 30 staged-file bindings,
+including both bundled readers and routers. Checks include 15 progressive-
+disclosure cases, 57 isolated link/copy installation cases, 22 preflight cases,
+16 context-integrity cases, 1,776 routing queries, 36 mission-controller cases,
+74 authoring-packet cases and the metadata/source/index gates. These are local
+checks, not fresh native reading or a full-repository integration run.
+
+The unchanged frozen development requests still match 24/24, with no new
+expectation failure: `development-e68e074c-1527-42d9-b297-2a65245bf046.json`
+under the R1A observation root, SHA-256
+`9d558313220ac0886596beb19061082cc0f2eb4abef3aa6d6256b8b716311872`.
+Its router bindings pair with the R2 gate's reader bindings. The earlier Korean
+false-gap fallback removal remains unchanged; issued controls are not waived.
+The final status/evidence-index edits receive separate documentation checks.
+
+SR04 is bounded-verified by exact entry reduction, body preservation, linked
+discovery, installation and guarded-context checks. SR05/SR06 remain in progress
+pending actual client evidence. Six-case client-delivery counts remain null;
+neither entry shrinkage nor local emitted bytes closes SR05. At the R2 checkpoint,
+the all-topic local reader emitted 35,296/35,310 content bytes (Codex/Claude),
+more than the old entries; later reference additions change those totals, and
+conditional selection, repeats and JSON framing must be measured in real use.
+No native model call, withheld execution or new transfer consent occurred.
+The new goal has 2/18 verified criteria, not a claim of overall product accuracy.
+Dashboards and servers stay deferred.
+
+#### Terminology Change Proposals (2026-11-15)
+
+The first R4 implementation adds `propose-change` and `inspect-change` to the
+existing local terminology helper and both installed wrapper paths. A request
+binds a minimal exact excerpt to its UTF-8 byte range and whole-source hash,
+an expected ledger digest or verified absence, and a concept/scope. The private
+proposal derives its revision ID/version/predecessor and inherits access for a
+correction; new concepts have no delegated readers. It writes no canonical
+ledger and cannot confirm, retire, publish or transfer a definition automatically.
+The requested status is explicitly different from the current glossary.
+
+The shared bounded-file reader now verifies regular non-symlink, single-link
+files and detects size/identity changes during the read. Sources and requests
+remain within the exact target project; output must already be ignored. The
+new contracts retain `can_execute: false`. OPSEC findings block proposal
+publication without returning the value or silently clearing a false positive.
+These local conditions are not authentication, semantic accuracy or a protected
+host guarantee.
+
+Eighteen new local fixtures cover preparation and fresh inspection, inference
+refusal, unchanged current selection, source/ledger changes, scope/access,
+separate repositories, original Unicode, unsafe/changed files, credential-shaped
+content and linked/copied wrappers. The first unsafe-output fixture expected
+a path error but received the earlier ignore-check refusal; validation now rejects
+unsafe ancestors before consulting Git and still checks ignore rules before
+creating directories. The original 16 terminology cases also passed after the
+shared read change.
+
+The first affected-surface gate passed its first 24 commands, including 609
+validator cases, 34 terminology handoff cases and 1,776 routing queries. Command
+25, staged whitespace checking, rejected extra trailing blank lines in six new
+JSON files; command 26 did not execute. The failed report preserves unchanged
+22-file source bindings under `.cannae/maintenance/terminology-change-r4a-20261115/`:
+`verification-a7e68bfe-5ad9-482e-a6e0-1eb8037ab1ca.json`, SHA-256
+`66dc3be2a60d2e49eecf874eb624d315ee3b2b8fbc9a1130921bce553b7660ef`.
+Trailing blank lines were removed without changing parsed contract/sample values.
+
+A separate source-bound probe reproduced rejection of a correction whose
+domain/task values were unchanged but JSON keys were reordered:
+`scope-order-probe-ba2eea8d-536b-4e6a-905c-edd82e1c6984.json`, SHA-256
+`6630ad2cd297069534e14dd2f91de1d9bf2e8b798472240e91ab092069e98408`.
+Scope checks now compare values; exact request/proposal digests remain separate
+serialization bindings. The correction fixture includes that positive case and
+retains real scope-change rejection. The fixed probe reports no reordered-scope
+error; its result and original failure remain separate.
+
+All 19 follow-up commands passed without source drift:
+`followup-52069d9e-64ae-4fc2-a941-5cbb1f879e15.json` in the same R4A root, SHA-256
+`f8f5ae5fdd1d136ad20989ed12530e7af5d59a8b72ce86025a09388a62de1cb7`.
+This reruns the 18 proposal cases, the exact ordering probe, all 609 validator
+cases, instruction/document consumers and metadata/index checks. It also proves
+the six JSON edits only removed a final blank line. Prior handoff, installation,
+preflight, control, context-integrity and routing results remain version-specific;
+they are not relabeled as new runs or a full-repository integration pass. Final
+evidence-index edits receive a separate documentation check before commit.
+
+At this checkpoint, SR10/SR12 remained in progress and SR11 was still planned.
+The next steps were an explicit reviewed single-writer append path and registered document/task/term impact
+reconciliation, including simultaneous proposals, unrelated changes and allowed
+partial work. The pending proposal path does not substitute for either outcome.
+No new native call or withheld evaluation occurred; the verified count remains
+2/18. Dashboards, servers and policy/authority expansion remain deferred.
+
+#### Reviewed Terminology Append (2026-11-15)
+
+The next R4 implementation provides explicit `adopt-change`, historical
+`inspect-adoption`, `inspect-writer` and exited-process `recover-adoption` commands
+through both skill bundles. An exact recorded review, fresh source and expected
+ledger are checked under a non-expiring cooperative local lock. Before/after and
+proposal/review snapshots are retained; exactly one entry is atomically appended.
+The helper does not decide meanings, authenticate writer/USER labels, grant write
+or release authority, bypass recipient access or apply a pending proposal itself.
+
+The implementation distinguishes before/after observations from actual additional
+revisions and formatting-only changes. Failed or interrupted attempts retain their
+evidence. Recovery releases only an unchanged, exited local writer's lock after
+state appraisal; it never reapplies a definition, rewrites history or infers exit
+from age. Live, foreign, malformed, missing-after-publication or divergent states
+remain held. This is not protected storage against an editor ignoring the lock.
+
+Initial development exposed two test/setup issues: the synthetic writer ID did
+not meet the existing common ID pattern, and an ownership-substitution injection
+ran during lock acquisition instead of during journal writing. The ID was made
+conformant; the injection now exercises the intended primary-plus-cleanup failure,
+while acquisition still refuses a substituted lock. The subsequent 26-case local
+run passed, including actual competing processes and six exit points across new
+and existing ledgers. Formatting-only and missing-after-publication cases were
+then added. The final fixtures also retain separate pending proposals and use
+source-coherent synthetic correction/retirement statements; this is not native
+source appraisal or authenticated USER input.
+
+The final affected-surface gate passed all 27 commands without source drift,
+binding 23 staged files in
+`.cannae/maintenance/terminology-writer-r4b-20261115/verification-20bc6c69-1b7a-4f60-9c22-4e96dc7df4a9.json`,
+SHA-256 `4e7817dd65b42e25e9c9dd6508a1bb2cc38854074d2aaf5142b9b979e02bac65`.
+It includes 29 writer cases, 16 original terminology cases, 18 proposal cases,
+34 handoff cases, all 613 validator cases, 57 installation cases, 22 preflight
+cases, 6 control cases, 16 context-integrity cases and source/index checks. An
+actual reviewed append invalidates the retained old handoff; only a fresh scoped
+selection prepares a current replacement, without changing the old packet or
+granting execution/receiver acceptance.
+
+A twelve-case same-corpus differential across both routers confirms that the
+only output change is the added writer validation command where applicable.
+It compares router code from `e35a577` with the candidate on the same current
+corpus, not the frozen R1 evaluation or a fresh 1,776-query full routing run.
+Issued retained maintenance/event projection checks also passed; this is neither
+dashboard development nor a full-repository integration run. The final evidence
+index edits receive separate documentation checks before commit.
+
+SR10/SR12 remain in progress; SR11 still requires registered document/task/term
+impact reconciliation and reviewed refresh with unaffected work preserved.
+Source authenticity and actual agent compliance are not established by a review
+label or these fixtures. No new native model call or withheld evaluation occurred;
+the verified count remains 2/18. Dashboards and servers remain deferred.
+
+#### Registered Dependency Impact (2026-11-16)
+
+The R4C implementation adds `register-dependencies`, `inspect-dependencies` and
+`prepare-dependency-refresh` through both installed wrappers. Explicit document/task
+records bind source bytes, scoped term observations and upstream work versions.
+Required changes hold affected work; optional issues and binding-only changes are
+separate from independent work. Candidates do not replace an operative confirmed
+meaning. Refresh preserves the declared subject, reader, requirements and history;
+it starts with a null review reference and cannot be registered until appraisal
+is recorded. That reference is not authenticated review or work correctness.
+
+The first local run passed twenty cases, then failed the first installed-wrapper
+case because the new runner was not included in the artifact routing inventory.
+The missing classification was added to both routers; the full 22-case rerun
+passed. This was a real packaging defect, not waived by calling the helper directly.
+Additional cases connect the actual reviewed terminology writer to source revision,
+SOP repair and a new dependency record, and cover internal draft inputs, replaced
+Git roots and metadata secret refusal. Synthetic appraisal remains distinct from
+native source understanding or real USER authentication.
+
+All 28 affected-surface commands passed with the 22 source files unchanged in
+`.cannae/maintenance/dependency-impact-r4c-20261116/verification-7fbf84c2-517d-4fa9-91ec-c37c338dd56d.json`,
+SHA-256 `0aefc81fbddbb97ee5ef7b81f13badf265f1fc9fcd2ac5cb4ce75f642e99797e`.
+This includes 25 dependency cases, 29 writer cases, 16 terminology cases,
+18 change-proposal cases, 34 handoff cases, all 617 validator cases and 57
+installation cases. The eighteen-case same-corpus router comparison preserves
+the existing intake, documents, authority and controls while covering the new
+topic/artifact mappings; it is not the frozen withheld evaluation. The remaining
+instruction, authoring, preflight, context-integrity and documentation checks
+also passed. Retained maintenance/event unit checks do not reopen dashboard work.
+
+SR11 is bounded-verified by the local sequence, not the test count alone: exact
+source/term changes produce affected bindings; independent work remains current;
+the real terminology writer feeds a held SOP context; a repaired synthetic SOP
+and explicit recorded appraisal produce a fresh version without altering old
+records. Unresolved required meanings remain held even after re-registration.
+The helper cannot authenticate the appraisal or prove the repair's semantics;
+native chain behavior is still SR13-SR15 work. Partial/concurrent publication
+coverage here is deterministic fault injection, not protected-host concurrency.
+
+The verified count is 3/18. SR10/SR12 retain their separate remaining appraisal
+work; no native R3/R5 criterion is closed. No model call or withheld execution
+occurred, and this was not a full-repository integration run. Final evidence-index
+edits receive separate documentation checks before commit. The first closure check
+rejected a new free-text status label instead of the inventory's existing
+`Verified (bounded)` value. The label was corrected without changing the accepted
+status vocabulary; the failed closure is retained as
+`closure-d41f13b1-e514-4477-95ec-d9ede9476ff6.json` in the same evidence root,
+SHA-256 `3751af4c57bf04b287774e67d3f8710718148dd66e578bedce98756a1ff07fbe`.
+Dashboards and servers
+remain deferred; unrelated `.gitignore`, lockfile and frozen evaluation are unchanged.
+
+#### Installed Copy Diagnosis (2026-11-16)
+
+Following R4C commit `d21c4e0`, R6 work adds a read-only inspector invoked from
+the trusted checkout, not from a possibly stale installation. It compares current
+bundle bytes, executable modes and the default marker/source ancestry without
+running installed scripts. The source HEAD is recorded separately from current
+working-tree content; differences may be intentional local edits, not just age.
+Unknown entry contents remain unread. No native client, model, settings change,
+automatic reinstall or marker repair is part of this helper.
+
+The initial fixture's read guard matched `/private` anywhere in a path, accidentally
+rejecting macOS's legitimate `/private/var` temporary root after five passing cases.
+The guard was narrowed to the exact synthetic private target and unexpected entry;
+the actual no-read boundary is preserved.
+
+All 25 affected-surface commands passed with the 14 source files unchanged:
+`.cannae/maintenance/skill-installation-r6a-20261116/verification-6001bc68-e7cc-48ab-bdf2-f4e76951f53d.json`,
+SHA-256 `58f68c99a9304661fb41441f5ddd6cbad5bcdc3340200d19f96af0a74aa93d8e`.
+The gate includes 18 inspector, 13 discovery-helper and 57 installation fixtures;
+instruction, preflight, control, context-integrity, authoring-packet and index
+regressions also passed. Twelve same-corpus router comparisons change only the
+added inspector validation command, not the selected documents or authority.
+Both actual installed paths were inspected from a separate temporary Git root
+without executing their scripts. Each resolved to this checkout and matched its
+current bundle bytes. These paths remain links; no user copy was overwritten.
+
+| Layer/configuration | Observed result | Boundary |
+| --- | --- | --- |
+| Actual Codex and Claude user skill links, inspected from another Git root | Both match current source inventory, bytes, executable modes and source ancestry | Read-only filesystem diagnosis, not current personal startup/settings inspection |
+| Local link/copy fixtures, foreign working directory | Positive routing and changed/missing/unsafe copy/root cases pass | Synthetic temporary homes; no real reinstall or settings changes |
+| Codex CLI 0.162.1, isolated absent/link/copy startup | Absent not discovered; link and copy discovered | Native `debug prompt-input` metadata, no model prompt or body-consumption claim |
+| Claude Code 2.1.322, isolated absent/link/copy startup | Absent not discovered; link and copy discovered | Native initialization metadata, tools/hooks/MCP disabled |
+| Claude Code 2.1.322, bare linked skill / user setting sources excluded | Both correctly not discovered | Different launch conditions, not broken installation |
+
+The eight native metadata observations verified OS network/write containment
+before each startup. Real credential/keychain locations were denied; no user/model
+prompt or real-home setting write occurred. Entry hashes bind the observed bundle
+metadata. These are the installed binaries under isolated configurations, not
+authenticated sessions, personal settings, full-body delivery, semantic quality
+or a production-host guarantee. Metadata listing and task execution stay distinct.
+
+SR16 is bounded-verified for this installation/diagnosis matrix; the goal now has
+4/18 verified criteria. SR05 and R3/R5 still require actual delivered-context and
+source-appraised work/receiving evidence under new applicable model-call consent.
+No withheld case or full-repository integration was executed. Final evidence-index
+edits receive separate documentation checks before commit; dashboard/server work
+and unrelated `.gitignore` remain deferred/preserved respectively.
+
+#### Authoring Input Preparation (2026-11-16)
+
+`skill-authoring-evaluation.js` now prepares all four frozen development tasks
+for both clients from baseline `9331ff5`, without evaluator answers, candidate
+execution or withheld inputs. Eight exact packets total 1,130,888 UTF-8 bytes.
+Each manifest accounts separately for supplied instruction bodies, original task
+JSON and framing, with exact contiguous prompt spans and hashes. These are
+prepared bytes, not R2's six-task loaded-context result or authoring-quality passes.
+The fixed full-body selection and limits are documented in
+[Evaluation Metrics](evaluation-metrics.md#explicitly-prepared-authoring-inputs).
+Both client-operation guides require revision-specific delivery and truthful
+no-tool reporting instead of mixing the current installation into the baseline.
+
+Preparation regressions pass 22/22, including all eight client/task packets,
+original-task preservation, answer exclusion, multibyte content, altered spans,
+unauthorized acceptance flags, unsafe/missing inputs and exclusive private output.
+The first broader local report is retained under
+`.cannae/maintenance/skill-authoring-baseline-20261116/local-274db055-c04e-460e-8637-ec0105662e68/verification.json`
+(SHA-256 `bbfcf6a08a246d100c557c3d18352e1c00b1aae30af01c2c48391672950ce2f1`).
+Its eleven bound sources stayed unchanged; 17/20 commands passed. The new doctrine
+index entry lacked three exact cross-index references, causing source-map and
+control-enforcement failures. Those references were repaired without weakening
+the check, and both checks then passed. The document-session suite exceeded the
+report harness's 300-second limit after the Codex phase; it was not counted as
+passing and is being inspected separately. The 15 instruction, 74 authoring-event,
+57 installation, 18 inspector, 22 preflight and 28 handoff-generation cases passed.
+
+The USER separately approved the exact eight-process baseline proposal, bound to
+execution-plan SHA-256 `5cc92f26d881172562e42e43b9a80ba922a015d0f0ebeaf7cd268ff72f40b716`,
+at the 2026-11-16 checkpoint. Existing client logins were observed without recording
+credential contents. Approval alone establishes no received output or quality;
+actual native results and source appraisals require a later checkpoint. No candidate,
+withheld or cross-client-chain call is included. SR05/SR07-SR09/SR13-SR15 remain open,
+and the verified inventory remains 4/18. Dashboards and servers remain deferred.
+
+#### Native Authoring Baseline And Repair (2026-11-16)
+
+All eight approved baseline processes completed: four frozen development tasks
+in each client, not eight different authoring tasks. The inputs retain baseline
+`9331ff5`; no current installed guides were substituted. Codex CLI 0.162.1 used
+the explicitly pinned configured default `gpt-6-astra`; Claude Code 2.1.322
+reported `claude-opus-5-5` in its initialization events. Each process stayed within
+ten minutes; combined observed runtime was 473,815 ms. There were no task-tool
+events, automatic relaunches or reference answers supplied to the models.
+The new eight-process approval is fully consumed, not reusable for candidate or
+cross-client calls. No withheld task was executed.
+
+The source-appraised report is
+`.cannae/maintenance/skill-authoring-baseline-20261116/appraisal-57a18241-190c-4cf8-9a1b-9d0bd1b094b7.json`
+(SHA-256 `72fcc7fa5582d94ff3b1e59bdea6f85e8ee18b8e8d90f482bd4d0c8ce49f0244`).
+It binds every response, all 58 frozen check decisions, all 42 required outputs,
+source bodies, exact evidence quotes/byte locations and the selected detached
+unit. This is the working operator's appraisal of author-aware development cases,
+not an independent or blind assessment. Original prompts and responses are unchanged.
+
+| Observation | Result and limit |
+| --- | --- |
+| Native response collection | 8/8 completed; this is not quality acceptance |
+| Frozen rubric checks | 57/58 pass; Claude AD-04 C8 fails because uncertainty is promoted into operative assertions |
+| Required outputs | 42/42 present; 34 pass source appraisal and 8 need corrections. Shared defects affect multiple outputs; these are not eight independent error families |
+| Additional source-appraised findings | Five records: one critical mandatory-deliverable failure, three major content defects and one minor boundary ambiguity; some overlap the failed frozen check |
+| Prior-draft defect review | No missed seeded family or unsupported review finding identified under the recorded operator grouping; new assertions in generated documents are assessed separately |
+| Candidate comparison / native cross-client chain | Neither executed; no improvement or non-regression claim |
+
+The core findings are not hidden by the high frozen-check count:
+
+- **Claude AD-02:** the original counts invited accounts, but the added pooled
+  calculation calls the sum "106 invitations." The arithmetic sum does not
+  establish invitation events or distinct cross-group membership. Requested
+  per-group rates and noncausal interpretation remain supported.
+- **Claude AD-03:** section 6 declares itself standalone, yet its next action asks
+  a successor to review the exact W2, FRAGO and status tables located in sections
+  2-4. It also names E1-E4 without their definitions. Operative summary bullets
+  do not supply those exact artifacts. This is a critical acceptance blocker for
+  the required receiving unit, not observed unauthorized tool execution.
+- **Claude AD-04:** the text acknowledges that appendix/ledger identity is
+  unknown but merges them in its source list, holds and receiving unit. Its
+  phase report also states that listed actions were not done in any phase,
+  although historical non-occurrence is not established. An uncertainty note
+  does not repair those operative assertions.
+- **Claude AD-01:** "whole response" and a sections 1-5 range disagree because
+  a self-review section 6 follows. No required output is lost by that range;
+  retain this as a minor selection ambiguity, not a missing-task finding.
+
+The G3 pending-acknowledgement interpretations differ between clients, but both
+assess it as not Supported and preserve its fields. The frozen rubric does not
+require one pending-status label; that difference is not scored as an error.
+The baseline is **not accepted**. There is no candidate yet against which a
+new regression could be assessed.
+
+The repair changes the authoring workflow, handoff template and both skill
+entrypoints: keep derived units faithful, preserve unknown source identities in
+operative clauses, scope non-execution to its actual phase, and simulate the
+successor's next review using only the declared receiving unit. Entry size is
+now 25,765/25,779 bytes and 398 lines, about 21.7% below the frozen baseline.
+The earlier 23.4% reduction remains historical; the 20% criterion is unchanged.
+Two new instruction-coverage cases pass within 76 authoring-packet fixtures, and
+the 15 progressive-disclosure checks pass. These check delivery of the repair
+instructions, not a demonstrated native cure.
+
+Four operator-repaired derivatives preserve the original responses and all task
+source bodies while changing fifteen exact, appraised spans. The AD-03 derivative
+declares the complete document as its receiving unit instead of detaching the
+incomplete summary. The others correct the unit description, unsupported pooled
+event claim and merged identity/historical non-action assertions. They are not
+model-authored improvements, adopted policy or received handoffs. Their report is
+`.cannae/maintenance/skill-authoring-baseline-20261116/operator-repairs-28216164-0166-445c-a09d-dbe31da226a5/repair-report.json`
+(SHA-256 `5f28cfd7a938c1491bf12980db1ddeb4812a2e824a29b8b595daa1b25e1014c2`).
+
+The repaired instruction set passed twenty focused commands with all sixteen
+bound source files unchanged. Evidence:
+`.cannae/maintenance/skill-authoring-baseline-20261116/repair-d85aba3e-781a-4d8b-a922-e421bc4ec8df/verification.json`
+(SHA-256 `eb96b43882cc06392f73f4f7254cabd70a200ff8f6306948c35dd1ce5ccc999b`).
+This includes authoring/evaluation/instruction, installation/preflight, handoff,
+access/release, source-index and English checks. Final evidence-index edits receive
+their own closure checks. Full-repository integration before merge is still due;
+no merge or push is claimed. The local session retest below predates this final
+guide-text repair; its runtime and fixture code were not changed.
+
+The earlier 300-second document-session timeout remains in the failed report.
+A separate unchanged-fixture run completed all sixteen local routing/stdio cases
+for both providers. Its captured result is
+`.cannae/maintenance/skill-authoring-baseline-20261116/session-retest-result.json`
+(SHA-256 `ab0f1f0242102c570a71fe617e10fe1659671e30d71add07082487e9ba6a9451`).
+It is not a model-mediated sender/receiver chain. All actual response context
+counts above measure supplied stdin bodies plus completed output, not server
+attestation, comprehension, token equivalence or R2's six-task context savings.
+
+SR07/SR08 are in progress; native candidate/withheld comparison and both complete
+R5 chains remain open. The verified inventory stays **4/18**, with no inherited
+baseline pass or goal completion. Dashboards and servers remain deferred.
+
+#### Version-Bound Reference Reading (2026-11-16)
+
+R2 now has a local optional-reference reader in `skill-reference-reader.js` and
+both bundled `read_controls_reference.js` wrappers. Navigation emits literal
+heading-shaped lines; exact inclusive physical-line or full-body reads bind the
+complete current source digest. UTF-8, CRLF and final-newline state are preserved.
+An unread-tail change rejects an old selection. Only tracked corpus Markdown is
+eligible; project/private inputs, unsafe files and execution options are rejected.
+This is not read authorization or a replacement for manifest-governed/guarded work.
+
+Both entrypoints and routing references require complete assigned inputs and
+version-aware selection of optional guidance. Index navigation, framing, repeated
+reads, overlap and later dependencies remain part of actual recipient context.
+The source catalog must not become an inflated baseline: a diagnostic of all
+recommended bodies is neither a competent operator's actual reading nor native
+delivery. The helper cannot establish semantic sufficiency or waive controls.
+
+Current entrypoints are 25,930/25,944 UTF-8 bytes and 401 validator lines, 21.19%/
+21.18% below the frozen baseline. SR04 remains within its original bounds; no
+required-source, role/authority, route recommendation or issued control is removed.
+The focused gate passed **18/18 commands** with sixteen source bindings stable:
+`.cannae/maintenance/skill-reference-r2-20261116/gate-79b0be10-0300-43b4-8d3a-1869523f5781/verification.json`,
+SHA-256 `634827786cf53f77b0f0cc9ecc24216293d220c1d8c1012d3aecd968f8767598`.
+It covers thirteen new reader cases, fifteen progressive-disclosure cases,
+twenty-two evaluation cases, seventy-six authoring checks, fifty-seven install
+cases, eighteen inspector cases, twenty-two preflight cases, sixteen context
+integrity cases, 1,776 routing queries, fifty-six Korean cases, six control
+enforcement cases and metadata/index/link checks. This is focused local evidence,
+not the full integration gate or native quality. The final index/sample-command
+edits receive separate closure checks; original report bytes remain unchanged.
+
+The paired frozen-development observation remains **14/24 baseline vs 24/24
+candidate expectation matches**, with no reserved execution. Report:
+`.cannae/maintenance/skill-reference-r2-20261116/routing-4d37be9e-a1db-42f2-a540-7eb79ecd8271.json`,
+SHA-256 `ab77025271cc8a1c7e06e3b5adee19c5fb255276c8f12907f33ecf9c8f9d9940`.
+It records all original router outputs, exact source bytes and the six fixed
+catalog-size diagnostics. Those candidate catalogs span 568,383-1,065,735 bytes;
+README, source map and compendium dominate several cases. These are full
+recommendation inventories, not real baseline/candidate reading traces. Actual
+loaded instruction bytes remain null. The current native comparison still needs
+bounded authorized input preparation and an actual observation per client.
+
+SR05/SR06 stay open pending actual complete reading traces and appraisal. No new
+model call, reserved-case exposure, R5 receiving, merge or server work is claimed.
+
+#### Paired Context Preparation (2026-11-16)
+
+The fixed R2 requests name supplied policies/records but do not contain task-source
+bodies. A separate source supplement now reuses unchanged development inputs:
+AD-01 rule/support for RD-01/02/03/04, AD-04 rule/old-current meanings/status for
+RD-08, and AD-02 rule/observations for RD-09. It neither changes the original
+requests/bundle nor includes prior flawed drafts, reference answers or withheld
+inputs. The supplement SHA-256 is
+`3e799481410bd9c03b9cfa99a76b9ee06136434b841a820c92351b50daa0e44e`.
+
+`skill-context-evaluation.js` prepares both providers from clean baseline
+`9331ff5c613f60cb30bd61e853c78d3d0e9440fb` and R2 snapshot
+`7f64600562e735b6e4218ff3641a2e9772c738ee`. This is an R2 preparation version,
+not the global candidate freeze for withheld evaluation. Both sides retain
+selective reading and receive identical complete assigned source strings.
+The preparer route preserves original requests, roles, objectives, gaps and
+validation commands; it is not a route executed by the receiving model.
+
+The 24 prepared inputs total 907,182 UTF-8 bytes: 494,576 baseline and 412,606
+candidate. These are initial prompts, not complete native context or savings.
+The eligible snapshots retain 146/154 Markdown bodies totaling 3,487,983/3,625,732
+bytes; catalog size is not loading. Private preparation:
+`.cannae/maintenance/skill-context-r2-20261116/prepared/index.json`, SHA-256
+`6fed86485888e819ba2e645db33f95da6b18b7fc93169bdf23e46b36a13cba05`.
+Fresh inspection checks every snapshot, input span, task source, role/control
+projection and case combination. Producer SHA-256:
+`1c7a81e6b24c6e4090221c28355bdda0e2f761eae843ff7ba6b99c621108324d`.
+
+Thirteen focused preparation fixtures cover exact source strings, answer/withheld
+exclusion, complete pairing, changed/unsafe inputs, exact byte accounting,
+non-authorizing flags and interrupted output preservation. Both client-operation
+guides now require comparable supplements and complete reading traces rather than
+comparing a missing-input reply with a completed document. Native transport,
+observer/accounting, output appraisal and a new applicable execution approval are
+still required. No native attempt has been started or consumed by preparation;
+loaded bytes remain null, and SR05/SR06 and the **4/18** inventory are unchanged.
+
+The focused closure passed 17/17 commands, including context preparation (13),
+evaluation (22), reference reading (13), progressive delivery (15), authoring
+packet (76), installation (57), copy inspection (18), preflight (22), document
+integrity (16), enforcement (6), both skill validators and the index/link/language
+checks. Source and unrelated-file hashes were unchanged during the gate. Evidence:
+`.cannae/maintenance/skill-context-r2-20261116/gate-f4ba8715-c752-4b19-ae5f-e8b2911521d0/verification.json`,
+SHA-256 `f1794567f687ac96532b81b14a0a1d94c28ebebf12a5d02a48eda11d5ba73242`.
+This is a focused local gate, not the full pre-merge integration or native execution.
+
+A separate real maintenance-query counterexample remains open for R1: both
+routers infer `Maintain the Controls skills` as an objective but report
+`NO_CAPABILITY_ROUTE`; the paired context-evaluation objective is also a gap.
+The returned `CELL-E7720114AC7B` retains analysis/reversible drafting only, with
+no authority expansion or standing activation. Preserve this provisional routing
+instead of treating the assignment as unowned general work. Exact two-provider
+observation: `.cannae/maintenance/skill-context-r2-20261116/maintenance-route-10e7376b-2393-46b5-8450-801aa779aa34.json`,
+SHA-256 `5227f4953115b0c03ae364dbabb9a25955088e1219f96b16fd3c9fe4e2a9f9f3`.
+This is an additional exposed counterexample, not a changed frozen expectation
+or a withheld success. Fix ordinary own-skill maintenance recognition without
+letting a supporting skill method clear a genuinely uncovered domain objective.
+
+#### Own-Skill Maintenance Intake (2026-11-16)
+
+The exposed R2 preparation request above is an additional R1 regression, not a
+withheld case. At `604f914`, both routers reported two capability gaps despite
+selecting maintenance-related guidance. `skills` did not match the singular
+keyword, the context-reading evaluation had no specific route, and `No model
+transmission, dashboard or server development` was outside the complete exclusion
+list grammar. The original observation and provisional cell remain historical.
+
+Both routers now recognize bounded own-product action/subject phrases, route
+document context-reading/delivery evaluation to its measurement protocol and
+client-operation guides, and handle that full exclusion clause for relevance.
+Client or skill methods cannot by themselves establish another domain's coverage.
+Mixed requests retain each objective and any uncovered domain's provisional cell;
+no standing organization or additional authority is granted. Both routing guides
+require these distinctions before treating a shorter reading list as appropriate.
+
+Fresh corrected routing preserves exact original text, two separate objectives,
+authority, model-transmission prohibition and all non-gap validation commands.
+The erroneous gap's two force-structure commands are absent from the newly
+computed direct route; this does not remove controls from old issued receipts.
+Five unrelated technical manuals and the gap-only organization reading are no
+longer recommended. Explicit technical sources, technical parent objectives and
+actual dashboard review still retain technical context. Partial/exception-bearing
+exclusions are not stripped, and guarded multiple objectives still fail closed.
+
+`run-skill-maintenance-routing-fixtures.js` exercises both providers and human/AI
+modes. Its first attempt read the English relevance field under Korean-only
+`normalization` and failed with a TypeError; the fixture was corrected to the
+actual `request_intake.runtime_relevance_query` contract, not a relaxed product
+assertion. Failed fixture/log are retained under
+`.cannae/maintenance/skill-context-r2-20261116/fixture-failure-2592a742-a13f-4567-916c-76a0c74a01ba/`;
+fixture SHA-256 `5b809ca8d2d1f6ffe4a1d0c8397a657c31bcfe93c8ba39777dde742dfc1a273d`,
+log SHA-256 `b0edd5c427e26a20a195546cf1a262cfc00b88f952185f098694c5bac3b9378a`.
+The next run exposed an existing overmatch: `Analyze maintenance productivity`
+was covered by the runtime route solely through `maintenance`. That generic
+keyword now selects supporting context/controls without establishing a domain;
+actual maintenance-dashboard architecture remains covered. The failed runner and
+both router sources are preserved in
+`.cannae/maintenance/skill-context-r2-20261116/routing-counterexample-eaa9fc02-c8f6-4225-87c2-db806c795e20/result.json`,
+SHA-256 `5406d3cef443c7e179d8d9c8b986c81c967be46f3cd2724cc45eb8d5ee73aac9`.
+Additional inspection found that removing the generic capability match exposed
+an unsupported plural: `Review maintenance dashboards` was covered at `7f64600`
+but became a gap. The in-progress broad gate was deliberately terminated after
+its targeted pass, not reported as a pass or a timeout; retained result SHA-256
+`21e87180b419d87b41a911307111ebef7eecd32fb00fa2142a387186182f3293` at
+`.cannae/maintenance/skill-maintenance-routing-20261116/gate-c1d391ba-6682-49ce-b33d-9e6d2647483b/verification.json`.
+Both routers now recognize that actual plural subject, and a positive countercase
+requires the full technical reading as well as coverage. The acceptance threshold
+and original evaluation bundle were not changed.
+The intermediate focused gate passed 17/17 commands, with 104 routing observations,
+four guarded rejections, the existing 1,776 routing cases, Korean intake,
+installation, preflight, document integrity and control-enforcement regressions,
+both skill validators and index/link/language checks. Tested sources and unrelated
+files stayed unchanged and matched the staged sources. Evidence:
+`.cannae/maintenance/skill-maintenance-routing-20261116/gate-bec1a747-185f-4ca4-baf5-b26d6d67cb28/verification.json`,
+SHA-256 `9212674b38ca43e8ebe89d7fd4b55ee060f9142e2b8e30c38b2bee7b23cdcd13`.
+This is not the full pre-merge integration gate.
+
+Final source review nevertheless found a regression outside those observations:
+`Use the Codex skill to inspect mission lifecycle` lost its specific subject when
+all skill-operation matches were suppressed for a skill-as-method phrase. Both
+providers covered it at `7f64600` and returned a gap in that intermediate candidate.
+The failed observation is `.cannae/maintenance/skill-maintenance-routing-20261116/method-d2d019fe-1a00-4012-9a2c-8a7aea7ba555.json`,
+SHA-256 `2a58ac76891452fb3a6a08b2e2bf6789104e2efd2cdbe2091547e464c777e6f6`.
+The correction filters only generic client/skill method terms, preserving specific
+subject phrases and their manuals/controls. Both skill guides and positive tests
+now require that distinction. The corrected method observation has SHA-256
+`6388915a16aefaa0d25b4b0c6d1a57a8b006be8f97c96959caeaeaea30744aa5` at
+`.cannae/maintenance/skill-maintenance-routing-20261116/method-2d4d67d9-5719-4800-9449-9dd48cd96813.json`.
+Final refined-source validation passed all 17 commands, now including 112 targeted
+routing observations and four guarded rejections, plus the unchanged broad
+routing, Korean, installation, preflight, integrity and enforcement suites.
+Sources stayed stable and matched the staged files; `.gitignore` and the lockfile
+were preserved. Final gate:
+`.cannae/maintenance/skill-maintenance-routing-20261116/gate-d7e9735d-ec4b-468c-a3c4-8d34323bf7e5/verification.json`,
+SHA-256 `13ccd709aa092062c797dc8f3927a1d6b7edf5ae4b78bc458a18579fca2ba20f`.
+
+The original request's final two-provider observation is retained at
+`.cannae/maintenance/skill-context-r2-20261116/maintenance-route-43e8ba6b-8fc1-4282-822e-c9ba2c84eb53.json`,
+SHA-256 `6d765f011a6cd41b4ddc4198e9763eabed86b7b55a4dafa19c649367cb669605`.
+Unchanged frozen development expectations still match 14/24 baseline and 24/24
+candidate observations across both providers; no withheld task was executed.
+Report: `.cannae/maintenance/skill-reference-r2-20261116/routing-af0403c6-5437-4628-b4e7-e4a2b04900b3.json`,
+SHA-256 `398d4e518899337954574c95e3bbb25e51eb3c0b9fca35bed9567e50c89d6d36`.
+SR02/SR03 remain in progress, the accepted inventory is still **4/18**, and no
+native comparison, actual context savings or general semantic coverage is claimed.
+
+#### Context Trace Preparation (2026-11-16)
+
+R2 now has `skill-context-trace.js` and thirteen synthetic fixture groups for
+exact native-call/source-response reconciliation. It counts client-bound setup,
+schema, framing, navigation, error responses and actual repeated reads without
+counting the native transcript echo again. Missing/changed/duplicate results,
+unknown tools/sessions and incomplete lifecycles are unverified. The measured
+boundary is controlled client input; hidden backend context remains unknown.
+Trace consistency does not establish authentic native execution or source quality.
+Both client-operation guides require this distinction and a non-renewable outer
+attempt/deadline rather than a helper reconnect resetting the execution budget.
+
+The private transient stdio relay has no listening port. A local SDK client
+tested both revisions/providers, repeated reads, error responses, exact wire
+reconciliation, child exit and rejection of audit-path reuse. The same exercise
+passed under both planned client privacy profiles. This is local subprocess
+evidence, not a native model result. Profile check:
+`.cannae/maintenance/skill-context-r2-20261116/profile-check-01f252f8-fdcb-4fc8-b43c-11fb1355fa86.json`,
+SHA-256 `2c99293b0126f3c646ec14d3348b6cd884d5808eebfd8636f73a4b08b6b2d5d7`.
+
+A new separate R2 snapshot binds candidate `4e02c09` without replacing the prior
+`7f64600` preparation or freezing the global withheld candidate. Its index at
+`.cannae/maintenance/skill-context-r2-20261116/prepared-4e02c09/index.json` has
+SHA-256 `5de7c4c9df63a3a025166ee916e71557b994708e87d18b94d82fa0302e8d6e23`.
+All 24 paired initial inputs still total 907,182 bytes; assigned development
+source bodies and original requests are unchanged. A task-specific evaluator
+rubric stays outside the input/catalog. Neither initial-byte reduction nor this
+unexecuted preparation proves the required complete-work median improvement.
+
+Native launch preparation binds exact inputs, code, binaries, tool configuration,
+one-attempt records, a ten-minute absolute limit and 64 reads per process. All 24
+prechecks passed; attempting execution without a new decision stopped before
+creating an attempt or invoking a model. Evidence:
+`.cannae/maintenance/skill-context-r2-20261116/native-precheck-79bf0a4c-04d4-4379-adde-37ecc25ee725.json`,
+SHA-256 `efb3ffae496b2061fb2c76699ddf27177d86c0a7661ad356bb9625a7f92608f8`.
+Approval and actual execution remain separate. SR05/SR06 and the broader R3/R5
+native work remain open; the verified inventory stays **4/18**.
+
+The focused gate passed 17/17 commands, including thirteen trace fixture groups,
+paired preparation, reference fidelity, authoring, progressive delivery, both
+skill validators, installation, preflight, integrity/enforcement and index/link/
+language checks. Source hashes and unrelated `.gitignore`/lockfile bytes stayed
+unchanged during the gate. This is not the merge-time full integration run.
+Evidence: `.cannae/maintenance/skill-context-r2-20261116/trace-gate-40f83519-6bc8-4cfa-b32b-9209e13f742b/verification.json`,
+SHA-256 `433a5834f7cac8e3416ca44a66859565a3f59da0752333733f387fe338317015`.
+
+The exact proposed native plan is retained at
+`.cannae/maintenance/skill-context-r2-20261116/native-plan-v1/execution-plan.json`,
+SHA-256 `2cd85b922555c876236965958709f55aea61c321a5bbb8479a362cb47ba8c83f`;
+the readable proposal digest is
+`e8862efe059783f6fbaf007ce5f726318fc6a2dcfc85cf58b0ea4e5c4b0076da`.
+It includes up to 24 sequential processes, not permission to relaunch failures.
+No new decision or model attempt exists at this checkpoint.
+
+An additional R1 observation remains unrepaired: the request beginning
+`Maintain the Controls skill-context-evaluation:` is still a capability gap in
+both routers, despite the explicit evaluation subject. Preserve the original
+request and gap, not a fabricated coverage claim or authority expansion. This
+was not used to alter the frozen six tasks or their R2 input preparation.
+Observation: `.cannae/maintenance/skill-context-r2-20261116/maintenance-hyphen-gap-d6960b6b-2dfe-434a-847c-3c63e2663976.json`,
+SHA-256 `67ab0b7b43a120af98cff13045590d3f62962363be940cd32ad27dc1dd1b149f`.
+
+#### Proposal Drafting And Compound Intake (2026-11-16)
+
+The preceding hyphenated-request observation is preserved, but its initial
+diagnosis was incomplete. Per-objective inspection shows the maintenance clause
+was already covered; `prepare a bounded approval proposal.` caused the combined
+gap. Isolated probes confirm both hyphenated and spaced maintenance requests
+were covered before this repair. Separately, a colon followed by an explicit
+`analyze ICP sales targets` task was incorrectly covered by its maintenance
+prefix. Before-state evidence:
+`.cannae/maintenance/skill-context-r2-20261116/proposal-intake-before-6057daad-9738-4ba2-8360-12b232c76e40.json`,
+SHA-256 `866e17698a8481459c28d5e000d857cb0de6441c4ee5dfd1c39e2ce0d8a22145`.
+
+Both routers now recognize the bounded approval-proposal document format without
+interpreting drafting as approval, publication or subject-domain expertise.
+Explicit action clauses after a colon receive separate assessments; supported
+maintenance prefixes cannot clear an uncovered downstream objective. The bounded
+action vocabulary also retains maintenance verbs when extracting these clauses.
+Quoted source text and time punctuation do not become new task declarations.
+Original requests, source references, prohibitions and all non-gap controls remain.
+Both skill routing guides require per-objective diagnosis and explicit declarations
+for unresolved extraction rather than deleting a difficult task or changing a
+guarded request into direct work.
+
+The focused maintenance fixture now passes 168 local routed observations and 12
+guarded rejections across both providers and human/delegated modes. It covers the
+original request, standalone drafting, genuine domain gaps, colon-separated
+tasks, quoted/time counterexamples and unsupported execution receipts. These are
+development regressions, not reserved-case or native semantic acceptance.
+SR02/SR03 stay open and the accepted inventory remains **4/18**. The pending R2
+native proposal still refers to its unchanged `4e02c09` snapshot, not this later
+working-tree repair; neither the frozen inputs nor its execution authority changed.
+
+The original request now has two covered objective rows in both providers with
+unchanged operator metadata and all previously selected non-gap validation
+commands. Exact after-state observation:
+`.cannae/maintenance/skill-context-r2-20261116/proposal-intake-after-5398a414-2986-4da9-98c7-530e515137ef.json`,
+SHA-256 `1050eb81bfbac07c1f8374cdaa4d0630a5afa87869cb40343db4a9df5aa38c87`.
+The frozen development comparison remains 14/24 baseline vs 24/24 current
+matches with no reserved/native execution:
+`.cannae/maintenance/skill-reference-r2-20261116/routing-33981088-01d3-44f2-b951-6d6e1d1a892d.json`,
+SHA-256 `07da44ce62ee78d243153ed123dcf1cf72f8ad81bf21a52ecbb81a9b599927c6`.
+
+All 19 focused commands passed, including the 1,776-query existing routing suite,
+Korean intake, installation/copy diagnostics, context integrity, preflight and
+enforcement. The gate retained source and unrelated-file hashes; it is not the
+full merge-time integration gate. Evidence:
+`.cannae/maintenance/skill-context-r2-20261116/proposal-intake-gate-6a43de80-bd3c-47e0-af9b-29294f584a13/verification.json`,
+SHA-256 `db8c83dfccebb13fbff08a4dd5142034ad45fcc4f7f3b0675245493560dc8d28`.
+The USER subsequently approved the exact R2 proposal for at most 24 sequential
+processes; that approval is recorded locally against its original plan/proposal
+digests. Approval is not a native result, successful reading or criterion closure.
+
+#### Native Context Startup Failure (2026-11-16)
+
+The newly approved R2 batch started `baseline-codex-RD-01` once. The observer
+terminated it after 816 ms with `SKILL_CONTEXT_TRACE_TURN_NOT_STARTED`: two
+completed diagnostic items appeared after `thread.started` but before
+`turn.started`. One described the under-development discovery flag; the other
+described the intentionally denied live global AGENTS.md. This was an observer
+ordering defect, not evidence of a failed document response or provider change.
+The existing classifier already regarded such items as diagnostics, but the new
+state check rejected them before that classification. No warning suppression,
+profile relaxation or instruction-discovery change is used as a repair.
+
+The batch stopped on its first failed attempt; the other 23 cases were not
+started. Stdin completed, but there is no complete response, proven backend
+delivery/usage, source appraisal or accepted byte measurement. All three recorded
+process PIDs were later observed gone. The original result remains unchanged at
+`.cannae/maintenance/skill-context-r2-20261116/native-plan-v1/baseline-codex-RD-01/execution-result.json`,
+SHA-256 `d69c09153bdee0d642cc7c943719d9f344e5ad43a1809e1b738896dd194b561e`.
+Raw stdout SHA-256 is
+`6b0725e34783f9a3af2bcdc339dc2818ea339d8b9c83b06e8fa7a20538ca6097`;
+transport SHA-256 is
+`41f3a3d2a459e171305065ae47bd22c9e34f6b1c4e71c7c16a3f31f00244d46d`.
+The exact prior observer/trace source bodies are archived alongside the failure.
+
+The local repair admits only correctly shaped completed diagnostic items in
+that startup interval; missing threads/turns, early tools, malformed diagnostics,
+failed turns and incomplete work still reject. Fourteen synthetic trace groups
+pass. A replay of the four actual captured events no longer raises the ordering
+error but still rejects completion, preserving the original failed result:
+`.cannae/maintenance/skill-context-r2-20261116/startup-replay-02c8787b-1296-4418-95a6-dfbb541796d5.json`,
+SHA-256 `d0475d3b9d706c437edef1f202cbbf12a791ec02e8fe72de0d67564b63cd9319`.
+Both client-operation guides require real startup-order replay, bound-source
+checks and fresh retry consent rather than weakening the isolation profile.
+
+A separate one-process recovery proposal preserves the exact 40,716-byte input
+and baseline source catalog. Its plan at
+`.cannae/maintenance/skill-context-r2-20261116/native-startup-recovery-v1/execution-plan.json`
+has SHA-256 `e0640150a87201a6be52b69457381207d5b3a242c076954bfd6ec7e370a0b218`.
+It is not approved or executed at this checkpoint, and does not include the
+prior 23 unstarted cases. SR05/SR06 remain open and the inventory stays **4/18**.
+
+The broader local follow-up is **not green**: nine commands passed, then
+`run-context-document-integrity-fixtures.js` failed with an expired artifact
+lease after 512,719 ms. The seven-command suffix was not executed by that gate.
+Source and unrelated-file hashes stayed stable. Preserve the failed run at
+`.cannae/maintenance/skill-context-r2-20261116/trace-gate-d8688708-4d77-4cd7-bb04-df7d445a45e1/verification.json`,
+SHA-256 `9021f4b894a8b345937b4dc039f143586ef286888afc1d4cf424ada60351c68b`.
+Read-only `pmset` evidence records sleep from 18:58:09 to 19:06:25 +0900,
+overlapping that fixture. This explains a timing condition to investigate, not
+permission to relabel the fixture as passed or change its lease/deadline.
+Evidence: `.cannae/maintenance/skill-context-r2-20261116/startup-gate-sleep-31d7b4b7-3333-4656-aedc-cebcb24ff678.json`,
+SHA-256 `88fd35fdbfd1f2bc32aa8c1ffc86c81a5f58db5fc81709969fbe201f60df2e72`.
+Remaining context-integrity/preflight checks need a new bounded local run while
+awake; no power setting or approval expiry is changed. The prepared retry is
+conditional on those remaining checks and its own new user decision. Its missing
+decision was locally verified to reject before creating any retry attempt.
+
+A second bounded local gate also failed, rather than clearing that hold: eight
+commands passed, then installation ended with `ETIMEDOUT`/`SIGTERM` and a nested
+`null !== 0` status assertion. Its eight-command suffix was not executed:
+`.cannae/maintenance/skill-context-r2-20261116/trace-gate-a064df4b-58d0-4474-8824-b456cbad9b8c/verification.json`,
+SHA-256 `9234dcf5f0ca9b30665d69a5cad4240491429744aeac8560c7c6bf60862d1afd`.
+The read-only power log records 942 seconds of sleep from 20:21:41 +0900 during
+that run; this is timing evidence, not proof excluding other causes:
+`.cannae/maintenance/skill-context-r2-20261116/startup-second-gate-power-c1244842-a361-46d5-accb-0af98dc3ddb7.json`,
+SHA-256 `8072533d8ae5ee4fd3c980fcb2a17f741e7886a0485ae3d1c030be71f1640c10`.
+The startup repair has focused trace/replay evidence only, not a green related
+integration gate. Installation, context integrity, preflight and enforcement
+still require a completed local check before the proposed native retry. No
+further long-running gate or model attempt was launched at this checkpoint.
+
+#### Exact Terminology Proposal Paths (2026-11-16)
+
+A focused R4 audit reproduced an output-boundary defect in
+`project-terminology-change.js`: its generic `changes/probe` path was ignored,
+but a negated Git rule exposed the actual generated `proposal.json`. Preparation
+returned pending-review success and the synthetic private proposal appeared in
+Git's untracked listing. No canonical ledger, commit, transfer or native call
+occurred. Before evidence:
+`.cannae/maintenance/terminology-output-r4d-20261116/probe-4608e087-ab9a-4591-b38b-696d35f69a74.json`,
+SHA-256 `41432b1996342ef74b434f6203c090b1c17baf2ad7e7803b95abd6e5b8e8359d`.
+
+The repair checks the actual destination before directory creation, again before
+writing, and during inspection. Normal Git index handling also rejects a proposal
+that was force-tracked despite its ignore rule. Reviewed adoption uses that same
+inspection before acquiring a writer lock or changing the ledger. Changed storage
+rules never authorize automatically editing `.gitignore`, deleting evidence,
+untracking files or relocating private content. Both skill guides encode this
+operational distinction. A cooperative local check is not an atomic policy lock.
+
+The identical probe now rejects `TERMINOLOGY_CHANGE_OUTPUT_NOT_IGNORED` without
+creating the proposal or ledger:
+`.cannae/maintenance/terminology-output-r4d-20261116/probe-69b91608-4471-453f-9feb-96cc97b7ce86.json`,
+SHA-256 `cc5b91d3e639172cb3676330fe0e9d47ccbf4b44fdbd270d6af8735163b7c867`.
+The proposal suite passes 21 cases, including exact exceptions, a rule change
+between directory creation and writing, force-tracked inspection and unchanged
+historical evidence. Consumer and affected-surface checks are recorded separately;
+this local repair does not close SR10/SR12 or any native criterion. The accepted
+inventory remains **4/18**; the R2 retry consent and broader gate holds remain.
+
+The canonical writer had a related bypass: `--no-index` treated a force-tracked
+ledger as ignored and appended a synthetic definition to it. Its exact-output
+checks now consult the real index before locking and again before publication.
+The original writer probe is retained at
+`.cannae/maintenance/terminology-output-r4d-20261116/writer-probe-fa170946-ba49-436f-a9c5-642896c1a8d1.json`,
+SHA-256 `10567636eb6a34cbfde1bbad3f7b3815467af8dd1d8eba297f77ebf78a85b053`.
+New consumer cases check unchanged evidence, no lock/transaction on initial
+refusal, and a ledger added to Git's index immediately before publication.
+The same writer probe now rejects `TERMINOLOGY_WRITER_OUTPUT_NOT_IGNORED`, leaves
+the ledger byte-identical and adds no entry:
+`.cannae/maintenance/terminology-output-r4d-20261116/writer-probe-aceb4789-3abe-4f46-9e43-9c1d58bc267c.json`,
+SHA-256 `d81a77fae2a7656aa4b4593d621bcebea655599b91a26727fa59977d943dd754`.
+
+The initial focused gate passed the proposal suite but timed out during the
+writer suite at its newly chosen two-minute parent limit; the remaining eleven
+commands were not executed. Preserve that failed run:
+`.cannae/maintenance/terminology-output-r4d-20261116/gate-98ea15a5-a1b2-444c-846a-c56f7e3fb017/verification.json`,
+SHA-256 `7ac2d22b06d48ea29cb8ccee632b88f33d6f8e4adfbaf75ddfe5b4dd69410150`.
+The earlier 29-case writer suite took about 97 seconds, before these extra Git
+checks. The new bounded follow-up allows five minutes per local test process;
+no production lease, review expiry, model deadline or original failed result is
+changed. The initial harness body is retained separately. This adjustment is
+not evidence that the writer or the later suffix passed.
+
+The subsequent focused gate passed all thirteen commands with its twelve public
+source files and the user's `.gitignore` unchanged during the run:
+`.cannae/maintenance/terminology-output-r4d-20261116/gate-71dce0f0-2b9d-4f52-bc06-d8485334ee4e/verification.json`,
+SHA-256 `a443c44743df31ba2d5cdb9d7eba91961a3822cf03019d15554d783f5e9c7abc`.
+It covers 21 proposal, 31 writer, 16 terminology, 34 handoff and 25 dependency
+cases, the complete validator fixture command, both skill validators and index,
+coverage, link, English and whitespace checks. Linked/copied wrappers are exercised
+inside the proposal, writer and dependency suites. The writer completed in about
+142 seconds, not within the first harness's two-minute limit. Final evidence-index
+edits receive a separate short closure check. This is not the full repository
+integration gate, native term appraisal or actual cross-client receiving; earlier
+R2 failures remain separate and the accepted inventory is still **4/18**.
+
+#### Startup Remaining Checks (2026-11-16)
+
+A new source-bound run completed all four previously outstanding R2 local
+commands: installation, context-document integrity, routing preflight and control
+enforcement. It binds the unchanged tracked tree at `55c1f46`, including the
+preserved user `.gitignore`, and does not rewrite either earlier failed gate:
+`.cannae/maintenance/skill-context-r2-20261116/remaining-gate-11ed1e4d-0654-4f22-aefc-0287362c0099/verification.json`,
+SHA-256 `f10dfb0098fca6f4f928867dc486b923441c59cc466f8e0a96565d521dab085b`.
+The exact one-process recovery plan also passes its source precheck with
+`model_invoked: false`. Its new consent remains absent; neither these local
+passes nor later R4 edits restart the native batch or authorize the other 23 cases.
+This checkpoint is not the full repository integration gate or native acceptance.
+
+#### Terminology Field Provenance (2026-11-16)
+
+R4 source appraisal found a limitation not exposed by schema validity. The change
+sample's source says ICP means company-level fit, not a contact role; its
+`not_meaning` additionally claimed "execution approval". That independent control
+was not part of the quoted definition. Some writer fixtures also changed the
+concept to reporting cadence or a support procedure while retaining the old
+concept's exclusions. These were development-data defects, not observed native
+model failures. Earlier structural passes remain valid for their original scope.
+
+The current samples now retain only the quoted exclusion. Request, proposal,
+review and transaction bindings are recomputed coherently; invalid counterparts
+still target inference promotion, entry binding, review validity and transaction
+identity. The quote, source byte binding, authority flags and old committed history
+are unchanged. New-concept fixtures leave unstated exclusions empty and assert
+the resulting ledger/selection, rather than borrowing unrelated meanings.
+
+Both project-terms guides and the workflow now require a field-level appraisal
+of term, aliases, meaning, exclusions and scope. Known predecessor meaning may
+survive a correction, but a different concept/scope is not an implicit copy.
+A user question is not an explicit definition. Removing an unsupported semantic
+claim never removes an actual authority, disclosure or stop control. This is
+operator guidance, not an automatic semantic/authentication gate.
+
+The 22-case proposal suite checks the source-appraised sample family, all exact
+derived bindings and the original negative-rule codes. Remaining consumer checks
+and the SR12 requirement appraisal are recorded separately. SR10 still needs a
+source-appraised operational capture progression; do not infer it from these
+sample assertions or silently count old/native evidence toward the new goal.
+
+All thirteen affected-surface commands passed against eighteen unchanged public
+source files and the preserved user `.gitignore`:
+`.cannae/maintenance/terminology-appraisal-r4e-20261116/gate-42ac0e76-4318-43fe-a79e-cc0b95ecfc40/verification.json`,
+SHA-256 `675b851f21ae3716a60dfd25c1986df007e9d832cd4f8f59874d1e9751733cc1`.
+This includes 617 validator, 22 proposal, 31 writer, 16 terminology, 34 handoff
+and 25 dependency cases plus both skills and document/index checks. It is not
+the full repository integration gate. Final status/index edits receive a separate
+closure check rather than being relabeled as those earlier source bytes.
+
+SR12 is now **Verified (bounded)** based on the reviewed behavior, not the count:
+
+| Required boundary | Observed evidence |
+| --- | --- |
+| Repository and scope separation | Distinct Git-root ledgers retain different meanings; copied/replaced origins reject. Actual scoped writer appends preserve domain selection and expose overlapping confirmed meanings as conflicts. |
+| Candidate, retirement and denied recipients | Candidate revisions do not displace confirmed meanings; retirement retains history but stops current reuse. Wrong role/department and current restrictions prevent disclosure or historical fallback. |
+| Single writer and pending decisions | Real competing processes reject a second writer; live owners cannot be recovered. Exit-bound recovery observes without reapplying, divergent states stay held, and pending proposal bytes survive. Missing/defer/reject/expired reviews cannot append. |
+| Stale delivery and output limits | Actual reviewed append invalidates an old handoff; a fresh scoped successor preserves the original bytes. Credential-shaped values fail without echo/publication, benign names need no exception, and tracked/exposed outputs reject without editing ignore rules. Access and transfer authority never follow from these operations. |
+
+The criterion appraisal is retained at
+`.cannae/maintenance/terminology-appraisal-r4e-20261116/sr12-appraisal.md`, SHA-256
+`a1315fb2c9cc9c37466098fe19953096a57255e4978464007b2e9ad6e0fe4f25`.
+It is implementing-operator source review, not independent/native evaluation.
+Trust remains local/cooperative: caller read authority, actual USER authorship,
+semantic correctness and complete secret detection are not authenticated by labels
+or hashes. Actual recipient use is still SR13-SR15. The accepted inventory is
+**5/18**, with SR10 operational capture and the native criteria still open.
+
+A separate development routing observation retains another R1 limit: trailing
+"Keep model transfers and dashboard development deferred" still selects dashboard
+context in both routers. The original task is preserved and no dashboard work
+was authorized or performed. Evidence:
+`.cannae/maintenance/terminology-appraisal-r4e-20261116/deferred-wording-observation-3d333b46-d5fd-4afd-9f90-7f8fd9289a96.json`,
+SHA-256 `2d96296733b95ac5c5876b7e426f037b0d24564e9454ebf7076612ba5b8abefb`.
+That case is development-visible, not withheld, and is not fixed by this appraisal.
+
+#### Local Terminology Capture (2026-11-16)
+
+SR10 is **Verified (bounded)** for the usable local operator path. The prepared
+contract was executed at `f5617226f4ff554011fe651ad0f959e3ebd47970` through the
+actual Codex and Claude bundled CLI wrappers, using two new synthetic Git roots.
+No native model, real-project glossary, background collector or external receiver
+was involved. Source labels are synthetic, not authenticated USER events.
+
+The operator retained six minimal statements with exact whole-file hashes and
+UTF-8 excerpt ranges, inspected each of five proposals, separately appraised its
+fields and then invoked the writer. A question was retained without a proposal.
+The complete sequence preserved source files, review records, transaction
+snapshots, selected outputs, pending states and chronological command outcomes.
+
+| Required behavior | Observed result |
+| --- | --- |
+| Explicit definition without automatic adoption | A1 preparation/inspection left the ledger absent. Missing review failed without a ledger or lock; a separately reviewed append produced the sourced definition. |
+| AI candidate and USER correction | A2 stayed a candidate beside A1's operative meaning. A3 appended after A2 with its own USER source; the AI revision and earlier definition remained unchanged. |
+| Scope and ambiguous capture | B1 recorded the same spelling with a different support meaning, no borrowed exclusion or access grant. B2's question produced no confirmed definition or publication approval; B's ledger bytes stayed unchanged. |
+| Retirement, access and history | A4 retained all four A revisions while removing the current confirmed meaning. Every delegated selection remained unavailable, earlier proposals/selections rejected stale bindings, and retained transactions still matched their historical snapshots. |
+
+The first final audit failed because its expected error-code name was wrong:
+the product returned `TERMINOLOGY_CHANGE_BASE_STALE`, not the evaluator's
+`TERMINOLOGY_CHANGE_LEDGER_STALE`. Preserve that driver and failure; no append
+was repeated. A separate read-only completion audit checked the actual rejection
+and finished the remaining assertions. B2's appraisal preceded B1's append;
+its unchanged-ledger check followed A4. This is not a native R5 work chain.
+
+Retained evidence root: `.cannae/maintenance/terminology-capture-r4f-20261116/`.
+`verification-completed.json` has SHA-256
+`f46dd1c9d8aea3f8f6d44f6ad40e10a61854e4d94f4828dd576a3f47d4cff076`
+and binds 123 source, appraisal, command and transaction artifacts. Review is
+by the implementing operator, not an independent reviewer. Hashes and helper
+validity do not determine true meaning, authenticate USER or prove actual model
+compliance; those limits remain explicit. Existing R3/R5 native requirements
+remain open, and this does not consume or renew model-transfer consent.
+
+Both project-terms guides now distinguish latest-revision lineage from the
+operative confirmed meaning, preserve unresolved questions without invented
+entries, and identify retired text as history rather than fallback. The workflow
+provides the matching state table. This bounded closure makes the accepted
+inventory **6/18**, not a product-accuracy or elapsed-effort percentage.
+
+#### Deferral-List Routing (2026-11-16)
+
+The development-visible trailing deferral recorded above reproduced at `d60a352`.
+"Keep model transfers and dashboard development deferred" retained unnecessary
+runtime manuals, as did "No model transmissions, dashboard development or servers".
+The list grammar recognized neither the imperative deferral form nor plural
+transmissions/transfers. A counterexample also found that removing terminal
+English question marks made "Dashboard development is deferred?" look definitive.
+
+Both routers now recognize complete known mixed lists with `keep`/`leave` and
+`deferred`/`out of scope`, as well as the existing declarative forms. Their
+English relevance view retains question marks. Unknown list members, conditional
+deferrals, quoted statements and later technical reviews remain conservative;
+explicit sources, parent objectives and technical departments still apply.
+The original query and selected validation commands are not rewritten or removed.
+The routing guides require whole-clause appraisal, not dropping an unknown word
+or punctuation to force a smaller list. Model transfer and consent remain separate.
+
+Fixed local development comparison: 21 cases across both providers, 42 observations.
+Before the repair, 22 matched; after it, all 42 matched. Ten mismatches per provider
+comprised nine unnecessary selections and one omitted question-related selection.
+The paired comparison independently checked unchanged original/declared context,
+prior route IDs and every previously selected validation command. It also retained
+the real domain gap, required-source and technical-parent counterexamples.
+
+Evidence root: `.cannae/maintenance/routing-deferral-r1-20261116/`.
+The before/after manifest hashes are respectively
+`9b25c4d6a68a2f7f5a61a966fd63ba7755b25101cdac4fed1cc959edaf10febf`
+and `8e5638f7ac79237b2977dc742708271048274736a45576943e7ea360f61747e1`.
+`comparison.json` has SHA-256
+`94b304e1a4c9a4fc2f656a9476593d21429be78ccb102b73604b56444a9ff56f`.
+The expanded `run-document-routing-fixtures.js` covers the actual two observed
+requests, retained constraints, guarded compound rejection and context parity.
+Broader verification is recorded separately, not inferred from this comparison.
+
+The complete routing suite passed: 1,864 queries across both providers, 58 direct
+task identity checks, 32 required-source rejections, 38 objective-declaration
+rejections, three link-inventory checks and 50 declared-reference checks.
+The unchanged frozen development set matched 24/24 observations; Korean intake,
+own-skill maintenance and progressive-disclosure fixtures also passed. Eight
+short checks passed for both skill entrypoints, both corpus coverage reports,
+source-map validity, Markdown links, English-only content and diff whitespace.
+Their source-bound report is
+`remaining-07c2844a-0352-4df2-b242-ff6b1a2ea2e6/verification.json`, SHA-256
+`e095c1966c06d073b7ec405e162a2fdace75cd9e22f2d2aadcbd1e9d71b7ce83`.
+
+Do not describe the whole verification ladder as passed. The document-session
+suite first exceeded its ten-minute parent limit after 14/16 cases. A separate
+twenty-minute parent allowance, without changing product deadlines, then failed
+with `PROJECT_PACKET_SOURCE_OTHER_REPOSITORY`. One instrumented diagnostic failed
+with `PROJECT_PACKET_SOURCE_EXCLUDED` after four completed cases. Its report is
+`session-diagnostic-ba979030-00bf-478c-a9b2-73b09757d260/report.json`, SHA-256
+`40601b3b80470359e6b1627c79c893c4f9eb039dd83c178b69dbc6b0551ff31f`.
+It recorded Git timeout events coincident with host sleep/wake intervals; neither
+that correlation nor the overloaded error labels prove the cause of every failure.
+All three failed attempts remain intact. No source-identity check, product timeout,
+power setting or approval expiry was relaxed, and no model was invoked.
+
+Session completion and the unexecuted installation, context-integrity, preflight
+and control-enforcement checks remain pending for this exact source revision.
+Older passes are not substituted. Resume the longer local checks only in a stable
+awake interval; a focused routing pass is not merge-ready integration evidence.
+
+This is a development-visible lexical correction, not withheld evaluation,
+complete bilingual semantic handling, native delivery or an execution permission.
+The frozen native-context candidate remains unchanged; its approval cannot move
+to the current source. SR02/SR03 stay in progress and the inventory remains **6/18**.
+
+#### Local Evidence Index (2026-11-17)
+
+The previous deferral-routing work retained a passing comparison, complete routing
+check, short-check group, an interrupted gate and two failed session attempts in
+separate files. These were not one successful ladder. The new read-only
+`skill-evidence-index.js` preserves that distinction and reports declared source
+currentness separately from result retention. Both maintenance guides require
+original source/result bindings and new entries for new runs, not rehashing a past
+pass against current code. The [focused-check map](evaluation-fixtures.md#skill-maintenance-checks-and-evidence)
+and contribution instructions retain the complete current CI gates before merge;
+the aggregate is invoked once, not inside a second loop over its own suites.
+
+Thirteen synthetic regression groups cover retained failure, missing/changed logs,
+source drift, historical versions, not-run/incomplete records, repository identity,
+malformed bindings, unsafe links, concurrent changes, unrelated-cwd CLI use and
+discovery by the full aggregate without running that aggregate here.
+Matching file hashes do not execute recorded commands, appraise log semantics,
+attest revision attribution or authorize a merge. Source and log bodies are not
+printed. These checks are local behavior evidence, not a protected-host claim.
+
+The actual private index is
+`.cannae/maintenance/skill-evidence-r6-20261117/evidence-index.json`, SHA-256
+`019e416d43bd82aeb1895954785615924cd96c5d02eaffb534d281068c6be635`.
+Its first inspection has SHA-256
+`ba398cc983804298cbaeb18eb1f2e0792c6736f5c369bb2131d0891d7c4bdf05`.
+The six attempted records retain three recorded passes, two failures and one
+incomplete run; four pending focused checks and full integration remain not run.
+Original reports and logs were unchanged. Declared source subsets match, but this
+does not reconstruct complete historical dependency coverage; original reports
+remain attached for appraisal. The inspection correctly reports `integrity_ok:
+false` for the five unexecuted entries, not a new failed test or a complete pass.
+
+Ten focused validation commands passed, including the thirteen index groups,
+fifteen progressive-disclosure groups, both skill validators/coverage reports and
+documentation checks. The unrelated-cwd CLI also retained all eleven entries and
+returned the expected exit 1 for the five unexecuted checks, without replaying
+their commands. The final source-bound gate is
+`gate-8b177f86-2dbd-4763-975d-cbc138ead402/verification.json` under the same evidence
+root, SHA-256 `0fc1139e9037fe6228a8cc789dbd0b50af0a5ff417760110aa08d1bd28166797`.
+The earlier inspection remains intact; the final helper names its no-replay flag
+`recorded_commands_executed` to distinguish indexed checks from its own local Git
+metadata queries. Final evidence-index prose receives separate documentation checks.
+
+SR17 is in progress: local indexing and the focused-check map are implemented,
+but full integration, broader cycle indexing and final source/acceptance appraisal
+remain open. SR18 also remains open. The accepted inventory stays **6/18**; no
+withheld evaluation, native model transfer, dashboard or server work occurred.
+
+#### Authoring Candidate Preparation (2026-11-17)
+
+`skill-authoring-evaluation.js prepare-candidate` now prepares the four exposed
+development writing tasks for both clients from a separate clean exact revision.
+The baseline version-1 format remains supported; candidate version-2 manifests
+bind both revisions and the unchanged original task/source/output bytes. Full
+candidate project-content/reporting bodies and the handoff's project-terms body
+are included, not only entrypoint links. Both client-operation guides require
+checking these bodies and original task hashes before a new native proposal.
+
+The local candidate snapshot is `d46827b9d0a0115a24aa4ca08905fb52c290a5cc`.
+All eight historical baseline prompts were reproduced byte-for-byte from clean
+`9331ff5`; their stored inputs were not rewritten. Eight candidate inputs total
+1,185,418 bytes, with identical task hashes to the corresponding baseline inputs.
+This fixed supplied-context R3 experiment is not R2's six-task selective-reading
+measurement; the larger prepared input is neither a saving nor a quality result.
+
+Evidence root: `.cannae/maintenance/skill-authoring-candidate-20261117/`.
+`prepared-d46827b/index.json` has SHA-256
+`507e72db5c5005802af9f421a20ee748a2bcbb9567dabc8ce669510f24816754`;
+`preparation-appraisal.json` has SHA-256
+`77d91af34a05167f28884fa9ddbae7e85c235faa1da52077269d637c51b7b247`.
+Eight metadata-only observer preflights checked exact input/source/binary/profile
+bindings without a model call or attempt record. Their report is
+`preflight-0a83c641-67cf-4ad6-a8b5-14d2cd58a837.json`, SHA-256
+`6f41fb156889f485b73564a2e478c9466fcdb92d5b79904877b5c3060ab17100`.
+
+The new exact eight-process candidate proposal is awaiting USER decision. Its
+plan has SHA-256 `04cfdff148ffe69ef1ac44afd457da6facfe320a1255edde48cfce537af4e3ba`
+and `proposal.md` has SHA-256
+`47d5167642b7ab1526d6d8117109833844a20698b7d90613de7253c1100ba579`.
+It allows only one sequential process per input, at most ten minutes each and
+within a fresh 24-hour consent window; first failure stops the batch. The consumed
+baseline approval and the separate pending R2 retry do not authorize these calls.
+No native candidate call, withheld execution or R5 receiving has occurred.
+
+This snapshot is not the global withheld-candidate freeze, and preparation is not
+an accepted candidate. SR07-SR09 remain open; the verified inventory stays **6/18**.
+
+The focused candidate-preparation gate completed all twelve commands, including
+28 evaluation fixture groups, authoring-input and review-packet regressions,
+progressive disclosure, both skill validators and routing coverage, source-map,
+Markdown links, English-only and diff checks. No native or withheld task ran.
+`gate-3116a89b-94c3-4953-b0f4-53758acd1ad0/verification.json` has SHA-256
+`efa0823b01081e3f227f1769b5227d849d2fe96bc71b623ee119c2c82d3ba9e2`.
+Its pre/post source hashes match. This is a focused pass, not full integration;
+later status-document updates do not change the original validation snapshot.
+
+The private `evidence-index-v2.json` retains all eleven earlier R1/R6 entries
+unchanged and adds preparation, metadata preflight and the focused gate. Its
+SHA-256 is `3edc775aa24f61ff21b126241f1e9e3944d2bb06e43ff512c4e0844e90bc517d`;
+`evidence-inspection-v2.json` has SHA-256
+`d756c347195a84c51e756bdb967ca379f0b1edd36dcfbbc4f30cc8e4376b705c`.
+All three new result sets are retained. Five older checks remain unexecuted,
+and the gate's old backlog hash differs after this status update, as expected.
+The inspector reports these states rather than converting them into fresh passes;
+its matching declared subset does not establish complete dependency coverage.
+
+#### Packet Metadata Process Failures (2026-11-17)
+
+The longer routing-consumer checks remain pending: fresh power-log observation
+still showed repeated maintenance sleep/dark wake, so no long suite or model call
+was restarted. A short source-level investigation found an independent concrete
+defect in `project-document-packet.js`: its Git wrapper consumed a result's status
+and output without checking process errors or signals. An injected `ETIMEDOUT`
+with the otherwise successful root lookup was accepted, rather than held.
+
+The wrapper now rejects process errors, signals and absent terminal status before
+root, source or output checks consume the result. `PROJECT_PACKET_GIT_UNAVAILABLE`
+survives root-validation error handling and exposes no raw stderr or location.
+Both project-content guides require treating this as unverified metadata, not as
+proof of source exclusion or another repository. Existing ignore/root rules,
+five-second Git deadlines and separate retry/transfer decisions are unchanged.
+
+Evidence root: `.cannae/maintenance/project-packet-git-20261117/`. The initial
+failure, original source bodies and report remain in
+`before-905d5cc3-95bd-46d4-99fd-dc3b270806e4/`; its `verification.json` SHA-256 is
+`069110ec5c40d3b66b29a46dc3a671704bd978b90f04920c206502172ef25a5e`.
+After the repair, 39 local cases passed across both provider recipient records:
+root/Git-directory/HEAD, source ignore/root and output ignore checks under three
+process-failure forms, ordinary success/exclusion/alias behavior, and sanitized
+CLI refusal with no packet output. The report in
+`after-b184a7b1-c6ea-48f4-8090-c6505d393f35/verification.json` has SHA-256
+`2032aeeb5c2ac13c10023b8bc94cdff84c9a80eeb7aeb878886a00e150548aef`.
+These injected failures establish the wrapper defect and repair, not the cause
+of every historical session failure or recovery from host sleep. Longer consumer
+checks, actual receiving and full integration remain unverified; the goal stays
+**6/18**. Frozen native-input worktrees and pending proposal bytes are unchanged.
+
+The subsequent broader packet suite did not pass: after 53.8 seconds it encountered
+`PROJECT_PACKET_GIT_UNAVAILABLE` where the disclosure fixture required its exact
+disclosure-rejection code. The gate stopped, preserving the twelve-command
+unexecuted suffix in `gate-d080548a-e327-48bf-82b6-30643468eae6/verification.json`,
+SHA-256 `13a645b92333139f9ff4c1e56501170ddc3a2dab5bc01caa0491f285abd2fe35`.
+A contemporaneous maintenance sleep/wake interval was observed, but the failure
+code alone does not identify the underlying Git process error. The fixture is
+not weakened to accept any refusal as proof of the intended disclosure check.
+No source or timeout was changed after this failure; packet, review and reader
+consumer completion remains pending for a stable awake interval.
+
+The separate short gate passed ten commands, including the 39 Git-failure cases,
+progressive disclosure, both provider skill validators and corpus coverage,
+source-map, links, English-only and diff checks. Its report is
+`short-adea0fa5-b28f-45b5-8a0a-4344d341501a/verification.json`, SHA-256
+`64eb10ad039c82ec3f1d49ec03716e523a6c18b1b79ae5df54fd8073dd87df85`.
+This does not replace the failed consumer gate or its unexecuted suffix.
+
+Private `evidence-index-v3.json` retains the previous fourteen records and adds
+the reproduced failure, repaired local cases, failed consumer gate and short
+gate separately. Its SHA-256 is
+`76c8e4dbe107cccfa7cfdbdf64c10957b144a7122b866a06334097cf97b4eb8b`;
+`evidence-inspection-v3.json` has SHA-256
+`b55fd5d08bbec82967e859b2c30aa80e69fc11838c5a56a5d1f9a693f5c1f286`.
+All four result sets are retained, including failures; historical source drift
+and the earlier missing checks stay visible. Eighteen evidence entries are not
+eighteen completed acceptance criteria, complete dependency coverage or merge
+authorization.
+
+#### Cross-Client Initial Preparation (2026-11-17)
+
+The [R5 protocol](evaluation-metrics.md#cross-client-workflow-evidence) fixes the
+actual evidence needed for each chain, using the existing packet, document-session
+and registered-dependency helpers. Local preparation now retains two distinct
+synthetic project roots and task IDs: `CHAIN-CODEX-CLAUDE` and
+`CHAIN-CLAUDE-CODEX`. Each starts with S3/operations/L1 and names a later
+S6/knowledge/L1 receiver in the opposite client. USER retains final decisions.
+These are exposed operator-authored exercises, not withheld R3 tasks.
+
+Each assignment requires an advance brief, SOP, status note, independent roster
+appendix and complete handoff. Three versioned synthetic sources are assigned.
+One later case stages a seven-to-five-day policy revision; the other stages a
+term-definition revision adding a source-version requirement. These revisions
+remain unapplied and outside the initial recipient input. Separate SOP and roster
+dependency records are current; that is neither completed work nor permission
+to clear a future hold. Initial real local router calls preserved the original
+tasks and four required sources including the assigned authoring guide. In both
+`brief` sessions an attempted task-source read returned `PROJECT_SESSION_SOURCE_HELD`.
+Those calls were preparer checks, not native worker behavior or actual notice.
+
+Evidence root: `.cannae/maintenance/skill-workflow-r5-20261117/`. The first
+preparation report, `preparation-d846f6b1-fbba-4c36-97d4-06059afa5f9e/report.json`,
+has SHA-256 `cd6859c2cde6af4ac00cf208b26501555e648d410ca5f7cb813b2c136420ef60`.
+Appraisal found that the exact role/department/authority existed only in private
+adapter configuration, not the actual model input. This omission remains recorded
+in `appraisal-117362b2-f303-48dd-822a-9e8ae6503510.json`, SHA-256
+`42a0da1fbdfbbff2a19406e21217f96262ee4d2a2478c5d8a9a49025319874e8`.
+The original input bodies, projects and preparer are preserved; no model saw them.
+
+The corrected preparation adds explicit matching delegated phase context without
+changing the original tasks, source bodies or supplied instruction bodies. Both
+client-operation guides now require this comparison before delegated native use.
+The two initial inputs total 164,932 bytes. Their report is
+`preparation-f5cf59bc-8da1-470a-bc2c-3337fa2f3944/report.json`, SHA-256
+`278db628d58532842edb69df7855ecda62995d4acd7f7cab9b8ea8fe05906721`.
+The successful two-input appraisal is
+`appraisal-282008b6-7c03-4d96-b48c-3098c45007dd.json`, SHA-256
+`83aa0afcc0c7140f71ddf7d35f72a3c075fb3e55573a9a4141ca604bc79fab4d`.
+It checks recipient/configuration parity, original tasks, source/instruction
+bindings, withheld task bodies and absence of preparer-token reuse; it does not
+establish model understanding or authenticated authority.
+
+SR13 is in progress only at preparation. No native R5 launch, notice delivery,
+applied revision, interruption/resumption or receiver use has occurred. SR14/SR15
+remain planned and the verified count stays **6/18**. Native launch envelopes and
+fresh exact approvals are still needed, including separate decisions for future
+actual outputs and any held-work continuation. Existing R2/R3 proposals cannot
+authorize this work. Dashboards, servers and blanket approval remain excluded.
+
+Ten focused checks passed: current input appraisal, progressive disclosure, both
+skill validators and router coverage, source-map, Markdown links, English-only
+and diff checks. The source-bound report is
+`gate-24c0c9d9-5950-48dc-b298-383140e2c871/verification.json`, SHA-256
+`e23a8d53ab7302963dfdc805c69b1a868c0f35dc14c1ca3879067a8893961336`.
+This focused result does not close the outstanding packet/session consumer gates
+or full integration, and does not supply any missing native-chain phase.
+
+Private `evidence-index-v4.json` has SHA-256
+`7cd10aefdd565f78ecc5b330822a0239c42f5d54a4f0f3623dcb368ed43a1d9d`;
+`evidence-inspection-v4.json` has SHA-256
+`85ee3bb64f37843590022101ac4f7f912ca3d6dfafd402a2e27d001878ed6a64`.
+It preserves all prior entries and separately retains the initial role-context
+failure, corrected preparation appraisal and focused gate. The repository-local
+index does not traverse external synthetic project roots; their declared source
+bindings were checked by the preparation appraisal. Prior failures, changed
+historical sources and unexecuted checks remain visible.
+
+#### Brief-Phase Local Preflight (2026-11-17)
+
+The two corrected R5 inputs remain unchanged. Private `brief-native.js` now
+prepares Codex/Claude invocation arguments and wraps the existing document-session
+MCP adapter for this brief-only exercise. Both client allowlists and the actual
+local tool catalog expose only `route_current_task`. Task-source bodies remain
+held; role/department/authority and all four assigned source IDs are preserved.
+This is a per-invocation stdio helper, not a new standing server or dashboard.
+
+The local wrapper binds the exact configuration and an external absolute process
+deadline, opens its audit path exclusively and rejects a third route or an
+unadvertised tool. Its parsed-message tap is not exact wire accounting, backend
+attestation or protected-host isolation. The privacy profile allows necessary
+helper corpus reads; no native model has been shown to honor this configuration.
+Metadata checks retain Codex 0.162.1 with `gpt-6-astra` and Claude Code 2.1.322 with
+its unset CLI model override. No Claude runtime model identity is inferred.
+
+The first local run recorded a closed denied-read transport while its adapter
+process remained alive. It was stopped by the operator; the loose negative
+assertion was not accepted as evidence of prompt connection closure. The partial
+traces and original helper bytes are retained in
+`brief-preflight-025c52d9-e4ef-48d4-be32-22b1524ca0ff/interruption.json`, SHA-256
+`3dd91c81d4e62ed7c899955356540ee67e1b10de0b0968f155c71decfd5c0d0d`.
+A subsequent run caught the test's outdated numeric SDK error expectation, not
+a source-release failure. Its report is
+`brief-preflight-f65c3fc6-0105-473f-b8fa-0df3d8867956/report.json`, SHA-256
+`7b697e73c74651ed15a478fb35f4a2723bddf932e53b0c499b46efe91e923537`.
+
+The corrected adapter exits after closing its one-use audit. The preflight uses
+the installed SDK's `ConnectionClosed` code, bounded request options and a
+separate child-exit check. Eleven local groups passed: absolute deadline/state
+validation plus each provider's argv, catalog/route, forbidden-read, route-cap
+and invalid-role checks. Reusing the audit path is also rejected. The report is
+`brief-preflight-767c6b8f-5030-42b4-82be-3781bf448a22/report.json`, SHA-256
+`070227463c656fcb0b9b926e67891788cba5ea6d921769f7d1c99493036e1bbf`.
+All three paths are under `.cannae/maintenance/skill-workflow-r5-20261117/`.
+Both skills now instruct operators to compare phase-specific tool surfaces and
+verify process termination rather than accepting any rejected request.
+
+Only CLI version metadata and local SDK fixtures ran. Native model executions,
+advance notices, source changes/resumption and receiver use remain zero. The
+native event observer/replay appraisal and exact fresh transfer proposal are still
+missing; the generated launch rows explicitly state that the envelopes are
+incomplete. This does not renew stopped R2 consent or consume pending R3 consent.
+SR13 remains preparation-only, SR14/SR15 remain planned, the verified inventory
+stays **6/18**, and the outstanding integration gates remain unpassed.
+
+Ten focused guidance/input checks passed, including both skill validators and
+router inventories, progressive disclosure, retained input appraisal, source-map,
+English-only, Markdown links and diff checks. The report is
+`gate-e3520a26-f37c-4703-a473-9dffe7e1cd7d/verification.json`, SHA-256
+`e51667fb46b10a89f3bcb7b33cf50555e00f91ae9c80f69fcefa272bafafa5bd`.
+The private evidence index now retains 25 entries without changing the previous
+21: `evidence-index-v5.json`, SHA-256
+`1be248ecab51e4f9dcf7b0f7eac2a453cfbfae59175951faf5653bdbc6435f4f`,
+and `evidence-inspection-v5.json`, SHA-256
+`830681846e1f15a8581335b0b7a6a9bdd07b365f4122449fe2f2b3d3d0048b57`.
+The index covers declared local helper snapshots/results; external project roots
+and binaries remain separately bound in the preflight report. Historical failures,
+source drift and missing checks remain visible; 25 entries are not 25 acceptances.
+
+#### Brief Native Observer And Proposal (2026-11-17)
+
+Private `brief-trace.js` now validates the native Codex/Claude lifecycle for this
+phase, including current-phase routing, unchanged recipient/authority, the original
+assignment, four held required sources and a final response. Its receipt matches
+completed native arguments and exact response text to the local parsed-message
+audit, checking structured/text agreement and complete protocol closure. It does
+not turn route metadata into a body read, source truth or a delivered notice.
+
+Thirty-three checks passed using retained earlier native brief logs as event-format
+examples and synthetic lifecycle events around the current local SDK responses.
+They cover extra tools, missing/incomplete lifecycle, foreign recipient, missing
+catalog entries, preparer-token reuse, changed sessions, inconsistent results,
+failed/truncated audits and unmatched native results. The report is
+`brief-trace-check-1bb5aae2-e511-419e-bffb-11d9ddd7d5ba/report.json`, SHA-256
+`7f2b381e0663c9a83475f4c207d1258d2bb30ceb59de1eef1563cc35f017317f`.
+The historical logs are not new R5 work or independently reappraised source quality.
+
+Private `brief-execution.js` admits only the exact two-case proposal with a fresh
+matching USER decision, bounded validity and no automatic relaunch. It preserves
+one-use input-attempt records, requires an exact successful predecessor before the
+second case, enforces the absolute deadline and output cap, and stops the process
+group on disallowed events or incomplete execution. Thirty local checks passed
+for decision scope/time/binding, failed predecessors, actual fake-child termination,
+output limits, invalid UTF-8, nonzero exit and missing completion. Their report is
+`brief-execution-check-f9597170-e764-4efa-90c5-72f1f42a363a/report.json`, SHA-256
+`3ee193267347843598b16e68e5659bfc8e038b0c713778e636d7cb52df27818e`.
+These used in-memory synthetic decisions and fake processes, not model invocations.
+
+`native-brief-v1/execution-plan.json` binds both unchanged inputs (164,932 bytes),
+CLI binaries/configurations, source files and contract/dependency versions.
+Its SHA-256 is
+`0768ab8b279fde95ea50772b97b9b3b8a501972b8243ab7abf3871f46891e150`.
+`native-brief-v1/proposal.md` has SHA-256
+`ff87c9e7832f309948d03ed7a2bb83d1ec07ec5027ede685536b217b844668c5`.
+The requested scope is one initial brief per client, sequentially, at most ten
+minutes and two route calls each, within 24 hours of approval, with the entire
+batch stopped on an incomplete/failed attempt. Fixed guide bodies and bounded
+route metadata are included; task-source bodies, revisions, evaluator answers,
+customer data, publication, actual parent delivery and all later phases are not.
+Codex uses its pinned current default; Claude's actual default remains a native
+initialization observation, not an inferred identity.
+
+Both metadata-only launch checks passed without creating attempt records. An
+exact two-call approval was requested; no decision, model attempt or new native
+response is recorded at this checkpoint. All paths above are under
+`.cannae/maintenance/skill-workflow-r5-20261117/`. R2's stopped batch and pending
+R3 candidate proposal are independent and cannot authorize these calls. Both
+skills now require exact cross-trace identity/result appraisal before reviewing
+brief quality. SR13 remains in progress, SR14/SR15 planned, and the accepted
+inventory remains **6/18**. No platform scope or prior approval was expanded.
+
+The retained two-launch metadata check is
+`brief-plan-check-fc14f227-1135-41b0-849d-0c56aefb097f.json`, SHA-256
+`2562552e7db82ce38d8525dba00062b2ba4b4da9a93824bcbe8a518ca25e9d03`.
+Ten focused input/guidance checks passed in
+`gate-2ff3a442-c330-46f3-bc18-84590195f551/verification.json`, SHA-256
+`b8dd2740e34c3000cb386fea6fe6e9847879de81a46a5f9f799444154735059e`.
+The local evidence index retains all previous 25 entries and adds these four
+distinct scopes: `evidence-index-v6.json`, SHA-256
+`e7d4b28f655e881c49c30c07f754a75afc685bb1911a20fc3ee9c51eff309973`,
+and `evidence-inspection-v6.json`, SHA-256
+`ef9396e6e0df93d082c255896d01a38d8d25cae80063773aedf2efcf2d263bff`.
+Twenty-nine entries are not acceptance criteria or native calls. Declared file
+integrity, historical event replay, fake-process checks and full integration
+remain separate; earlier failures and unexecuted gates are still retained.
+
+#### Focused Consumer Verification (2026-11-17)
+
+At source revision `7d7153a41e33c7d10478e11e22bb79bbad4f1666`, six local
+consumer suites completed: control enforcement 6/6, routing preflight 22/22,
+installation 57/57, context-document integrity 16/16, project packets 37/37 and
+Git-process failures 39/39. Both provider paths were exercised where applicable;
+these are local fixtures, not native client responses or actual receiving.
+
+Two earlier attempts exceeded the operator's 60-second parent observation budget:
+routing after 21 passing rows and installation before suite completion. They
+remain incomplete. A new four-consumer run used a five-minute parent budget per
+command and passed without changing assertions, product deadlines, power settings
+or authority. Its report is
+`gate-58b2f256-f830-4f74-9182-a23486cf595f/verification.json`, SHA-256
+`4f27f0df4a3f4014582d0967498e00e1443a3dfc7ddd53a3d49ee4e5826fa2ab`.
+
+The separate packet/Git/review/reader gate is **failed**, not a complete pass:
+after the first two suites passed, review exited with
+`PROJECT_PACKET_GIT_UNAVAILABLE` at 43.610 seconds, before the parent deadline.
+The Git wrapper rejected an error/signal/missing-status result; this log does
+not identify the underlying process failure or establish sleep as its cause.
+Reader was not launched after that failure. The report is
+`gate-52973985-1fd4-43e2-b622-e48792d03a7a/verification.json`, SHA-256
+`e82378d4ae2126163e061120bb4b73b499609c5dd5fb6dc22dec71cea5807fa7`.
+
+All paths in this checkpoint are under
+`.cannae/maintenance/skill-consumer-checks-20261117/`. `evidence-index-v8.json`
+(SHA-256 `9244dceca12996c0b711f632c15df5019eca0c21c7dd1e8b4055006ef196cdfe`)
+retains the previous 29 entries unchanged and adds these four attempts.
+Its inspection is `evidence-inspection-v8.json`, SHA-256
+`c75415641470f8ed2d444e01db36f2a2a3e2104eb091833c0b4a2dcf383db490`.
+The invalid v7 index and builder snapshot remain retained: it recorded a null
+argument for the original no-option command; v8 corrects attribution, not results.
+The inspector checks declared files, not every dependency in the bound reports.
+
+Review, reader, session and full integration remain open. No model call or new
+skill behavior was introduced; this is verification maintenance, not an accepted
+improvement cycle. SR17 remains in progress and the verified inventory is **6/18**.
+Existing native proposals still require their own applicable decisions; the
+stopped R2 batch cannot resume using its original approval.
+
+#### Knowledge Metadata Integrity (2026-11-17)
+
+A separate review diagnostic passed 16/16 at the preceding source, with no errors
+among 2,078 observed Git calls. It does not explain the earlier failed review.
+The next reader attempt failed its exact-rule assertion: call 2,171 returned
+`ETIMEDOUT` with status zero after 7,463 ms against the unchanged 5,000 ms Git
+limit. The packet consumer correctly refused that result instead of reaching
+`PROJECT_READER_SOURCE_NOT_READABLE`. Session was not launched. The call overlapped
+a logged sleep interval, but this does not establish causation for every failure.
+Only instrumented processes were observed, not every possible SDK child.
+
+Separate injected knowledge probes reproduced a real consumer gap: eight
+error/signal cases were accepted and four wrote synthetic dependency records.
+Missing status was refused but misclassified. The repair checks process validity
+before terminology root/Git-directory identity, dependency source ownership and
+output-ignore decisions. All twelve probe cases now stop on their first failed
+metadata call without writing a record. Prior records remain unchanged; a failure
+after publication can still leave the new version present and requires state
+inspection, not replay. Both project-terms guides encode that operator behavior.
+
+The repaired regression runner passed 55 cases, including initial/late failures,
+post-publication history and sanitized CLIs. The focused gate also passed
+terminology 16, evidence-index 13, installation-inspector 18, dependency 25 and
+change-proposal 22 cases. Writer then failed on `TERMINOLOGY_GIT_UNAVAILABLE`
+instead of its intended `REVIEW_NOT_APPEND` rule; handoff was not run. That gate
+remains failed, SHA-256
+`7ca68c7bf7999735ebcb94a8e9539000112be1025417a07c5640e3e8cc753fd4`.
+These passes do not refresh earlier consumers for changed sources or replace
+writer/handoff, packet/review/reader/session and full integration verification.
+
+Evidence remains under `.cannae/maintenance/skill-consumer-checks-20261117/`.
+`knowledge-git-appraisal.json` locates the before/after probes, diagnostics and
+consumer report. `evidence-index-v9.json` retains all earlier 33 entries and adds
+five distinct attempted scopes; its SHA-256 is
+`a23bdf6b5ecdc04fb7f1fcb68a80a2c7083d95183580525196907b5933ee31af`.
+The inspection SHA-256 is
+`b2b06aaeba6a7a43677ccd519d73b86505b524abefdc9a32ac9e5d97a0ecd2d0`.
+Declared-file inspection is not full dependency coverage or acceptance.
+
+`knowledge-plan-drift.json` binds the unchanged R2 startup-recovery, R3 candidate
+and R5 brief proposals to their now-changed source dependencies. None was launched.
+Those envelopes require fresh source-bound preparation/appraisal and applicable
+consent, not an edited hash or reuse of a pending/old approval. Historical prompts,
+decisions and failures remain unchanged. No new SR criterion is closed; the
+bounded inventory remains **6/18**, with broader consumer validation still open.
+
+#### Refreshed Native Proposals After The Metadata Repair
+
+The committed repair at `4eb6fc2ef5b1b455b46ee18863c938daea858eed`
+requires new exact execution envelopes. The earlier unexecuted R2 recovery,
+R3 candidate and R5 brief proposals remain historical and stale; no pending
+or consumed decision transfers to their replacements.
+
+- R2: `skill-context-r2-20261116/native-startup-recovery-v2/` retains the
+  identical 40,716-byte baseline input, frozen reference catalog, client and
+  limits. Only one startup-recovery process is proposed, not the stopped
+  batch's 23 unstarted cases. Plan SHA-256:
+  `8ae87fed6924c26b0adec8065cf63d45633c9129fdeb7cc4c9abd2b651b92c7a`.
+- R3: `skill-authoring-candidate-4eb6fc2-20261117/` prepares eight development
+  inputs from a separate clean checkout at that exact commit. All original
+  task hashes match the baseline; the total is 1,193,740 bytes. The changed
+  instruction selection is not a context-saving claim or withheld freeze.
+  Plan SHA-256:
+  `3e5be1141f0b57bc23fae6dd53a8a25c5aeadbfdd97e966583acf564f7c2fe25`.
+- R5: `skill-workflow-r5-20261117/native-brief-v2/` binds fresh two-chain
+  preparation with current guides, unchanged original assignments and synthetic
+  task sources. The 166,416-byte initial inputs support two brief-only processes,
+  not actual parent notice delivery, later drafting, resumption or receiving.
+  Plan SHA-256:
+  `c48c849a0f1d1cc0f01832dc207917ad8e00012ce1303220310f8cb9a7a12d49`.
+
+All paths above are under `.cannae/maintenance/`. The eleven metadata-only
+observer preflights passed, with no model calls or created approval decisions.
+Preflight SHA-256:
+`2b0d297c2e3fae9e228a3de1faedd778f40912b59b1aa026aa105887f88ae0de`.
+New exact decisions are required before execution; each proposal preserves
+its process limit, ten-minute deadline, 24-hour decision validity and stop-on-failure
+rule. Earlier failed attempts, inputs, proposals and decisions are unchanged.
+
+`skill-proposal-refresh-20261117/evidence-index-v10.json` preserves the earlier
+38 entries and adds this local preflight, for 39 total. Index SHA-256:
+`b42b7172c869c79e6a114f6a21fc6e2e6e2bce4dacf221a5794b4d026192ef5e`;
+inspection SHA-256:
+`735ee8506a3a5152b0d5ec62f6fd2f2dc90906c50e72cf78ddc9b005ac86a030`.
+This is declared-file inspection, not recursive dependency or result acceptance.
+This checkpoint is preparation/status maintenance, not a new skill behavior or
+closed criterion. The inventory remains **6/18**, and the consumer/integration
+gaps recorded above remain open. Dashboards and servers remain deferred.
+
+#### Current Host And Integration Prerequisites
+
+At `dafd1b3`, an independent current-source document-session attempt failed
+before its first positive routing assertion on `PROJECT_PACKET_GIT_UNAVAILABLE`.
+The transparent observer recorded 993 Git calls and one `rev-parse` result with
+status zero plus `ETIMEDOUT`: 8,875 ms against the unchanged 5,000 ms limit.
+Its interval overlapped Maintenance Sleep. The consumer correctly refused that
+result, but intended session behavior remains unverified. The observed process
+exited; the test was not restarted and no deadline or power setting changed.
+
+A separate prerequisite gate passed Codex coverage, JSON parsing, registry audit,
+English-only and Markdown links. Its validator process exceeded the operator's
+60-second observation budget and was terminated; no completed validator result
+exists. This is an incomplete parent-bounded attempt, not a demonstrated product
+assertion failure. Its eight-command suffix was not run in that gate.
+
+A separately declared scope then passed both skill validators, Claude coverage,
+14 context-trace groups, 15 progressive-disclosure groups, source-map and diff
+checks. With `CANNAE_REQUIRE_LIVE_OCI=1`, the OCI gate refused startup because
+the selected `desktop-linux` Docker daemon was unavailable. Its `failed: 21`
+summary does not mean 21 container cases executed; none did. No skip mode, daemon
+start, context change or substitute full-integration claim was used.
+
+The three retained reports and exact logs are indexed by
+`.cannae/maintenance/skill-consumer-checks-20261117/current-blocker-appraisal.json`.
+`evidence-index-v11.json` preserves the earlier 39 entries and adds three failed
+or incomplete scopes, for 42 entries. Index SHA-256:
+`142b4159a33b895f0b86f31b30e14bfe1c3da9b85e030a12671f7b18b19eab73`;
+inspection SHA-256:
+`a5104605a99ec383edcd9d609fc06823bfd14dba5ae4694e926256546319d2ef`.
+The 12 passing commands across separate scopes do not make any failed gate pass.
+
+Next local execution needs a stable awake interval; validator observation also
+needs an appropriate bounded parent budget without changing product limits.
+Full integration additionally needs an available Docker runtime. Do not repeat
+long attempts unchanged while these prerequisites remain unmet. The fresh native
+proposals still require actual applicable decisions. No model call, consumer
+acceptance, skill behavior change or new criterion closure occurred here; **6/18**
+remains the bounded inventory. This is verification/status maintenance only.
+
+#### Complete Validator Result
+
+At `c6ffd523f922d572daeaa2a0fb37a4b3e4459422`, a separate complete validator
+attempt passed **617/617** cases in 160,309 ms under a five-minute parent
+observation budget. The earlier 60-second attempt and its unexecuted suffix remain
+unchanged. No fixture, expected issue code, product deadline, power setting or
+model-transfer condition was changed. The full CLI result is now available;
+it does not retroactively complete the interrupted prerequisite batch.
+
+The source-stable report is
+`.cannae/maintenance/skill-consumer-checks-20261117/complete-validator-ba2ae21a-fb78-4882-94bb-bd0b71375577/verification.json`,
+SHA-256 `1609669543f1fcdaabcd273ed6c5b23e838871ebdbe5da652ac381079ff5f03c`.
+`complete-validator-appraisal.json` binds its complete output and the prior
+interruption. `evidence-index-v12.json` retains all 42 earlier entries and adds
+this pass, for 43 entries. Index SHA-256:
+`d7ea248d2bf0d7e985eff070391906198a36d068589075f946814217162db391`;
+inspection SHA-256:
+`08f11c466689dd709a5cfe4b48e06fb6bb41f63fae95dfa1077d317f195dcbc8`.
+Declared-file inspection remains distinct from dependency completeness.
+
+The document-consumer failures, unavailable Docker runtime, complete aggregate
+and unified proof gate remain unresolved. Native proposal decisions and real
+R2/R3/R5 behavior are separate requirements. No new criterion closes; the bounded
+inventory stays **6/18**. This is verification/status maintenance, not a new
+skill behavior, a model-quality claim or a full-integration pass.
+
+#### Awake-Window Consumer Results
+
+At `e70506d`, the USER's awake-window reply was used only to schedule local
+checks, not as model-transfer consent. One six-suite attempt passed the packet
+(37 groups), review (16), reader (10), terminology writer (31) and terminology
+handoff (34) suites on unchanged source. This supplies current results for those
+consumers without replacing their earlier failed attempts.
+
+The document-session suite completed 14 of 16 groups before its parent deadline
+terminated it. Both Codex's direct and stdio groups completed; Claude's final
+alias and stdio groups did not complete. No final session summary exists, so
+neither that suite nor the six-suite attempt passed. All six commands were
+attempted; an empty unexecuted suffix does not mean all six completed.
+
+The fixed local window ended at 09:38:57 KST on 2026-11-17. Read-only power-log
+inspection recorded Clamshell Sleep at 09:37:54 and Maintenance Sleep from
+09:38:41 to 09:40:21. Reported termination was 09:40:21.398, **84,398 ms late**,
+on the recorded wake second. This is not proof of exact ten-minute termination
+during host suspension. The session child and scoped observer/session processes
+were subsequently observed absent. No power setting, product deadline, approval
+expiry or expected assertion was changed, and no model was called.
+
+The retained report is
+`.cannae/maintenance/skill-consumer-checks-20261117/gate-bbd41e62-793d-40b9-9881-11fb2b7e8ee2/verification.json`,
+SHA-256 `cd00328cc376c1798cea0ca27883a2d67d149e51b2372bc0ea2be3030a3612c7`.
+`awake-window-appraisal.json` binds the outputs, observation and power-log
+appraisal. `evidence-index-v13.json` preserves all 43 previous entries and adds
+this failed aggregate attempt, for 44 entries. Index SHA-256:
+`95d878962eb51d15fba1eb0c4cf5b0321b22b2628a0460e128f57233fb1328e8`;
+inspection SHA-256:
+`278f6512942bdc74a7be96976442c920e10935b90e8944163995601a51789949`.
+Declared-file inspection completed; nested source maps and individual Git logs
+are bound by retained reports, not recursively inspected by that index.
+
+A separately bounded session-only attempt still needs an awake interval. Live
+OCI and full integration remain unverified, and fresh native proposal decisions
+are still required for R2/R3/R5. These local passes do not establish native
+receiving, comprehension or authenticated approval. The inventory remains
+**6/18**; this is evidence/status maintenance, not a new skill behavior.
+Dashboards and servers remain deferred.
+
+#### Session-Only Follow-Up And Storage Audit
+
+At `bc8d6ab`, a separately declared session-only attempt completed 12/16 groups
+and reached its unchanged 600,000 ms parent budget. The process was terminated
+after 600,067 ms; no complete summary or suite pass exists. All eight Codex
+groups and the first four Claude groups completed. Source bytes were unchanged,
+stderr was empty, and the child and scoped session processes were subsequently
+observed absent. No automatic rerun, model call or power-setting change followed.
+
+The report is
+`.cannae/maintenance/skill-consumer-checks-20261117/gate-fbdfa184-863c-432e-9494-cb94637cdcbd/verification.json`,
+SHA-256 `f615767b4b677897c1defd73f34a13982ff13bf69df0b99846561cb84c82ee93`.
+The bound observer recorded 24,038 completed Git calls without process errors;
+summed Git durations were 484,812 ms, but overlapping processes and unmeasured
+observer overhead prevent treating that sum as a causal wall-time breakdown.
+Do not attribute this attempt to host sleep without separate evidence. Preserve
+the original instrumentation and diagnose its workload before another attempt.
+
+`session-only-appraisal.json` binds the result and 17 observer logs.
+`evidence-index-v14.json` preserves all 44 prior entries and adds this incomplete
+attempt, for 45 entries. Index SHA-256:
+`a41b2104c9b1956f217d01610de5dcd5502da943829246013c8ad1f0f6d048e1`;
+inspection SHA-256:
+`f7598a4d473dc72f2fae3404ea521b9f0e9594dd5d54886da29ff0340b8387e6`.
+The retained earlier 14/16 attempt and this 12/16 attempt cannot be combined into
+one complete execution. The criterion inventory remains **6/18**.
+
+The USER also requested a check of project-local document storage. The audit at
+`.cannae/maintenance/storage-pr-audit-20261117/audit.json`, SHA-256
+`48ca82c2255e2b25754a3ed6f68f5fe3c0c4eb9dbda8a3310384c75331b422dc`,
+ran both installed routers in a separate temporary Git repository: neither
+created an output directory. Packet/review/terminology helpers choose subtrees
+under the target's `.cannae/`, but ordinary prose instructions name only the
+target repository, and the runtime artifact store defaults to the caller's
+working directory with a separately declared target namespace. A configurable,
+automatic common destination for every generated document is not implemented.
+This is a storage-gap audit, not a new storage policy or completed feature.
+
+#### Operation-Local Reader Inspection (2026-11-17)
+
+The repeated session workload was investigated before another full attempt.
+Two early synthetic probes remain failed: an invalid fixture reference ID, then
+`PROJECT_PACKET_GIT_UNAVAILABLE` during reader construction. The second report's
+completion timestamp coincides with a recorded wake after Maintenance Sleep;
+aggregate timings do not identify the exact failed Git command or prove a sole
+cause. Neither interrupted run supplies a complete performance baseline.
+
+A corrected probe with a separate 120-second parent observation limit completed
+once on the original code and once on the candidate, using the same harness
+hash and 14 synthetic represented sources plus one reference-only source.
+Host suspension can still delay that limit; no power setting changed. Each
+reader construction, catalog and read used 217 -> 146 Git calls and 42 -> 28
+original-source opens. Proposal/preparation counts stayed unchanged. This is
+local workload evidence, not SR05 model-context savings or a general speed claim.
+
+The reader now receives the detached projection already checked against the saved
+prompt in the same inspection. It removes only the third reviewed-source appraisal;
+two current appraisals, standalone projection checks and fresh later calls remain.
+New regressions cover decision/source changes and expiry between appraisals,
+recipient mismatch, caller mutation and metadata-only inspection. Both skills
+instruct adapters to use that bound inspection rather than cache a prior result.
+See [the procedure](role-document-access-policy.md#operation-local-inspection-reuse).
+
+Two separate focused gates completed on unchanged candidate source:
+
+- Packet 37 groups, review 16 and reader 14; report SHA-256
+  `2cae9fa67544f8168ee1a3f3d39cd2139c407b1e07b9475f15b235db736c8eba`.
+- Git failures 55 groups, terminology writer 31, terminology handoff 34,
+  document session 16 and session reading 32; report SHA-256
+  `aa031bb6dfb0fc0c3fa51122750860bfa1e28a0b3d8cd7d9e8930efdc017b0c7`.
+
+The session's 16 groups completed in **233,973 ms in one execution**, with the
+unchanged ten-minute parent cap and product deadlines. Its actual local router
+and stdio checks are not native model receiving. Prior 12/16 and 14/16 attempts
+remain failed; their results were not combined into this pass. Scoped probe and
+session processes were subsequently observed absent.
+
+Private appraisal: `.cannae/maintenance/session-inspection-profile-20261117/appraisal.json`,
+SHA-256 `df7be090d52ffada5af43598b9c24b9e9766a0e3abd720d85157817e73997560`.
+Its `evidence-index-v15.json` preserves the earlier 45 entries and adds the two
+failed probes, completed baseline/candidate probes and two gates, for 51 entries.
+Index SHA-256: `3262afdc0a5f6e1955977666de864ea5542f12ee0320d694ff2798a1a1d69ea7`;
+inspection SHA-256: `91c2c1be94536ddc9704ef785688886d6b4f1a0fefe85e68a004473eb7515e19`.
+Nested source inventories and observer logs remain bound by the original reports,
+not recursively inspected by the index. Old source versions stay historical.
+
+No native model, withheld evaluation or full integration gate ran. The packet
+code's screening identity changed; old proposal/decision bytes are retained, not
+rehashable into current approval. Fresh applicable consent and source-bound
+inputs remain required for R2/R3/R5, and full integration remains required before
+merge. No new SR criterion closes: the bounded inventory stays **6/18**.
+Dashboards, servers and the separately deferred dependency PRs stay outside this
+change. The user's `.gitignore` is preserved.
+
+#### Frozen Routing Evaluation Path
+
+`skill-routing-evaluation.js` supplies the previously missing path to pin a
+complete clean candidate and run the unchanged 24-request inventory across both
+revisions/providers. Its [protocol](evaluation-metrics.md#frozen-routing-comparison)
+retains one attempt, raw results, mismatches and incomplete suffixes, with no
+native execution or change to the original bundle. Both skills require explicit
+reserved-case exposure accounting and source/authority appraisal, not acceptance
+from a matched count. Implementing this path does not close SR02/SR03; actual
+fixed-candidate results and appraisal must be recorded separately.
+
+#### Fixed Routing Source Appraisal (2026-11-17)
+
+One frozen local batch compared baseline `9331ff5` with clean candidate
+`1b19ae15e94d9294501646361069fc406d3049fa`: 24 unchanged requests, two revisions,
+two provider routers, 96 completed processes. The original bundle and assessment
+rules did not change. No native model ran and no failed batch was relaunched.
+
+| Split | Baseline matches | Candidate matches |
+| --- | --- | --- |
+| Development, both providers | 14/24 | 24/24 |
+| Reserved, both providers | 12/24 | 24/24 |
+| Total | 26/48 | 48/48 |
+
+The source appraisal, not this total alone, closes SR02/SR03 within their bounded
+scope. All 44 successful candidate routes retain exact original text, declared
+role/department/read-only authority and expected required/excluded sources.
+Heading/exclusion variants receive authoring guidance. Both Korean cases retain
+original text and explicitly partial lexical views, not claimed translations.
+Inferred and declared compounds preserve the unsupported domain separately from
+the supported writing task; provisional cells cannot expand authority. Explicit
+event/SQL inputs and actual architecture-review tasks retain technical context.
+The other four candidate observations are the expected guarded-compound denials:
+exit 2, exact unsupported-input code, empty output, no downgraded receipt.
+Both providers agree on intake, objectives, selected documents and controls.
+
+The same router and fixture hashes also passed the separate 1,864-query routing
+gate, including declared parent capabilities, mandatory corpus/project inputs,
+objective permutations, user-term workflow selection, guarded receipt context
+and empty-artifact refusals. These counterexamples supplement, not enlarge, the
+fixed score. User-term selection does not infer arbitrary glossary meaning or
+discover undeclared parent dependencies. Two false gap-review defaults disappear
+only from fresh direct Korean analysis after the false gap is corrected; no
+issued receipt or existing control list was changed. Other fixed cases remove
+no baseline validation commands.
+
+The evaluator's final 39 fixtures and twelve documentation checks passed. Retain
+the earlier deadline-test failure: its one-time clock jump occurred during Git
+preflight, before the intended batch-start observation. The fixture was repaired,
+not the product deadline. The first focused gate bound the unchanged routers and
+routing fixtures but omitted the then-untracked new evaluator from its tracked
+source inventory; it is not full-helper verification. The later fixture gate and
+actual freeze bind that helper. No historical binding is replaced by a current hash.
+
+Private root: `.cannae/maintenance/routing-evaluation-20261117/`.
+
+| Evidence | SHA-256 |
+| --- | --- |
+| `candidate-1b19ae1/freeze.json` | `31f6402cc431e2b9773bf5ba238fcfc93d315405919a4f2f1b165802ddde3940` |
+| `candidate-1b19ae1/report.json` | `8df070989a45127d5d4a94993ecafc7c3c60e50be12d69054c6dd0305ea7be3f` |
+| `source-appraisal.json` | `572865a259acbda16368c89735b34f610fec8885377deadec075c6adde1d868e` |
+| `evidence-index-v17.json` | `84fd12ab86f3e9ab912547ea7170707b35b8010cd5e463a0dc51da322534a086` |
+
+Index v17 preserves all 52 prior entries and adds six, retaining the failed test
+and raw comparison journal. Historical source mismatches remain visible; nested
+inventories/logs are report-bound, not recursively revalidated by the index.
+The exact baseline comparison still includes its 22 mismatches. All twelve
+reserved routing requests are now exposed; future candidates must not call them
+unseen. The operator authored the template families, so this is not independent
+blinding. No authoring withheld body was opened in this appraisal.
+
+The inventory is now **8/18**, not a product-accuracy or effort percentage.
+R2 actual delivery, R3 native quality, R5 receiving and full pre-merge integration
+remain open. This records the frozen candidate, not a newly evaluated version of
+these status documents. Both skills already carry the comparison and exposure
+rules from `1b19ae1`; this checkpoint changes no behavior or approval. The USER
+left revised #110 and new #115 for follow-up; neither is included in this work.
+Dashboard/server work stays deferred and the user-owned `.gitignore` is unchanged.
+
+#### Mainline Integration Checks (2026-11-17)
+
+The isolated `codex/skill-reliability-main-sync-20261117` candidate combines goal
+parent `ec277f4` with approved main `4c4ab32`. It does not modify the original
+loaded skill checkout, frozen evaluations or pending native proposal bytes.
+Retained training/platform code stays available without reopening its development
+or starting an application. Revised #110 and new #115 are not imported.
+
+The shared validator conflict required the union of both branches' non-executing
+types. Valid terminology/dependency records must remain non-authorizing alongside
+training, transfer and failure-reconciliation records. A regression checks 23
+valid record types through both validator APIs; an invalid payload's denial is
+not evidence of that boundary. Both maintenance guides now state this distinction.
+
+Existing merged routing tests passed, but a separate current-task probe exposed
+another overlap: the unqualified `failed native` keyword selected training
+recovery/owner/history guides for ordinary CLI document-review and context
+diagnostics. Three requests across both providers produced six excess selections.
+Narrowing that phrase to `failed native training` removes the six observed excesses.
+New counterexamples preserve explicit training requests, declared parent capability,
+assigned sources, original query and read-only authority. Both routing guides
+distinguish ordinary client failures from enrolled training without clearing any
+issued hold or renewing consent. These are exposed integration regressions, not
+new withheld cases, a change to the fixed R1 expectations or native behavior.
+
+Separate source-bound focused checks completed:
+
+| Surface | Observed result |
+| --- | --- |
+| Merged validator exclusion list | 669/669 CLI fixtures, including the 46 both-API assertions |
+| Repaired document routing | 2,078 queries; required-source/objective refusals and declared-reference checks retained |
+| Korean, maintenance and preflight consumers | Three complete passing suites after the repair |
+| Progressive instructions / installation / installation inspector | 15/15, 57/57 and 18/18; real home/settings unchanged |
+| Knowledge dependencies / terminology changes / writer | 25/25, 22/22 and 31/31 |
+| Document session / selected reading / trace | 16/16, 32/32 and 14/14; local stdio tested, native models not invoked |
+
+Private evidence root: `.cannae/maintenance/skill-main-sync-20261117/`.
+Reports retain merge parents, complete tracked working-tree source hashes before
+and after each run, exact harness/log hashes and unexecuted suffixes. The first
+green routing gate predates the new counterexample and is not proof that the
+counterexample was covered. The before/after probe hashes are
+`919c76368487f6fee41a363201d0e957a42edce83754d5530126e37d64529081`
+and `685472407d458687350938bc10b72d090ab20c0908c02dd942923bb3a4ee4fbd`.
+The repaired routing report is
+`bc389dcd8a0819790c56bc6a774d76916ac23fbdd82dea56362c9ee95e6701da`;
+the complete session/reading/trace report is
+`6a552cd4a336ae89dcb136a67e569465476268022892fc81ec2f8a138f82f604`.
+
+These checks are not a full integration gate. The local Docker daemon was
+unavailable; no daemon was started and no OCI requirement was skipped. Pinned
+`npm ci --ignore-scripts` succeeded but reported seven moderate vulnerabilities;
+their causes were not appraised here and no automatic audit fix was applied.
+The existing Linux CI, unified proof gate and later native acceptance remain
+required. SR17/SR18 stay open and the verified inventory stays **8/18**. R2's
+unchanged one-attempt recovery proposal passed source/CLI precheck but still
+needs its own current USER decision; this integration does not supply one.
+
+#### Model-Exclusion Reading (2026-11-17)
+
+A current maintenance task exposed another local reading excess: a complete
+`No model transmission, dashboard or server development` exclusion still selected
+model-allocation manuals. Three ordinary requests across both providers and
+user/S6 knowledge read-only modes produced twelve such selections. After narrowing
+only direct specialist reading, the same twelve observations retain exact query,
+capability result, authority and validation commands without that excess.
+
+The selector reuses the existing bounded exclusion view. Actual model subjects,
+declared parents, assigned sources and model-specific departments keep their
+reading. Questions, exceptions, quotations and dependent review remain conservative.
+Guarded routing retains the full selected model references. Both routing guides
+explain `model_specialist`; the regression cases check those boundaries rather
+than treating fewer documents as a semantic or authority pass. The ordinary
+route is not a replacement for a guarded receipt or an issued context.
+
+This follow-up is on `codex/skill-model-exclusions-20261117`, based on `2d89896`.
+The exact candidate proposed for remote CI, loaded primary checkout and frozen
+native inputs remain unchanged. Neither #110 nor #115 is included. The probe is
+development-visible, not a new withheld evaluation or actual loaded-context result.
+Local probe evidence is under `.cannae/maintenance/skill-model-exclusions-20261117/`;
+affected-surface results and whole-integration acceptance remain separate.
+The first focused gate stopped at the new guarded test: its fixture omitted the
+required separate `--capability-query` argument and correctly received
+`ROUTING_RECEIPT_CAPABILITY_QUERY_NOT_REPLAYABLE`. The fixture now supplies the
+unchanged task as that explicit argument; the validator and replayability rule
+are unchanged. The initial failed gate and its unexecuted suffix are retained.
+
+After that fixture repair, focused checks passed 240 maintenance routing
+observations with 12 guarded refusals, 56 Korean intake cases and 15 instruction
+disclosure cases. The complete document-routing suite passed 2,078 queries,
+58 direct-task identity checks, 32 required-source refusals, 38 objective refusals,
+50 declared-reference checks and three inventory checks. Consumer checks passed
+23 preflight, 16 context-integrity, six mandatory-control and 57 installation cases.
+These local checks retain original raw logs/source hashes, do not run native
+models and are not a full Linux/OCI integration result for this follow-up.
+The first documentation gate stopped before skill validation because the default
+Python lacked PyYAML. A project-private virtual environment with pinned PyYAML
+6.0.3 supplies that external validator dependency; system Python and client
+settings remain unchanged. Retain the initial failure and its unexecuted suffix
+separately from the subsequent document/index checks.
+
+A separate read-only retention audit adds six appraisals for SR01/SR04/SR10/SR11/
+SR12/SR16 to the earlier SR02/SR03 and recent-check evidence. It confirms 151
+original artifact bindings, including 123 capture artifacts and the original
+eight native discovery metadata observations. No native client or indexed command
+is rerun. The current `2d89896` entrypoints remain 400 lines and 25,930/25,944 bytes,
+21.190%/21.181% below the frozen 32,902/32,916-byte baseline. This remeasurement
+does not supply actual delivered-context savings or reprove every historical
+source dependency. The retained reports keep their original versions and failures.
+
+Private audit root:
+`.cannae/maintenance/skill-acceptance-retention-20261117/audit-5989b84a-d456-47f5-ad83-e3d82e09d08a/`.
+The report SHA-256 is
+`3680e5804d54454f0a8bf94854efc2ddca8a5198f105c14ebdf43815760762c8`;
+the 66-entry `evidence-index-v20.json` SHA-256 is
+`9afab2cb867af8ae1e43d968972760ddd6c8df492c4a55b4688c1593fd0adfb2`.
+Its overall inspection remains false: 34 historical source sets differ or are
+unavailable, and five original not-run rows remain not-recorded. All 61 attempted
+entry evidence sets are retained, including the six added appraisals. Do not
+overwrite old rows to remove those limits or mistake retention for fresh success.
+The accepted inventory stays **8/18**; model decisions, actual R2/R3/R5 evidence,
+full integration and final SR17/SR18 acceptance remain open.
+
+#### First Remote CI Result (2026-11-18)
+
+On 2026-11-18 the USER approved one push of exact `f8a1372`, a draft PR (#116)
+and one run of the existing Validate workflow. Run `44262715557` **failed**:
+the routing, JSON, registry, English-only, Markdown-link and validator-fixture
+steps passed. The runner-fixture step then passed 166 of 168 suites. The source-map,
+diff and unified proof gates were not executed. No retry or new push followed.
+
+Both failures are branch regressions. Each reproduces on an `f8a1372` snapshot
+and passes on main `4c4ab32` with the same pinned dependencies:
+
+- `run-authoring-review-packet-fixtures.js` stopped at its 29th of 76 fixtures.
+  `ce20f82` reworded the project-content rule against rebuilding a catalog from
+  the private request; the assertion still expected the old wording. The rule
+  is unchanged in meaning. The 47 later fixtures had not run in CI.
+- `run-training-session-contract-fixtures.js` found stored samples that no longer
+  matched their writer. The `2d89896` validator union changed
+  `validator-cli-prototype/validate.js`, which is in
+  `dispatch-issuance-contract.js`'s runtime-digest list. Dispatch-issuance and
+  method-control samples were stale for the same reason; their suites do not
+  compare stored bytes, so CI did not report them. On main, all three writers
+  reproduce their stored samples byte for byte.
+
+Neither suite was in the focused set for its change. Both were therefore real
+gaps in the [check map](evaluation-fixtures.md#skill-maintenance-checks-and-evidence),
+not only fixture defects.
+
+Repair: the assertion now checks the complete current sentence with whitespace
+normalized. All three writers were rerun. The 29 regenerated samples change only
+digest-derived fields: runtime digest, IDs, artifact references, review hashes
+and one fixture signature. No old value is referenced elsewhere. The map adds both
+couplings, and both skills' self-improvement references mirror the rule: retain
+the failing run, add the missed coupling, move a reworded assertion rather than
+deleting it, and regenerate rather than hand-edit digest-derived samples.
+
+Local focused results on the repaired tree: both failing suites now pass, with
+76/76 and 10/10 fixtures, as do 669/669 validator fixtures. The other 24 selected
+dispatch-issuance, method-control, training, skill-text and routing suites pass,
+one only after the rerun described below. The routing, JSON, registry, English-only,
+link, skill-validator, source-map and diff checks also pass. One `run-training-session-fixtures.js` attempt failed with
+`TRAINING_SESSION_SOURCE_CHANGED` because this backlog was edited mid-run. Its
+repository-state digest includes the working-tree diff. A rerun on the unchanged
+tree passed 5/5, and the failed attempt is retained here.
+
+This repair was made from a separate Claude Code worktree. No private evidence-index
+entry was added, and the CI log stays in GitHub's run history. Local results are
+focused checks, not a full gate. Local Docker remains unavailable, so the
+live-OCI runner step and unified proof gate still need a fresh CI run. That run
+needs its own USER approval for the push. SR17/SR18 stay open, and the inventory
+stays **8/18**.
+
+#### Execution Order And Boundaries
+
+1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.
+2. Implement R1 and R2 with focused local comparisons, then R4's change workflow.
+3. Evaluate R3 and R5 with new applicable native-call consent and exact scoped
+   inputs. Use existing clients/local helpers, not a new server or application.
+4. Complete R6 and current integration gates, then audit all eighteen criteria.
+
+Do not run an unbounded improve/rerun loop. Preserve each failed attempt; use at
+most one baseline and one candidate native execution per case under its approved
+execution proposal. A later repair needs an explicit bounded plan and applicable
+consent, and previously exposed cases stay labeled as such. Do not replace a hard
+case or lower a threshold to claim completion; scope changes return to USER.
+
+The earlier until-completion verification consent has ended. This goal registration
+does not renew it, approve the six pending artifact preparations, adopt drafts or
+authorize model transfer, external publication, permission expansion or deployment.
+Optional plugin packaging remains deferred. Hooks and declared roles remain local,
+bypassable controls; proving a non-bypassable host is outside this skill cycle.
+
+### Completed Baseline (2026-11-15)
+
+The following is the completed baseline's audit and its retained limitations,
+not a claim that the new R1-R6 queue is complete.
 
 Current audit: 2026-11-15 (Asia/Seoul), after
 [PR97 whole-output and reading appraisal](document-authoring-case-study.md#whole-output-fidelity-and-useful-reading).

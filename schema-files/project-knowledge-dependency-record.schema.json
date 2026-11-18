@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/project-knowledge-dependency-record.schema.json",
+  "title": "Project Knowledge Dependency Record",
+  "description": "Versioned local appraisal context, not authenticated review, work correctness or protected storage.",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "type", "repository", "version", "request", "request_sha256", "term_observations", "authorization_verified", "work_quality_verified", "dependency_completeness_verified", "transfer_authorized"],
+  "properties": {
+    "schema_version": { "const": "0.1" }, "type": { "const": "ProjectKnowledgeDependencyRecord" },
+    "repository": { "$ref": "project-terminology.schema.json#/properties/repository" },
+    "version": { "type": "integer", "minimum": 1, "maximum": 256 },
+    "request": { "$ref": "project-knowledge-dependency-request.schema.json" },
+    "request_sha256": { "$ref": "common.schema.json#/$defs/sha256" },
+    "term_observations": {
+      "type": "array", "maxItems": 32,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["term", "state", "confirmed_sha256", "selection_sha256"],
+        "properties": {
+          "term": { "$ref": "project-knowledge-dependency-request.schema.json#/$defs/term" },
+          "state": { "enum": ["confirmed", "candidate_only", "retired", "conflict", "unavailable"] },
+          "confirmed_sha256": { "$ref": "project-knowledge-dependency-request.schema.json#/$defs/nullable_sha256" },
+          "selection_sha256": { "$ref": "common.schema.json#/$defs/sha256" }
+        }
+      }
+    },
+    "authorization_verified": { "const": false }, "work_quality_verified": { "const": false },
+    "dependency_completeness_verified": { "const": false }, "transfer_authorized": { "const": false }
+  }
+}

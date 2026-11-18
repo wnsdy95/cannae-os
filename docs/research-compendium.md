@@ -20,6 +20,212 @@ completion and next-action statements apply only to each recorded scope.
 Use the [active backlog](completion-backlog.md#active-core-work) for current work;
 historical platform completion does not complete the five skill-first objectives.
 
+## Skill Reliability Successor Goal (2026-11-15)
+
+USER requested a next goal within the existing skill boundary, not resumed
+dashboard/server development. The [local audit and new acceptance inventory](completion-backlog.md#skill-reliability-and-efficiency)
+retain equivalent-request probes: a `Task:` prefix changes the documented
+read-only SOP selection from 18 to 23 documents; combined negation selects 28;
+literal Korean intake misses authoring; explicit per-objective declarations
+preserve a gap hidden by the unsplit compound query. These are paired local
+outputs from both providers, not native comprehension or approval evidence.
+
+The lesson is to separate accepted representative behavior from the next cycle's
+measurable generalization and efficiency work. Freeze baselines, expected sources,
+holds and withheld cases before tuning; distinguish bytes from quality and actual
+reads from recommendations. R1-R6 and SR01-SR18 start planned, while the original
+twenty accepted rows remain historical acceptance. Both maintenance skills now
+require cycle-specific evidence rather than carried-forward completion. New
+native calls need applicable consent; pending artifact decisions are unchanged.
+
+The subsequent [evaluation freeze](completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15)
+closes SR01 with exact bundle/report hashes, 24 fixed routing cases and both-provider
+development outputs. Fourteen observations match expectations and ten fail; the
+runner reports measurement completion without product acceptance. Eight authoring
+tasks have separate source-bound references, but their native artifacts remain
+unexecuted, so SR07 is still open. The [protocol](evaluation-metrics.md#82-skill-only-evaluation-protocol)
+keeps selection, actual delivery and semantic quality separate. Withheld templates
+are operator-authored, not independently blind; no withheld execution, native
+transfer or operational authority is inferred from these local engineering checks.
+
+The [frozen routing comparison](evaluation-metrics.md#frozen-routing-comparison)
+adds the missing reserved-execution path without changing the original bundle.
+Pin the complete candidate and evaluator before opening reserved requests, retain
+all attempts and distinguish collection completion from actual matches. A process
+or assessment failure must not erase the invocation that exposed it. Copied
+records, fresh filenames and later candidates do not restore unseen status.
+This local procedure is neither independent blinding nor native quality evidence.
+The [completed fixed-candidate appraisal](completion-backlog.md#fixed-routing-source-appraisal-2026-11-17)
+compares `9331ff5` with `1b19ae1`: 26/48 baseline and 48/48 candidate matches.
+Original text, partial Korean normalization, separate compound gaps, explicit
+sources, authority and guarded denials were checked beyond the counts; the
+unchanged-router counterexamples cover declared parent/term/input boundaries.
+SR02/SR03 are bounded-verified, bringing the inventory to 8/18. Reserved routing
+cases are now exposed. Native quality, actual context savings and receiving
+remain open; the prior failed harness test and incomplete source binding remain
+explicit rather than being rewritten as clean historical passes.
+The [mainline integration checks](completion-backlog.md#mainline-integration-checks-2026-11-17)
+show that green branch-local suites can miss an interaction introduced by their
+union. Preserve every non-execution family in a shared validator conflict and
+exercise valid examples through both APIs. A broad `failed native` route also
+overselected training procedures for ordinary client diagnostics; narrow the
+demonstrated trigger while retaining explicit training subjects, parents and
+inputs. Preserve the earlier green gate and separate before/after observations;
+neither local transport checks nor fewer recommendations prove native quality.
+The [model-exclusion follow-up](completion-backlog.md#model-exclusion-reading-2026-11-17)
+applies the same distinction to supported transmission exclusions: a prohibited
+activity need not supply specialist reading for an unrelated document task.
+Keep parent tasks, explicit inputs, department duties and guarded context intact;
+less reading alone is neither correct understanding nor permission to skip controls.
+
+The next authoring preparation step uses `skill-authoring-evaluation.js` to bind
+each baseline instruction/source body to its exact prompt span. A selected path
+or a link is not delivered content; neither an emitted packet nor a completed
+response establishes faithful writing. Both client-operation guides now require
+revision-specific bodies and separate preparation/delivery/quality evidence.
+The fixed development preparation excludes answers and withheld bodies and does
+not call a model. It is not the six-task context-saving measurement or the two
+cross-client recovery chains. See `docs/evaluation-metrics.md` and its
+[procedure](evaluation-metrics.md#explicitly-prepared-authoring-inputs).
+
+Candidate preparation now pins a separate clean revision and compares every
+original task hash against the baseline. A smaller entrypoint can move applicable
+instructions out of the body, so the fixed candidate writing packets include
+reporting/project-content guidance and the handoff's scoped-term guidance as
+actual bytes. Both client-operation guides require that appraisal. Baseline
+prompts remain reproducible; neither a development snapshot nor its prepared byte
+count establishes native improvement, a withheld freeze or renewed transfer consent.
+
+The [cross-client workflow protocol](evaluation-metrics.md#cross-client-workflow-evidence)
+separates local input preparation from actual chain evidence: native planning,
+delivered advance notice, source-grounded work, changed-input hold, independent
+partial work, separately authorized continuation and a cold receiver. Each
+direction retains its own original task and predecessor bindings. A dependency
+refresh is not the continuation decision, and preparer routing is not worker
+routing. Existing local helpers prepare two synthetic initial inputs without
+starting either model or completing the active receiving criteria.
+Local brief-phase preflight then found that an adapter could close its audit but
+leave the process running. The repair checks actual child exit and distinguishes
+connection closure from timeout; both skills retain this diagnostic discipline.
+Client allowlists and actual SDK catalogs are checked separately, while helper
+corpus reads remain available. These are local checks, not native phase evidence,
+exact wire accounting, protected-host isolation or renewed transfer approval.
+The prepared native observer now matches client route events to the exact local
+helper response, preserving phase identity, original assignment, held catalog and
+authority. Earlier real event logs and fake-child failure tests exercise the
+parser and process boundaries only. Even after a future successful native call,
+brief quality, actual parent delivery and the next phase's consent stay separate.
+
+Eight separately authorized [native baseline responses](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
+now expose why a nearly complete fixed checklist is insufficient: 57/58 frozen
+checks pass, yet source appraisal finds unsupported added units and a detached
+handoff that cannot support its own next review. Shared identity uncertainty and
+historical non-action claims also change across operative summaries. Keep the
+exact original outputs; repair the process, not the historical evidence.
+`docs/document-authoring-workflow.md`, `docs/handoff-packet-template.md` and both
+skills now preserve measurement units and unknown identities across outputs and
+test next-action dependencies against the actual receiving unit. This is a local
+candidate instruction change, not a native cure or actual cross-client receipt.
+Four separate operator derivatives then repair fifteen exact spans, retaining
+the original responses and task-source bodies. A repaired extraction or coherent
+operator draft remains distinct from an independently checked model revision or
+observed cold-start use. The checkpoint records both artifacts and their limits.
+
+The [first English intake change](completion-backlog.md#english-intake-development-2026-11-15)
+addresses four observed wording/compound defects without replacing original task
+text. It also exposes a decomposition risk: source-policy review and a draft's
+readiness are valid supporting work, while a pronoun-based design review needs
+its preceding context. Keep those distinctions rather than inventing independent
+domains or erasing genuine uncovered tasks. The mirrored instruction now requires
+checking inferred clauses and their constraints before forwarding. The 22/24
+development expectation matches are local paired routing evidence only; literal
+Korean, withheld evaluation and actual-client behavior remain unverified here.
+
+The [Korean intake follow-up](completion-backlog.md#korean-intake-development-2026-11-15)
+adds bounded lexical aliases and original-language compound assessments, bringing
+the same development requests to 24/24 local matches. Its reusable lesson is to
+inspect the matching view without forwarding it as the complete original or a
+verified translation. Unicode normalization, term recognition and source fidelity
+are separate claims. Unknown clauses and operator translations still need review;
+no native quality, withheld-case pass or authority follows from the local result.
+
+The [conditional instruction split](completion-backlog.md#conditional-instruction-delivery-2026-11-15)
+separates entry length from procedural coverage. Moving guidance requires a
+discoverable phase condition, exact body preservation, copied/linked availability
+and binding in guarded context. A tool-disabled recipient cannot open an omitted
+link: its authorized preparer must supply applicable bodies. Local content
+emission, selected catalog size and observed native reading remain different
+measurements. A regression also retains generic `Draft an order...` as a known
+lexical gap; recognizing OPORD does not establish universal document intent.
+
+The next R2 probe separates another common accounting error: a router's complete
+recommendation inventory can be much larger than what a competent operator needs
+to read. It must not be counted as actual baseline loading. Both skills now use
+optional navigation and exact version-bound ranges via `skill-reference-reader.js`
+while preserving full assigned sources. Count navigation, framing, repeated reads
+and later dependencies too. The helper rejects a stale source even when its chosen
+lines did not change; a short intact excerpt is not proof of current context or
+semantic sufficiency. The [measurement procedure](evaluation-metrics.md#version-bound-reference-measurement)
+in `docs/evaluation-metrics.md` keeps actual six-task delivery and quality open.
+
+Those six routing requests name supplied policies/records without containing
+their bodies. A fair writing-context comparison therefore needs a separately
+bound, identical source supplement on both sides, not a silent task rewrite or
+a missing-source reply compared with completed work. The [paired preparation](evaluation-metrics.md#paired-context-inputs)
+in `docs/evaluation-metrics.md` keeps original requests, reused development-source
+bodies, reference snapshots and native delivery separate. Both skills retain
+selective reading; neither catalog size nor initial prompt size proves savings.
+
+The [client-bound trace procedure](evaluation-metrics.md#client-bound-context-traces)
+in `docs/evaluation-metrics.md` addresses another measurement risk: native logs
+echo responses already recorded by the helper. Reconcile them instead of adding
+both copies, while retaining real repeated reads, errors and setup framing.
+`skill-context-trace.js` checks consistency, not authenticity or comprehension;
+synthetic event tests and a local stdio client cannot stand in for native use.
+Source quality and complete six-task coverage remain necessary before savings
+acceptance. The actual backend's hidden context remains unknown.
+
+The [skill-maintenance evidence procedure](evaluation-fixtures.md#skill-maintenance-checks-and-evidence)
+addresses scattered run records: a preserved failure can have perfectly matching
+hashes, while a past pass can lose its sources or logs. The local index inspector
+keeps recorded outcomes, source currentness and evidence retention separate.
+Both skills require additive affected-surface checks and original-result appraisal;
+neither a short green check nor an intact index replaces full integration before
+merge. Missing evidence stays unavailable instead of becoming a reconstructed pass.
+
+The [own-skill maintenance intake correction](completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
+addresses a separate mismatch: selecting relevant maintenance manuals did not
+mean the router recognized the maintenance objective. Specific action/subject
+matching and context-evaluation routing now coexist with uncovered domain cells;
+using a skill is not itself subject expertise. Both skill guides preserve this
+distinction and existing receipt/transfer limits. This is local engineering
+evidence, not universal intent understanding or an unseen evaluation result.
+
+The [proposal/compound intake follow-up](completion-backlog.md#proposal-drafting-and-compound-intake-2026-11-16)
+demonstrates why overall gap labels are insufficient for diagnosis. The original
+maintenance clause was covered; the extracted approval-proposal drafting clause
+was not. Both skills now distinguish that document workflow from granting an
+approval. A second local counterexample exposed colon-separated domain work
+inheriting maintenance coverage; explicit action clauses now keep their separate
+assessments. Original evidence and unresolved semantic limits remain, and the
+pending native-context snapshot is not silently replaced with these later changes.
+
+The [deferral-list follow-up](completion-backlog.md#deferral-list-routing-2026-11-16)
+found that imperative deferrals and plural model-transfer nouns retained irrelevant
+technical manuals. Removing an English question mark caused the opposite error:
+an uncertain deferral was treated as settled. Match the complete known clause,
+preserve punctuation that changes certainty, and retain later technical review,
+explicit sources and issued controls. Both skills now teach this appraisal;
+the paired local result is not native savings or general semantic understanding.
+
+The first [native context attempt](completion-backlog.md#native-context-startup-failure-2026-11-16)
+exposed an observer regression: a stricter turn-state gate rejected startup
+diagnostics before the existing classifier could recognize them. Real event
+ordering, not only synthetic post-start warnings, must be replayed locally.
+The repair preserves explicit-input isolation and still rejects incomplete work;
+it cannot retroactively validate the stopped attempt or renew its approval.
+No complete model response or context-saving claim follows from that local fix.
+
 ## Reviewed Action Pins (2026-11-17)
 
 The combined PR CI passed 153/155 runner suites but rejected the release-integrity
@@ -641,6 +847,15 @@ recipient; each list/read reinspects sources and any canonical decision while
 preserving summary/representation modes. Synthetic local tests do not establish
 human consent, actual client receipt, route completion or semantic understanding.
 
+The [inspection-reuse correction](role-document-access-policy.md#operation-local-inspection-reuse)
+distinguishes repeated appraisal from later-call freshness: the reader can use
+the detached data already checked against its saved prompt in the same call,
+but cannot retain that inspection as authority for the next read. A 14-source
+local probe reduced each reader operation from 217 to 146 Git calls and from
+42 to 28 original-source opens. Proposal/preparation work stayed unchanged.
+These counts do not close native context or receiving criteria. Changed screening
+code requires fresh proposal binding, never rewritten historical approval.
+
 The [routed receiving integration](document-authoring-case-study.md#routed-receiving-integration)
 retains the whole assignment while assigning a fresh read context to each actual
 route. An attempted reroute must retire the preceding context even on failure;
@@ -962,6 +1177,56 @@ The local helper checks revision chains and selects relevant role/department
 records without authorizing work or transfer. This is an internal design and
 deterministic implementation, not a new military-source finding or proven
 natural-language adoption rate. Automatic capture and operational receiver use remain open.
+
+The later [source-bound proposal path](project-terminology-workflow.md#source-bound-change-proposals)
+preserves a minimal exact user/inference excerpt and its byte/hash location,
+the current ledger digest and predecessor before preparing a private revision.
+Its reusable lesson is that a proposed `confirmed` field is not canonical
+confirmation, and source-kind labels do not authenticate their author. An
+unrelated ledger edit invalidates the proposal base but does not invalidate all
+unrelated work. The [checkpoint](completion-backlog.md#terminology-change-proposals-2026-11-15)
+keeps single-writer adoption and registered impact reconciliation open.
+
+The [exact private-output case](completion-backlog.md#exact-terminology-proposal-paths-2026-11-16)
+shows why an ignored directory probe is insufficient: Git exceptions can expose
+the actual generated proposal, and a tracked file remains tracked despite an
+ignore rule. Check that exact path before writing and when reusing it. The
+helper and both skills preserve failed/previous evidence and return storage
+changes to its owner rather than automatically editing ignores or untracking.
+Canonical ledger writes use the same index-aware boundary, not `--no-index`.
+The local checks cannot prevent a non-cooperating concurrent policy edit.
+
+The later [field-level appraisal](completion-backlog.md#terminology-field-provenance-2026-11-16)
+found an unsourced exclusion in a structurally valid sample and stale exclusions
+copied into different concepts. Review aliases, definitions and exclusions as
+separate source claims; keep general permission rules outside the quoted meaning.
+Empty unsourced fields do not remove execution or disclosure controls. This
+development-sample repair is not evidence of native semantic compliance.
+
+The [local capture progression](completion-backlog.md#local-terminology-capture-2026-11-16)
+then exercised both bundled wrappers across two synthetic repositories. A candidate
+advanced history without replacing the operative confirmed meaning; the next USER
+correction followed that revision using its own source. Keep those two notions
+distinct in ordinary reporting. Questions need not manufacture ledger entries,
+and retirement preserves identifying text without making it current. The observed
+local sequence closes SR10's operator path, not native behavior or authentication.
+
+The subsequent [reviewed-append procedure](project-terminology-workflow.md#reviewed-canonical-append)
+adds cooperative single-writer serialization and immutable transaction snapshots.
+Its distinction is operational: recording an appraisal and applying a definition
+are separate commands; observing a crashed writer is not permission to retry it.
+Recovery checks the actual local process and canonical bytes, never the lock's
+age alone. It cannot authenticate the claimed USER source or stop an editor
+ignoring the lock. Registered impact reconciliation and native behavior remain
+separate acceptance work.
+
+The later [registered-dependency procedure](project-terminology-workflow.md#registered-dependency-impact)
+adds explicit source, scoped term and upstream-work bindings to local document/task
+records. It preserves old versions and independent work, and prepares an unreviewed
+refresh rather than silently replacing evidence. Review references are attribution,
+not authenticated appraisal; matching hashes do not establish work quality or
+discover unregistered semantic uses. Native receiving behavior remains separate.
+
 An integration probe subsequently changed the glossary while leaving its excerpt
 untouched; generic packet inspection still reported that excerpt current.
 The explicit terminology binding now checks both source layers for the declared
@@ -1000,6 +1265,28 @@ now assembles an exact selected project packet for separate review. It binds the
 task, recipient, canonical local repository/Git identity, source digests and
 delivered content, using existing role/duty/authority decisions plus explicit
 department selection. Outputs stay in the project; no model or service is used.
+
+A local fault injection later reproduced acceptance of a Git result containing
+both usable output/status zero and an `ETIMEDOUT` process error. Packet metadata
+checks now reject process errors, termination signals and missing terminal status
+before interpreting the output. The distinct unavailable result preserves the
+difference between failed observation and an actual source exclusion. Both skills
+hold dependent work without clearing source, deadline or retry controls. This
+does not prove why every historical sleep-related session failed; full session
+and native receiving verification remain separate. The local regression runner
+is `run-project-document-git-fixtures.js`.
+
+A later local reader trace observed `ETIMEDOUT` with status zero on an actual
+Git metadata call. The packet consumer correctly refused it; the call overlapped
+a logged sleep interval, which is correlation rather than proof of causation.
+Separate injected cases found the terminology identity and dependency helpers
+still accepting the same result shape, including four synthetic record writes.
+They now reject process errors/signals/missing status before identity, origin or
+ignore interpretation. The same regression runner checks initial and late refusal,
+required-source holds, unchanged history and sanitized CLI errors. Both project-terms
+guides prohibit replacement state or policy changes as a workaround. This is a
+local metadata-integrity repair, not native receiving, automatic retry or complete
+dependency discovery; existing bound model proposals must be rechecked after it.
 
 Raw delivery is public/internal only. Summaries must already exist, with exact
 original and summary digests and an asserted review reference. The source owner
@@ -1180,6 +1467,14 @@ homes. Twenty-one local fixtures cover installation and receipt parity; stub ver
 probes and entrypoint inspection are not native client loading or model execution.
 The two skills remain the selected distribution, with separate plugin packaging
 not included. This is local engineering evidence, not a new military-source claim.
+
+The R6 successor adds `skill-installation-inspector.js`: compare a loaded path
+from a trusted checkout before executing a possibly stale copy. File/guide/script
+hashes, executable modes and default corpus binding distinguish a current bundle
+from differences that need appraisal. Current working-tree bytes and source HEAD
+are separate observations; intentional edits are not automatically obsolete.
+The check neither reads client settings nor rewrites markers, installs a skill,
+invokes native clients or proves body delivery. Unknown entry bodies stay unread.
 
 ## Source-Grounded Authoring Exercise (2026-11-10)
 
