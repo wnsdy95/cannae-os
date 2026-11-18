@@ -409,7 +409,7 @@ try {
     for (const provider of ["codex-skills", ".claude/skills"]) {
       const skill = projectGuidance(path.join(__dirname, provider, "controls-doctrine-operator"));
       assert(skill.includes("Reconcile totals by source ID, including a candidate marked required."));
-      assert(skill.includes("a denied read does not prevent a path leak in the listing."));
+      assert(skill.replace(/\s+/g, " ").includes("Never rebuild a catalog from the private request: denying its later read cannot undo a path leak in the listing."));
     }
   });
   fixture("receiving guidance distinguishes source identities from usable locations", () => {

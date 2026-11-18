@@ -249,6 +249,9 @@ The [model-exclusion reading follow-up](completion-backlog.md#model-exclusion-re
 records a local direct-routing counterexample and both-provider conditional-reading
 regressions. Its separate retained-evidence audit verifies original file bindings,
 not military doctrine, actual model behavior or fresh acceptance of old runs.
+The [first remote CI checkpoint](completion-backlog.md#first-remote-ci-result-2026-11-18)
+records two runner-fixture regressions outside the focused set, their repairs and
+the added map rows. It is a local engineering observation, not a full CI pass.
 
 The [version-bound reference reader](evaluation-metrics.md#version-bound-reference-measurement)
 in `skill-reference-reader.js` and both `read_controls_reference.js` wrappers

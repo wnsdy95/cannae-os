@@ -333,6 +333,12 @@ new run instead of rewriting old expectations. Review declared dependency covera
 and the original results before acceptance; the helper grants no execution,
 model-transfer or merge authority. See the evaluation guide for the local format.
 
+The map is a starting point, not dependency discovery. When a full gate fails a
+suite outside the focused set, retain that run, add the missed coupling to the map
+and mirror the rule in both skills. A reworded rule needs its text assertion moved
+to the current wording, not deleted. Changing a runtime-digest file requires its
+dependent sample writers to be rerun; never hand-edit generated hashes.
+
 Separate current navigation from retained evidence history. After a proposed
 successor or completed review, reconcile the document's opening current-candidate
 pointer, README and active queue with the actual candidate and disposition.

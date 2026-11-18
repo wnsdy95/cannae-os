@@ -2226,6 +2226,57 @@ overwrite old rows to remove those limits or mistake retention for fresh success
 The accepted inventory stays **8/18**; model decisions, actual R2/R3/R5 evidence,
 full integration and final SR17/SR18 acceptance remain open.
 
+#### First Remote CI Result (2026-11-18)
+
+On 2026-11-18 the USER approved one push of exact `f8a1372`, a draft PR (#116)
+and one run of the existing Validate workflow. Run `44262715557` **failed**:
+the routing, JSON, registry, English-only, Markdown-link and validator-fixture
+steps passed. The runner-fixture step then passed 166 of 168 suites. The source-map,
+diff and unified proof gates were not executed. No retry or new push followed.
+
+Both failures are branch regressions. Each reproduces on an `f8a1372` snapshot
+and passes on main `4c4ab32` with the same pinned dependencies:
+
+- `run-authoring-review-packet-fixtures.js` stopped at its 29th of 76 fixtures.
+  `ce20f82` reworded the project-content rule against rebuilding a catalog from
+  the private request; the assertion still expected the old wording. The rule
+  is unchanged in meaning. The 47 later fixtures had not run in CI.
+- `run-training-session-contract-fixtures.js` found stored samples that no longer
+  matched their writer. The `2d89896` validator union changed
+  `validator-cli-prototype/validate.js`, which is in
+  `dispatch-issuance-contract.js`'s runtime-digest list. Dispatch-issuance and
+  method-control samples were stale for the same reason; their suites do not
+  compare stored bytes, so CI did not report them. On main, all three writers
+  reproduce their stored samples byte for byte.
+
+Neither suite was in the focused set for its change. Both were therefore real
+gaps in the [check map](evaluation-fixtures.md#skill-maintenance-checks-and-evidence),
+not only fixture defects.
+
+Repair: the assertion now checks the complete current sentence with whitespace
+normalized. All three writers were rerun. The 29 regenerated samples change only
+digest-derived fields: runtime digest, IDs, artifact references, review hashes
+and one fixture signature. No old value is referenced elsewhere. The map adds both
+couplings, and both skills' self-improvement references mirror the rule: retain
+the failing run, add the missed coupling, move a reworded assertion rather than
+deleting it, and regenerate rather than hand-edit digest-derived samples.
+
+Local focused results on the repaired tree: both failing suites now pass, with
+76/76 and 10/10 fixtures, as do 669/669 validator fixtures. The other 24 selected
+dispatch-issuance, method-control, training, skill-text and routing suites pass,
+one only after the rerun described below. The routing, JSON, registry, English-only,
+link, skill-validator, source-map and diff checks also pass. One `run-training-session-fixtures.js` attempt failed with
+`TRAINING_SESSION_SOURCE_CHANGED` because this backlog was edited mid-run. Its
+repository-state digest includes the working-tree diff. A rerun on the unchanged
+tree passed 5/5, and the failed attempt is retained here.
+
+This repair was made from a separate Claude Code worktree. No private evidence-index
+entry was added, and the CI log stays in GitHub's run history. Local results are
+focused checks, not a full gate. Local Docker remains unavailable, so the
+live-OCI runner step and unified proof gate still need a fresh CI run. That run
+needs its own USER approval for the push. SR17/SR18 stay open, and the inventory
+stays **8/18**.
+
 #### Execution Order And Boundaries
 
 1. Freeze the SR01/SR07 baselines and evaluation contract before changing behavior.

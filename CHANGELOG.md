@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Record the first remote Validate run for the skill reliability draft PR (166/168 runner fixtures; later gates not executed) and repair its two branch regressions: a reworded project-content rule whose text assertion still expected the old wording, and stored dispatch-issuance, method-control and training-session samples left stale by the validator's runtime-digest change. Add both couplings to the focused-check map and mirror the map rule in both skills. The inventory stays 8/18; full CI remains required.
+
 - Keep model-allocation reading out of ordinary document tasks when the only model mention is a supported transmission exclusion. Preserve parent/source/department requirements, conservative ambiguous clauses, all selected validation commands and guarded model references; mirror the reading distinction in both skills. Extend private acceptance-evidence indexing without changing prior verdicts or authorizing native calls.
 
 - Reconcile skill reliability work with approved main in an isolated integration candidate. Preserve both document and training non-execution lists and add valid-example checks through both APIs. Narrow an overbroad native-failure route so ordinary CLI diagnostics do not inherit training procedures; preserve explicit subjects, parent tasks and required inputs, and mirror the lesson in both skills. Retain focused checks, dependency warnings and the unavailable live-OCI prerequisite without renewing native consent or reopening deferred PR/platform scope.

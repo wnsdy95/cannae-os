@@ -17,11 +17,18 @@ map, not automatic dependency discovery or permission to omit a routed control.
 | --- | --- |
 | Navigation or evidence/history prose | Both skill validators and router coverage; source-map linter; Markdown links; English-only; `git diff --check` |
 | Router or intake | `run-document-routing-fixtures.js`, `run-routing-korean-intake-fixtures.js`, `run-skill-maintenance-routing-fixtures.js`; preflight/control-enforcement and document-session consumers when affected |
-| Entrypoint or conditional instructions | `run-skill-progressive-disclosure-fixtures.js`, both skill validators, installation and context-document-integrity fixtures; actual authorized-input checks for native comparisons |
+| Entrypoint or conditional instructions | `run-skill-progressive-disclosure-fixtures.js`, both skill validators, installation and context-document-integrity fixtures; every suite that asserts entrypoint or reference text, including `run-authoring-review-packet-fixtures.js` (list them with `grep -l controls-doctrine-operator run-*.js`); actual authorized-input checks for native comparisons |
+| Validator or runtime-digest code | `validator-cli-prototype/run-fixtures.js`; for a file in a contract's runtime-digest list, such as `dispatch-issuance-contract.js` `CODE`, rerun the dispatch-issuance, method-control and training-session sample writers, confirm only digest-derived fields change and run their contract fixtures |
 | Project sources or handoff | `run-project-document-packet-fixtures.js`, `run-project-document-git-fixtures.js`, `run-project-document-review-fixtures.js`, `run-project-document-reader-fixtures.js`, `run-project-document-session-fixtures.js` and affected terminology/dependency cases; source appraisal and actual receiving remain separate |
 | Terminology or dependencies | `run-project-terminology-fixtures.js`, `run-project-terminology-change-fixtures.js`, `run-project-terminology-writer-fixtures.js`, `run-project-terminology-handoff-fixtures.js`, `run-project-knowledge-dependency-fixtures.js`, `run-project-document-git-fixtures.js` and affected stale-source cases |
 | Installation or client integration | Skill installation, installation-inspector and client-discovery fixtures; test both providers and the changed link/copy path |
 | Evidence index | `run-skill-evidence-index-fixtures.js`, inspection of the actual retained records, and the documentation checks above |
+
+A reworded rule keeps its assertion: update the expected text to the current
+wording of the same rule instead of deleting the check. A sample writer's output
+must equal the stored sample; regenerate it rather than editing hashes by hand.
+When a full gate fails a suite outside the selected focused set, retain that run
+and add the missed coupling to this map in the same change.
 
 For operation-local packet inspection reuse, the reader fixture also checks
 two real reviewed compilations per call, fresh later calls, standalone projection
