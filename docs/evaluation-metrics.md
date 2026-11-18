@@ -391,6 +391,19 @@ missing assigned source. Replay the actual captured startup sequence locally
 before proposing a retry. A parser repair does not retroactively complete an
 interrupted run or renew its stopped batch's consent.
 
+Claude Code 2.1.322 negotiates the 2026-07-28 MCP revision. It sends a
+`server/discover` probe, opens one `subscriptions/listen` stream that receives
+only its acknowledgement, discovers again, and stops the relay with SIGINT.
+Its tool results add `resultType: "complete"` and server-identity `_meta`. The
+trace accepts that lifecycle only when unmixed with `initialize`. The stream
+needs exactly one matching acknowledgement and no direct response, and the
+envelope is limited to those two fields. A SIGINT-then-SIGKILL close passes only
+after every ordinary request completed. Every adapter line still counts toward
+client-bound input. The accounting records `transport_protocol` and
+`transport_close`. The first Claude R2 attempt failed under the previous
+initialize-only rule. Its retained capture reconciles under the repair, but it
+stays a failed attempt.
+
 #### Explicitly Prepared Authoring Inputs
 
 `skill-authoring-evaluation.js prepare-baseline` prepares the four development

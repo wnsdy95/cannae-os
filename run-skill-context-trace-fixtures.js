@@ -153,6 +153,66 @@ check("Claude checks the exact session, advertised tool, final status and unfilt
     const changed = structuredClone(events("claude")); edit(changed); assert.throws(() => observe("claude", changed));
   }
 });
+// Shape observed from Claude Code 2.1.322 on 2026-11-19: server/discover probe, one listen stream,
+// a second discover, result envelopes and a client SIGINT shutdown.
+const SERVER = { "io.modelcontextprotocol/serverInfo": { name: "fixture", version: "0.1.0" } };
+function discovery(count = 2, { close = { code: null, signal: "SIGKILL", failure: "SIGINT" } } = {}) {
+  const records = [{ sequence: 0, kind: "started", version: 1 }];
+  const add = (direction, value) => {
+    const wire = JSON.stringify(value) + "\n";
+    records.push({ sequence: records.length, kind: "message", direction, wire, bytes: Buffer.byteLength(wire), sha256: hash(wire) });
+  };
+  const discovered = { supportedVersions: ["2026-07-28"], capabilities: {}, instructions: "Choose useful references.",
+    resultType: "complete", _meta: SERVER };
+  add("to_adapter", request("server-discover-probe-1", "server/discover", {}));
+  add("to_client", response("server-discover-probe-1", discovered));
+  add("to_adapter", request("listen:0", "subscriptions/listen", { notifications: { toolsListChanged: true } }));
+  add("to_client", { jsonrpc: "2.0", method: "notifications/subscriptions/acknowledged",
+    params: { notifications: { toolsListChanged: true }, _meta: { "io.modelcontextprotocol/subscriptionId": "listen:0" } } });
+  add("to_adapter", request(0, "server/discover", {}));
+  add("to_client", response(0, discovered));
+  add("to_adapter", request(1, "tools/list"));
+  add("to_client", response(1, { tools: [{ name: "read_reference", inputSchema: { type: "object" } }], resultType: "complete", _meta: SERVER }));
+  for (let i = 0; i < count; i++) {
+    add("to_adapter", request(i + 2, "tools/call", { name: "read_reference", arguments: selection }));
+    add("to_client", response(i + 2, { ...result, resultType: "complete", _meta: SERVER }));
+  }
+  records.push({ sequence: records.length, kind: "closed", ...close });
+  return records;
+}
+check("2026-07-28 discovery lifecycle counts every delivered line and records its protocol and close", () => {
+  const records = discovery(), wire = records.filter(row => row.direction === "to_client").reduce((sum, row) => sum + row.bytes, 0);
+  const measured = measure("claude", { records });
+  assert.equal(measured.transport_protocol, "discovery_2026_07_28");
+  assert.equal(measured.transport_close, "client_sigint_after_completed_requests");
+  assert.equal(measured.controlled_client_input_bytes, prompt.length + wire);
+  assert.equal(measured.advertised_instructions_bytes, 2 * Buffer.byteLength("Choose useful references."));
+  assert.equal(measured.reference_body_bytes, Buffer.byteLength(body) * 2);
+  assert.equal(measure("codex").transport_protocol, "legacy_initialize");
+  assert.equal(measure("codex").transport_close, "adapter_exit_zero");
+});
+check("discovery lifecycle rejects mixing, stray notifications, extra streams and changed envelopes", () => {
+  for (const [index, edit] of [[5, m => { m.method = "initialize"; }], [1, m => { m.method = "tools/list"; }],
+    [4, m => { m.params._meta["io.modelcontextprotocol/subscriptionId"] = "listen:1"; }],
+    [4, m => { m.method = "notifications/tools/list_changed"; }], [6, m => { delete m.result.supportedVersions; }],
+    [12, m => { m.result.resultType = "incomplete"; }], [12, m => { m.result._meta.extra = true; }],
+    [3, m => { m.id = 1; }], [5, m => { m.method = "subscriptions/listen"; }]]) {
+    const changed = discovery(); changeWire(changed, index, edit); assert.throws(() => inspectTransport(changed, 8));
+  }
+  const legacyStream = transcript(); changeWire(legacyStream, 4, m => { m.method = "subscriptions/listen"; });
+  assert.throws(() => inspectTransport(legacyStream, 8));
+  const noAck = discovery(); noAck.splice(4, 1); noAck.forEach((row, i) => { row.sequence = i; });
+  assert.throws(() => inspectTransport(noAck, 8), /TRANSPORT_INCOMPLETE/);
+  const listenAnswered = discovery(); changeWire(listenAnswered, 12, m => { m.id = "listen:0"; });
+  assert.throws(() => inspectTransport(listenAnswered, 8));
+});
+check("client SIGINT shutdown is accepted only after every ordinary request completed", () => {
+  const cut = discovery(); cut.splice(-2, 1); cut.forEach((row, i) => { row.sequence = i; });
+  assert.throws(() => inspectTransport(cut, 8), /TRANSPORT_INCOMPLETE/);
+  for (const close of [{ code: null, signal: "SIGKILL", failure: "deadline" }, { code: null, signal: "SIGTERM", failure: "SIGINT" },
+    { code: 1, signal: null, failure: "SIGINT" }]) assert.throws(() => inspectTransport(discovery(2, { close }), 8), /TRANSPORT_CLOSE/);
+  assert.equal(inspectTransport(discovery(2, { close: { code: 0, signal: null, failure: null } }), 8).close, "adapter_exit_zero");
+});
 check("zero-read trace consistency is not proof of sufficient reading or quality", () => {
   const measured = measure("codex", { native: observe("codex", events("codex", 0)), records: transcript(0) });
   assert.equal(measured.calls, 0); assert.equal(measured.semantic_acceptance, false);

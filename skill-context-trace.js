@@ -123,19 +123,40 @@ function createNativeTrace({ provider, server, call_limit }) {
   };
 }
 
+// The 2026-07-28 MCP revision adds a result envelope. Accept only its completed form and
+// server identity metadata; anything else still fails the strict text-result shape.
+const SERVER_INFO = "io.modelcontextprotocol/serverInfo", SUBSCRIPTION_ID = "io.modelcontextprotocol/subscriptionId";
+function wireToolResult(value) {
+  if (!object(value) || (value.resultType === undefined && value._meta === undefined)) return textResult(value);
+  requireThat(value.resultType === "complete" && object(value._meta) &&
+    Object.keys(value._meta).every(key => key === SERVER_INFO), "TRANSPORT_RESULT_ENVELOPE");
+  const { resultType, _meta, ...rest } = value;
+  return textResult(rest);
+}
+
 // The relay records exact JSON-RPC lines after each destination write completes.
 // Its trace is client-bound I/O evidence, not a protected-host/backend attestation.
+// Two lifecycles are accepted, never mixed: legacy initialize/notifications/initialized
+// (Codex) and 2026-07-28 server/discover with one subscriptions/listen stream (Claude Code).
 function inspectTransport(records, callLimit) {
   requireThat(Array.isArray(records) && records.length >= 3 && Number.isSafeInteger(callLimit) &&
     callLimit > 0 && callLimit <= 128, "TRANSPORT_RECORDS");
   const requests = new Map(), calls = [];
   let wireBytes = 0, instructionsBytes = 0, catalogBytes = 0, resultTextBytes = 0, terminal = false, initialized = false;
+  let protocol = null, listen = null, listenAcknowledged = false, close = null;
   for (let i = 0; i < records.length; i++) {
     const row = records[i];
     requireThat(object(row) && row.sequence === i && !terminal, "TRANSPORT_SEQUENCE");
     if (i === 0) { requireThat(row.kind === "started" && row.version === 1, "TRANSPORT_START"); continue; }
     if (row.kind === "closed") {
-      requireThat(i === records.length - 1 && row.code === 0 && row.signal === null && row.failure === null, "TRANSPORT_CLOSE");
+      requireThat(i === records.length - 1, "TRANSPORT_CLOSE");
+      if (row.code === 0 && row.signal === null && row.failure === null) close = "adapter_exit_zero";
+      else {
+        // Claude Code stops stdio servers with SIGINT; the relay then kills its adapter.
+        // Accept that only after every ordinary request completed (checked below).
+        requireThat(row.code === null && row.signal === "SIGKILL" && row.failure === "SIGINT", "TRANSPORT_CLOSE");
+        close = "client_sigint_after_completed_requests";
+      }
       terminal = true; continue;
     }
     requireThat(row.kind === "message" && ["to_adapter", "to_client"].includes(row.direction) &&
@@ -145,38 +166,54 @@ function inspectTransport(records, callLimit) {
     requireThat(object(m) && m.jsonrpc === "2.0", "TRANSPORT_JSON");
     if (row.direction === "to_adapter") {
       if (m.id === undefined) {
-        requireThat(m.method === "notifications/initialized" && initialized, "TRANSPORT_NOTIFICATION"); continue;
+        requireThat(protocol === "legacy_initialize" && m.method === "notifications/initialized" && initialized, "TRANSPORT_NOTIFICATION"); continue;
       }
       requireThat((typeof m.id === "string" || Number.isSafeInteger(m.id)) && !requests.has(m.id) &&
-        ["initialize", "tools/list", "tools/call", "ping"].includes(m.method), "TRANSPORT_REQUEST");
-      requireThat(m.method === "initialize" ? requests.size === 0 : initialized, "TRANSPORT_INITIALIZATION");
+        ["initialize", "server/discover", "subscriptions/listen", "tools/list", "tools/call", "ping"].includes(m.method), "TRANSPORT_REQUEST");
+      if (m.method === "initialize") {
+        requireThat(protocol === null && requests.size === 0, "TRANSPORT_INITIALIZATION"); protocol = "legacy_initialize";
+      } else if (m.method === "server/discover") {
+        requireThat(protocol === null ? requests.size === 0 : protocol === "discovery_2026_07_28", "TRANSPORT_INITIALIZATION");
+        protocol = "discovery_2026_07_28";
+      } else if (m.method === "subscriptions/listen") {
+        requireThat(protocol === "discovery_2026_07_28" && initialized && listen === null, "TRANSPORT_SUBSCRIPTION");
+      } else requireThat(initialized, "TRANSPORT_INITIALIZATION");
       const request = { id: m.id, method: m.method, params: m.params, completed: false };
       requests.set(m.id, request);
+      if (m.method === "subscriptions/listen") listen = request;
       if (m.method === "tools/call") {
         requireThat(m.params?.name === "read_reference" && object(m.params.arguments) && calls.length < callLimit, "TRANSPORT_CALL");
         calls.push(request);
       }
     } else {
       wireBytes += row.bytes;
+      if (m.id === undefined) {
+        // The only adapter notification accepted is the acknowledgement of the one listen stream.
+        requireThat(listen && !listenAcknowledged && m.method === "notifications/subscriptions/acknowledged" &&
+          object(m.params) && m.params._meta?.[SUBSCRIPTION_ID] === listen.id, "TRANSPORT_NOTIFICATION");
+        listenAcknowledged = true; continue;
+      }
       const request = requests.get(m.id);
-      requireThat(request && !request.completed && object(m.result) && !m.error && !m.method, "TRANSPORT_RESPONSE");
+      requireThat(request && request !== listen && !request.completed && object(m.result) && !m.error && !m.method, "TRANSPORT_RESPONSE");
       request.completed = true;
-      if (request.method === "initialize") {
-        requireThat(!initialized && typeof m.result.instructions === "string", "TRANSPORT_INITIALIZATION");
+      if (request.method === "initialize" || request.method === "server/discover") {
+        requireThat((request.method === "initialize" ? !initialized : Array.isArray(m.result.supportedVersions)) &&
+          typeof m.result.instructions === "string", "TRANSPORT_INITIALIZATION");
         initialized = true; instructionsBytes += bytes(m.result.instructions);
       } else if (request.method === "tools/list") {
         requireThat(Array.isArray(m.result.tools) && m.result.tools.length === 1 && m.result.tools[0].name === "read_reference" &&
           object(m.result.tools[0].inputSchema) && !m.result.nextCursor, "TRANSPORT_CATALOG");
         catalogBytes += bytes(JSON.stringify(m.result.tools));
       } else if (request.method === "tools/call") {
-        request.result = textResult(m.result); resultTextBytes += bytes(request.result.text);
+        request.result = wireToolResult(m.result); resultTextBytes += bytes(request.result.text);
       }
     }
   }
-  requireThat(terminal && initialized && catalogBytes > 0 && [...requests.values()].every(row => row.completed), "TRANSPORT_INCOMPLETE");
+  requireThat(terminal && initialized && catalogBytes > 0 && (listen === null || listenAcknowledged) &&
+    [...requests.values()].every(row => row === listen || row.completed), "TRANSPORT_INCOMPLETE");
   return { calls: calls.map(row => ({ input: row.params.arguments, ...row.result })),
     wire_bytes_to_client: wireBytes, advertised_instructions_bytes: instructionsBytes,
-    advertised_catalog_bytes: catalogBytes, result_text_bytes: resultTextBytes };
+    advertised_catalog_bytes: catalogBytes, result_text_bytes: resultTextBytes, protocol, close };
 }
 
 function reconcileContextTrace({ prompt, manifest, native, records, call_limit, expectedRead }) {
@@ -209,7 +246,7 @@ function reconcileContextTrace({ prompt, manifest, native, records, call_limit, 
     reference_body_bytes: bodyBytes, navigation_response_bytes: navigationBytes, error_response_bytes: errorBytes,
     tool_result_text_bytes: transport.result_text_bytes,
     advertised_instructions_bytes: transport.advertised_instructions_bytes, advertised_catalog_bytes: transport.advertised_catalog_bytes,
-    wire_bytes_to_client: transport.wire_bytes_to_client,
+    wire_bytes_to_client: transport.wire_bytes_to_client, transport_protocol: transport.protocol, transport_close: transport.close,
     controlled_client_input_bytes: prompt.length + transport.wire_bytes_to_client,
     backend_context_bytes: null, semantic_acceptance: false, transfer_authorized: false,
     native_execution_independently_verified: false, savings_acceptance_established: false };

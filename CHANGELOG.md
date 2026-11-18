@@ -6,6 +6,8 @@ This project follows a pragmatic versioning model while it is pre-1.0. Breaking 
 
 ## Unreleased
 
+- Accept the 2026-07-28 MCP discovery lifecycle that Claude Code 2.1.322 negotiates in context traces: `server/discover`, one acknowledged `subscriptions/listen` stream, completed result envelopes and a SIGINT shutdown after all ordinary requests complete. Lifecycles cannot be mixed; protocol and close kind are recorded with the totals. The first Claude R2 attempt that exposed the gap stays failed; its capture now reconciles. Both client-operation guides and the evaluation protocol describe the rule.
+
 - Record the first remote Validate run for the skill reliability draft PR (166/168 runner fixtures; later gates not executed) and repair its two branch regressions: a reworded project-content rule whose text assertion still expected the old wording, and stored dispatch-issuance, method-control and training-session samples left stale by the validator's runtime-digest change. Add both couplings to the focused-check map and mirror the map rule in both skills. The inventory stays 8/18; full CI remains required.
 
 - Keep model-allocation reading out of ordinary document tasks when the only model mention is a supported transmission exclusion. Preserve parent/source/department requirements, conservative ambiguous clauses, all selected validation commands and guarded model references; mirror the reading distinction in both skills. Extend private acceptance-evidence indexing without changing prior verdicts or authorizing native calls.

@@ -78,6 +78,14 @@ of enabling discovery or suppressing warnings. A failed assigned-source read
 still holds dependent work. A repaired parser never changes the failed attempt
 or renews the stopped batch's transfer consent.
 
+Clients can negotiate different MCP lifecycles. Codex uses `initialize`; Claude
+Code 2.1.322 uses the 2026-07-28 `server/discover` probe, one
+`subscriptions/listen` stream with its acknowledgement, result envelopes with
+`resultType: "complete"`, and a SIGINT shutdown. The trace accepts each lifecycle
+only in its exact shape and never mixed. A signal close passes only after every
+ordinary request completed. Replay a newly observed lifecycle against the real
+capture before any retry, and record the protocol and close kind with the totals.
+
 For cross-client workflow evaluation, use the chain protocol in
 `docs/evaluation-metrics.md`. Preserve one original task and predecessor artifact
 bindings per direction; do not join separate runs into a complete chain. Keep
