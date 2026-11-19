@@ -21,7 +21,7 @@
     "@sigstore/verify": "4.1.2",
     "@tufjs/canonical-json": "2.0.0",
     "@tufjs/models": "5.0.0",
-    "fastify": "5.12.7",
+    "fastify": "5.12.8",
     "lucide-static": "1.66.0",
     "sigstore": "5.0.0",
     "zod": "4.6.7"
