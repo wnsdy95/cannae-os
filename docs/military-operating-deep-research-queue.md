@@ -5,6 +5,10 @@ Dashboard and platform integration gaps below are retained research history,
 not the active implementation queue. Select current work from the active
 [Completion Backlog](completion-backlog.md#active-core-work).
 
+The current successor is [Skill Reliability And Efficiency](completion-backlog.md#skill-reliability-and-efficiency),
+with eighteen planned criteria distinct from completed G1-G5 acceptance. It does
+not reactivate this page's retained platform program or require a plugin package.
+
 <!-- current-document:support-sop:start -->
 Current document: [Support SOP V5](document-authoring-case-study.md#corrective-sop-draft-v5).
 State: proposed; review: native-reviewed; adoption: not-adopted.
@@ -794,8 +798,14 @@ Completed:
 - `docs/native-training-producer-history.md`: Original producer snapshots and current-engine replay without rewriting history.
 - `docs/native-training-failure-reconciliation.md`: Bounded failure appraisal and owner acknowledgment without implicit output admission or qualification.
 - `docs/document-authoring-case-study.md`: Source-grounded SOP/revision, routing-maintenance and native handoff cases. The current authoring-family map distinguishes operative review, actual receiving, local successors and pending decisions; original failures remain historical. METHOD61's original path refusal and later unapproved proposal do not negate OR72's separately approved receiving. Neither native use nor local correction establishes adoption or universal quality.
-- `docs/project-terminology-workflow.md`: Project-local user definitions, tentative meanings, revision history, recipient selection and freshness; no automatic promotion or authority expansion.
+- `docs/project-terminology-workflow.md`: Project-local user definitions, tentative meanings, source-bound proposals, reviewed single-writer append/recovery, local capture state progression, registered dependency impact and reviewed refresh, revision history, recipient selection and freshness; no automatic adoption, semantic discovery, promotion or authority expansion.
 - `skill-first-product-scope.md`: USER-directed core scope, deferred platform work and separate acceptance criteria.
+- Skill distribution maintenance: `skill-installation-inspector.js` and both client-operation/routing guides diagnose changed copies and corpus bindings locally, without installed-code execution or automatic repair. Native discovery and use remain separate evidence.
+- Skill authoring evaluation: `skill-authoring-evaluation.js` prepares exact baseline development inputs and byte-range manifests; `run-skill-evaluation-fixtures.js` checks original-task preservation, answer exclusion and non-authorizing accounting. Actual delivery, source appraisal and cross-client receiving remain separate obligations in `evaluation-metrics.md`.
+- Context reading efficiency: `skill-reference-reader.js`, both `read_controls_reference.js` wrappers and `run-skill-reference-reader-fixtures.js` provide tracked-corpus navigation and exact version-bound range/full reads. Keep assigned sources complete and count framing/rereads; `evaluation-metrics.md` separates these local checks from the still-open six-task native delivery comparison.
+- Paired context inputs: `skill-context-evaluation.js` and `run-skill-context-evaluation-fixtures.js` bind identical task-source supplements, original fixed requests and clean revision snapshots. Both client guides preserve selective baseline reading; native transport, full-trace accounting, output appraisal and new consent remain separate under `evaluation-metrics.md`.
+- Own-skill maintenance intake: both routers and `run-skill-maintenance-routing-fixtures.js` distinguish own-product upkeep, bounded context evaluation and uncovered domain work. Both routing guides retain original prohibitions, technical prerequisites and guarded-input rejection; `completion-backlog.md` records the local R1 counterexample separately from frozen evaluation.
+- Native baseline appraisal: four development tasks in each client now have source-appraised responses. Candidate repairs in both skills preserve derived units, uncertain source identities/history and exact next-review dependencies; `docs/document-authoring-workflow.md` and `docs/handoff-packet-template.md` carry the procedure. Candidate comparison and actual cross-client recovery remain open.
 - `document-authoring-workflow.md`: Format selection, source discipline, revision and handoff through client skills without a dashboard.
 - `implementation-candidate-registry.md`: Source-bound requirements, mapped implementations, executable checks, and explicit remaining work.
 - `completion-backlog.md`: Cross-cutting roadmap and operational closure criteria, including external dependencies.

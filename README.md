@@ -71,14 +71,98 @@ Existing guarded operations still retain their controls and unresolved holds.
 See [Skill-First Product Scope](docs/skill-first-product-scope.md) for the active
 acceptance criteria. A separate plugin package is not yet claimed implemented.
 
-The [five active objectives](docs/skill-first-product-scope.md#active-objectives)
-are authoring quality, role-bounded routing/delegation, a complete working flow,
+The [five baseline objectives](docs/skill-first-product-scope.md#completed-baseline-objectives)
+cover authoring quality, role-bounded routing/delegation, a complete working flow,
 bounded improvement/corpus maintenance, and client distribution. Preparatory
 cleanup is recorded separately; none is declared complete from a routing pass.
 The [2026-11-15 acceptance audit](docs/completion-backlog.md#five-goal-acceptance)
 now records bounded completion of all five through source-appraised actual use
 and local checks. This is not a guarantee of hallucination-free work or production
 security; the limitations and deferred scope remain.
+
+The next USER-requested cycle is [Skill Reliability And Efficiency](docs/skill-first-product-scope.md#active-objectives):
+robust intake, smaller useful context, withheld-case quality, terminology/change
+impact, repeatable cross-client workflows and reproducible maintenance. Its
+[eighteen new criteria](docs/completion-backlog.md#skill-reliability-acceptance)
+started planned; prior acceptance does not count as their completion. The
+[frozen evaluation checkpoint](docs/completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15)
+closes SR01 only and retains ten failing development observations. Dashboards,
+servers and optional plugin packaging remain deferred.
+The [first English intake improvement](docs/completion-backlog.md#english-intake-development-2026-11-15)
+resolved eight of those paired routing failures; at that checkpoint Korean
+intake and reserved evaluation remained open. This is local routing evidence.
+The [bounded Korean intake follow-up](docs/completion-backlog.md#korean-intake-development-2026-11-15)
+resolves the remaining development request in both providers while preserving
+original wording and explicit limits. Native quality remains separate.
+The [frozen routing comparison](docs/evaluation-metrics.md#frozen-routing-comparison)
+pins an exact candidate before reserved execution and retains all 24 requests
+across both revisions and clients. Its local measurement and failure journal
+are not native quality, actual context savings or automatic acceptance.
+The [completed source appraisal](docs/completion-backlog.md#fixed-routing-source-appraisal-2026-11-17)
+records 26/48 baseline and 48/48 candidate matches, exact request/authority
+preservation and retained guarded refusals. SR02/SR03 are bounded-verified;
+the inventory is now 8/18. Reserved routing cases are exposed, not reusable as
+unseen tests. Actual model context, writing quality and receiving remain open.
+The [mainline integration checks](docs/completion-backlog.md#mainline-integration-checks-2026-11-17)
+preserve document and retained training non-execution boundaries together, and
+separate ordinary CLI failure diagnostics from training recovery. Focused local
+passes are not full CI, native acceptance or resumed dashboard/server work.
+The [model-exclusion follow-up](docs/completion-backlog.md#model-exclusion-reading-2026-11-17)
+distinguishes a transmission prohibition from a model-allocation task while
+retaining guarded references and commands. Its acceptance-retention audit also
+indexes earlier evidence without treating historical results as current execution.
+
+The initial [conditional instruction split](docs/completion-backlog.md#conditional-instruction-delivery-2026-11-15)
+reduced both entrypoints by 23.4% while retaining linked content/reporting, client,
+terminology and delegated-wave procedures. Protected contexts bind all moved
+guides. Local emission is not native reading or measured end-to-end context savings.
+The [native authoring baseline](docs/completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
+now contains eight actual responses and source-appraised defects in derived units,
+detached receiving context and unresolved source identity/history. Both skills
+contain candidate repairs; their current entry reduction remains 21.2%. Candidate quality,
+reserved evaluation and complete cross-client recovery chains remain unverified.
+
+The [version-bound reference reader](docs/evaluation-metrics.md#version-bound-reference-measurement)
+adds navigation and exact source-bound ranges through both skills. It preserves
+full assigned inputs and separates emitted bytes from observed client delivery;
+actual six-task context savings remain unverified.
+The [paired context preparation](docs/evaluation-metrics.md#paired-context-inputs)
+binds identical synthetic task sources to both exact revisions and providers.
+Its snapshots and initial prompts are not native delivery or completed-work savings.
+The [client-bound trace accounting](docs/evaluation-metrics.md#client-bound-context-traces)
+joins exact reference responses with native call events and counts framing,
+errors and repeated reads. Local fixtures do not establish native savings;
+source appraisal and authorized actual comparison remain required.
+The [maintenance intake correction](docs/completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
+recognizes own-skill upkeep and bounded context evaluation while preserving
+uncovered domain objectives, full prohibitions and guarded-input rejection.
+The [proposal/compound intake follow-up](docs/completion-backlog.md#proposal-drafting-and-compound-intake-2026-11-16)
+distinguishes preparing an approval document from granting approval, and retains
+independent tasks introduced after a colon instead of inheriting prefix coverage.
+The [deferral-list follow-up](docs/completion-backlog.md#deferral-list-routing-2026-11-16)
+recognizes complete mixed exclusions such as "Keep model transfers and dashboard
+development deferred", retaining questions, technical prerequisites and controls.
+The first [native context attempt](docs/completion-backlog.md#native-context-startup-failure-2026-11-16)
+stopped on an observer startup-order defect. Its failure is retained; local
+parser replay is not a successful native comparison or measured context saving.
+The [authoring candidate preparation](docs/evaluation-metrics.md#explicitly-prepared-authoring-inputs)
+pins a separate revision, preserves original task hashes and supplies applicable
+conditional guide bodies. Preparation is not native improvement or transfer consent.
+Project packet [source checks](docs/role-document-access-policy.md) also reject
+errored or interrupted Git calls even when their exit status appears successful;
+unverified metadata must not be reported as a source-exclusion decision.
+The [Git process regressions](run-project-document-git-fixtures.js) exercise this
+boundary in packets, terminology identity and dependency registration/refresh,
+including late failures, retained history and sanitized CLI errors. Failed metadata
+does not justify a replacement ledger or changed ignore policy. These checks make
+no model-call or host-recovery claim.
+The [cross-client workflow protocol](docs/evaluation-metrics.md#cross-client-workflow-evidence)
+keeps preparation, actual notices, changed-source holds, bounded resumption and
+cold receiving separate within each observed chain.
+Its local brief-phase preflight checks tool exposure and actual helper exit;
+these checks are not native-agent behavior or permission to send prepared inputs.
+Native phase evidence must also reconcile client events with exact local route
+results; a completed response does not by itself establish notice delivery.
 
 <p align="center">
   <img src="assets/cannae-os-repository-map.svg" alt="Cannae OS repository map from docs through schemas, fixtures, runners, skills, and CI" width="100%">
@@ -90,7 +174,11 @@ security; the limitations and deferred scope remain.
 
 - [Skill-First Product Scope](docs/skill-first-product-scope.md): active core, deferred platform work and honest completion criteria.
 - [Document Authoring Workflow](docs/document-authoring-workflow.md): choose a format, preserve evidence and intent, revise the canonical document and hand off unresolved work without a dashboard.
-- [Project Terminology Workflow](docs/project-terminology-workflow.md): capture user definitions separately from tentative meanings, bind current excerpts and required meanings, with a [native compound-intake case](docs/project-terminology-workflow.md#native-compound-intake) that preserves dependent holds without stopping unrelated drafting.
+- [Project Terminology Workflow](docs/project-terminology-workflow.md): [prepare source-bound proposals](docs/project-terminology-workflow.md#source-bound-change-proposals), [append reviewed changes with one writer](docs/project-terminology-workflow.md#reviewed-canonical-append), and bind current excerpts and required meanings. A [native compound-intake case](docs/project-terminology-workflow.md#native-compound-intake) preserves dependent holds without stopping unrelated drafting.
+- [Private proposal path checks](docs/completion-backlog.md#exact-terminology-proposal-paths-2026-11-16): verify the actual destination against Git ignore exceptions and tracked files; a generic ignored probe is not a private-output guarantee.
+- [Terminology field appraisal](docs/completion-backlog.md#terminology-field-provenance-2026-11-16): check definitions, aliases and exclusions against their sources; valid hashes do not make copied sample meanings true.
+- [Local capture progression](docs/project-terminology-workflow.md#capture-state-progression): distinguish operative definitions from candidate revisions, preserve unresolved questions, and append corrections or retirement without rewriting history. [Observed local use](docs/completion-backlog.md#local-terminology-capture-2026-11-16) is not native model or receiving evidence.
+- [Registered Dependency Impact](docs/project-terminology-workflow.md#registered-dependency-impact): track declared source/term/upstream versions for documents and tasks, preserve independent work and prepare an explicitly reviewed refresh. Current inputs are not work correctness, automatic discovery or transfer authority.
 - [Source-Grounded Authoring Case](docs/document-authoring-case-study.md): support SOP revisions, native collaboration, agent-invoked routing, [implicit Codex selection](docs/document-authoring-case-study.md#native-implicit-codex-selection) and [Claude receiving](docs/document-authoring-case-study.md#native-implicit-claude-receiving), with retained failures and bounded acceptance claims.
 
 - [Task Training Evidence](docs/task-training-evidence.md): in-progress intake binds enrolled definitions, pre-call session mappings and actual completion/output evidence. Qualification and operational grants remain incomplete.
@@ -228,6 +316,8 @@ security; the limitations and deferred scope remain.
 - [Controls Doctrine Operator Skill](codex-skills/controls-doctrine-operator/SKILL.md): Codex skill for routing this corpus by task, role, department, authority, and validation surface.
 - [Claude Code Controls Doctrine Operator Skill](.claude/skills/controls-doctrine-operator/SKILL.md): equivalent Claude Code project skill.
 - [AI CLI Skill Installer](install-ai-cli-skills.sh): installs the Codex and Claude Code skill entries.
+- [Installed Skill Inspector](skill-installation-inspector.js): compare an explicit installed directory with the trusted checkout's current bundle and default corpus binding, without executing installed code or changing settings. A match is not native discovery or work acceptance.
+- [Authoring Evaluation Preparation](skill-authoring-evaluation.js): prepare exact full-body baseline writing inputs with byte-range accounting and separate evaluator references. No model dispatch, implicit-discovery claim, withheld execution or quality acceptance follows from preparation; see [Evaluation Metrics](docs/evaluation-metrics.md) and its [prepared-input protocol](docs/evaluation-metrics.md#explicitly-prepared-authoring-inputs).
 
 ## Core Concepts
 
@@ -839,6 +929,9 @@ The [bound recipient reader](docs/role-document-access-policy.md#bound-recipient
 lets an authorized adapter list and read packet source IDs without reconstructing
 private paths. Every call reinspects current bindings and preserves raw, summary
 or representation mode. This local utility is not a native receiving result.
+Its [operation-local inspection reuse](docs/role-document-access-policy.md#operation-local-inspection-reuse)
+returns the projection already checked against the saved prompt, reducing duplicate
+source appraisal without caching across calls or skipping current decision checks.
 The [routed receiving tools](docs/role-document-access-policy.md#routed-receiving-tools)
 connect that reader to the installed router with phase-local read IDs and fixed
 source holds. An opt-in stdio adapter exposes only routing and selected reads;
@@ -979,6 +1072,7 @@ The repository intentionally includes many small runners instead of one large ru
 
 Important examples:
 
+- [Skill maintenance checks and evidence](docs/evaluation-fixtures.md#skill-maintenance-checks-and-evidence): additive focused-check map and read-only `skill-evidence-index.js`; retained bytes are not a passing verdict or full integration proof.
 - `run-handoff-generation-fixtures.js`: selected-source fidelity, unknown-state handling, non-authorizing validation and invalid mission/order/time/path/classification rejection; synthetic regressions, not receiver acceptance.
 - `validator-cli-prototype/run-fixtures.js`: schema and semantic validator regression suite.
 - `run-authority-integration-fixtures.js`: scoped approval and risk acceptance composition.
@@ -1046,7 +1140,7 @@ score or evidence of current production operation.
 
 ### Active Skill Status
 
-Of the five [active objectives](docs/skill-first-product-scope.md#active-objectives),
+Of the five [baseline objectives](docs/skill-first-product-scope.md#completed-baseline-objectives),
 all five now have bounded acceptance. The fixed inventory has twenty verified
 required rows and no remaining partial row. This combines representative document
 work, role-based routing, actual reads, source-bound handoffs, maintenance and
@@ -1056,6 +1150,10 @@ supplies the final complete-report, replanning, useful-reading and client-equiva
 evidence. Historical failures remain visible below. New work still needs source
 review; lexical overrecommendation and manually reviewed profiles remain limitations.
 Separate plugin packaging remains optional and deferred.
+
+The [active objectives](docs/skill-first-product-scope.md#active-objectives) are
+now R1-R6, with a separate [2/18 verified acceptance inventory](docs/completion-backlog.md#skill-reliability-acceptance).
+The completed twenty-row baseline is not a completion score for this new cycle.
 
 The [optional-reading case](docs/document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
 observes both clients choosing useful guides while retaining assigned sources.

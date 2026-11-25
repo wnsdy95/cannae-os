@@ -74,6 +74,24 @@ function fixture(name, fn) {
   console.log(`PASS ${name}`);
 }
 
+function installedInstructions(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  for (const provider of PROVIDERS) {
+    const script = path.join(destination(env, provider), "scripts/read_controls_instructions.js");
+    const result = spawnSync(process.execPath, [script, "--all"], { cwd: unrelated, env, encoding: "utf8" });
+    assert.equal(result.status, 0, result.stderr);
+    const output = JSON.parse(result.stdout);
+    assert.equal(output.documents.length, 5);
+    assert.equal(output.native_read_verified, false);
+    assert.equal(output.transfer_authorized, false);
+    for (const document of output.documents) {
+      assert.equal(document.content, fs.readFileSync(path.join(sourceSkill(provider), document.path), "utf8"));
+      assert.equal(document.bytes, Buffer.byteLength(document.content));
+    }
+  }
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+}
+
 function missingRoutedDocuments(env) {
   const probes = fs.readFileSync(env.CLI_PROBE_LOG);
   const relative = "docs/document-authoring-workflow.md", file = path.join(source, relative), bytes = fs.readFileSync(file);
@@ -140,6 +158,46 @@ function readOnlyOperationsDocuments(env) {
     return ordinary;
   });
   assert.deepEqual(results[0], results[1]);
+  assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
+  assert(!fs.existsSync(path.join(unrelated, ".cannae")));
+}
+
+function taskIntakeViews(env) {
+  const probes = fs.readFileSync(env.CLI_PROBE_LOG);
+  for (const [query, expected] of [
+    ["Task: Draft a support SOP. Do not publish or build a dashboard.", "covered"],
+    ["Request: Compare ICP sales targeting and draft a support SOP. Do not contact customers.", "gap_detected"],
+    ["\uc694\uccad: \uc9c0\uc6d0 \uc808\ucc28\uc11c\ub97c \uc791\uc131\ud574. \uacf5\uac1c\ud558\uac70\ub098 \ub300\uc2dc\ubcf4\ub4dc\ub97c \ub9cc\ub4e4\uc9c0 \ub9c8.", "covered"],
+    ["\uacfc\uc5c5: \uace0\uac1d \uc2dc\uc7a5\uc744 \ubd84\uc11d\ud558\uace0 \uc9c0\uc6d0 \uc808\ucc28\uc11c\ub97c \uc791\uc131\ud574. \uacf5\uac1c\ud558\uc9c0 \ub9c8.", "gap_detected"]
+  ]) {
+    const outputs = PROVIDERS.map(provider => {
+      const router = path.join(destination(env, provider), "scripts/route_controls_docs.js");
+      const run = spawnSync(process.execPath, [router, "--actor=ai", "--role=S3", "--department=operations",
+        "--authority=read-only", "--", query], { cwd: unrelated, env, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 });
+      assert.equal(run.status, 0, run.stderr);
+      const result = JSON.parse(run.stdout);
+      assert.equal(result.repo_root, fs.realpathSync(source)); assert.equal(result.query, query);
+      assert.equal(result.operating_mode.authority, "read-only");
+      assert.equal(result.request_intake.semantic_completeness_verified, false);
+      assert(result.recommended_documents.some(row => row.path === "docs/document-authoring-workflow.md"));
+      if (expected === "covered") {
+        assert.equal(result.capability_routing.status, "covered");
+        for (const file of ["docs/reference-architecture.md", "docs/protected-process-execution.md"]) {
+          assert(!result.recommended_documents.some(row => row.path === file));
+        }
+      } else {
+        assert.equal(result.capability_routing.status, "gap_detected");
+        assert.deepEqual(result.capability_assessments.map(row => row.status), ["gap_detected", "covered"]);
+        assert.equal(result.capability_routing.provisional_organization.authority_expansion_authorized, false);
+      }
+      if (/[\uac00-\ud7a3]/.test(query)) {
+        assert.equal(result.request_intake.normalization.complete_translation, false);
+        assert.equal(result.request_intake.normalization.original_text_in, "query");
+      }
+      return result;
+    });
+    assert.deepEqual(outputs[0], outputs[1]);
+  }
   assert.deepEqual(fs.readFileSync(env.CLI_PROBE_LOG), probes);
   assert(!fs.existsSync(path.join(unrelated, ".cannae")));
 }
@@ -616,6 +674,7 @@ try {
     assert.deepEqual(outputs[0].recommended_documents, outputs[1].recommended_documents);
     assert.deepEqual(outputs[0].validation_commands, outputs[1].validation_commands);
   });
+  fixture("linked conditional instruction reader works without native clients", () => installedInstructions(env));
   fixture("linked Codex starter stays document-first and routes equivalently in both providers", () => documentStarter(env));
   fixture("literal linked entrypoint examples work in fresh target-project shells", () => {
     for (const provider of PROVIDERS) documentedCommands(env, provider);
@@ -629,6 +688,7 @@ try {
   fixture("linked providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
   fixture("linked providers distinguish read-only S3 order drafting from protected execution", () => readOnlyOperationsDocuments(env));
   fixture("linked providers route source-bound reports and omit unrelated S4 SQL defaults", () => sourceReviewAndLogistics(env));
+  fixture("linked providers preserve task headings, exclusions and inferred objective gaps", () => taskIntakeViews(env));
   fixture("linked providers reject missing selected documents without a receipt or artifact", () => missingRoutedDocuments(env));
   fixture("linked manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("linked receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
@@ -648,6 +708,7 @@ try {
     }
   });
   fixture("copied Codex starter retains its source text and document-first route", () => documentStarter(env));
+  fixture("copied conditional instruction reader preserves all source bytes", () => installedInstructions(env));
   fixture("existing copies require force and preserve unrelated user files", () => {
     write(path.join(destination(env, "codex"), "local-note"), "Keep me.\n");
     install(env, ["--copy"], 1);
@@ -672,6 +733,7 @@ try {
   fixture("copied providers expose reading provenance without changing selection or invoking clients", () => readingProvenance(env));
   fixture("copied providers distinguish read-only S3 order drafting from protected execution", () => readOnlyOperationsDocuments(env));
   fixture("copied providers route source-bound reports and omit unrelated S4 SQL defaults", () => sourceReviewAndLogistics(env));
+  fixture("copied providers preserve task headings, exclusions and inferred objective gaps", () => taskIntakeViews(env));
   fixture("copied providers reject missing selected documents without a receipt or artifact", () => missingRoutedDocuments(env));
   fixture("copied manual receipt examples preserve objectives and pass preflight", () => documentedReceipts(env));
   fixture("copied receipt producers fail closed without validation dependencies while direct reading works", () => receiptDependencyFailures(env));
@@ -746,7 +808,10 @@ try {
     for (const [relative, content, expectedIssue] of [["SKILL.md", "Missing required frontmatter.\n"],
       ["SKILL.md", fs.readFileSync(path.join(sourceSkill("claude"), "SKILL.md"), "utf8") + "\n".repeat(500),
         "500-line progressive-disclosure limit"],
-      ["scripts/route_controls_docs.js", "invalid JavaScript syntax\n"]]) {
+      ["scripts/route_controls_docs.js", "invalid JavaScript syntax\n"],
+      ["references/project-content.md", "", "SKILL_INSTRUCTION_EMPTY"],
+      ["SKILL.md", fs.readFileSync(path.join(sourceSkill("claude"), "SKILL.md"), "utf8")
+        .replace("](references/project-content.md)", "](unlinked.md)"), "SKILL_INSTRUCTION_NOT_LINKED"]]) {
       const file = path.join(sourceSkill("claude"), relative);
       const original = fs.readFileSync(file);
       const before = PROVIDERS.map(provider => fs.lstatSync(destination(env, provider)).ino);

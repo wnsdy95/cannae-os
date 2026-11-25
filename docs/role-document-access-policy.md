@@ -289,6 +289,16 @@ digest. Raw/summary payloads are limited to 64 KiB per delivered file and 256 Ki
 combined; hashing an original for a summary is bounded at 64 MiB. At most 16
 sources may be selected. Oversized/binary delivery fails; it is never truncated.
 
+Git metadata process errors, termination signals or missing terminal statuses
+stop packet preparation/inspection with `PROJECT_PACKET_GIT_UNAVAILABLE`, even
+when the result also contains status zero or plausible output. The code never
+substitutes cached origin or ignore results. This failure leaves repository or
+source freshness unverified; it is not proof of exclusion, another repository or
+a missing source. Preserve the failed attempt and existing holds; diagnose the
+host before any separately permitted new attempt. Product timeouts, approval
+expiry and retry authority do not change. Ordinary completed Git results retain
+their existing root, source-exclusion and ignored-output checks.
+
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/prepare_controls_documents.js \
   prepare --repository /absolute/project --request /absolute/request.json
@@ -529,6 +539,35 @@ not a completed read; a returned body is not proof of client receipt, comprehens
 or adoption. Calls are point-in-time and do not provide atomic sending, continuous
 revocation or protected-host guarantees. Execution/release/verified-authority and
 receiver-acceptance flags remain false.
+
+### Operation-Local Inspection Reuse
+
+The file-backed reader uses `inspectRecipientData(packetPath, expectedDigest,
+repository, recipient)` to receive the detached projection already checked
+against the saved prompt in that same inspection. The exact recipient is required
+and checked before reading original source content. `inspect` remains metadata-only;
+it does not expose that projection, and its result is not a reusable validation token.
+
+Reviewed inspection still rebuilds the current proposal and rechecks it when
+projecting the prompt. The reader no longer repeats that projection's source
+appraisal a third time after the prompt comparison. No cached state survives a
+call, no caller flag skips validation, and standalone `recipientData` and
+`renderPrompt` retain their checks. Source drift, changed or expired decisions,
+wrong recipients and modified packet/prompt bytes remain refusal conditions.
+Concurrent changes between the two appraisals must still fail. This is not an
+atomic filesystem snapshot or a guarantee against mutation after the final check.
+
+A local 14-document representation probe observed 217 -> 146 Git calls and
+42 -> 28 original-source opens per reader construction, catalog and read. Proposal
+creation and packet preparation counts stayed unchanged. These are synthetic
+local workload observations, not native context-byte savings, semantic quality,
+universal speedup or a completed session integration result. Retain interrupted
+earlier probes separately. The [active backlog](completion-backlog.md) owns the
+current acceptance status.
+
+Changing the packet implementation changes reviewed proposals' screening-source
+identity. Preserve old proposals and decisions; do not rehash them into current
+approval. A new current-source proposal requires its own applicable review.
 
 ### Routed Receiving Tools
 

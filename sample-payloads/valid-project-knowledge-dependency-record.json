@@ -1,0 +1,40 @@
+{
+  "schema_version": "0.1",
+  "type": "ProjectKnowledgeDependencyRecord",
+  "repository": {
+    "root": "/synthetic/project",
+    "git_directory": "/synthetic/project/.git",
+    "device": "1",
+    "inode": "2",
+    "git_device": "1",
+    "git_inode": "3"
+  },
+  "version": 1,
+  "request": {
+    "schema_version": "0.1",
+    "type": "ProjectKnowledgeDependencyRequest",
+    "work_id": "WORK-SOP",
+    "subject": {
+      "document": "drafts/sop.md",
+      "task": "Draft the policy SOP"
+    },
+    "previous_sha256": null,
+    "review_reference": "Synthetic appraisal of policy inputs, not authenticated review.",
+    "sources": [
+      {
+        "id": "SOURCE-POLICY",
+        "path": "policy.md",
+        "sha256": "5d5f64d30d0d73a4f77becf82ac508bcb093ad84a9a09a604fb1720759a6b880",
+        "required": true
+      }
+    ],
+    "terminology": null,
+    "upstream": []
+  },
+  "request_sha256": "a158d769b0393f2b5b44c501d48ebf964fc7b5af3cd3f80f5854692490cc8746",
+  "term_observations": [],
+  "authorization_verified": false,
+  "work_quality_verified": false,
+  "dependency_completeness_verified": false,
+  "transfer_authorized": false
+}

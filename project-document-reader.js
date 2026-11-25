@@ -9,6 +9,7 @@ const flags = () => ({ authorization_verified: false, execution_authorized: fals
 function guarded(operation) {
   try { return operation(); }
   catch (error) {
+    if (error.message === "PROJECT_PACKET_RECIPIENT_MISMATCH") fail("PROJECT_READER_RECIPIENT_MISMATCH");
     fail(/^PROJECT_(?:PACKET|REVIEW|READER)_[A-Z_]+$/.test(error.message)
       ? error.message : "PROJECT_READER_INPUT_UNAVAILABLE");
   }
@@ -31,8 +32,7 @@ function createDocumentReader(options) {
       if (packets.sha256(bytes) !== binding.packet_sha256) fail("PROJECT_PACKET_DIGEST_MISMATCH");
       const packet = JSON.parse(bytes);
       if (!isDeepStrictEqual(packet.request?.recipient, binding.recipient)) fail("PROJECT_READER_RECIPIENT_MISMATCH");
-      packets.inspect(binding.packet_path, binding.packet_sha256, binding.repository);
-      return packets.recipientData(packet);
+      return packets.inspectRecipientData(binding.packet_path, binding.packet_sha256, binding.repository, binding.recipient);
     };
     current();
     return Object.freeze({

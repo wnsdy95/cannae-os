@@ -37,8 +37,9 @@ objective in `--capability-query` and the complete requested work, including
 glossary/SOP housekeeping and prohibitions, in the task query. Route distinct
 domain objectives separately rather than omitting one. A glossary or document
 format match does not establish expertise in the work being described. The
-router does not infer this semantic separation; a combined query can still hide
-an uncovered domain behind a supporting route.
+router now suggests bounded English/Korean task-clause separation when no objectives
+are declared. It does not establish semantic completeness; unrecognized or
+context-dependent wording can still hide a domain behind a supporting route.
 Do not rewrite an issued mission objective or patch its receipts to obtain this
 separation; an existing guarded mission retains its exact rerouting procedure.
 
@@ -53,7 +54,149 @@ or negated terms; distinguish drafting an instruction from executing it. Do not
 strip required controls from an already issued receipt or context pack. Clarify
 an ambiguous guarded operation before dispatch, not by silently removing gates.
 
+### Conditional Instruction Delivery
+
+The entrypoint links four phase-specific guides: [Project Content And Reporting](project-content.md),
+[Client Operation](client-operation.md), [Project Terms](project-terms.md) and
+[Delegated Waves](delegated-waves.md). Read the applicable body before its phase.
+For a tool-disabled recipient, an authorized preparer must include those exact
+bytes in the reviewed input; a link, catalog row or digest is not body delivery.
+Do not silently add an unassigned guide to a manifest-governed read profile.
+Missing assigned guidance holds dependent work, not unrelated permitted drafting.
+
+The bundled helper emits local instruction content, not project sources:
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/read_controls_instructions.js" --topic=project-content
+node "$CONTROLS_SKILL_DIR/scripts/read_controls_instructions.js" --topic project-terms
+```
+
+Use the actual loaded skill directory established in the entrypoint. No topic
+emits only the entrypoint; repeated topics select distinct named guides.
+`--all` emits all four, without invoking a client, sending content or granting
+permission. Unknown/duplicate topics and missing, unlinked, empty, invalid UTF-8
+or symlinked instruction files fail without partial stdout. Installed root links
+are resolved; child instruction paths must be ordinary local files.
+
+The result binds each full body to its UTF-8 bytes and SHA-256; the content-set
+digest binds their ordered path/byte/hash list. JSON framing adds bytes beyond
+`emitted_content_bytes`. Count what the recipient actually receives, including
+entrypoints, references, repeats and framing; do not report selection or helper
+stdout as native-client reading. The helper cannot infer all semantic dependencies.
+
+Direct terminology/content/client routes recommend the relevant modules, and
+explicit inputs remain selected. Skill maintenance and guarded context select
+all four in both provider trees so moved controls remain digest-bound.
+`--explain-reading` records `conditional_instruction` reasons and triggers.
+Recommendation does not assign reading, grant access, clear a hold or prove use.
+Guarded packs are not shortened to meet an ordinary-work size target.
+Run `node run-skill-progressive-disclosure-fixtures.js` for a bundle change,
+then the affected installation, routing and context-integrity checks.
+
+### Version-Bound Reference Reading
+
+For a large optional corpus reference, inspect its navigation before choosing
+the directly relevant body. Do not paste README, the source map or the research
+compendium wholesale merely because they are navigation recommendations. This
+does not remove assigned sources, applicable controls or the original task.
+Read the complete entrypoint and full explicitly assigned source bodies; use an
+excerpt only where the actual assignment permits selective reference reading.
+A navigation index is not a complete source or evidence supporting a claim.
+
+```bash
+node "$CONTROLS_SKILL_DIR/scripts/read_controls_reference.js" \
+  --file docs/source-map.md --index
+node "$CONTROLS_SKILL_DIR/scripts/read_controls_reference.js" \
+  --file docs/source-map.md --sha256 "$SOURCE_SHA256" --lines "$FIRST_LINE:$LAST_LINE"
+node "$CONTROLS_SKILL_DIR/scripts/read_controls_reference.js" \
+  --file docs/source-map.md --sha256 "$SOURCE_SHA256" --full
+```
+
+Set the variables from that file's index and the intended range; never reuse a
+different file's digest. Use the full digest, not a display abbreviation. Ranges are inclusive,
+one-based physical lines and preserve exact bytes, including CRLF and a missing
+final newline. Navigation lists literal heading-shaped lines, not parsed Markdown
+sections; inspect surrounding context and complete conditions before choosing a
+range. The helper does not infer a section end, resolve links or decide sufficiency.
+A source change anywhere invalidates an old selection, including unchanged lines.
+Inspect the new version and reassess affected work instead of merely replacing
+the old digest. Keep the earlier selection and its history.
+
+This local reader accepts tracked corpus Markdown, not target-project sources,
+untracked drafts, arbitrary files or execution receipts. It uses the loaded skill's
+doctrine binding even from another repository; inspect a stale copy first.
+Read authority must already exist. Do not replace manifest-governed or guarded
+reading with this helper, use it to clear a hold, or treat a tracked file as public
+release clearance. Project content retains its separate access/preparation path.
+
+Count the entrypoint, emitted reference bodies, navigation text, JSON/tool framing
+and all follow-up reading in the actual recipient trace. Repeated reads and
+overlapping ranges still cost context; do not deduplicate them after delivery.
+The body byte count excludes metadata/framing and is not the total wire count.
+Local stdout does not prove native-client consumption, comprehension or R2 savings.
+Retain original request, source requirements, authority and issued validation
+commands alongside a prepared context; shorter guidance cannot waive them.
+
 ### Inspecting Reading Selection
+
+Direct `request_intake` records matching-only views for a recognized leading
+`Task:`, `Request:`, `Assignment:` or `Objective:` label and known exclusions.
+The full `query` remains the source of intent and constraints. These views do
+not change role, authority, assigned sources, selected controls or read access.
+Do not forward the shortened relevance view as the user's complete request.
+The document session carries these views alongside its required explicit
+objective declarations. A returned view is neither an access grant nor a new
+assignment; retain the prepared original and current assigned source profile.
+
+When no `--capability-query` is supplied, bounded English action clauses joined
+by sentences, semicolons, `and`, `then` or `also` can produce separate
+`capability_assessments`. Check the `objectives` provenance: inferred clauses
+are suggestions, not USER declarations. Inspect every original objective and
+prohibition before forwarding; a covered SOP cannot clear an uncovered analysis.
+Source-policy review and explicitly qualified draft-readiness checks remain
+document/source work, not unsupported domains or unit readiness.
+Quoted text and deictic steps such as "Review its design" are not independently
+split because their meaning depends on context. Unsupported wording still needs
+the faithful English-query path below. If extraction is absent or wrong,
+review explicit per-objective declarations without deleting the original request.
+Detected automatic compound intake cannot issue a guarded receipt or artifact;
+use the original mission's reviewed tasking process, not an omitted objective
+or single merged declaration. Existing caller declarations retain their exact
+parent/mission meaning and still require completeness review.
+
+### Korean Matching Views
+
+Keep the actual Korean or mixed-language request in the task query. The router
+recognizes bounded format/source terms, action endings, leading task labels and
+complete platform exclusion clauses. It handles common nouns for SOP, handoff,
+research/progress reports and glossary; it is not a Korean parser or translator.
+`request_intake.normalization.matching_query` exposes the lexical view and
+`complete_translation: false`. The original `query`, declared objectives, source
+references and authority remain unchanged. Normalized Unicode and stripped
+particles in that view do not establish byte-identical forwarding.
+`objective_views` uses zero-based indices into the original `capability_queries`
+or the single `capability_query`; inspect it even when an English task has a
+Korean parent. A document clause cannot make a separate execution/deployment
+clause read-only document work. Keep its operational context and original
+authority limit; recognizing an action does not authorize it.
+
+Review every purpose and prohibition against the original before assigning work.
+Supported action conjunctions can yield separate original-language assessments;
+an uncovered analysis must retain its gap even beside a covered SOP. Conditional
+or unrecognized exclusions stay conservative. Explicit inputs, technical parent
+objectives and actual design review still retain their technical references.
+The output language alone is not a request for national military doctrine.
+Unknown vocabulary, omitted spacing, dependent clauses and exclusions outside
+the bounded grammar can still misroute or conceal work. A matched format is not
+evidence that those clauses were understood.
+
+For unsupported wording, preserve the exact original locally and route a faithful
+English task description with the original purposes and prohibitions. Label it
+as an operator translation, not a router translation or USER-confirmed meaning.
+Compare that description and each declared objective with the original before
+handoff; carry both at an authorized boundary. Do not introduce new access,
+publish a glossary or rewrite a policy because a lexical view matched. Guarded
+multi-objective rejection and existing receipt/mission controls still apply.
 
 For direct analysis, add `--explain-reading` before `--` while retaining the exact
 task, all objectives and the declared delegation. The optional `reading_selection`
@@ -65,8 +208,15 @@ Inspect all reasons for a path. A route can conditionally omit a specialist manu
 while a role or source argument still retains it. Use the row's `recommended`
 value for the combined outcome, not one reason's `selected` flag. Route
 `objective_indexes` are zero-based into `objective_queries`; they describe the
-caller's declarations, not automatic objective extraction or semantic coverage.
+declared or inferred clauses, not verified semantic coverage.
 An omitted route recommendation is neither missing doctrine nor denied access.
+
+In direct document work, a supported model-transmission exclusion is not a model
+allocation assignment. Check `model_specialist` when the only model mention is
+inside that exclusion. Actual model subjects, parent tasks, assigned sources and
+model-specific department duties still retain that context. Questions, exceptions
+and dependent review stay conservative. Guarded routing keeps its selected model
+references; no recommendation change removes validation commands or clears consent.
 
 `source_argument` means an actual `--source` argument, potentially supplied by
 an adapter from its assigned profile, not necessarily a direct USER instruction.
@@ -122,6 +272,29 @@ their actual S3/operations/scoped-execution contract; do not change a delegation
 merely to satisfy that contract or reinterpret its rejection as authorization.
 
 ### Using A Skill Versus Maintaining It
+
+For own-product maintenance, inspect every objective's capability assessment as
+well as selected manuals. `Maintain the Controls skills` and bounded document
+context-reading evaluations have specific routes; a client/skill used to analyze
+an uncovered domain does not establish that domain's coverage. Preserve mixed
+requests and their remaining cells instead of substituting a maintenance keyword.
+Distinguish a generic skill/client method from a specific subject named after it:
+using a skill to inspect mission lifecycle still needs lifecycle guidance and controls.
+A supported `No model transmission, dashboard or server development` clause
+narrows platform reading only: the full prohibition, explicit/parent inputs and
+selected controls remain. A fresh corrected route does not amend an issued receipt
+or authorize the evaluation's model calls. See the [maintenance intake case](../../../../docs/completion-backlog.md#own-skill-maintenance-intake-2026-11-16).
+
+Diagnose a compound gap from each `capability_assessments` row, not the request's
+first word or punctuation. A supported maintenance clause can coexist with an
+unrecognized document format. Preparing an approval proposal routes its drafting
+workflow; it does not approve the proposal or authorize transmission. A named
+uncovered subject still needs its own assessment. Review explicit action clauses
+after a colon as well as `and`/`then`; the prefix cannot supply another task's
+domain coverage. Original wording, source inputs and prohibitions remain binding.
+If extraction is uncertain, declare each actual objective with `--capability-query`
+instead of deleting the difficult clause. Guarded multi-objective rejection stays
+in force; direct draft routing cannot be reused as an execution receipt.
 
 For ordinary direct work, a mention of Codex, Claude, CLI, skill, routing,
 operator, inventory or coverage alone does not require installation and corpus
@@ -345,6 +518,21 @@ reviewing local changes; live links already follow the source. Keep corpus
 selection separate from target output paths. Test with isolated homes using
 `node run-skill-installation-fixtures.js`; fake CLI version probes are not
 native discovery, login, model execution or separately packaged plugin evidence.
+
+For a read-only copy/version diagnosis, run the trusted corpus's
+`skill-installation-inspector.js --provider codex|claude --installed <absolute-path>`.
+Do not ask an old installed router to certify itself. The inspector compares the
+tracked/non-ignored source bundle inventory and current working-tree bytes,
+executable bits and the default marker/source-ancestry binding. It records the
+source HEAD separately; matching hashes do not mean the source is committed,
+trusted or compatible with every runtime/client version. Missing, changed, unsafe
+or unexpected installed entries require appraisal. Unknown entry contents are
+not read or executed. Explicit/environment corpus overrides and client startup
+settings are not assessed, and no settings or installed files are changed.
+Keep intentional local edits until reviewed; a difference is not automatically
+an obsolete copy. Follow the existing dry-run/replacement procedure only after
+choosing the intended source and preserving changes. Native discovery, delivered
+bodies and successful task behavior still need their own evidence.
 
 Check the effective startup mode when an installed skill is missing. Claude's
 `--bare` skips automatic user-directory discovery; do not diagnose that as a
@@ -596,7 +784,8 @@ inputs still add their references; a prohibition on implementation does not
 cancel an assigned technical review or required source.
 
 The router recognizes a bounded set of complete English exclusions, such as
-"Do not build a dashboard", "Dashboard development is deferred", and complete
+"Do not build a dashboard", "Do not publish or build a dashboard",
+"Exclude dashboard and server work", "Dashboard development is deferred", and complete
 noun lists like "no publication, dashboard or service work". Platform items may
 carry development, implementation or work suffixes, including coordinated
 service/server nouns: "Dashboard and service development remain deferred" and
@@ -604,6 +793,13 @@ service/server nouns: "Dashboard and service development remain deferred" and
 Publication, transmission, deployment, private-source exceptions and external
 operations are recognized non-platform items in these complete exclusion lists.
 Unknown items, review qualifications and conditions remain relevant.
+Complete mixed lists also recognize plural model transmissions/transfers and
+"Keep ... deferred" or "Leave ... out of scope". Appraise the entire clause:
+"Keep model transfers and dashboard development deferred" is a scope constraint,
+whereas a question, conditional deferral or subsequent design review is not a
+reason to omit the technical subject. Do not drop an unknown list item or question
+mark to force a narrower route. Check the original request and retained controls;
+this wording support neither authorizes model transmission nor renews consent.
 Those clauses cannot by themselves establish runtime capability or require the
 five specialist manuals. The original task and capability query remain verbatim, and selected
 route IDs and validation commands remain. Thus "Analyze museum attendance; do not
@@ -833,7 +1029,13 @@ automatic hold discharge.
 
 ## Native Failure Evidence
 
-For failed native transfers, read `docs/native-training-failure-reconciliation.md`.
+For failed native training transfers, read `docs/native-training-failure-reconciliation.md`.
+An ordinary CLI document-review or context-measurement failure is not a training
+trial. Use [Client Operation](client-operation.md) for its exact failed attempt
+and consent boundary; do not invent training enrollment or an operator application.
+Declared training parent tasks, assigned sources and existing guarded operations
+still retain their applicable training controls. A wording change cannot clear
+an issued hold or renew transfer consent.
 Run the dedicated contracts, actual failure/reconciliation and process-death
 matrices, not just a signature audit. Use only the native owner UI or native API
 for fresh displayed-subject/password/session/epoch/nonce approval; never script

@@ -173,6 +173,10 @@ It reuses existing inspection and recipient projection for ID-only catalog/reads
 preserving representation modes and current decision checks. This is local
 engineering evidence, not a new disclosure decision, authenticated recipient,
 native receiving result or separate service.
+The [inspection-reuse correction](role-document-access-policy.md#operation-local-inspection-reuse)
+uses the same checked prompt projection inside one call. Local 14-source probes
+and reader regressions cover repeated work, exact recipients and changes between
+appraisals; they do not prove atomic delivery, native context savings or approval.
 The [routed-session integration](document-authoring-case-study.md#routed-receiving-integration)
 adds `project-document-session.js`, its optional stdio adapter and integration
 fixtures. It uses the existing pinned MCP client/server packages from
@@ -208,6 +212,172 @@ public-message projection and operator research V3 retain evidence and correct
 source-backed defects without claiming universal compliance or policy adoption.
 
 ## Skill-First Scope And Authoring
+
+The [Skill Reliability And Efficiency queue](completion-backlog.md#skill-reliability-and-efficiency)
+records the USER's next skill-only goal and local probes at `21a90d8`: wording-
+sensitive overreading, Korean-query fallback, manual objective declaration and
+instruction/reference size. These observations do not establish model accuracy
+or grant access. Its eighteen criteria are separate from the completed
+baseline. See the [compendium](research-compendium.md#skill-reliability-successor-goal-2026-11-15);
+no new external military-source claim or platform work is introduced.
+
+The [frozen skill evaluation](completion-backlog.md#evaluation-freeze-checkpoint-2026-11-15)
+binds 24 routing requests, eight authoring tasks and separate source-based
+references to baseline `9331ff5`. The [local protocol](evaluation-metrics.md#82-skill-only-evaluation-protocol),
+`skill-evaluation-runner.js` and `run-skill-evaluation-fixtures.js` distinguish a
+completed measurement from product acceptance. Both providers retain five failing
+development cases; no withheld/native execution or loaded-byte claim is added.
+The templates are author-aware, not independently blind. SR01 closes only the
+freeze/baseline criterion; the source-bound authoring evaluation remains open.
+The [frozen routing comparison](evaluation-metrics.md#frozen-routing-comparison)
+adds `skill-routing-evaluation.js` and extends `run-skill-evaluation-fixtures.js`
+with one-attempt, exact-pin, failure-retention and boundary checks. This is a local
+engineering protocol for reserved evaluation, not external doctrine, protected
+execution, native-call approval or criterion closure from a count alone.
+The [2026-11-17 source appraisal](completion-backlog.md#fixed-routing-source-appraisal-2026-11-17)
+records the actual frozen comparison at `1b19ae1`, its original 24 requests,
+both-provider boundary checks and separate unchanged-router counterexamples.
+SR02/SR03 close at that bounded scope; the private report and 58-entry evidence
+index retain failures and version limits. This is local engineering evidence,
+not a new military-source claim, native quality result or unseen reusable set.
+The [mainline integration checkpoint](completion-backlog.md#mainline-integration-checks-2026-11-17)
+records both-API non-execution regressions in `validator-cli-prototype/run-fixtures.js`
+and ordinary-CLI-versus-training cases in `run-document-routing-fixtures.js`.
+Both skill guides retain explicit parent/input boundaries. These are local
+engineering observations; full integration and native acceptance remain separate.
+The [model-exclusion reading follow-up](completion-backlog.md#model-exclusion-reading-2026-11-17)
+records a local direct-routing counterexample and both-provider conditional-reading
+regressions. Its separate retained-evidence audit verifies original file bindings,
+not military doctrine, actual model behavior or fresh acceptance of old runs.
+The [first remote CI checkpoint](completion-backlog.md#first-remote-ci-result-2026-11-18)
+records two runner-fixture regressions outside the focused set, their repairs and
+the added map rows. It is a local engineering observation, not a full CI pass.
+
+The [version-bound reference reader](evaluation-metrics.md#version-bound-reference-measurement)
+in `skill-reference-reader.js` and both `read_controls_reference.js` wrappers
+supports optional corpus navigation and exact digest-bound line selections.
+`run-skill-reference-reader-fixtures.js` checks local byte fidelity, stale/unsafe
+sources and cross-project link/copy operation. These are local engineering
+observations, not new external doctrine, native delivery or semantic sufficiency.
+See `docs/evaluation-metrics.md`; full recommendation size is not a reading trace.
+
+`skill-context-evaluation.js` and `run-skill-context-evaluation-fixtures.js` add
+[paired context preparation](evaluation-metrics.md#paired-context-inputs): unchanged
+fixed requests, identical development-source supplements, clean revision snapshots
+and exact initial-input accounting. Both client-operation guides preserve fair
+selective reading and distinguish preparation from complete native traces. No
+new military-source claim, transfer authority or context-saving acceptance follows.
+
+`skill-context-trace.js` and `run-skill-context-trace-fixtures.js` add
+[client-bound trace reconciliation](evaluation-metrics.md#client-bound-context-traces)
+for exact source responses, native completion, repeats and transport framing.
+Synthetic event fixtures and a transient local stdio exercise are engineering
+evidence only, not native delivery, backend attestation or external doctrine.
+Both client-operation guides require complete matched traces and source appraisal.
+
+The [skill-maintenance evidence procedure](evaluation-fixtures.md#skill-maintenance-checks-and-evidence)
+separates affected-surface checks, retained result bytes and full integration.
+`skill-evidence-index.js` and its fixtures inspect declared local file bindings,
+including source drift, missing evidence and wrong-repository cases, without
+executing a recorded command or appraising its verdict. Both maintenance guides
+preserve failures and unexecuted checks. This is local engineering evidence,
+not military doctrine, attested execution or an authorization contract.
+
+The [native startup failure](completion-backlog.md#native-context-startup-failure-2026-11-16)
+is direct local CLI evidence of diagnostic items preceding turn creation. The
+trace observer's ordering repair and captured-event replay retain the failed
+attempt and fresh-consent boundary. This is not external doctrine, a native
+quality improvement, proof of backend delivery or successful retry evidence.
+
+The [own-skill maintenance intake case](completion-backlog.md#own-skill-maintenance-intake-2026-11-16)
+records a local R1 counterexample and both-router correction, not new military
+doctrine or semantic coverage. `run-skill-maintenance-routing-fixtures.js` checks
+specific maintenance/evaluation routes, independent domain gaps, full constraints,
+conditional technical reading and retained guarded-input rejection. Both routing
+guides require per-objective assessment rather than a manual-selection shortcut.
+
+The [proposal/compound intake follow-up](completion-backlog.md#proposal-drafting-and-compound-intake-2026-11-16)
+corrects the original symptom diagnosis using separate capability rows: proposal
+drafting was unsupported, while the maintenance clause was already covered.
+It also retains explicit colon-separated tasks and their independent gaps.
+`run-skill-maintenance-routing-fixtures.js` tests both providers, original text,
+quoted/time counterexamples and guarded rejection. This is local engineering
+evidence, not new military doctrine or approval authority.
+
+The [deferral-list follow-up](completion-backlog.md#deferral-list-routing-2026-11-16)
+compares exact local requests before and after a bounded grammar correction.
+It retains original context, selected controls and technical prerequisites while
+distinguishing English questions from complete deferral declarations. These
+development cases and `run-document-routing-fixtures.js` are engineering evidence,
+not military doctrine, unseen evaluation or actual model-delivery measurements.
+
+`skill-authoring-evaluation.js` now prepares the four development writing tasks
+for both clients from that exact baseline. Its full-body manifests bind original
+tasks and instruction spans without evaluator answers or native dispatch. The
+[prepared-input procedure](evaluation-metrics.md#explicitly-prepared-authoring-inputs)
+in `docs/evaluation-metrics.md` and mirrored client-operation guidance prevent mixing current installed bytes
+into historical input. Preparation is not actual reading, discovery, routing,
+quality acceptance or cross-client receiving. No external doctrinal claim is added.
+
+Its candidate preparation path now binds a distinct clean revision and the same
+original development task bytes, adding actual conditional reporting/content
+and handoff-term bodies. Local fixtures reject missing guides, wrong/dirty pins,
+altered phase/authority fields and reused output paths. Both client-operation
+guides distinguish this preparation from the global withheld freeze and a new
+native execution decision. These are local delivery-contract checks, not model
+quality findings or military-source evidence.
+
+The [cross-client workflow protocol](evaluation-metrics.md#cross-client-workflow-evidence)
+maps the active SR13-SR15 requirements onto existing packet, session, dependency
+and authoring procedures. Local paired initial preparation checks original task,
+recipient, source/version and brief-only boundaries. Native notices, changed-source
+recovery and cold receiving still require actual evidence. Both client-operation
+guides preserve chain lineage and separate dependency currentness from USER
+resumption authority. This is local workflow design and preparation evidence,
+not military doctrine or a completed model comparison.
+The follow-on local brief-phase preflight distinguishes client tool configuration,
+SDK catalog/route behavior, audit closure and actual helper exit. Both skills now
+require phase-specific tool inspection and precise negative-test failure classes.
+This is a local engineering lesson; model behavior and execution consent remain
+separate, with no new external source claim.
+The brief execution observer adds exact native/helper route reconciliation and
+one-shot, bounded-process checks. Historical event replay and fake-child tests
+are explicitly separate from a new native phase. Both client guides require
+checking original assignment, recipient, held catalog and authority across those
+records before appraising the actual response; this remains engineering evidence.
+
+The [native development baseline](completion-backlog.md#native-authoring-baseline-and-repair-2026-11-16)
+now records eight actual responses, exact delivered input bodies and a separate
+source appraisal. Its findings concern unsupported event units, incomplete
+detached review units and uncertain source identities/history promoted into
+operative claims. `docs/document-authoring-workflow.md`,
+`docs/handoff-packet-template.md` and both skill entrypoints now teach the bounded
+repair. These are local engineering lessons, not new military claims, independent
+blinding or demonstrated candidate improvement. The actual cross-client chains
+and withheld/candidate evaluation remain open.
+
+The [English intake development](completion-backlog.md#english-intake-development-2026-11-15)
+binds paired local comparisons of heading/exclusion views and inferred task
+clauses. Original constraints, explicit sources, technical review and declared
+authority remain separate from matching views. Both skill entrypoints and routing
+references require operator appraisal of inferred objectives. Local expectations
+improve from 14/24 to 22/24; Korean and reserved evaluation remain open, with no
+new native or independent semantic-coverage claim.
+
+The [Korean intake follow-up](completion-backlog.md#korean-intake-development-2026-11-15)
+binds the same frozen development set at 24/24 local expectation matches. Its
+bounded lexical view is explicitly not a complete translation; original task,
+source and authority bindings remain distinct. The record explains removal of
+false-gap fallback commands without waiving any issued control. Reserved/native
+evaluation and broader semantic coverage remain open.
+
+The [conditional instruction split](completion-backlog.md#conditional-instruction-delivery-2026-11-15)
+preserves four procedure bodies from `ea1a951` in mirrored linked references,
+with only relative Markdown-link adjustments inside relocated bodies. Entry
+bytes are compared with frozen `9331ff5`; guarded contexts retain digest-bound
+guidance. The bundled `read_controls_instructions.js` emits local full bodies
+without invoking clients or granting access. This is repository engineering
+evidence, not a military-source claim or observed native delivery.
 
 The [OR72 optional-reading case](document-authoring-case-study.md#native-optional-reading-and-source-appraisal)
 binds native route/read records, delivered source bytes and separate operator
@@ -466,6 +636,48 @@ records one separately consented native response with supplied instructions and
 synthetic sources. Its hashes and scoped appraisal are local execution evidence,
 not new military doctrine, automatic skill selection or operational acceptance.
 
+The [source-bound change proposal path](project-terminology-workflow.md#source-bound-change-proposals)
+adds a local request/proposal contract and helper for exact excerpts, expected
+ledger versions and unchanged predecessor scope/access. The [R4 checkpoint](completion-backlog.md#terminology-change-proposals-2026-11-15)
+distinguishes preparing a requested confirmed state from adopting that definition.
+Local fixtures cover stale sources/bases, separate repositories, unsafe paths,
+secret-shaped values and installed wrappers; they do not authenticate USER
+statements or complete single-writer adoption, impact tracking or native use.
+
+The [exact proposal-path correction](completion-backlog.md#exact-terminology-proposal-paths-2026-11-16)
+records a synthetic Git counterexample: an ignored generic probe coexisted with
+an unignored proposal. The helper now checks the actual path, including tracked
+status, before writing and on inspection; reviewed adoption inherits that refusal.
+Canonical writer outputs also retain the actual Git index when checking privacy.
+This is local output hygiene, not transmission, protected storage or USER approval.
+
+The [field-provenance appraisal](completion-backlog.md#terminology-field-provenance-2026-11-16)
+compares the sample's quoted definition with its excluded meanings. Its repair
+removes an unsupported field value without changing the quote or authority rules.
+This is an author/source review of development samples, not native semantic
+acceptance or a general automatic meaning validator.
+
+The [local capture progression](completion-backlog.md#local-terminology-capture-2026-11-16)
+retains minimal synthetic sources, field appraisals and actual bundled-CLI outcomes
+for definition, candidate, correction, separate-project meaning and retirement.
+Its question remains unresolved rather than becoming a definition. This is
+author/operator engineering evidence, not a military source, authenticated USER
+record, independent semantic review or native receiving test.
+
+The later [reviewed canonical append](project-terminology-workflow.md#reviewed-canonical-append)
+implements explicit local single-writer updates and exited-process reconciliation.
+It retains exact before/after snapshots, distinguishes current observations from
+historical claims, and keeps source appraisal separate from authenticated USER
+identity. These contracts and process fixtures are local engineering evidence,
+not new military-source claims, a protected-host guarantee or native acceptance.
+
+The [registered-dependency procedure](project-terminology-workflow.md#registered-dependency-impact)
+connects local document/task declarations to exact source bytes, scoped term views
+and upstream records. `project-knowledge-dependencies.js` and its request/record
+contracts retain old versions and distinguish required holds from unrelated work
+and binding-only changes. This is engineering evidence for declared dependencies,
+not a military claim, automatic semantic discovery or authenticated review.
+
 The issuance-lock failure handling in `dispatch-runtime-controller.js` preserves
 both the primary and cleanup failures under `docs/enforced-dispatch-and-resume.md`.
 Its deterministic ownership-substitution fixtures are local engineering evidence,
@@ -479,7 +691,17 @@ byte checks, non-reading of reference-only files and provider-wrapper parity are
 local engineering evidence, not military claims or authenticated consent/native
 receiver acceptance. Both skill entrypoints and routing references carry the
 source-owner preparation versus recipient-delivery boundary.
-The same helper now rejects literal withheld-source and repository locations
+`run-project-document-git-fixtures.js` reproduces a completed-looking Git result
+with a process error and checks fail-closed root, source and output handling.
+Both project-content guides distinguish unavailable metadata from an exclusion
+decision. These injected local failures do not establish the cause of a prior
+host-sleep incident or constitute native receiving/recovery evidence.
+The same runner now covers terminology root/Git-directory identity and dependency
+source/output checks. A separate reproduction accepted errored status-zero metadata
+and wrote synthetic dependency records; the repaired consumers stop on the process
+failure and preserve prior history. Both project-terms guides distinguish an
+unverified observation from a missing ledger, foreign source or ignore-policy change.
+The project-packet helper also rejects literal withheld-source and repository locations
 across recipient-facing strings, not just document metadata. The reproduction
 and limits are local engineering evidence; this is neither semantic secrecy
 detection nor a new source-read/disclosure grant.
@@ -537,6 +759,13 @@ Native metadata discovery is separate from the installation fixtures below.
 Temporary homes and stub client binaries isolate failure/replacement checks.
 These results do not establish native client discovery, authentication, model
 execution or separate plugin-package acceptance.
+
+`skill-installation-inspector.js` compares declared installed paths with the
+trusted checkout's current bundle inventory, bytes, executable modes and default
+root binding. `run-skill-installation-inspector-fixtures.js` exercises changed,
+missing and unsafe copies without executing their code or reading unknown entry
+contents. These are local version/packaging observations, not upstream client
+behavior, code trust, authentication, automatic repair or native task acceptance.
 
 `docs/document-authoring-case-study.md` uses the repository's `SUPPORT.md`,
 `GOVERNANCE.md` and `SECURITY.md` as its actual policy sources. It records source

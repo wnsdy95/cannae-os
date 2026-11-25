@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "type": "ProjectTerminologyChangeTransaction",
+  "id": "0000000000000000000000000000000000000000000000000000000000000000",
+  "repository": {
+    "root": "/synthetic/project",
+    "git_directory": "/synthetic/project/.git",
+    "device": "1",
+    "inode": "2",
+    "git_device": "1",
+    "git_inode": "3"
+  },
+  "proposal_sha256": "16402f26fdef6301551de1c510a41efd882066a0d3ca9e52aae328c3e7f44bf7",
+  "review_sha256": "5efd108fe419984c1683985e121313f7b049d99513b5b26139c54a2f227d9d53",
+  "before_ledger_sha256": null,
+  "after_ledger_sha256": "093e53d5b94ce90ab0015a646cb5b96ea5a30988700ff22556a6ebf6b4b97228",
+  "entry_id": "TERM-6a44c53ad7ac5de24097869905716d17",
+  "authorization_verified": false,
+  "transfer_authorized": false,
+  "policy_adoption_authorized": false
+}

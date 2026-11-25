@@ -16,17 +16,30 @@ Thank you for considering a contribution. Cannae OS is a doctrine and prototype 
 ## Before You Open a PR
 
 Run the smallest relevant validation first, then broaden when the change touches shared behavior.
+Use the [skill-maintenance check map](docs/evaluation-fixtures.md#skill-maintenance-checks-and-evidence)
+and preserve exact source/result bindings in the private cycle evidence index.
+An intact log or focused pass does not establish full integration or merge approval.
 
 Recommended full local check:
 
 ```bash
 node codex-skills/controls-doctrine-operator/scripts/route_controls_docs.js --coverage .
+node .github/scripts/check-json.js
+node implementation-candidate-registry.js audit
 node .github/scripts/check-english-only.js
+node .github/scripts/check-markdown-links.js
 node validator-cli-prototype/run-fixtures.js
-for f in $(ls run-*.js | sort); do node "$f" || exit 1; done
+CANNAE_MANDATORY_CONTROL=0 CANNAE_REQUIRE_LIVE_OCI=1 node run-all-fixtures.js
 node source-map-linter.js
 git diff --check
+node validation-suite-runner.js
 ```
+
+Run each command to completion and record failures and unexecuted commands.
+`run-all-fixtures.js` already discovers the individual `run-*.js` suites; do not
+wrap it in a second loop that runs the aggregate and every suite again. Keep this
+list aligned with `.github/workflows/validate.yml`; unavailable OCI or other
+prerequisites leave the relevant gate unverified, not waived.
 
 For index, README, or community-file changes, also check Markdown links:
 

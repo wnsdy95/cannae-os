@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/project-terminology-change-request.schema.json",
+  "title": "Project Terminology Change Request",
+  "description": "A private proposed capture/correction, not an adopted definition or authenticated USER statement.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "type",
+    "expected_ledger_sha256",
+    "change",
+    "source"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "type": {
+      "const": "ProjectTerminologyChangeRequest"
+    },
+    "expected_ledger_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "concept_id",
+        "scope",
+        "term",
+        "aliases",
+        "definition",
+        "not_meaning",
+        "status",
+        "basis"
+      ],
+      "properties": {
+        "concept_id": {
+          "$ref": "project-terminology.schema.json#/properties/entries/items/properties/concept_id"
+        },
+        "scope": {
+          "$ref": "project-terminology.schema.json#/properties/entries/items/properties/scope"
+        },
+        "term": {
+          "$ref": "project-terminology.schema.json#/properties/entries/items/properties/term"
+        },
+        "aliases": {
+          "$ref": "project-terminology.schema.json#/properties/entries/items/properties/aliases"
+        },
+        "definition": {
+          "$ref": "project-terminology.schema.json#/properties/entries/items/properties/definition"
+        },
+        "not_meaning": {
+          "$ref": "project-terminology.schema.json#/properties/entries/items/properties/not_meaning"
+        },
+        "status": {
+          "$ref": "project-terminology.schema.json#/properties/entries/items/properties/status"
+        },
+        "basis": {
+          "$ref": "project-terminology.schema.json#/properties/entries/items/properties/basis"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "start_byte",
+        "end_byte"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "start_byte": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 131072
+        },
+        "end_byte": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 131072
+        }
+      }
+    }
+  }
+}

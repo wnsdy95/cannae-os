@@ -10,6 +10,8 @@ const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !ke
 const guides = ["docs/skill-first-product-scope.md", "docs/document-authoring-workflow.md", "docs/knowledge-management-sop.md", "docs/handoff-packet-template.md"];
 const routeInput = { query: "Review the complete supplied handoff and retain all original constraints.",
   objectives: ["Review a source-grounded handoff document.", "Optimize fictional lunar museum exhibit assignments."] };
+const koreanInput = { query: "\uc804\uccb4 \uc778\uc218\uc778\uacc4 \ubb38\uc11c\ub97c \uac80\ud1a0\ud574. \uacf5\uac1c\ud558\uc9c0 \ub9c8.",
+  objectives: ["\uc778\uc218\uc778\uacc4 \ubb38\uc11c\ub97c \uac80\ud1a0\ud574.", "\uac00\uc0c1 \ubc15\ubb3c\uad00\uc758 \ubc30\uc815\uc744 \ubd84\uc11d\ud574."] };
 let cases = 0;
 const test = (name, run) => { run(); cases++; console.log(`PASS ${name}`); };
 const success = result => { assert(!result.error, result.error); assert.equal(result.release_authorized, false); return result; };
@@ -63,6 +65,10 @@ try {
       assert.equal(route.original_task, request.task); assert(route.query.includes(request.task));
       assert.equal(route.required_source_count, 18); assert.equal(route.documents.length, 19);
       assert.equal(route.capability_assessments.length, 2); assert.equal(route.capability_routing.status, "gap_detected");
+      assert.equal(route.request_intake.objectives, "caller_declared");
+      assert.equal(route.request_intake.original_constraints_in, "query");
+      assert.equal(route.request_intake.semantic_completeness_verified, false);
+      assert.equal(route.request_intake.authority_changed, false);
       assert.equal(route.operating_mode.role, "S6"); assert.equal(route.task_context.id, "RECEIVING-TEST");
       assert.equal(route.task_context.repository_binding, "withheld");
       for (const value of [root, __dirname, skill, ".cannae/document-drafts", "reference-only.md", "synthetic-unread-value"]) assert(!JSON.stringify(route).includes(value), value);
@@ -75,6 +81,14 @@ try {
       const extra = route.reading_selection.documents.find(row => row.recommended && !guides.includes(row.path));
       assert(extra, "Fixture needs a recommendation outside the assigned profile");
       assert.equal(session.execute("read_document", { route_id: route.route_id, source_id: "corpus:" + extra.path }).error, "PROJECT_SESSION_SOURCE_NOT_READABLE");
+      const korean = success(createDocumentSession(config).execute("route_current_task", koreanInput));
+      assert(korean.query.includes(koreanInput.query)); assert.equal(korean.original_task, request.task);
+      assert.equal(korean.request_intake.normalization.complete_translation, false);
+      assert.equal(korean.request_intake.normalization.original_text_in, "query");
+      assert.equal(korean.capability_assessments[1].query, koreanInput.objectives[1]);
+      assert.equal(korean.capability_routing.status, "gap_detected");
+      assert.equal(korean.operating_mode.role, "S6"); assert.equal(korean.required_source_count, 18);
+      assert(!JSON.stringify(korean).includes(root));
     });
     test(`${provider}: selected tool reads preserve representations and reconcile delivered IDs, not claimed comprehension`, () => {
       let result;
@@ -176,6 +190,9 @@ try {
         assert(!result.isError); const routed = result.structuredContent;
         assert.equal(routed.required_source_count, 18); assert(!JSON.stringify(result).includes(root));
         assert.equal(routed.reading_selection.access_authorized, false);
+        assert.equal(routed.request_intake.objectives, "caller_declared");
+        assert.equal(routed.request_intake.original_constraints_in, "query");
+        assert.equal(routed.request_intake.authority_changed, false);
         assert.equal(routed.reading_selection.required_reading_assessed, false);
         assert(routed.reading_selection.documents.some(row => row.reasons.some(reason => reason.kind === "source_argument")));
         if (phase === "review") {
@@ -203,6 +220,13 @@ try {
             assert.equal(stale.structuredContent.error, "PROJECT_SESSION_CURRENT_ROUTE_REQUIRED");
           } else assert.equal(earlier.structuredContent.error, "PROJECT_SESSION_SUPERSEDED_ROUTE");
         }
+        const korean = await client.callTool({ name: "route_current_task", arguments: koreanInput });
+        assert(!korean.isError); assert(korean.structuredContent.query.includes(koreanInput.query));
+        assert.equal(korean.structuredContent.request_intake.normalization.complete_translation, false);
+        assert.equal(korean.structuredContent.request_intake.authority_changed, false);
+        assert.equal(korean.structuredContent.capability_routing.status, "gap_detected");
+        assert.equal(korean.structuredContent.required_source_count, 18);
+        assert(!JSON.stringify(korean).includes(root));
       } finally {
         await client.close(); await transport.close();
         if (pid) assert.throws(() => process.kill(pid, 0), error => error.code === "ESRCH");

@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://controls.local/schema-files/project-terminology-change-review.schema.json",
+  "title": "Project Terminology Change Review",
+  "description": "An authorized writer's recorded source appraisal, not authenticated USER identity or new write, policy or transfer authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "type",
+    "proposal_sha256",
+    "writer_id",
+    "decision",
+    "source_assessment",
+    "review_reference",
+    "created_at",
+    "expires_at",
+    "authorization_verified",
+    "source_authenticity_verified",
+    "policy_adoption_authorized",
+    "transfer_authorized"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "type": {
+      "const": "ProjectTerminologyChangeReview"
+    },
+    "proposal_sha256": {
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "writer_id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "decision": {
+      "enum": [
+        "append",
+        "defer",
+        "reject"
+      ]
+    },
+    "source_assessment": {
+      "enum": [
+        "candidate_only",
+        "explicit_user_definition",
+        "explicit_user_retirement"
+      ]
+    },
+    "review_reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "authorization_verified": {
+      "const": false
+    },
+    "source_authenticity_verified": {
+      "const": false
+    },
+    "policy_adoption_authorized": {
+      "const": false
+    },
+    "transfer_authorized": {
+      "const": false
+    }
+  }
+}
